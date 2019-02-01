@@ -1,0 +1,152 @@
+OCL  201912OCLF20              52.0     
+OCL  201902OCLH19              54.0    1
+OCL  201903OCLJ19              54.5     
+OCL  201904OCLK19              54.5     
+OCL  201905OCLM19              55.0     
+OCL  201906OCLN19              55.5     
+OCL  201907OCLQ19              55.0     
+OCL  201908OCLU19              55.5     
+OCL  201909OCLV19              55.0     
+OCL  201910OCLX19              55.0     
+OCL  201911OCLZ19              55.5     
+OES  201903OESH19              2670    1
+OES  201906OESM19              2675     
+OES  201909OESU19              2680     
+OES  201912OESZ19              2690     
+OGC  201912OGCF20              1320     
+OGC  201901OGCG19              1285    1
+OGC  201902OGCH19              1290     
+OGC  201903OGCJ19              1290     
+OGC  201904OGCK19              1295     
+OGC  201905OGCM19              1295     
+OGC  201906OGCN19              1300     
+OGC  201907OGCQ19              1300     
+OGC  201908OGCU19              1310     
+OGC  201909OGCV19              1310     
+OGC  201910OGCX19              1315     
+OGC  201911OGCZ19              1315     
+ONG  201912ONGF20                       
+ONG  201901ONGG19              3.50    1
+ONG  201902ONGH19              3.25     
+ONG  201903ONGJ19              2.90     
+ONG  201904ONGK19              2.80     
+ONG  201905ONGM19              2.90     
+ONG  201906ONGN19              2.90     
+ONG  201907ONGQ19              2.90     
+ONG  201908ONGU19                       
+ONG  201909ONGV19                       
+ONG  201910ONGX19              3.00     
+ONG  201911ONGZ19              3.00     
+ONQ  201903ONQH19              6790    1
+ONQ  201906ONQM19              6820     
+ONQ  201909ONQU19              6850     
+ONQ  201912ONQZ19              6860     
+OSI  201901OSIG19              15.40   1
+OSI  201902OSIH19              15.40    
+OSI  201903OSIJ19              15.50    
+OSI  201904OSIK19              15.50    
+OSI  201905OSIM19              15.50    
+OSI  201906OSIN19              15.50    
+OSI  201908OSIU19              15.75    
+OSI  201911OSIZ19              15.75    
+1ES  2019021ESG19              2670    1
+2ES  2019022ESG19              2670    1
+3ES  2019023ESG19              2670    1
+3ES  2019043ESJ19              2675     
+3ES  2019053ESK19              1775     
+4ES  2019014ESF19              2670    1
+4ES  2019024ESG19              2670     
+OZB  201901OZBG19              144.5   1
+OZB  201902OZBH19              145.0    
+OZB  201903OZBJ19              144.0    
+OZB  201904OZBK19              144.0    
+OZB  201905OZBM19              144.0    
+OZC  201901OZCG19              380      
+OZC  201902OZCH19              380      
+OZC  201903OZCJ19              390      
+OZC  201904OZCK19              390     1
+OZC  201906OZCN19              400      
+OZC  201908OZCU19              400      
+OZF  201901OZFG19              114.00  1
+OZF  201902OZFH19              114.00   
+OZF  201903OZFJ19              114.25   
+OZF  201904OZFK19              114.25   
+OZF  201905OZFM19              114.25   
+OZF  201908OZFU19                       
+OZM  201901OZMG19              315      
+OZM  201902OZMH19              315     1
+OZM  201904OZMK19              320      
+OZM  201906OZMN19              320      
+OZM  201907OZMQ19              320      
+OZM  201908OZMU19              330      
+OZM  201909OZMV19              330      
+OZM  201911OZMZ19              330      
+OZN  201901OZNG19              121.2   1
+OZN  201902OZNH19              121.0    
+OZN  201903OZNJ19              121.5    
+OZN  201904OZNK19              121.5    
+OZN  201905OZNM19              121.5    
+OZN  201908OZNU19                       
+OZS  201901OZSG19              920     1
+OZS  201902OZSH19              920      
+OZS  201903OZSJ19              930      
+OZS  201904OZSK19              940      
+OZS  201906OZSN19              940      
+OZS  201907OZSQ19              940      
+OZS  201908OZSU19              940      
+OZT  201901OZTG19              105.87  1
+OZT  201902OZTH19              105.87   
+OZT  201903OZTJ19              106.00   
+OZT  201904OZTK19              106.00   
+OZT  201905OZTM19              106.00   
+OZT  201908OZTU19                       
+OZW  201901OZWG19              520      
+OZW  201902OZWH19              520     1
+OZW  201903OZWJ19              525      
+OZW  201904OZWK19              520      
+OZW  201906OZWN19              530      
+OZW  201908OZWU19              540      
+OGX  201902OGXG19              11200   1
+OGX  201903OGXH19              11200    
+OGX  201906OGXM19              11250    
+OGX  202006OGXM20              11200    
+OGX  202106OGXM21              11200    
+OGX  201909OGXU19              11200    
+OGX  201912OGXZ19              11200    
+OGX  202012OGXZ20              11200    
+OGX  202112OGXZ21              11200    
+OGX  202212OGXZ22                       
+OVG  201902OVGG19              3125    1
+OVG  201903OVGH19              3125     
+OVG  201904OVGJ19              3125     
+OVG  201905OVGK19              3075     
+OVG  201906OVGM19              3050     
+OVG  202006OVGM20              2950     
+OVG  202106OVGM21                       
+OVG  201909OVGU19              3050     
+OVG  201912OVGZ19              3000     
+OVG  202012OVGZ20              2900     
+OHS  201901OHSF19              27200    
+OHS  201902OHSG19              27000    
+OHS  201903OHSH19              27000   1
+OHS  201904OHSJ19              27000    
+OHS  201906OHSM19              26800    
+OHS  202006OHSM20              26400    
+OHS  202106OHSM21              26000    
+OHS  201909OHSU19              26600    
+OHS  201912OHSZ19              26600    
+OHS  202012OHSZ20              26400    
+OHS  202112OHSZ21              26000    
+OHS  202212OHSZ22              25600    
+OHH  201901OHHF19              10600    
+OHH  201902OHHG19              10700   1
+OHH  201903OHHH19              10700    
+OHH  201904OHHJ19              10700    
+OHH  201906OHHM19              10600    
+OHH  202006OHHM20              10400    
+OHH  202106OHHM21              10400    
+OHH  201909OHHU19              10400    
+OHH  201912OHHZ19              10500    
+OHH  202012OHHZ20              10400    
+OHH  202112OHHZ21              10200    
+OHH  202212OHHZ22              10200    

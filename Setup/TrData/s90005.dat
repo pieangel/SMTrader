@@ -1,0 +1,20 @@
+[TRINFO]
+TRName    =현재서버시간
+TRCode    =s90005;
+ScreenNo  =; 실제 화면 번호
+Server    =1			; 접속 서버
+Compress  =0; 압축 	0/1
+Encrypt   =0; 암호화	0/1
+PublicAuth=0; 공인인증 0/1
+OutputCnt =1;Fid 출력값 갯수
+DataHeader=5; 2:해외주문, 3:해외조회, 4:국내주문, 5:국내조회
+
+[INPUT]
+구분자=0, 1, 0, A; 항상 '1'
+
+[OUTPUT]
+
+@START_OutRec1=1 ; Fid 출력값 갯수
+	서버시간     =  0, 10, 0, A ; HHMMSSmmss
+@END_OutRec1
+

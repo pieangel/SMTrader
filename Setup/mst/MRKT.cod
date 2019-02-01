@@ -1,0 +1,112 @@
+금리                ICE  LG Long Gilt                                         영국 10년 국채                                    000000000000
+금리                CBOT ZU Ultra U.S T-Bond                                  Ultra U.S T-Bond                                  000000000000
+금리                EUREXOATEuro OAT                                          프랑스 10년 국채                                  000000000000
+금리                EUREXCONCONF Futures 10Y                                  스위스 10년 국채                                  000000000000
+금리                EUREXBTPEuro BTP                                          이탈리아 10년 국채                                000000000000
+금리                CBOT ZY Ultra 10YR U.S T-Note                             Ultra 10YR U.S T-Note                             000000000000
+금리                OSE  JGBJP JGB Bond 10 Yr                                 일본정부 10년 중기채권                            000000000000
+금리                CBOT OZTU.S T-Notes 2 Yr                                  2년물 채권                                        000000000000
+금리                CBOT OZFU.S T-Notes 5 Yr                                  5년물 채권                                        000000000000
+금리                CBOT ZF U.S T-Notes 5 Yr                                  5년물 채권                                        000000000000
+금리                CBOT ZN U.S T-Notes 10 Yr                                 10년물 채권                                       000000000000
+금리                CBOT ZB U.S T-Bonds                                       30년물 채권                                       000000000000
+금리                EUREXUB Euro Buxl                                         Euro Buxl                                         000000000000
+금리                EUREXRX Euro Bund                                         Euro Bund                                         000000000000
+금리                CBOT OZNU.S T-Notes 10 Yr                                 10년물 채권                                       000000000000
+금리                EUREXOE Euro Bobl                                         Euro Bobl                                         000000000000
+금리                CBOT ZT U.S T-Notes 2 Yr                                  2년물 채권                                        000000000000
+금리                CME  GE EuroDollar                                        유로 달러                                         000000000000
+금리                CBOT OZBU.S T-Bonds 30yr                                  30년물 채권                                       000000000000
+금리                EUREXDU Euro Schatz                                       Euro Schatz                                       000000000000
+금속                CME  MGCE-micro GOLD                                      마이크로 골드                                     000000000000
+금속                CME  OSISilver                                            은                                                000000000000
+금속                CME  QO E-mini GOLD                                       미니 골드                                         000000000000
+금속                CME  PL Platinum                                          백금                                              000000000000
+금속                CME  PA Palladium                                         팔라듐                                            000000000000
+금속                CME  GC Gold                                              금                                                000000000000
+금속                CME  HG Hi-Grade Copper                                   전기동                                            000000000000
+금속                CME  SI Silver                                            은                                                000000000000
+금속                CME  OGCGold                                              금                                                000000000000
+농산물              ICE  SB Sugar No.11                                       원당 No.11                                        000000000000
+농산물              CBOT ZS Soybeans                                          대두                                              000000000000
+농산물              CBOT ZC Corn                                              옥수수                                            000000000000
+농산물              CBOT OZWWheat                                             밀                                                000000000000
+농산물              CBOT OZSSoybeans                                          대두                                              000000000000
+농산물              CBOT OZMSoybean Meal                                      대두박                                            000000000000
+농산물              CBOT OZCCorn                                              옥수수                                            000000000000
+농산물              ICE  CT Cotton No.2                                       원면 No.2                                         000000000000
+농산물              ICE  KC Coffee                                            커피                                              000000000000
+농산물              CBOT ZW Wheat                                             밀                                                000000000000
+농산물              ICE  OJ FCOJ-A                                            오렌지주스                                        000000000000
+농산물              ICE  CC Cocoa                                             코코아                                            000000000000
+농산물              CBOT ZO Oat                                               귀리                                              000000000000
+농산물              CBOT ZM Soybean Meal                                      대두박                                            000000000000
+농산물              CBOT ZR Rough Rice                                        쌀                                                000000000000
+농산물              CBOT ZL Soybean Oil                                       대두유                                            000000000000
+에너지              CME  ONGNYMEX Natural Gas                                 천연가스                                          000000000000
+에너지              CME  RB RBOB Gasoline                                     가솔린(RBOB)                                      000000000000
+에너지              CME  OCLCrude Oil                                         WTI                                               000000000000
+에너지              CME  HO Heating Oil                                       난방유                                            000000000000
+에너지              CME  NG Natural Gas                                       천연가스                                          000000000000
+에너지              CME  QM e-miNY Crude Oil                                  미니 WTI                                          000000000000
+에너지              CME  QG e-miNY Natural Gas                                미니 천연가스                                     000000000000
+에너지              CME  CL Crude Oil                                         WTI                                               000000000000
+에너지              ICE  BRNBrent Crude                                       브렌트유                                          000000000000
+지수                CME  1ESE-mini S&P 500 1W                                 미니 S&P 500 1주                                  000000000000
+지수                CME  2ESE-mini S&P 500 2W                                 미니 S&P 500 2주                                  000000000000
+지수                CME  3ESE-mini S&P 500 3W                                 미니 S&P 500 3주                                  000000000000
+지수                CME  4ESE-mini S&P 500 4W                                 미니 S&P 500 4주                                  000000000000
+지수                EUREXSMISwiss Market Index                                스위스 마켓 인덱스                                000000000000
+지수                EUREXFVSVSTOXX Mini                                       미니 VSTOXX                                       000000000000
+지수                SGX  CN SGX FTSE China A50                                SGX FTSE 차이나 A50                               000000000000
+지수                SGX  IN SGX CNX Nifty                                     SGX CNX Nifty                                     000000000000
+지수                SGX  TW SGX MSCI Taiwan                                   SGX MSCI 타이완                                   000000000000
+지수                CME  NIYNikkei225 YEN                                     Nikkei 225 YEN                                    000000000000
+지수                HKEX OHHH-Share Index                                     H-Share Index                                     000000000000
+지수                HKEX OHSHang Seng Index                                   Hang Seng Index                                   000000000000
+지수                CBOE VX Volatility Index                                  변동성 지수(CBOE)                                 000000000000
+지수                CME  ONQE-mini NASDAQ 100                                 미니 NASDAQ 100                                   000000000000
+지수                EUREXOGXDAX                                               DAX                                               000000000000
+지수                CME  OESE-mini S&P 500                                    미니 S&P 500                                      000000000000
+지수                EUREXOVGDJ Euro Stoxx50                                   DJ Euro Stoxx50                                   000000000000
+지수                CBOT YM Dow mini-sized $5                                 미니 Dow($5)                                      000000000000
+지수                ICE  TF Russell 2000 Mini                                 미니 러셀 2000                                    000000000000
+지수                ICE  DX US Dollar Index                                   달러 인덱스                                       000000000000
+지수                CME  NKDNikkei225 Dollar                                  Nikkei 225                                        000000000000
+지수                EUREXGX DAX                                               DAX                                               000000000000
+지수                EUREXVG DJ Euro Stoxx50                                   DJ Euro Stoxx50                                   000000000000
+지수                HKEX CHHCESC China 120 Index                              CESC China 120 Index                              000000000000
+지수                CME  ES E-mini S&P 500                                    미니 S&P 500                                      000000000000
+지수                HKEX HHIH-Share Index                                     H-Share Index                                     000000000000
+지수                HKEX HSIHang Seng Index                                   Hang Seng Index                                   000000000000
+지수                HKEX MCHMini H-Share Index                                Mini H-Share Index                                000000000000
+지수                HKEX MHIMini Hang Seng Index                              Mini Hang Seng Index                              000000000000
+지수                SGX  NK SGX Nikkei 225                                    SGX Nikkei 225                                    000000000000
+지수                CME  NQ E-mini NASDAQ 100                                 미니 NASDAQ 100                                   000000000000
+축산물              CME  GF Feeder Cattle                                     비육우                                            000000000000
+축산물              CME  HE Lean Hogs                                         돈육                                              000000000000
+축산물              CME  LE Live Cattle                                       생우                                              000000000000
+통화                SGX  IU INR/USD FX Futures                                INR/USD FX Futures                                000000000000
+통화                CME  6M Mexican Peso                                      멕시코 페소                                       000000000000
+통화                SGX  UC USD/CNH FX Futures                                USD/CNH FX Futures                                000000000000
+통화                SGX  KU KRW/USD FX Futures                                KRW/USD FX Futures                                000000000000
+통화                CME  MJYE-micro JPY/USD                                   마이크로 일본 엔                                  000000000000
+통화                CME  O6JJapanese Yen                                      일본 엔                                           000000000000
+통화                CME  6S Swiss Franc                                       스위스 프랑                                       000000000000
+통화                CME  6A Australian Dollar                                 호주 달러                                         000000000000
+통화                CME  O6EEuro FX                                           유로                                              000000000000
+통화                CME  O6AAustralian Dollar                                 호주 달러                                         000000000000
+통화                HKEX CUSCNH Currency                                      CNH Currency                                      000000000000
+통화                CME  6E Euro-FX                                           유로                                              000000000000
+통화                CME  6J Japanese Yen                                      일본 엔                                           000000000000
+통화                CME  E7 E-mini EUR/USD                                    미니 유로                                         000000000000
+통화                CME  6C Canadian Dollar                                   캐나다 달러                                       000000000000
+통화                CME  6N New Zealand Dollar                                뉴질랜드 달러                                     000000000000
+통화                CME  J7 E-mini JPY/USD                                    미니 일본 엔                                      000000000000
+통화                CME  M6BE-micro GBP/USD                                   마이크로 영국 파운드                              000000000000
+통화                CME  M6EE-micro EUR/USD                                   마이크로 유로                                     000000000000
+통화                CME  M6AE-micro AUD/USD                                   마이크로 호주 달러                                000000000000
+통화                CME  MCDE-micro CAD/USD                                   마이크로 캐나다 달러                              000000000000
+통화                CME  MSFE-micro CHF/USD                                   마이크로 스위스 프랑                              000000000000
+통화                CME  O6BBritish Pound                                     영국 파운드                                       000000000000
+통화                CME  6B British Pound                                     영국 파운드                                       000000000000

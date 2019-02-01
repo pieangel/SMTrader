@@ -1,0 +1,1038 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{24CBB464-3F33-4CD1-B567-AA5A64983A97}</ProjectGuid>
+    <RootNamespace>SMTrader</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <Keyword>MFCProj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>../include;$(POCO_ROOT)\Util\include;$(POCO_ROOT)\Foundation\include;$(POCO_ROOT)\Data\include;$(POCO_ROOT)\Net\include;$(POCO_ROOT)\Data\MySQL\include;.\Ultimate Toolbox\include</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <AdditionalLibraryDirectories>../lib;$(POCO_ROOT)\lib;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>../lib/chartdir60.lib;ugdndm.lib;ta_abstract_cdd.lib;ta_common_cdd.lib;ta_func_cdd.lib;ta_libc_cdd.lib;</AdditionalDependencies>
+    </Link>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <ValidateAllParameters>true</ValidateAllParameters>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0412</Culture>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <ValidateAllParameters>true</ValidateAllParameters>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0412</Culture>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>../include;$(POCO_ROOT)\Util\include;$(POCO_ROOT)\Foundation\include;$(POCO_ROOT)\Data\include;$(POCO_ROOT)\Net\include;$(POCO_ROOT)\Data\MySQL\include;.\Ultimate Toolbox\include</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>../lib;$(POCO_ROOT)\lib;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>../lib/chartdir60.lib;ugdndm.lib;ta_abstract_cdd.lib;ta_common_cdd.lib;ta_func_cdd.lib;ta_libc_cdd.lib;</AdditionalDependencies>
+    </Link>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <ValidateAllParameters>true</ValidateAllParameters>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0412</Culture>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <ValidateAllParameters>true</ValidateAllParameters>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0412</Culture>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AnimWnd.h" />
+    <ClInclude Include="BlockingQueue.h" />
+    <ClInclude Include="BtnST.h" />
+    <ClInclude Include="CeXDib.h" />
+    <ClInclude Include="Chart\ChartViewer.h" />
+    <ClInclude Include="ChildFrm.h" />
+    <ClInclude Include="ClassView.h" />
+    <ClInclude Include="closure.h" />
+    <ClInclude Include="CmdWaitDlg.h" />
+    <ClInclude Include="conversion.hpp" />
+    <ClInclude Include="cpptime.h" />
+    <ClInclude Include="DeferPos.h" />
+    <ClInclude Include="delegate.h" />
+    <ClInclude Include="Drawing\VtBaseTracker.h" />
+    <ClInclude Include="Drawing\VtDrawingConstants.h" />
+    <ClInclude Include="Drawing\VtElement.h" />
+    <ClInclude Include="Drawing\VtEllipse.h" />
+    <ClInclude Include="Drawing\VtFibo.h" />
+    <ClInclude Include="Drawing\VtFiboTracker.h" />
+    <ClInclude Include="Drawing\VtHandle.h" />
+    <ClInclude Include="Drawing\VtHLine.h" />
+    <ClInclude Include="Drawing\VtHLineHandle.h" />
+    <ClInclude Include="Drawing\VtHLineTracker.h" />
+    <ClInclude Include="Drawing\VtLine.h" />
+    <ClInclude Include="Drawing\VtLineTracker.h" />
+    <ClInclude Include="Drawing\VtMultiLine.h" />
+    <ClInclude Include="Drawing\VtMultiLineTracker.h" />
+    <ClInclude Include="Drawing\VtPoint.h" />
+    <ClInclude Include="Drawing\VtPointHandle.h" />
+    <ClInclude Include="Drawing\VtRect.h" />
+    <ClInclude Include="Drawing\VtRectTracker.h" />
+    <ClInclude Include="Drawing\VtRedimHandle.h" />
+    <ClInclude Include="Drawing\VtShapesCollection.h" />
+    <ClInclude Include="Drawing\VtText.h" />
+    <ClInclude Include="Drawing\VtUndoBuffer.h" />
+    <ClInclude Include="Drawing\VtUniqueID.h" />
+    <ClInclude Include="Drawing\VtValue.h" />
+    <ClInclude Include="Drawing\VtVLine.h" />
+    <ClInclude Include="Drawing\VtVLineHandle.h" />
+    <ClInclude Include="Drawing\VtVLineTracker.h" />
+    <ClInclude Include="ETSLayout.h" />
+    <ClInclude Include="FileView.h" />
+    <ClInclude Include="File\fwd.h" />
+    <ClInclude Include="File\path.h" />
+    <ClInclude Include="File\resolver.h" />
+    <ClInclude Include="FinanceChart.h" />
+    <ClInclude Include="Format\core.h" />
+    <ClInclude Include="Format\format-inl.h" />
+    <ClInclude Include="Format\format.h" />
+    <ClInclude Include="Format\ostream.h" />
+    <ClInclude Include="Format\posix.h" />
+    <ClInclude Include="Format\printf.h" />
+    <ClInclude Include="Format\ranges.h" />
+    <ClInclude Include="Format\time.h" />
+    <ClInclude Include="GenericChildDialog.h" />
+    <ClInclude Include="Global\TemplateSingleton.h" />
+    <ClInclude Include="Global\VtDefine.h" />
+    <ClInclude Include="Global\ZmStream.h" />
+    <ClInclude Include="GradientStatic.h" />
+    <ClInclude Include="GridButton.h" />
+    <ClInclude Include="HdAccountPLDlg.h" />
+    <ClInclude Include="HdAccountPLGrid.h" />
+    <ClInclude Include="HdAssetGrid.h" />
+    <ClInclude Include="HdChartFrm.h" />
+    <ClInclude Include="HDDefine.h" />
+    <ClInclude Include="hdfcommagent.h" />
+    <ClInclude Include="HdFutureGrid.h" />
+    <ClInclude Include="HdFuturePage.h" />
+    <ClInclude Include="HdOptionGrid.h" />
+    <ClInclude Include="HdOptionPage.h" />
+    <ClInclude Include="HdOrderDialog.h" />
+    <ClInclude Include="HdOrderGrid.h" />
+    <ClInclude Include="HdProductInfo.h" />
+    <ClInclude Include="HdProductRemainGrid.h" />
+    <ClInclude Include="HdProfitLossGrid.h" />
+    <ClInclude Include="HdScheduler.h" />
+    <ClInclude Include="HdSymbolFutureGrid.h" />
+    <ClInclude Include="HdSymbolOptionGrid.h" />
+    <ClInclude Include="HdSymbolSelecter.h" />
+    <ClInclude Include="HdTaskArg.h" />
+    <ClInclude Include="HdTaskEventArg.h" />
+    <ClInclude Include="HdWindowEvent.h" />
+    <ClInclude Include="HdWindowManager.h" />
+    <ClInclude Include="IniFile.h" />
+    <ClInclude Include="Log\loguru.hpp" />
+    <ClInclude Include="MainFrm.h" />
+    <ClInclude Include="memdc.h" />
+    <ClInclude Include="OutputWnd.h" />
+    <ClInclude Include="PropertiesWnd.h" />
+    <ClInclude Include="RemainOrderWnd.h" />
+    <ClInclude Include="ResizableLib\ResizableDialog.h" />
+    <ClInclude Include="ResizableLib\ResizableFormView.h" />
+    <ClInclude Include="ResizableLib\ResizableFrame.h" />
+    <ClInclude Include="ResizableLib\ResizableGrip.h" />
+    <ClInclude Include="ResizableLib\ResizableLayout.h" />
+    <ClInclude Include="ResizableLib\ResizableMDIChild.h" />
+    <ClInclude Include="ResizableLib\ResizableMDIFrame.h" />
+    <ClInclude Include="ResizableLib\ResizableMinMax.h" />
+    <ClInclude Include="ResizableLib\ResizableMsgSupport.h" />
+    <ClInclude Include="ResizableLib\ResizablePage.h" />
+    <ClInclude Include="ResizableLib\ResizablePageEx.h" />
+    <ClInclude Include="ResizableLib\ResizableSheet.h" />
+    <ClInclude Include="ResizableLib\ResizableSheetEx.h" />
+    <ClInclude Include="ResizableLib\ResizableSheetState.h" />
+    <ClInclude Include="ResizableLib\ResizableSplitterWnd.h" />
+    <ClInclude Include="ResizableLib\ResizableState.h" />
+    <ClInclude Include="ResizableLib\ResizableVersion.h" />
+    <ClInclude Include="ResizableLib\ResizableWndState.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="ShadeButtonST.h" />
+    <ClInclude Include="SimpleBinStream.h" />
+    <ClInclude Include="Skel\VtGrid.h" />
+    <ClInclude Include="SMTrader.h" />
+    <ClInclude Include="SMTraderDoc.h" />
+    <ClInclude Include="SMTraderView.h" />
+    <ClInclude Include="Sound\Buffer.h" />
+    <ClInclude Include="Sound\errorprint.h" />
+    <ClInclude Include="Sound\Pipe.h" />
+    <ClInclude Include="Sound\PtrFifo.h" />
+    <ClInclude Include="Sound\SoundBase.h" />
+    <ClInclude Include="Sound\SoundFile.h" />
+    <ClInclude Include="Sound\SoundIn.h" />
+    <ClInclude Include="Sound\SoundOut.h" />
+    <ClInclude Include="SSplitter.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="System\VtChannelCrossSystem.h" />
+    <ClInclude Include="System\VtChannelJumpSystem.h" />
+    <ClInclude Include="System\VtDailyHeightSystem.h" />
+    <ClInclude Include="System\VtMacdSystem.h" />
+    <ClInclude Include="System\VtMaSystem.h" />
+    <ClInclude Include="System\VtOsillaterSystem.h" />
+    <ClInclude Include="System\VtSignal.h" />
+    <ClInclude Include="System\VtStochasticSystem.h" />
+    <ClInclude Include="System\VtSystem.h" />
+    <ClInclude Include="System\VtSystemManager.h" />
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="txtnum.h" />
+    <ClInclude Include="UGrid\CellTypes\UGCTafnt.h" />
+    <ClInclude Include="UGrid\CellTypes\UGCTAutoSize.h" />
+    <ClInclude Include="UGrid\CellTypes\UGCTbutn.h" />
+    <ClInclude Include="UGrid\CellTypes\UGCTDropGrid.h" />
+    <ClInclude Include="UGrid\CellTypes\UGCTdtp.h" />
+    <ClInclude Include="UGrid\CellTypes\ugctelps.h" />
+    <ClInclude Include="UGrid\CellTypes\UGCTExpand.h" />
+    <ClInclude Include="UGrid\CellTypes\UGCTLabeled.h" />
+    <ClInclude Include="UGrid\CellTypes\UGCTMail.h" />
+    <ClInclude Include="UGrid\CellTypes\UGCTMailSort.h" />
+    <ClInclude Include="UGrid\CellTypes\UGCTMarquee.h" />
+    <ClInclude Include="UGrid\CellTypes\UGCTmfnt.h" />
+    <ClInclude Include="UGrid\CellTypes\UGCTNote.h" />
+    <ClInclude Include="UGrid\CellTypes\ugctnotewnd.h" />
+    <ClInclude Include="UGrid\CellTypes\UGCTOrder.h" />
+    <ClInclude Include="UGrid\CellTypes\UGCTOutlookHeader.h" />
+    <ClInclude Include="UGrid\CellTypes\UGCTpie.h" />
+    <ClInclude Include="UGrid\CellTypes\UGCTpro1.h" />
+    <ClInclude Include="UGrid\CellTypes\UGCTprog.h" />
+    <ClInclude Include="UGrid\CellTypes\UGCTRado.h" />
+    <ClInclude Include="UGrid\CellTypes\UGCTRemain.h" />
+    <ClInclude Include="UGrid\CellTypes\UGCTsarw.h" />
+    <ClInclude Include="UGrid\CellTypes\UGCTSeperateText.h" />
+    <ClInclude Include="UGrid\CellTypes\UGCTsldr.h" />
+    <ClInclude Include="UGrid\CellTypes\UGCTSpin.h" />
+    <ClInclude Include="UGrid\EditControls\UTEdit.h" />
+    <ClInclude Include="UGrid\EditControls\UTMaskedEdit.h" />
+    <ClInclude Include="UGrid\UG64Bit.h" />
+    <ClInclude Include="UGrid\UGCBType.h" />
+    <ClInclude Include="UGrid\UGCell.h" />
+    <ClInclude Include="UGrid\ugceltyp.h" />
+    <ClInclude Include="UGrid\UGCnrBtn.h" />
+    <ClInclude Include="UGrid\UGCTarrw.h" />
+    <ClInclude Include="UGrid\UGCtrl.h" />
+    <ClInclude Include="UGrid\ugdefine.h" />
+    <ClInclude Include="UGrid\UGDLType.h" />
+    <ClInclude Include="UGrid\UGDrgDrp.h" />
+    <ClInclude Include="UGrid\UGDrwHnt.h" />
+    <ClInclude Include="UGrid\UGDtaSrc.h" />
+    <ClInclude Include="UGrid\UGEdit.h" />
+    <ClInclude Include="UGrid\UGEditBase.h" />
+    <ClInclude Include="UGrid\ugformat.h" />
+    <ClInclude Include="UGrid\uggdinfo.h" />
+    <ClInclude Include="UGrid\UGGrid.h" />
+    <ClInclude Include="UGrid\UGHint.h" />
+    <ClInclude Include="UGrid\ughscrol.h" />
+    <ClInclude Include="UGrid\uglstbox.h" />
+    <ClInclude Include="UGrid\UGMEdit.h" />
+    <ClInclude Include="UGrid\UGMemMan.h" />
+    <ClInclude Include="UGrid\UGMultiS.h" />
+    <ClInclude Include="UGrid\ugprint.h" />
+    <ClInclude Include="UGrid\ugptrlst.h" />
+    <ClInclude Include="UGrid\ugsidehd.h" />
+    <ClInclude Include="UGrid\UGStrOp.h" />
+    <ClInclude Include="UGrid\ugstruct.h" />
+    <ClInclude Include="UGrid\ugtab.h" />
+    <ClInclude Include="UGrid\UGTopHdg.h" />
+    <ClInclude Include="UGrid\ugvscrol.h" />
+    <ClInclude Include="UGrid\ugxpthemes.h" />
+    <ClInclude Include="Ultimate Toolbox\source\UTSampleAbout\HtmlCtrl.h" />
+    <ClInclude Include="Util\formatstdstring.h" />
+    <ClInclude Include="Util\VtTime.h" />
+    <ClInclude Include="ViewTree.h" />
+    <ClInclude Include="VtAcceptedOrderGrid.h" />
+    <ClInclude Include="VtAccount.h" />
+    <ClInclude Include="VtAccountAssetDlg.h" />
+    <ClInclude Include="VtAccountAssetGrid.h" />
+    <ClInclude Include="VtAccountEvent.h" />
+    <ClInclude Include="VtAccountFundGrid.h" />
+    <ClInclude Include="VtAccountFundSelector.h" />
+    <ClInclude Include="VtAccountGrid.h" />
+    <ClInclude Include="VtAccountManager.h" />
+    <ClInclude Include="VtAccountPasswordDlg.h" />
+    <ClInclude Include="VtAccountPasswordGrid.h" />
+    <ClInclude Include="VtAccountRemainGrid.h" />
+    <ClInclude Include="VtAlpha.h" />
+    <ClInclude Include="VtAssetPage.h" />
+    <ClInclude Include="VtAtrIndex.h" />
+    <ClInclude Include="VtBaseBand.h" />
+    <ClInclude Include="VtBaseIndex.h" />
+    <ClInclude Include="VtBaseStress.h" />
+    <ClInclude Include="VtBeta.h" />
+    <ClInclude Include="VtBollingerBandIndex.h" />
+    <ClInclude Include="VtChartContainer.h" />
+    <ClInclude Include="VtChartContainerManager.h" />
+    <ClInclude Include="VtChartCtrl.h" />
+    <ClInclude Include="VtChartCtrlManager.h" />
+    <ClInclude Include="VtChartData.h" />
+    <ClInclude Include="VtChartDataCollector.h" />
+    <ClInclude Include="VtChartDataEvent.h" />
+    <ClInclude Include="VtChartDataManager.h" />
+    <ClInclude Include="VtChartDataReceiver.h" />
+    <ClInclude Include="VtChartDataRequest.h" />
+    <ClInclude Include="VtChartFavoriteGrid.h" />
+    <ClInclude Include="VtChartFrm.h" />
+    <ClInclude Include="VtChartManager.h" />
+    <ClInclude Include="VtChartOrderManager.h" />
+    <ClInclude Include="VtChartProperty.h" />
+    <ClInclude Include="VtChartTimeToolBar.h" />
+    <ClInclude Include="VtChartWindow.h" />
+    <ClInclude Include="VtChartWindowManager.h" />
+    <ClInclude Include="VtClient.h" />
+    <ClInclude Include="VtColorManager.h" />
+    <ClInclude Include="VtConfigGrid.h" />
+    <ClInclude Include="VtCorrentQueue.h" />
+    <ClInclude Include="VtCutManager.h" />
+    <ClInclude Include="VtDailyBand.h" />
+    <ClInclude Include="VtDataCollectWnd.h" />
+    <ClInclude Include="VtDataDlg.h" />
+    <ClInclude Include="VtDoubleBufferedQueue.h" />
+    <ClInclude Include="VtEditCtrl.h" />
+    <ClInclude Include="VtEntireBand.h" />
+    <ClInclude Include="VtFavoritGrid.h" />
+    <ClInclude Include="VtFDMultiAcntPage.h" />
+    <ClInclude Include="VtFDSubAcntPage.h" />
+    <ClInclude Include="VtFund.h" />
+    <ClInclude Include="VtFundAccount.h" />
+    <ClInclude Include="VtFundDesigner.h" />
+    <ClInclude Include="VtFundEditor.h" />
+    <ClInclude Include="VtFundGrid.h" />
+    <ClInclude Include="VtFundManager.h" />
+    <ClInclude Include="VtFundMap.h" />
+    <ClInclude Include="VtFundMiniJango.h" />
+    <ClInclude Include="VtFundNameEditor.h" />
+    <ClInclude Include="VtFundOrderManager.h" />
+    <ClInclude Include="VtFundOrderManagerSelecter.h" />
+    <ClInclude Include="VtFundPLGrid.h" />
+    <ClInclude Include="VtFundProductOrderManager.h" />
+    <ClInclude Include="VtFundProductRemainGrid.h" />
+    <ClInclude Include="VtGlobal.h" />
+    <ClInclude Include="VtHdClient.h" />
+    <ClInclude Include="VtHdCtrl.h" />
+    <ClInclude Include="VtHoga.h" />
+    <ClInclude Include="VtHogaManager.h" />
+    <ClInclude Include="VtIndex.h" />
+    <ClInclude Include="VtIndexDefine.h" />
+    <ClInclude Include="VtIndexFactory.h" />
+    <ClInclude Include="VtIndexManager.h" />
+    <ClInclude Include="VtKrClient.h" />
+    <ClInclude Include="VtLayoutManager.h" />
+    <ClInclude Include="VtLogInDlg.h" />
+    <ClInclude Include="VtLoginManager.h" />
+    <ClInclude Include="VtLogManager.h" />
+    <ClInclude Include="VtMacdIndex.h" />
+    <ClInclude Include="VtMaIndex.h" />
+    <ClInclude Include="VtMainSiseGrid.h" />
+    <ClInclude Include="VtMainToolbar.h" />
+    <ClInclude Include="VtNDailyBand.h" />
+    <ClInclude Include="VtOptionMonthSection.h" />
+    <ClInclude Include="VtOrbBand.h" />
+    <ClInclude Include="VtOrder.h" />
+    <ClInclude Include="VtOrderAvailablePage.h" />
+    <ClInclude Include="VtOrderCenterFundWnd.h" />
+    <ClInclude Include="VtOrderCenterWnd.h" />
+    <ClInclude Include="VtOrderCenterWndHd.h" />
+    <ClInclude Include="VtOrderConfigDlg.h" />
+    <ClInclude Include="VtOrderConfigManager.h" />
+    <ClInclude Include="VtOrderConfigPage.h" />
+    <ClInclude Include="VtOrderDialogManager.h" />
+    <ClInclude Include="VtOrderEvent.h" />
+    <ClInclude Include="VtOrderGridConfig.h" />
+    <ClInclude Include="VtOrderLeftWnd.h" />
+    <ClInclude Include="VtOrderLeftWndHd.h" />
+    <ClInclude Include="VtOrderListGrid.h" />
+    <ClInclude Include="VtOrderManager.h" />
+    <ClInclude Include="VtOrderManagerSelector.h" />
+    <ClInclude Include="VtOrderPanelGrid.h" />
+    <ClInclude Include="VtOrderQueueManager.h" />
+    <ClInclude Include="VtOrderRightCancelHd.h" />
+    <ClInclude Include="VtOrderRightConfigHd.h" />
+    <ClInclude Include="VtOrderRightWnd.h" />
+    <ClInclude Include="VtOrderRightWndHd.h" />
+    <ClInclude Include="VtOrderSettlePage.h" />
+    <ClInclude Include="VtOrderWnd.h" />
+    <ClInclude Include="VtOrderWndEvent.h" />
+    <ClInclude Include="VtOrderWndHd.h" />
+    <ClInclude Include="VtPosition.h" />
+    <ClInclude Include="VtPreOrderGrid.h" />
+    <ClInclude Include="VtPriceChannelIndex.h" />
+    <ClInclude Include="VtProductAcceptedGrid.h" />
+    <ClInclude Include="VtProductCategory.h" />
+    <ClInclude Include="VtProductCategoryManager.h" />
+    <ClInclude Include="VtProductOrderManager.h" />
+    <ClInclude Include="VtProductOrderManagerSelector.h" />
+    <ClInclude Include="VtProductRemainGrid.h" />
+    <ClInclude Include="VtProductRemainGridEx.h" />
+    <ClInclude Include="VtProductSection.h" />
+    <ClInclude Include="VtProductSubSection.h" />
+    <ClInclude Include="VtProgressDlg.h" />
+    <ClInclude Include="VtQIn1.h" />
+    <ClInclude Include="VtQIn2.h" />
+    <ClInclude Include="VtQIn3.h" />
+    <ClInclude Include="VtQIn4.h" />
+    <ClInclude Include="VtQuote.h" />
+    <ClInclude Include="VtQuoteEvent.h" />
+    <ClInclude Include="VtQuoteManager.h" />
+    <ClInclude Include="VtRealTickWnd.h" />
+    <ClInclude Include="VtRealtimeRegisterManager.h" />
+    <ClInclude Include="VtRealtimeTickQuoteGrid.h" />
+    <ClInclude Include="VtReferenceChart.h" />
+    <ClInclude Include="VtRemainOrderGrid.h" />
+    <ClInclude Include="VtRobo1Stress.h" />
+    <ClInclude Include="VtRsiIndex.h" />
+    <ClInclude Include="VtSaveManager.h" />
+    <ClInclude Include="VtSimpleMaStress.h" />
+    <ClInclude Include="VtSplitterManager.h" />
+    <ClInclude Include="VtStochasticIndex.h" />
+    <ClInclude Include="VtStopOrderManager.h" />
+    <ClInclude Include="VtStrategyGrid.h" />
+    <ClInclude Include="VtStrategyToolWnd.h" />
+    <ClInclude Include="VtStringUtil.h" />
+    <ClInclude Include="VtSubAccountManager.h" />
+    <ClInclude Include="VtSubAcntGrid.h" />
+    <ClInclude Include="VtSymboGrid.h" />
+    <ClInclude Include="VtSymbol.h" />
+    <ClInclude Include="VtSymbolCatPage.h" />
+    <ClInclude Include="VtSymbolEvent.h" />
+    <ClInclude Include="VtSymbolFavoriteDlg.h" />
+    <ClInclude Include="VtSymbolManager.h" />
+    <ClInclude Include="VtSymbolMaster.h" />
+    <ClInclude Include="VtSymbolMasterGrid.h" />
+    <ClInclude Include="VtSymbolSelector.h" />
+    <ClInclude Include="VtSysArgGrid.h" />
+    <ClInclude Include="VtSystemArg.h" />
+    <ClInclude Include="VtSystemArgGroup.h" />
+    <ClInclude Include="VtSystemDef.h" />
+    <ClInclude Include="VtSystemGroup.h" />
+    <ClInclude Include="VtSystemGroupManager.h" />
+    <ClInclude Include="VtSystemProperty.h" />
+    <ClInclude Include="VtSystemSetDlg.h" />
+    <ClInclude Include="VtTaskArg.h" />
+    <ClInclude Include="VtTaskEvent.h" />
+    <ClInclude Include="VtTaskManager.h" />
+    <ClInclude Include="VtTickQuote.h" />
+    <ClInclude Include="VtTotalOrderManager.h" />
+    <ClInclude Include="VtTotalRemainGrid.h" />
+    <ClInclude Include="VtTrixIndex.h" />
+    <ClInclude Include="VtTrUs1.h" />
+    <ClInclude Include="VtTrUs2.h" />
+    <ClInclude Include="VtTrUs3.h" />
+    <ClInclude Include="VtUniqueChartID.h" />
+    <ClInclude Include="VtUsComp.h" />
+    <ClInclude Include="VtUsdEntConfigGrid.h" />
+    <ClInclude Include="VtUsdStrategyConfigDlg.h" />
+    <ClInclude Include="VtUsdStrategyConfigGrid.h" />
+    <ClInclude Include="VtUsH2.h" />
+    <ClInclude Include="VtUsI2.h" />
+    <ClInclude Include="VtUsIn1.h" />
+    <ClInclude Include="VtUsIn2.h" />
+    <ClInclude Include="VtUsIn3.h" />
+    <ClInclude Include="VtUtf8Handler.h" />
+    <ClInclude Include="VtVolumeIndex.h" />
+    <ClInclude Include="VtWindowManager.h" />
+    <ClInclude Include="WaitDlg.h" />
+    <ClInclude Include="WaitDlgThread.h" />
+    <ClInclude Include="wfext.h" />
+    <ClInclude Include="WndResizer.h" />
+    <ClInclude Include="XFormatNumber.h" />
+    <ClInclude Include="Xml\pugiconfig.hpp" />
+    <ClInclude Include="Xml\pugixml.hpp" />
+    <ClInclude Include="ZmConfigManager.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="AnimWnd.cpp" />
+    <ClCompile Include="BtnST.cpp" />
+    <ClCompile Include="CeXDib.cpp" />
+    <ClCompile Include="Chart\ChartViewer.cpp" />
+    <ClCompile Include="ChildFrm.cpp" />
+    <ClCompile Include="ClassView.cpp" />
+    <ClCompile Include="CmdWaitDlg.cpp" />
+    <ClCompile Include="DeferPos.cpp" />
+    <ClCompile Include="Drawing\VtBaseTracker.cpp" />
+    <ClCompile Include="Drawing\VtElement.cpp" />
+    <ClCompile Include="Drawing\VtEllipse.cpp" />
+    <ClCompile Include="Drawing\VtFibo.cpp" />
+    <ClCompile Include="Drawing\VtFiboTracker.cpp" />
+    <ClCompile Include="Drawing\VtHandle.cpp" />
+    <ClCompile Include="Drawing\VtHLine.cpp" />
+    <ClCompile Include="Drawing\VtHLineHandle.cpp" />
+    <ClCompile Include="Drawing\VtHLineTracker.cpp" />
+    <ClCompile Include="Drawing\VtLine.cpp" />
+    <ClCompile Include="Drawing\VtLineTracker.cpp" />
+    <ClCompile Include="Drawing\VtMultiLine.cpp" />
+    <ClCompile Include="Drawing\VtMultiLineTracker.cpp" />
+    <ClCompile Include="Drawing\VtPoint.cpp" />
+    <ClCompile Include="Drawing\VtPointHandle.cpp" />
+    <ClCompile Include="Drawing\VtRect.cpp" />
+    <ClCompile Include="Drawing\VtRectTracker.cpp" />
+    <ClCompile Include="Drawing\VtRedimHandle.cpp" />
+    <ClCompile Include="Drawing\VtShapesCollection.cpp" />
+    <ClCompile Include="Drawing\VtText.cpp" />
+    <ClCompile Include="Drawing\VtUndoBuffer.cpp" />
+    <ClCompile Include="Drawing\VtUniqueID.cpp" />
+    <ClCompile Include="Drawing\VtVLine.cpp" />
+    <ClCompile Include="Drawing\VtVLineHandle.cpp" />
+    <ClCompile Include="Drawing\VtVLineTracker.cpp" />
+    <ClCompile Include="ETSLayout.cpp" />
+    <ClCompile Include="FileView.cpp" />
+    <ClCompile Include="Format\format.cc">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Format\posix.cc">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="GenericChildDialog.cpp" />
+    <ClCompile Include="Global\VtDefine.cpp" />
+    <ClCompile Include="Global\ZmStream.cpp" />
+    <ClCompile Include="GradientStatic.cpp" />
+    <ClCompile Include="GridButton.cpp" />
+    <ClCompile Include="HdAccountPLDlg.cpp" />
+    <ClCompile Include="HdAccountPLGrid.cpp" />
+    <ClCompile Include="HdAssetGrid.cpp" />
+    <ClCompile Include="HdChartFrm.cpp" />
+    <ClCompile Include="hdfcommagent.cpp" />
+    <ClCompile Include="HdFutureGrid.cpp" />
+    <ClCompile Include="HdFuturePage.cpp" />
+    <ClCompile Include="HdOptionGrid.cpp" />
+    <ClCompile Include="HdOptionPage.cpp" />
+    <ClCompile Include="HdOrderDialog.cpp" />
+    <ClCompile Include="HdOrderGrid.cpp" />
+    <ClCompile Include="HdProductRemainGrid.cpp" />
+    <ClCompile Include="HdProfitLossGrid.cpp" />
+    <ClCompile Include="HdScheduler.cpp" />
+    <ClCompile Include="HdSymbolFutureGrid.cpp" />
+    <ClCompile Include="HdSymbolOptionGrid.cpp" />
+    <ClCompile Include="HdSymbolSelecter.cpp" />
+    <ClCompile Include="HdTaskArg.cpp" />
+    <ClCompile Include="HdWindowManager.cpp" />
+    <ClCompile Include="IniFile.cpp" />
+    <ClCompile Include="Log\loguru.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="MainFrm.cpp" />
+    <ClCompile Include="OutputWnd.cpp" />
+    <ClCompile Include="PropertiesWnd.cpp" />
+    <ClCompile Include="RemainOrderWnd.cpp" />
+    <ClCompile Include="ResizableLib\ResizableDialog.cpp" />
+    <ClCompile Include="ResizableLib\ResizableFormView.cpp" />
+    <ClCompile Include="ResizableLib\ResizableFrame.cpp" />
+    <ClCompile Include="ResizableLib\ResizableGrip.cpp" />
+    <ClCompile Include="ResizableLib\ResizableLayout.cpp" />
+    <ClCompile Include="ResizableLib\ResizableMDIChild.cpp" />
+    <ClCompile Include="ResizableLib\ResizableMDIFrame.cpp" />
+    <ClCompile Include="ResizableLib\ResizableMinMax.cpp" />
+    <ClCompile Include="ResizableLib\ResizableMsgSupport.cpp" />
+    <ClCompile Include="ResizableLib\ResizablePage.cpp" />
+    <ClCompile Include="ResizableLib\ResizablePageEx.cpp" />
+    <ClCompile Include="ResizableLib\ResizableSheet.cpp" />
+    <ClCompile Include="ResizableLib\ResizableSheetEx.cpp" />
+    <ClCompile Include="ResizableLib\ResizableSheetState.cpp" />
+    <ClCompile Include="ResizableLib\ResizableSplitterWnd.cpp" />
+    <ClCompile Include="ResizableLib\ResizableState.cpp" />
+    <ClCompile Include="ResizableLib\ResizableVersion.cpp" />
+    <ClCompile Include="ResizableLib\ResizableWndState.cpp" />
+    <ClCompile Include="ShadeButtonST.cpp" />
+    <ClCompile Include="Skel\VtGrid.cpp" />
+    <ClCompile Include="SMTrader.cpp" />
+    <ClCompile Include="SMTraderDoc.cpp" />
+    <ClCompile Include="SMTraderView.cpp" />
+    <ClCompile Include="Sound\Buffer.cpp" />
+    <ClCompile Include="Sound\errorprint.cpp" />
+    <ClCompile Include="Sound\Pipe.cpp" />
+    <ClCompile Include="Sound\PtrFifo.cpp" />
+    <ClCompile Include="Sound\SoundBase.cpp" />
+    <ClCompile Include="Sound\SoundFile.cpp" />
+    <ClCompile Include="Sound\SoundIn.cpp" />
+    <ClCompile Include="Sound\SoundOut.cpp" />
+    <ClCompile Include="SSplitter.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="System\VtChannelCrossSystem.cpp" />
+    <ClCompile Include="System\VtChannelJumpSystem.cpp" />
+    <ClCompile Include="System\VtDailyHeightSystem.cpp" />
+    <ClCompile Include="System\VtMacdSystem.cpp" />
+    <ClCompile Include="System\VtMaSystem.cpp" />
+    <ClCompile Include="System\VtOsillaterSystem.cpp" />
+    <ClCompile Include="System\VtSignal.cpp" />
+    <ClCompile Include="System\VtStochasticSystem.cpp" />
+    <ClCompile Include="System\VtSystem.cpp" />
+    <ClCompile Include="System\VtSystemManager.cpp" />
+    <ClCompile Include="txtnum.cpp" />
+    <ClCompile Include="UGrid\CellTypes\UGCTafnt.cpp" />
+    <ClCompile Include="UGrid\CellTypes\UGCTAutoSize.cpp" />
+    <ClCompile Include="UGrid\CellTypes\UGCTbutn.cpp" />
+    <ClCompile Include="UGrid\CellTypes\UGCTDropGrid.cpp" />
+    <ClCompile Include="UGrid\CellTypes\UGCTdtp.cpp" />
+    <ClCompile Include="UGrid\CellTypes\ugctelps.cpp" />
+    <ClCompile Include="UGrid\CellTypes\UGCTExpand.cpp" />
+    <ClCompile Include="UGrid\CellTypes\UGCTLabeled.cpp" />
+    <ClCompile Include="UGrid\CellTypes\UGCTMail.cpp" />
+    <ClCompile Include="UGrid\CellTypes\UGCTMailSort.cpp" />
+    <ClCompile Include="UGrid\CellTypes\UGCTMarquee.cpp" />
+    <ClCompile Include="UGrid\CellTypes\UGCTmfnt.cpp" />
+    <ClCompile Include="UGrid\CellTypes\UGCTNote.cpp" />
+    <ClCompile Include="UGrid\CellTypes\ugctnotewnd.cpp" />
+    <ClCompile Include="UGrid\CellTypes\UGCTOrder.cpp" />
+    <ClCompile Include="UGrid\CellTypes\UGCTOutlookHeader.cpp" />
+    <ClCompile Include="UGrid\CellTypes\UGCTpie.cpp" />
+    <ClCompile Include="UGrid\CellTypes\UGCTpro1.cpp" />
+    <ClCompile Include="UGrid\CellTypes\UGCTprog.cpp" />
+    <ClCompile Include="UGrid\CellTypes\UGCTRado.cpp" />
+    <ClCompile Include="UGrid\CellTypes\UGCTRemain.cpp" />
+    <ClCompile Include="UGrid\CellTypes\UGCTsarw.cpp" />
+    <ClCompile Include="UGrid\CellTypes\UGCTSeperateText.cpp" />
+    <ClCompile Include="UGrid\CellTypes\UGCTsldr.cpp" />
+    <ClCompile Include="UGrid\CellTypes\UGCTSpin.cpp" />
+    <ClCompile Include="UGrid\EditControls\UTEdit.cpp" />
+    <ClCompile Include="UGrid\EditControls\UTMaskedEdit.cpp" />
+    <ClCompile Include="UGrid\UGCBType.cpp" />
+    <ClCompile Include="UGrid\UGCell.cpp" />
+    <ClCompile Include="UGrid\UGCelTyp.cpp" />
+    <ClCompile Include="UGrid\UGCnrBtn.cpp" />
+    <ClCompile Include="UGrid\UGCTarrw.cpp" />
+    <ClCompile Include="UGrid\UGCtrl.cpp" />
+    <ClCompile Include="UGrid\UGDLType.cpp" />
+    <ClCompile Include="UGrid\UGDrgDrp.cpp" />
+    <ClCompile Include="UGrid\UGDrwHnt.cpp" />
+    <ClCompile Include="UGrid\UGDtaSrc.cpp" />
+    <ClCompile Include="UGrid\UGEdit.cpp" />
+    <ClCompile Include="UGrid\UGEditBase.cpp" />
+    <ClCompile Include="UGrid\ugformat.cpp" />
+    <ClCompile Include="UGrid\uggdinfo.cpp" />
+    <ClCompile Include="UGrid\UGGrid.cpp" />
+    <ClCompile Include="UGrid\UGHint.cpp" />
+    <ClCompile Include="UGrid\ughscrol.cpp" />
+    <ClCompile Include="UGrid\ugLstBox.cpp" />
+    <ClCompile Include="UGrid\UGMEdit.cpp" />
+    <ClCompile Include="UGrid\UGMemMan.cpp" />
+    <ClCompile Include="UGrid\UGMultiS.cpp" />
+    <ClCompile Include="UGrid\ugprint.cpp" />
+    <ClCompile Include="UGrid\ugptrlst.cpp" />
+    <ClCompile Include="UGrid\ugsidehd.cpp" />
+    <ClCompile Include="UGrid\UGStrOp.cpp" />
+    <ClCompile Include="UGrid\ugtab.cpp" />
+    <ClCompile Include="UGrid\UGTopHdg.cpp" />
+    <ClCompile Include="UGrid\ugvscrol.cpp" />
+    <ClCompile Include="UGrid\UGXPThemes.cpp" />
+    <ClCompile Include="Ultimate Toolbox\source\OXLayoutManager.cpp" />
+    <ClCompile Include="Ultimate Toolbox\source\UTBStrOp.cpp" />
+    <ClCompile Include="Ultimate Toolbox\source\UTSampleAbout\HtmlCtrl.cpp" />
+    <ClCompile Include="Ultimate Toolbox\source\UTSampleAbout\UTSampleAbout.cpp" />
+    <ClCompile Include="ViewTree.cpp" />
+    <ClCompile Include="VtAcceptedOrderGrid.cpp" />
+    <ClCompile Include="VtAccount.cpp" />
+    <ClCompile Include="VtAccountAssetDlg.cpp" />
+    <ClCompile Include="VtAccountAssetGrid.cpp" />
+    <ClCompile Include="VtAccountFundGrid.cpp" />
+    <ClCompile Include="VtAccountFundSelector.cpp" />
+    <ClCompile Include="VtAccountGrid.cpp" />
+    <ClCompile Include="VtAccountManager.cpp" />
+    <ClCompile Include="VtAccountPasswordDlg.cpp" />
+    <ClCompile Include="VtAccountPasswordGrid.cpp" />
+    <ClCompile Include="VtAccountRemainGrid.cpp" />
+    <ClCompile Include="VtAlpha.cpp" />
+    <ClCompile Include="VtAssetPage.cpp" />
+    <ClCompile Include="VtAtrIndex.cpp" />
+    <ClCompile Include="VtBaseBand.cpp" />
+    <ClCompile Include="VtBaseIndex.cpp" />
+    <ClCompile Include="VtBaseStress.cpp" />
+    <ClCompile Include="VtBeta.cpp" />
+    <ClCompile Include="VtBollingerBandIndex.cpp" />
+    <ClCompile Include="VtChartContainer.cpp" />
+    <ClCompile Include="VtChartContainerManager.cpp" />
+    <ClCompile Include="VtChartCtrl.cpp" />
+    <ClCompile Include="VtChartCtrlManager.cpp" />
+    <ClCompile Include="VtChartData.cpp" />
+    <ClCompile Include="VtChartDataCollector.cpp" />
+    <ClCompile Include="VtChartDataManager.cpp" />
+    <ClCompile Include="VtChartDataReceiver.cpp" />
+    <ClCompile Include="VtChartFavoriteGrid.cpp" />
+    <ClCompile Include="VtChartFrm.cpp" />
+    <ClCompile Include="VtChartManager.cpp" />
+    <ClCompile Include="VtChartOrderManager.cpp" />
+    <ClCompile Include="VtChartProperty.cpp" />
+    <ClCompile Include="VtChartTimeToolBar.cpp" />
+    <ClCompile Include="VtChartWindow.cpp" />
+    <ClCompile Include="VtChartWindowManager.cpp" />
+    <ClCompile Include="VtClient.cpp" />
+    <ClCompile Include="VtColorManager.cpp" />
+    <ClCompile Include="VtConfigGrid.cpp" />
+    <ClCompile Include="VtCutManager.cpp" />
+    <ClCompile Include="VtDailyBand.cpp" />
+    <ClCompile Include="VtDataCollectWnd.cpp" />
+    <ClCompile Include="VtDataDlg.cpp" />
+    <ClCompile Include="VtDoubleBufferedQueue.cpp" />
+    <ClCompile Include="VtEditCtrl.cpp" />
+    <ClCompile Include="VtEntireBand.cpp" />
+    <ClCompile Include="VtFavoritGrid.cpp" />
+    <ClCompile Include="VtFDMultiAcntPage.cpp" />
+    <ClCompile Include="VtFDSubAcntPage.cpp" />
+    <ClCompile Include="VtFund.cpp" />
+    <ClCompile Include="VtFundAccount.cpp" />
+    <ClCompile Include="VtFundDesigner.cpp" />
+    <ClCompile Include="VtFundEditor.cpp" />
+    <ClCompile Include="VtFundGrid.cpp" />
+    <ClCompile Include="VtFundManager.cpp" />
+    <ClCompile Include="VtFundMap.cpp" />
+    <ClCompile Include="VtFundMiniJango.cpp" />
+    <ClCompile Include="VtFundNameEditor.cpp" />
+    <ClCompile Include="VtFundOrderManager.cpp" />
+    <ClCompile Include="VtFundOrderManagerSelecter.cpp" />
+    <ClCompile Include="VtFundPLGrid.cpp" />
+    <ClCompile Include="VtFundProductOrderManager.cpp" />
+    <ClCompile Include="VtFundProductRemainGrid.cpp" />
+    <ClCompile Include="VtGlobal.cpp" />
+    <ClCompile Include="VtHdClient.cpp" />
+    <ClCompile Include="VtHdCtrl.cpp" />
+    <ClCompile Include="VtHogaManager.cpp" />
+    <ClCompile Include="VtIndex.cpp" />
+    <ClCompile Include="VtIndexFactory.cpp" />
+    <ClCompile Include="VtIndexManager.cpp" />
+    <ClCompile Include="VtKrClient.cpp" />
+    <ClCompile Include="VtLayoutManager.cpp" />
+    <ClCompile Include="VtLogInDlg.cpp" />
+    <ClCompile Include="VtLoginManager.cpp" />
+    <ClCompile Include="VtLogManager.cpp" />
+    <ClCompile Include="VtMacdIndex.cpp" />
+    <ClCompile Include="VtMaIndex.cpp" />
+    <ClCompile Include="VtMainSiseGrid.cpp" />
+    <ClCompile Include="VtMainToolbar.cpp" />
+    <ClCompile Include="VtNDailyBand.cpp" />
+    <ClCompile Include="VtOptionMonthSection.cpp" />
+    <ClCompile Include="VtOrbBand.cpp" />
+    <ClCompile Include="VtOrder.cpp" />
+    <ClCompile Include="VtOrderAvailablePage.cpp" />
+    <ClCompile Include="VtOrderCenterFundWnd.cpp" />
+    <ClCompile Include="VtOrderCenterWnd.cpp" />
+    <ClCompile Include="VtOrderCenterWndHd.cpp" />
+    <ClCompile Include="VtOrderConfigDlg.cpp" />
+    <ClCompile Include="VtOrderConfigManager.cpp" />
+    <ClCompile Include="VtOrderConfigPage.cpp" />
+    <ClCompile Include="VtOrderDialogManager.cpp" />
+    <ClCompile Include="VtOrderGridConfig.cpp" />
+    <ClCompile Include="VtOrderLeftWnd.cpp" />
+    <ClCompile Include="VtOrderLeftWndHd.cpp" />
+    <ClCompile Include="VtOrderListGrid.cpp" />
+    <ClCompile Include="VtOrderManager.cpp" />
+    <ClCompile Include="VtOrderManagerSelector.cpp" />
+    <ClCompile Include="VtOrderPanelGrid.cpp" />
+    <ClCompile Include="VtOrderQueueManager.cpp" />
+    <ClCompile Include="VtOrderRightCancelHd.cpp" />
+    <ClCompile Include="VtOrderRightConfigHd.cpp" />
+    <ClCompile Include="VtOrderRightWnd.cpp" />
+    <ClCompile Include="VtOrderRightWndHd.cpp" />
+    <ClCompile Include="VtOrderSettlePage.cpp" />
+    <ClCompile Include="VtOrderWnd.cpp" />
+    <ClCompile Include="VtOrderWndHd.cpp" />
+    <ClCompile Include="VtPosition.cpp" />
+    <ClCompile Include="VtPreOrderGrid.cpp" />
+    <ClCompile Include="VtPriceChannelIndex.cpp" />
+    <ClCompile Include="VtProductAcceptedGrid.cpp" />
+    <ClCompile Include="VtProductCategory.cpp" />
+    <ClCompile Include="VtProductCategoryManager.cpp" />
+    <ClCompile Include="VtProductOrderManager.cpp" />
+    <ClCompile Include="VtProductOrderManagerSelector.cpp" />
+    <ClCompile Include="VtProductRemainGrid.cpp" />
+    <ClCompile Include="VtProductRemainGridEx.cpp" />
+    <ClCompile Include="VtProductSection.cpp" />
+    <ClCompile Include="VtProductSubSection.cpp" />
+    <ClCompile Include="VtProgressDlg.cpp" />
+    <ClCompile Include="VtQIn1.cpp" />
+    <ClCompile Include="VtQIn2.cpp" />
+    <ClCompile Include="VtQIn3.cpp" />
+    <ClCompile Include="VtQIn4.cpp" />
+    <ClCompile Include="VtQuoteManager.cpp" />
+    <ClCompile Include="VtRealTickWnd.cpp" />
+    <ClCompile Include="VtRealtimeRegisterManager.cpp" />
+    <ClCompile Include="VtRealtimeTickQuoteGrid.cpp" />
+    <ClCompile Include="VtReferenceChart.cpp" />
+    <ClCompile Include="VtRemainOrderGrid.cpp" />
+    <ClCompile Include="VtRobo1Stress.cpp" />
+    <ClCompile Include="VtRsiIndex.cpp" />
+    <ClCompile Include="VtSaveManager.cpp" />
+    <ClCompile Include="VtSimpleMaStress.cpp" />
+    <ClCompile Include="VtSplitterManager.cpp" />
+    <ClCompile Include="VtStochasticIndex.cpp" />
+    <ClCompile Include="VtStopOrderManager.cpp" />
+    <ClCompile Include="VtStrategyGrid.cpp" />
+    <ClCompile Include="VtStrategyToolWnd.cpp" />
+    <ClCompile Include="VtStringUtil.cpp" />
+    <ClCompile Include="VtSubAccountManager.cpp" />
+    <ClCompile Include="VtSubAcntGrid.cpp" />
+    <ClCompile Include="VtSymboGrid.cpp" />
+    <ClCompile Include="VtSymbol.cpp" />
+    <ClCompile Include="VtSymbolCatPage.cpp" />
+    <ClCompile Include="VtSymbolFavoriteDlg.cpp" />
+    <ClCompile Include="VtSymbolManager.cpp" />
+    <ClCompile Include="VtSymbolMaster.cpp" />
+    <ClCompile Include="VtSymbolMasterGrid.cpp" />
+    <ClCompile Include="VtSymbolSelector.cpp" />
+    <ClCompile Include="VtSysArgGrid.cpp" />
+    <ClCompile Include="VtSystemArgGroup.cpp" />
+    <ClCompile Include="VtSystemGroup.cpp" />
+    <ClCompile Include="VtSystemGroupManager.cpp" />
+    <ClCompile Include="VtSystemProperty.cpp" />
+    <ClCompile Include="VtSystemSetDlg.cpp" />
+    <ClCompile Include="VtTaskArg.cpp" />
+    <ClCompile Include="VtTaskManager.cpp" />
+    <ClCompile Include="VtTotalOrderManager.cpp" />
+    <ClCompile Include="VtTotalRemainGrid.cpp" />
+    <ClCompile Include="VtTrixIndex.cpp" />
+    <ClCompile Include="VtTrUs1.cpp" />
+    <ClCompile Include="VtTrUs2.cpp" />
+    <ClCompile Include="VtTrUs3.cpp" />
+    <ClCompile Include="VtUniqueChartID.cpp" />
+    <ClCompile Include="VtUsComp.cpp" />
+    <ClCompile Include="VtUsdEntConfigGrid.cpp" />
+    <ClCompile Include="VtUsdStrategyConfigDlg.cpp" />
+    <ClCompile Include="VtUsdStrategyConfigGrid.cpp" />
+    <ClCompile Include="VtUsH2.cpp" />
+    <ClCompile Include="VtUsI2.cpp" />
+    <ClCompile Include="VtUsIn1.cpp" />
+    <ClCompile Include="VtUsIn2.cpp" />
+    <ClCompile Include="VtUsIn3.cpp" />
+    <ClCompile Include="VtUtf8Handler.cpp" />
+    <ClCompile Include="VtVolumeIndex.cpp" />
+    <ClCompile Include="VtWindowManager.cpp" />
+    <ClCompile Include="WaitDlg.cpp" />
+    <ClCompile Include="WaitDlgThread.cpp" />
+    <ClCompile Include="WndResizer.cpp" />
+    <ClCompile Include="XFormatNumber.cpp" />
+    <ClCompile Include="Xml\pugixml.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="ZmConfigManager.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="SMTrader.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\Arrow2 - Down.ico" />
+    <Image Include="res\Arrow2 - Left.ico" />
+    <Image Include="res\Arrow2 - Right.ico" />
+    <Image Include="res\Arrow2 - Up.ico" />
+    <Image Include="res\bitmap1.bmp" />
+    <Image Include="res\bitmap2.bmp" />
+    <Image Include="res\bitmap4.bmp" />
+    <Image Include="res\bitmap_down.bmp" />
+    <Image Include="res\bitmap_down_tri.bmp" />
+    <Image Include="res\bitmap_up.bmp" />
+    <Image Include="res\bitmap_up_tri.bmp" />
+    <Image Include="res\bmp00001.bmp" />
+    <Image Include="res\bmp00002.bmp" />
+    <Image Include="res\bmp00003.bmp" />
+    <Image Include="res\bmp00004.bmp" />
+    <Image Include="res\bmp00005.bmp" />
+    <Image Include="res\calc2.bmp" />
+    <Image Include="res\classview.bmp" />
+    <Image Include="res\classview_hc.bmp" />
+    <Image Include="res\class_vi.bmp" />
+    <Image Include="res\class_vi.ico" />
+    <Image Include="res\class_view.ico" />
+    <Image Include="res\class_view_hc.ico" />
+    <Image Include="res\explorer.bmp" />
+    <Image Include="res\explorer_hc.bmp" />
+    <Image Include="res\fileview.bmp" />
+    <Image Include="res\fileview_hc.bmp" />
+    <Image Include="res\file_vie.bmp" />
+    <Image Include="res\file_view.ico" />
+    <Image Include="res\file_view_hc.ico" />
+    <Image Include="res\Gears.ico" />
+    <Image Include="res\Gears_bitmap.bmp" />
+    <Image Include="res\menuimages.bmp" />
+    <Image Include="res\menuimages_hc.bmp" />
+    <Image Include="res\menu_ima.bmp" />
+    <Image Include="res\Minus.ico" />
+    <Image Include="res\output_wnd.ico" />
+    <Image Include="res\output_wnd_hc.ico" />
+    <Image Include="res\Plus.ico" />
+    <Image Include="res\properti.bmp" />
+    <Image Include="res\properties.bmp" />
+    <Image Include="res\properties_hc.bmp" />
+    <Image Include="res\properties_wnd.ico" />
+    <Image Include="res\properties_wnd_hc.ico" />
+    <Image Include="res\search24.ico" />
+    <Image Include="res\search_3.ico" />
+    <Image Include="res\Search_4.ico" />
+    <Image Include="res\set.bmp" />
+    <Image Include="res\SMTrader.ico" />
+    <Image Include="res\SMTraderDoc.ico" />
+    <Image Include="res\sm_logo.ico" />
+    <Image Include="res\sort.bmp" />
+    <Image Include="res\sort_25.bmp" />
+    <Image Include="res\sort_hc.bmp" />
+    <Image Include="res\Toolbar.bmp" />
+    <Image Include="res\Toolbar256.bmp" />
+    <Image Include="UserImages.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\SMTrader.rc2" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties RESOURCE_FILE="SMTrader.rc" />
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

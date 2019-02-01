@@ -1,0 +1,34 @@
+[TRINFO]
+TRName=FX주문실시간미체결내역
+TRCode=0191;
+ScreenNo=; 실제 화면 번호
+Server=1			; 접속 서버 
+Compress=0; 압축 	0/1
+Encrypt=0; 암호화	0/1
+PublicAuth=1; 공인인증 0/1
+OutputCnt=1;Fid 출력값 갯수
+DataHeader=3; 2:해외주문, 3:해외조회, 4:국내주문, 5:국내조회
+
+[INPUT]
+
+[OUTPUT]
+@START_OutRec1=18 ; FX주문실시간미체결내역
+		fx미체결내역Real   	=   0,  4,  0,  A;		/*  [fx미체결내역]     */
+		key     		    =   4, 11,  0,  A;		/*  [key]     */
+		주문번호         	=  15, 20,  0,  A;		/*  [주문번호]     */
+		계좌번호         	=  35,  6,  0,  A;		/*  [계좌번호]     */
+		거래유형         	=  41,  2,  0,  A;		/*  [거래유형]  SE, LE (LE: 지정가주문, SE:역지정가주문)  */
+		상태     			=  43,  1,  0,  A;		/*  [상태]     W:Waiting, E:(Excution)체결*/
+		종목코드	        =  44, 32,  0,  A;		/*  [종목]     */
+		주문수량	        =  76, 10,  0,  A;		/*  [수량]     */
+		매매구분         	=  86,  1,  0,  A;		/*  [매수/매도] 1:매수, 2:매도    */
+		주문가격	        =  87, 20,  0,  A;		/*  [가격]     */
+		STOP_가격         	= 107, 20,  0,  A;		/*  [STOP 가격]     */
+		LIMIT_가격         	= 127, 20,  0,  A;		/*  [LIMIT 가격]     */
+		FCM_Order_ID        = 147, 80,  0,  A;		/*  [FCM Order ID]     */
+		FCM_STOP_Order_ID   = 227, 80,  0,  A;		/*  [FCM STOP Order ID]     */
+		FCM_LIMIT_ORDER_ID	= 307, 80,  0,  A;		/*  [FCM LIMIT ORDER ID]     */
+		trailing_stop     	= 387,  5,  0,  A;		/*  [trailing_stop]     */
+		trailing_last_p     = 392, 20,  0,  A;		/*  [trailing_last_p]     */
+		주문생성 시각     	= 412, 20,  0,  A;		/*  [주문생성 시각]     */
+@END_OutRec1

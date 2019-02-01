@@ -1,0 +1,38 @@
+[TRINFO]
+TRName=FX주문실시간미청산내역
+TRCode=0192;
+ScreenNo=; 실제 화면 번호
+Server=1			; 접속 서버 
+Compress=0; 압축 	0/1
+Encrypt=0; 암호화	0/1
+PublicAuth=1; 공인인증 0/1
+OutputCnt=1;Fid 출력값 갯수
+DataHeader=3; 2:해외주문, 3:해외조회, 4:국내주문, 5:국내조회
+
+[INPUT]
+
+[OUTPUT]
+@START_OutRec1=22 ; FX주문실시간미체결내역
+		fx미결제포지션		=   0,  4, 0, A ;		/*  [fx미결제포지션]     */	
+		key					=   4, 11, 0, A ;		/*  [key]     */	
+		acct_no				=  15,  6, 0, A ;		/*  [acct_no]     */	
+		FXCM Position ID	=  21, 80, 0, A ;		/*  [FXCM Position ID]     */	
+		주문번호			= 101, 20, 0, A ;		/*  [ord_no]     */	
+		trd_seq				= 121,  5, 0, A ;		/*  [trd_seq]     */	
+		종목코드			= 126, 32, 0, A ;		/*  [종목코드]     */	
+		매매구분			= 158,  1, 0, A ;		/*  [매매구분]  1:매수, 2:매도   */	
+		진입수량			= 159, 10, 0, A ;		/*  [진입수량]     */	
+		진입가격			= 169, 20, 0, A ;		/*  [진입가격]     */	
+		STOP가격			= 189, 20, 0, A ;		/*  [STOP가격]     */	
+		LIMIT가격			= 209, 20, 0, A ;		/*  [LIMIT가격]     */	
+		평가손익			= 229, 20, 0, A ;		/*  [평가손익]     */	
+		RollOver이자		= 249, 20, 0, A ;		/*  [RollOver이자]     */	
+		Commision			= 269, 20, 0, A ;		/*  [Commision]     */	
+		위탁수수료			= 289, 20, 0, A ;		/*  [위탁수수료]     */	
+		trailing_stop		= 309,  5, 0, A ;		/*  [trailing_stop]     */	
+		trailing_last_p		= 314, 20, 0, A ;		/*  [trailing_last_p]     */	
+		거래소시간			= 334, 20, 0, A ;		/*  [거래소시간]     */	
+		미체결_체결			= 354,  2, 0, A ;		/*  [미체결/체결]   ‘01’:주문확인, ‘02’:체결, ‘03’ open_position,‘04’:close position ‘05’ 포지션 주문 확인’, ‘09’ STOP LIMIT’*/	
+		PIP					= 356, 20, 0, A ;		/*  [PIP]     */	
+		PIP COST			= 376, 20, 0, A ;		/*  [PIP COST]     */	
+@END_OutRec1

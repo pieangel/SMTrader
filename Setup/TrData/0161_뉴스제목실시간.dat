@@ -1,0 +1,28 @@
+[TRINFO]
+TRName    =뉴스제목 실시간
+TRCode    =0161;
+ScreenNo  =; 실제 화면 번호
+Server    =1			; 접속 서버
+Compress  =0; 압축 	0/1
+Encrypt   =0; 암호화	0/1
+PublicAuth=0; 공인인증 0/1
+OutputCnt =1;Fid 출력값 갯수
+DataHeader=1; 2:해외주문, 3:해외조회, 4:국내주문, 5:국내조회
+
+[INPUT]
+
+[OUTPUT]
+
+@START_OutRec1=11 ; 
+	데이터구분			= 000, 004, 0, A; NEWS
+	패킷구분코드		= 004, 006, 0, A; NEWS01
+	날짜      			= 010, 008, 0, A; YYYYMMDD
+	뉴스일련번호        = 018, 020, 0, A;
+	뉴스구분            = 038, 002, 0, A;
+	뉴스서브구분        = 040, 002, 0, A;
+	전송구분            = 042, 001, 0, A;
+	시황색상            = 043, 001, 0, A;
+	시간		        = 044, 006, 0, A; HHMMSS
+	제목                = 050, 132, 0, A;
+	뉴스원              = 182, 012, 0, A;
+@END_OutRec1

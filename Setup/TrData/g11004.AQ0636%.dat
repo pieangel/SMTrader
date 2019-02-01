@@ -1,0 +1,20 @@
+[TRINFO]
+TRName    =해외종목별결제방법조회
+TRCode    =g11004.AQ0636%;
+ScreenNo  = ; 실제 화면 번호
+Server    =1; 접속 서버
+Compress  =1; 압축 	0/1
+Encrypt   =0; 암호화	0/1
+PublicAuth=0; 공인인증 0/1
+OutputCnt =1;Fid 출력값 갯수
+DataHeader=3; 2:해외주문, 3:해외조회, 4:국내주문, 5:국내조회
+
+[INPUT]
+종목코드				= 000,  32, 0, A ;
+
+[OUTPUT]
+@START_OutRec1=1;
+	처리코드			= 000,  5, 0, A ;
+	처리메세지  		= 005, 80, 0, A ;
+	결제유형 			= 085,  1, 0, A ; 1:현금결제, 2:실물인수도
+@END_OutRec1

@@ -1,0 +1,44 @@
+[TRINFO]
+TRName    =FX미체결내역 조회(통합)
+TRCode    =g11004.AQ0904%;
+ScreenNo  = ; 실제 화면 번호
+Server    =1; 접속 서버
+Compress  =1; 압축 	0/1
+Encrypt   =0; 암호화	0/1
+PublicAuth=0; 공인인증 0/1
+OutputCnt =1;Fid 출력값 갯수
+DataHeader=3; 2:해외주문, 3:해외조회, 4:국내주문, 5:국내조회
+
+[INPUT]
+조회구분    =  0,  1, 0, A;1: 계좌별
+로그인아이디=  1,  8, 0, A
+계좌번호    =  9,  6, 0, A
+비밀번호    = 15,  8, 0, E
+그룹명      = 23, 20, 0, A
+
+[OUTPUT]
+처리코드  = 0,  5, 0, A;
+처리메시지= 5, 80, 0, A;
+
+@START_OutRec1=*,  5, 0, A;			/* rowcnt        */
+	주문번호		= *, 20, 0, A;	/*  [주문번호]주문번호     */
+	계좌번호		= *,  6, 0, A;	/*  [계좌번호]계좌번호     */
+	거래유형		= *,  2, 0, A;	/*  [거래유형0SE 1LE]0:SE, 1:LE     */
+	주문상태		= *,  1, 0, A;	/*  [상태W미체결E체결]W:미체결(Waiting), E:체결(Execution)     */
+	종목코드		= *, 32, 0, A;	/*  [종목]종목     */
+	주문수량		= *, 10, 0, A;	/*  [수량]수량     */
+	매매구분		= *,  1, 0, A;	/*  [매수/매도]1:매수, 2:매도     */
+	주문가격		= *, 20, 0, A;	/*  [가격]가격     */
+	STOP가격		= *, 20, 0, A;	/*  [STOP가격]STOP가격     */
+	LIMIT 가격		= *, 20, 0, A;	/*  [LIMIT 가격]LIMIT 가격     */
+	ex_ord_id		= *, 80, 0, A;	/*  [ex_ord_id]ex_ord_id     */
+	ex_stop_ord_id	= *, 80, 0, A;	/*  [ex_stop_ord_id]ex_stop_ord_id     */
+	ex_limit_ord_id	= *, 80, 0, A;	/*  [ex_limit_ord_id]ex_limit_ord_id     */
+	trailing_stop	= *,  5, 0, A;	/*  [trailing_stop]trailing_stop     */
+	trailing_last_p	= *, 20, 0, A;	/*  [trailing_last_p]trailing_last_p     */
+	주문생성 시각	= *, 20, 0, A;	/*  [주문생성 시각]주문생성 시각     */
+@END_OutRec1
+
+
+/*FX미체결내역조회*/
+[1anigate90116321234                        ]

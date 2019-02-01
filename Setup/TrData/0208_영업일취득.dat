@@ -1,0 +1,23 @@
+[TRINFO]
+TRName    =영업일취득
+TRCode    =0208;
+ScreenNo  =; 실제 화면 번호
+Server    =1			; 접속 서버
+Compress  =0; 압축 	0/1
+Encrypt   =0; 암호화	0/1
+PublicAuth=0; 공인인증 0/1
+OutputCnt =1;Fid 출력값 갯수
+DataHeader=3; 2:해외주문, 3:해외조회, 4:국내주문, 5:국내조회
+
+[INPUT]
+
+[OUTPUT]
+;ROWCNT1=0, 4, 0, A
+
+@START_OutRec1=5 ; 
+	데이터구분       =   0, 4, 0, A ;/* BDAY                       */
+    키장구분         =   4, 1, 0, A ;/* 0:On                       */
+    장구분           =   5, 1, 0, A ;/* 1:해외선물 2:FX마진 3:국내 */
+    영업일           =   6, 8, 0, A ;/* 영업일                     */
+    변동여부         =  14, 1, 0, A ;/* 0:변동없음 1:변동          */
+@END_OutRec1

@@ -1,0 +1,23 @@
+[TRINFO]
+TRName    =해외종목별증거금조회
+TRCode    =g11004.AQ0725%;
+ScreenNo  = ; 실제 화면 번호
+Server    =1; 접속 서버
+Compress  =1; 압축 	0/1
+Encrypt   =0; 암호화	0/1
+PublicAuth=0; 공인인증 0/1
+OutputCnt =1;Fid 출력값 갯수
+DataHeader=3; 2:해외주문, 3:해외조회, 4:국내주문, 5:국내조회
+
+[INPUT]
+시장구분	= 000, 04, 0, A ;
+종목명      = 004, 32, 0, A ;
+
+[OUTPUT]
+
+@START_OutRec1=1
+	처리코드  	=   0,  5, 0, A;
+	처리메시지	=   5, 80, 0, A;
+	증거금      = 085, 20, 0, A;
+	유지증거금  = 105, 20, 0, A;
+@END_OutRec1

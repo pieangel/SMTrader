@@ -1,0 +1,2569 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Global">
+      <UniqueIdentifier>{076c1a61-061c-490e-8510-621ea4858ca2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Client">
+      <UniqueIdentifier>{5ef236fa-1ac4-44db-ba65-456ae3ab447d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main">
+      <UniqueIdentifier>{86c79cc3-c5c5-4f2d-a18b-9747ea73cf50}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Account">
+      <UniqueIdentifier>{1142800c-32d7-4569-9d54-11af9fe760f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archieve">
+      <UniqueIdentifier>{3b6c1272-732b-457a-ad83-a17d275ab29c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Chart">
+      <UniqueIdentifier>{570d7742-b123-4249-8c44-3341075ad908}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Config">
+      <UniqueIdentifier>{f1c037a2-ad8f-443c-b4a5-3220aa574dc6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Drawing">
+      <UniqueIdentifier>{df4f101a-1454-4845-9eae-3bb7d3ef4be9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="FileSystem">
+      <UniqueIdentifier>{106a25f0-fd32-4283-81aa-63735f437230}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Format">
+      <UniqueIdentifier>{06b4e1d1-e343-4252-b0aa-af9fad82216a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fund">
+      <UniqueIdentifier>{aae79731-e602-4676-9c84-a9c2c625012b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="FundOrder">
+      <UniqueIdentifier>{3d4a775a-1b15-4e17-a2b3-d704b3a22427}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="FundPosition">
+      <UniqueIdentifier>{4367e054-2440-41ab-8fff-704c92792592}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HDCtrl">
+      <UniqueIdentifier>{21da316f-7408-4535-bd2c-faf879f8b529}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Hoga">
+      <UniqueIdentifier>{8c430883-851b-4eb6-b4e6-cdef8b1d8bf8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Index">
+      <UniqueIdentifier>{7b058239-bee5-4083-8b51-42f4efc0db81}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Log">
+      <UniqueIdentifier>{e6767910-a203-4ae4-b4ef-eaa1380dc84f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Login">
+      <UniqueIdentifier>{e7f0f6e5-2672-4e11-ae38-26cd859085f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Order">
+      <UniqueIdentifier>{580fec36-6b31-4539-8a76-a0c03a77d0a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OrderWindow">
+      <UniqueIdentifier>{7676c2f8-2ee8-4b48-876e-52cf8981d21e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Position">
+      <UniqueIdentifier>{85f8e6aa-5add-4cbd-a8c8-a3f73432e25c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Quote">
+      <UniqueIdentifier>{8c6ad8b8-feca-4707-8c03-db11960a1f60}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ResizableLib">
+      <UniqueIdentifier>{60366e79-bfd7-444c-a221-4b15c1fb1e46}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sound">
+      <UniqueIdentifier>{0a4feefb-4155-45ee-bade-239693e4946e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Symbol">
+      <UniqueIdentifier>{fd5c95b6-9419-49e6-9616-e90d949b8d12}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="System">
+      <UniqueIdentifier>{de846bf9-f1ca-4016-a1cc-5248e2e6e1a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Task">
+      <UniqueIdentifier>{ee1ed38e-41df-4e3f-8628-5cd3e4943f15}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UGrid">
+      <UniqueIdentifier>{ac5b1de8-b153-40f4-9dab-bf64495c1cb8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UIWindow">
+      <UniqueIdentifier>{8647cd84-4782-4e16-9d7d-ebee8ecf840c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Util">
+      <UniqueIdentifier>{270d9a23-7376-4f34-ac3a-041758c2eb42}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Xml">
+      <UniqueIdentifier>{3efa9927-91b7-4673-bac7-3b09dd64bbb4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OrderWindow\Grid">
+      <UniqueIdentifier>{1a723a4d-9e4b-41a7-aae1-cafbc4b570c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="System\Kosdaq">
+      <UniqueIdentifier>{9d554dd7-c429-4f58-b12a-d20eb0b54c4a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="System\Kospi">
+      <UniqueIdentifier>{2b739faf-3533-4750-9b86-84963b45617f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="System\Regular">
+      <UniqueIdentifier>{d9d869b5-11ba-4155-a283-a8914b3237e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="System\Usd">
+      <UniqueIdentifier>{e67a70c0-114a-46e1-a48c-e1074d0172cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UGrid\CellType">
+      <UniqueIdentifier>{0570f9e4-e762-4547-88ca-f20c1d4a1e83}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UGrid\EditCtrls">
+      <UniqueIdentifier>{6439c4e4-d7fa-4b96-8b10-acd9e72c1233}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="VtGrid">
+      <UniqueIdentifier>{7630d727-e3f4-47cf-be30-330862b27bc1}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ViewTree.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="SMTraderView.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="SMTraderDoc.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="SMTrader.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="PropertiesWnd.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="OutputWnd.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="MainFrm.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="FileView.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="ClassView.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="ChildFrm.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="Global\TemplateSingleton.h">
+      <Filter>Global</Filter>
+    </ClInclude>
+    <ClInclude Include="hdfcommagent.h">
+      <Filter>Client</Filter>
+    </ClInclude>
+    <ClInclude Include="VtAccount.h">
+      <Filter>Account</Filter>
+    </ClInclude>
+    <ClInclude Include="VtAccountAssetDlg.h">
+      <Filter>Account</Filter>
+    </ClInclude>
+    <ClInclude Include="VtAccountAssetGrid.h">
+      <Filter>Account</Filter>
+    </ClInclude>
+    <ClInclude Include="VtAccountEvent.h">
+      <Filter>Account</Filter>
+    </ClInclude>
+    <ClInclude Include="VtAccountManager.h">
+      <Filter>Account</Filter>
+    </ClInclude>
+    <ClInclude Include="VtAccountPasswordDlg.h">
+      <Filter>Account</Filter>
+    </ClInclude>
+    <ClInclude Include="VtAccountPasswordGrid.h">
+      <Filter>Account</Filter>
+    </ClInclude>
+    <ClInclude Include="VtAssetPage.h">
+      <Filter>Account</Filter>
+    </ClInclude>
+    <ClInclude Include="VtOrderAvailablePage.h">
+      <Filter>Account</Filter>
+    </ClInclude>
+    <ClInclude Include="VtSubAccountManager.h">
+      <Filter>Account</Filter>
+    </ClInclude>
+    <ClInclude Include="VtSaveManager.h">
+      <Filter>Archieve</Filter>
+    </ClInclude>
+    <ClInclude Include="Chart\ChartViewer.h">
+      <Filter>Chart</Filter>
+    </ClInclude>
+    <ClInclude Include="FinanceChart.h">
+      <Filter>Chart</Filter>
+    </ClInclude>
+    <ClInclude Include="HdChartFrm.h">
+      <Filter>Chart</Filter>
+    </ClInclude>
+    <ClInclude Include="SSplitter.h">
+      <Filter>Chart</Filter>
+    </ClInclude>
+    <ClInclude Include="VtChartContainer.h">
+      <Filter>Chart</Filter>
+    </ClInclude>
+    <ClInclude Include="VtChartContainerManager.h">
+      <Filter>Chart</Filter>
+    </ClInclude>
+    <ClInclude Include="VtChartCtrl.h">
+      <Filter>Chart</Filter>
+    </ClInclude>
+    <ClInclude Include="VtChartCtrlManager.h">
+      <Filter>Chart</Filter>
+    </ClInclude>
+    <ClInclude Include="VtChartData.h">
+      <Filter>Chart</Filter>
+    </ClInclude>
+    <ClInclude Include="VtChartDataCollector.h">
+      <Filter>Chart</Filter>
+    </ClInclude>
+    <ClInclude Include="VtChartDataEvent.h">
+      <Filter>Chart</Filter>
+    </ClInclude>
+    <ClInclude Include="VtChartDataManager.h">
+      <Filter>Chart</Filter>
+    </ClInclude>
+    <ClInclude Include="VtChartDataReceiver.h">
+      <Filter>Chart</Filter>
+    </ClInclude>
+    <ClInclude Include="VtChartDataRequest.h">
+      <Filter>Chart</Filter>
+    </ClInclude>
+    <ClInclude Include="VtChartFavoriteGrid.h">
+      <Filter>Chart</Filter>
+    </ClInclude>
+    <ClInclude Include="VtChartFrm.h">
+      <Filter>Chart</Filter>
+    </ClInclude>
+    <ClInclude Include="VtChartManager.h">
+      <Filter>Chart</Filter>
+    </ClInclude>
+    <ClInclude Include="VtChartOrderManager.h">
+      <Filter>Chart</Filter>
+    </ClInclude>
+    <ClInclude Include="VtChartProperty.h">
+      <Filter>Chart</Filter>
+    </ClInclude>
+    <ClInclude Include="VtChartTimeToolBar.h">
+      <Filter>Chart</Filter>
+    </ClInclude>
+    <ClInclude Include="VtChartWindow.h">
+      <Filter>Chart</Filter>
+    </ClInclude>
+    <ClInclude Include="VtChartWindowManager.h">
+      <Filter>Chart</Filter>
+    </ClInclude>
+    <ClInclude Include="VtColorManager.h">
+      <Filter>Chart</Filter>
+    </ClInclude>
+    <ClInclude Include="VtDataCollectWnd.h">
+      <Filter>Chart</Filter>
+    </ClInclude>
+    <ClInclude Include="VtDataDlg.h">
+      <Filter>Chart</Filter>
+    </ClInclude>
+    <ClInclude Include="VtReferenceChart.h">
+      <Filter>Chart</Filter>
+    </ClInclude>
+    <ClInclude Include="VtSplitterManager.h">
+      <Filter>Chart</Filter>
+    </ClInclude>
+    <ClInclude Include="VtUniqueChartID.h">
+      <Filter>Chart</Filter>
+    </ClInclude>
+    <ClInclude Include="IniFile.h">
+      <Filter>Config</Filter>
+    </ClInclude>
+    <ClInclude Include="ZmConfigManager.h">
+      <Filter>Config</Filter>
+    </ClInclude>
+    <ClInclude Include="Drawing\VtBaseTracker.h">
+      <Filter>Drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="Drawing\VtDrawingConstants.h">
+      <Filter>Drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="Drawing\VtElement.h">
+      <Filter>Drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="Drawing\VtEllipse.h">
+      <Filter>Drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="Drawing\VtFibo.h">
+      <Filter>Drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="Drawing\VtFiboTracker.h">
+      <Filter>Drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="Drawing\VtHandle.h">
+      <Filter>Drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="Drawing\VtHLine.h">
+      <Filter>Drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="Drawing\VtHLineHandle.h">
+      <Filter>Drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="Drawing\VtHLineTracker.h">
+      <Filter>Drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="Drawing\VtLine.h">
+      <Filter>Drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="Drawing\VtLineTracker.h">
+      <Filter>Drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="Drawing\VtMultiLine.h">
+      <Filter>Drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="Drawing\VtMultiLineTracker.h">
+      <Filter>Drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="Drawing\VtPoint.h">
+      <Filter>Drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="Drawing\VtPointHandle.h">
+      <Filter>Drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="Drawing\VtRect.h">
+      <Filter>Drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="Drawing\VtRectTracker.h">
+      <Filter>Drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="Drawing\VtRedimHandle.h">
+      <Filter>Drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="Drawing\VtShapesCollection.h">
+      <Filter>Drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="Drawing\VtText.h">
+      <Filter>Drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="Drawing\VtUndoBuffer.h">
+      <Filter>Drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="Drawing\VtUniqueID.h">
+      <Filter>Drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="Drawing\VtValue.h">
+      <Filter>Drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="Drawing\VtVLine.h">
+      <Filter>Drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="Drawing\VtVLineHandle.h">
+      <Filter>Drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="Drawing\VtVLineTracker.h">
+      <Filter>Drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="File\fwd.h">
+      <Filter>FileSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="File\path.h">
+      <Filter>FileSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="File\resolver.h">
+      <Filter>FileSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Format\core.h">
+      <Filter>Format</Filter>
+    </ClInclude>
+    <ClInclude Include="Format\format.h">
+      <Filter>Format</Filter>
+    </ClInclude>
+    <ClInclude Include="Format\format-inl.h">
+      <Filter>Format</Filter>
+    </ClInclude>
+    <ClInclude Include="Format\ostream.h">
+      <Filter>Format</Filter>
+    </ClInclude>
+    <ClInclude Include="Format\posix.h">
+      <Filter>Format</Filter>
+    </ClInclude>
+    <ClInclude Include="Format\printf.h">
+      <Filter>Format</Filter>
+    </ClInclude>
+    <ClInclude Include="Format\ranges.h">
+      <Filter>Format</Filter>
+    </ClInclude>
+    <ClInclude Include="Format\time.h">
+      <Filter>Format</Filter>
+    </ClInclude>
+    <ClInclude Include="VtAccountFundGrid.h">
+      <Filter>Fund</Filter>
+    </ClInclude>
+    <ClInclude Include="VtFDMultiAcntPage.h">
+      <Filter>Fund</Filter>
+    </ClInclude>
+    <ClInclude Include="VtFDSubAcntPage.h">
+      <Filter>Fund</Filter>
+    </ClInclude>
+    <ClInclude Include="VtFund.h">
+      <Filter>Fund</Filter>
+    </ClInclude>
+    <ClInclude Include="VtFundAccount.h">
+      <Filter>Fund</Filter>
+    </ClInclude>
+    <ClInclude Include="VtFundDesigner.h">
+      <Filter>Fund</Filter>
+    </ClInclude>
+    <ClInclude Include="VtFundEditor.h">
+      <Filter>Fund</Filter>
+    </ClInclude>
+    <ClInclude Include="VtFundGrid.h">
+      <Filter>Fund</Filter>
+    </ClInclude>
+    <ClInclude Include="VtFundManager.h">
+      <Filter>Fund</Filter>
+    </ClInclude>
+    <ClInclude Include="VtFundMap.h">
+      <Filter>Fund</Filter>
+    </ClInclude>
+    <ClInclude Include="VtFundNameEditor.h">
+      <Filter>Fund</Filter>
+    </ClInclude>
+    <ClInclude Include="VtSubAcntGrid.h">
+      <Filter>Fund</Filter>
+    </ClInclude>
+    <ClInclude Include="VtFundOrderManager.h">
+      <Filter>FundOrder</Filter>
+    </ClInclude>
+    <ClInclude Include="VtFundOrderManagerSelecter.h">
+      <Filter>FundOrder</Filter>
+    </ClInclude>
+    <ClInclude Include="VtFundProductOrderManager.h">
+      <Filter>FundOrder</Filter>
+    </ClInclude>
+    <ClInclude Include="VtOrderCenterFundWnd.h">
+      <Filter>FundOrder</Filter>
+    </ClInclude>
+    <ClInclude Include="VtFundMiniJango.h">
+      <Filter>FundPosition</Filter>
+    </ClInclude>
+    <ClInclude Include="VtFundPLGrid.h">
+      <Filter>FundPosition</Filter>
+    </ClInclude>
+    <ClInclude Include="VtFundProductRemainGrid.h">
+      <Filter>FundPosition</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimWnd.h">
+      <Filter>Global</Filter>
+    </ClInclude>
+    <ClInclude Include="CmdWaitDlg.h">
+      <Filter>Global</Filter>
+    </ClInclude>
+    <ClInclude Include="memdc.h">
+      <Filter>Global</Filter>
+    </ClInclude>
+    <ClInclude Include="VtGlobal.h">
+      <Filter>Global</Filter>
+    </ClInclude>
+    <ClInclude Include="WaitDlg.h">
+      <Filter>Global</Filter>
+    </ClInclude>
+    <ClInclude Include="WaitDlgThread.h">
+      <Filter>Global</Filter>
+    </ClInclude>
+    <ClInclude Include="Global\VtDefine.h">
+      <Filter>Global</Filter>
+    </ClInclude>
+    <ClInclude Include="Global\ZmStream.h">
+      <Filter>Global</Filter>
+    </ClInclude>
+    <ClInclude Include="HDDefine.h">
+      <Filter>HDCtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="VtHoga.h">
+      <Filter>Hoga</Filter>
+    </ClInclude>
+    <ClInclude Include="VtHogaManager.h">
+      <Filter>Hoga</Filter>
+    </ClInclude>
+    <ClInclude Include="conversion.hpp">
+      <Filter>Index</Filter>
+    </ClInclude>
+    <ClInclude Include="VtAtrIndex.h">
+      <Filter>Index</Filter>
+    </ClInclude>
+    <ClInclude Include="VtBaseBand.h">
+      <Filter>Index</Filter>
+    </ClInclude>
+    <ClInclude Include="VtBaseIndex.h">
+      <Filter>Index</Filter>
+    </ClInclude>
+    <ClInclude Include="VtBaseStress.h">
+      <Filter>Index</Filter>
+    </ClInclude>
+    <ClInclude Include="VtBollingerBandIndex.h">
+      <Filter>Index</Filter>
+    </ClInclude>
+    <ClInclude Include="VtDailyBand.h">
+      <Filter>Index</Filter>
+    </ClInclude>
+    <ClInclude Include="VtIndex.h">
+      <Filter>Index</Filter>
+    </ClInclude>
+    <ClInclude Include="VtIndexDefine.h">
+      <Filter>Index</Filter>
+    </ClInclude>
+    <ClInclude Include="VtIndexFactory.h">
+      <Filter>Index</Filter>
+    </ClInclude>
+    <ClInclude Include="VtIndexManager.h">
+      <Filter>Index</Filter>
+    </ClInclude>
+    <ClInclude Include="VtMacdIndex.h">
+      <Filter>Index</Filter>
+    </ClInclude>
+    <ClInclude Include="VtMaIndex.h">
+      <Filter>Index</Filter>
+    </ClInclude>
+    <ClInclude Include="VtNDailyBand.h">
+      <Filter>Index</Filter>
+    </ClInclude>
+    <ClInclude Include="VtOrbBand.h">
+      <Filter>Index</Filter>
+    </ClInclude>
+    <ClInclude Include="VtPriceChannelIndex.h">
+      <Filter>Index</Filter>
+    </ClInclude>
+    <ClInclude Include="VtRobo1Stress.h">
+      <Filter>Index</Filter>
+    </ClInclude>
+    <ClInclude Include="VtRsiIndex.h">
+      <Filter>Index</Filter>
+    </ClInclude>
+    <ClInclude Include="VtSimpleMaStress.h">
+      <Filter>Index</Filter>
+    </ClInclude>
+    <ClInclude Include="VtStochasticIndex.h">
+      <Filter>Index</Filter>
+    </ClInclude>
+    <ClInclude Include="VtTrixIndex.h">
+      <Filter>Index</Filter>
+    </ClInclude>
+    <ClInclude Include="VtUtf8Handler.h">
+      <Filter>Index</Filter>
+    </ClInclude>
+    <ClInclude Include="VtVolumeIndex.h">
+      <Filter>Index</Filter>
+    </ClInclude>
+    <ClInclude Include="Log\loguru.hpp">
+      <Filter>Log</Filter>
+    </ClInclude>
+    <ClInclude Include="VtLogManager.h">
+      <Filter>Log</Filter>
+    </ClInclude>
+    <ClInclude Include="VtLoginManager.h">
+      <Filter>Login</Filter>
+    </ClInclude>
+    <ClInclude Include="VtLogInDlg.h">
+      <Filter>Login</Filter>
+    </ClInclude>
+    <ClInclude Include="VtMainSiseGrid.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="VtMainToolbar.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="VtOrder.h">
+      <Filter>Order</Filter>
+    </ClInclude>
+    <ClInclude Include="VtOrderEvent.h">
+      <Filter>Order</Filter>
+    </ClInclude>
+    <ClInclude Include="VtOrderListGrid.h">
+      <Filter>Order</Filter>
+    </ClInclude>
+    <ClInclude Include="VtOrderManager.h">
+      <Filter>Order</Filter>
+    </ClInclude>
+    <ClInclude Include="VtOrderManagerSelector.h">
+      <Filter>Order</Filter>
+    </ClInclude>
+    <ClInclude Include="VtOrderQueueManager.h">
+      <Filter>Order</Filter>
+    </ClInclude>
+    <ClInclude Include="VtProductOrderManager.h">
+      <Filter>Order</Filter>
+    </ClInclude>
+    <ClInclude Include="VtProductOrderManagerSelector.h">
+      <Filter>Order</Filter>
+    </ClInclude>
+    <ClInclude Include="VtTotalOrderManager.h">
+      <Filter>Order</Filter>
+    </ClInclude>
+    <ClInclude Include="HdAssetGrid.h">
+      <Filter>OrderWindow\Grid</Filter>
+    </ClInclude>
+    <ClInclude Include="HdProfitLossGrid.h">
+      <Filter>OrderWindow\Grid</Filter>
+    </ClInclude>
+    <ClInclude Include="HdSymbolFutureGrid.h">
+      <Filter>OrderWindow\Grid</Filter>
+    </ClInclude>
+    <ClInclude Include="HdSymbolOptionGrid.h">
+      <Filter>OrderWindow\Grid</Filter>
+    </ClInclude>
+    <ClInclude Include="HdTaskArg.h">
+      <Filter>OrderWindow\Grid</Filter>
+    </ClInclude>
+    <ClInclude Include="VtConfigGrid.h">
+      <Filter>OrderWindow\Grid</Filter>
+    </ClInclude>
+    <ClInclude Include="VtOrderPanelGrid.h">
+      <Filter>OrderWindow\Grid</Filter>
+    </ClInclude>
+    <ClInclude Include="VtProductRemainGrid.h">
+      <Filter>OrderWindow\Grid</Filter>
+    </ClInclude>
+    <ClInclude Include="HdOrderDialog.h">
+      <Filter>OrderWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="HdOrderGrid.h">
+      <Filter>OrderWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="VtAccountRemainGrid.h">
+      <Filter>OrderWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="VtCutManager.h">
+      <Filter>OrderWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="VtOrderCenterWnd.h">
+      <Filter>OrderWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="VtOrderCenterWndHd.h">
+      <Filter>OrderWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="VtOrderConfigDlg.h">
+      <Filter>OrderWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="VtOrderConfigManager.h">
+      <Filter>OrderWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="VtOrderConfigPage.h">
+      <Filter>OrderWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="VtOrderDialogManager.h">
+      <Filter>OrderWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="VtOrderGridConfig.h">
+      <Filter>OrderWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="VtOrderLeftWnd.h">
+      <Filter>OrderWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="VtOrderLeftWndHd.h">
+      <Filter>OrderWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="VtOrderRightCancelHd.h">
+      <Filter>OrderWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="VtOrderRightConfigHd.h">
+      <Filter>OrderWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="VtOrderRightWnd.h">
+      <Filter>OrderWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="VtOrderRightWndHd.h">
+      <Filter>OrderWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="VtOrderSettlePage.h">
+      <Filter>OrderWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="VtOrderWnd.h">
+      <Filter>OrderWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="VtOrderWndEvent.h">
+      <Filter>OrderWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="VtOrderWndHd.h">
+      <Filter>OrderWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="VtProductRemainGridEx.h">
+      <Filter>OrderWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="VtRealTickWnd.h">
+      <Filter>OrderWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="VtRealtimeRegisterManager.h">
+      <Filter>OrderWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="VtRealtimeTickQuoteGrid.h">
+      <Filter>OrderWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="VtRemainOrderGrid.h">
+      <Filter>OrderWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="VtStopOrderManager.h">
+      <Filter>OrderWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="VtTotalRemainGrid.h">
+      <Filter>OrderWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="HdAccountPLDlg.h">
+      <Filter>Position</Filter>
+    </ClInclude>
+    <ClInclude Include="HdAccountPLGrid.h">
+      <Filter>Position</Filter>
+    </ClInclude>
+    <ClInclude Include="HdProductRemainGrid.h">
+      <Filter>Position</Filter>
+    </ClInclude>
+    <ClInclude Include="HdWindowEvent.h">
+      <Filter>Position</Filter>
+    </ClInclude>
+    <ClInclude Include="VtPosition.h">
+      <Filter>Position</Filter>
+    </ClInclude>
+    <ClInclude Include="VtQuote.h">
+      <Filter>Quote</Filter>
+    </ClInclude>
+    <ClInclude Include="VtQuoteEvent.h">
+      <Filter>Quote</Filter>
+    </ClInclude>
+    <ClInclude Include="VtQuoteManager.h">
+      <Filter>Quote</Filter>
+    </ClInclude>
+    <ClInclude Include="VtTickQuote.h">
+      <Filter>Quote</Filter>
+    </ClInclude>
+    <ClInclude Include="ResizableLib\ResizableDialog.h">
+      <Filter>ResizableLib</Filter>
+    </ClInclude>
+    <ClInclude Include="ResizableLib\ResizableFormView.h">
+      <Filter>ResizableLib</Filter>
+    </ClInclude>
+    <ClInclude Include="ResizableLib\ResizableFrame.h">
+      <Filter>ResizableLib</Filter>
+    </ClInclude>
+    <ClInclude Include="ResizableLib\ResizableGrip.h">
+      <Filter>ResizableLib</Filter>
+    </ClInclude>
+    <ClInclude Include="ResizableLib\ResizableLayout.h">
+      <Filter>ResizableLib</Filter>
+    </ClInclude>
+    <ClInclude Include="ResizableLib\ResizableMDIChild.h">
+      <Filter>ResizableLib</Filter>
+    </ClInclude>
+    <ClInclude Include="ResizableLib\ResizableMDIFrame.h">
+      <Filter>ResizableLib</Filter>
+    </ClInclude>
+    <ClInclude Include="ResizableLib\ResizableMinMax.h">
+      <Filter>ResizableLib</Filter>
+    </ClInclude>
+    <ClInclude Include="ResizableLib\ResizableMsgSupport.h">
+      <Filter>ResizableLib</Filter>
+    </ClInclude>
+    <ClInclude Include="ResizableLib\ResizablePage.h">
+      <Filter>ResizableLib</Filter>
+    </ClInclude>
+    <ClInclude Include="ResizableLib\ResizablePageEx.h">
+      <Filter>ResizableLib</Filter>
+    </ClInclude>
+    <ClInclude Include="ResizableLib\ResizableSheet.h">
+      <Filter>ResizableLib</Filter>
+    </ClInclude>
+    <ClInclude Include="ResizableLib\ResizableSheetEx.h">
+      <Filter>ResizableLib</Filter>
+    </ClInclude>
+    <ClInclude Include="ResizableLib\ResizableSheetState.h">
+      <Filter>ResizableLib</Filter>
+    </ClInclude>
+    <ClInclude Include="ResizableLib\ResizableSplitterWnd.h">
+      <Filter>ResizableLib</Filter>
+    </ClInclude>
+    <ClInclude Include="ResizableLib\ResizableState.h">
+      <Filter>ResizableLib</Filter>
+    </ClInclude>
+    <ClInclude Include="ResizableLib\ResizableVersion.h">
+      <Filter>ResizableLib</Filter>
+    </ClInclude>
+    <ClInclude Include="ResizableLib\ResizableWndState.h">
+      <Filter>ResizableLib</Filter>
+    </ClInclude>
+    <ClInclude Include="Sound\Buffer.h">
+      <Filter>Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="Sound\errorprint.h">
+      <Filter>Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="Sound\Pipe.h">
+      <Filter>Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="Sound\PtrFifo.h">
+      <Filter>Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="Sound\SoundBase.h">
+      <Filter>Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="Sound\SoundFile.h">
+      <Filter>Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="Sound\SoundIn.h">
+      <Filter>Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="Sound\SoundOut.h">
+      <Filter>Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="HdFutureGrid.h">
+      <Filter>Symbol</Filter>
+    </ClInclude>
+    <ClInclude Include="HdFuturePage.h">
+      <Filter>Symbol</Filter>
+    </ClInclude>
+    <ClInclude Include="HdOptionGrid.h">
+      <Filter>Symbol</Filter>
+    </ClInclude>
+    <ClInclude Include="HdOptionPage.h">
+      <Filter>Symbol</Filter>
+    </ClInclude>
+    <ClInclude Include="HdProductInfo.h">
+      <Filter>Symbol</Filter>
+    </ClInclude>
+    <ClInclude Include="HdSymbolSelecter.h">
+      <Filter>Symbol</Filter>
+    </ClInclude>
+    <ClInclude Include="VtOptionMonthSection.h">
+      <Filter>Symbol</Filter>
+    </ClInclude>
+    <ClInclude Include="VtProductCategory.h">
+      <Filter>Symbol</Filter>
+    </ClInclude>
+    <ClInclude Include="VtProductCategoryManager.h">
+      <Filter>Symbol</Filter>
+    </ClInclude>
+    <ClInclude Include="VtProductSection.h">
+      <Filter>Symbol</Filter>
+    </ClInclude>
+    <ClInclude Include="VtProductSubSection.h">
+      <Filter>Symbol</Filter>
+    </ClInclude>
+    <ClInclude Include="VtSymboGrid.h">
+      <Filter>Symbol</Filter>
+    </ClInclude>
+    <ClInclude Include="VtSymbol.h">
+      <Filter>Symbol</Filter>
+    </ClInclude>
+    <ClInclude Include="VtSymbolCatPage.h">
+      <Filter>Symbol</Filter>
+    </ClInclude>
+    <ClInclude Include="VtSymbolEvent.h">
+      <Filter>Symbol</Filter>
+    </ClInclude>
+    <ClInclude Include="VtSymbolFavoriteDlg.h">
+      <Filter>Symbol</Filter>
+    </ClInclude>
+    <ClInclude Include="VtSymbolManager.h">
+      <Filter>Symbol</Filter>
+    </ClInclude>
+    <ClInclude Include="VtSymbolMaster.h">
+      <Filter>Symbol</Filter>
+    </ClInclude>
+    <ClInclude Include="VtSymbolMasterGrid.h">
+      <Filter>Symbol</Filter>
+    </ClInclude>
+    <ClInclude Include="VtSymbolSelector.h">
+      <Filter>Symbol</Filter>
+    </ClInclude>
+    <ClInclude Include="VtAccountFundSelector.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="VtStrategyGrid.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="VtStrategyToolWnd.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="VtSysArgGrid.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="VtSystemArg.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="VtSystemArgGroup.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="VtSystemDef.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="VtSystemGroup.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="VtSystemGroupManager.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="VtSystemProperty.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="VtSystemSetDlg.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="VtUsdEntConfigGrid.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="VtUsdStrategyConfigDlg.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="VtUsdStrategyConfigGrid.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\VtSignal.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\VtSystem.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\VtChannelCrossSystem.h">
+      <Filter>System\Regular</Filter>
+    </ClInclude>
+    <ClInclude Include="System\VtChannelJumpSystem.h">
+      <Filter>System\Regular</Filter>
+    </ClInclude>
+    <ClInclude Include="System\VtDailyHeightSystem.h">
+      <Filter>System\Regular</Filter>
+    </ClInclude>
+    <ClInclude Include="System\VtMacdSystem.h">
+      <Filter>System\Regular</Filter>
+    </ClInclude>
+    <ClInclude Include="System\VtMaSystem.h">
+      <Filter>System\Regular</Filter>
+    </ClInclude>
+    <ClInclude Include="System\VtOsillaterSystem.h">
+      <Filter>System\Regular</Filter>
+    </ClInclude>
+    <ClInclude Include="System\VtStochasticSystem.h">
+      <Filter>System\Regular</Filter>
+    </ClInclude>
+    <ClInclude Include="System\VtSystemManager.h">
+      <Filter>System\Regular</Filter>
+    </ClInclude>
+    <ClInclude Include="VtQIn1.h">
+      <Filter>System\Kosdaq</Filter>
+    </ClInclude>
+    <ClInclude Include="VtQIn2.h">
+      <Filter>System\Kosdaq</Filter>
+    </ClInclude>
+    <ClInclude Include="VtQIn3.h">
+      <Filter>System\Kosdaq</Filter>
+    </ClInclude>
+    <ClInclude Include="VtQIn4.h">
+      <Filter>System\Kosdaq</Filter>
+    </ClInclude>
+    <ClInclude Include="VtAlpha.h">
+      <Filter>System\Kospi</Filter>
+    </ClInclude>
+    <ClInclude Include="VtBeta.h">
+      <Filter>System\Kospi</Filter>
+    </ClInclude>
+    <ClInclude Include="VtTrUs1.h">
+      <Filter>System\Usd</Filter>
+    </ClInclude>
+    <ClInclude Include="VtTrUs2.h">
+      <Filter>System\Usd</Filter>
+    </ClInclude>
+    <ClInclude Include="VtTrUs3.h">
+      <Filter>System\Usd</Filter>
+    </ClInclude>
+    <ClInclude Include="VtUsComp.h">
+      <Filter>System\Usd</Filter>
+    </ClInclude>
+    <ClInclude Include="VtUsH2.h">
+      <Filter>System\Usd</Filter>
+    </ClInclude>
+    <ClInclude Include="VtUsI2.h">
+      <Filter>System\Usd</Filter>
+    </ClInclude>
+    <ClInclude Include="VtUsIn1.h">
+      <Filter>System\Usd</Filter>
+    </ClInclude>
+    <ClInclude Include="VtUsIn2.h">
+      <Filter>System\Usd</Filter>
+    </ClInclude>
+    <ClInclude Include="VtUsIn3.h">
+      <Filter>System\Usd</Filter>
+    </ClInclude>
+    <ClInclude Include="BlockingQueue.h">
+      <Filter>Task</Filter>
+    </ClInclude>
+    <ClInclude Include="HdScheduler.h">
+      <Filter>Task</Filter>
+    </ClInclude>
+    <ClInclude Include="HdTaskEventArg.h">
+      <Filter>Task</Filter>
+    </ClInclude>
+    <ClInclude Include="VtCorrentQueue.h">
+      <Filter>Task</Filter>
+    </ClInclude>
+    <ClInclude Include="VtDoubleBufferedQueue.h">
+      <Filter>Task</Filter>
+    </ClInclude>
+    <ClInclude Include="VtProgressDlg.h">
+      <Filter>Task</Filter>
+    </ClInclude>
+    <ClInclude Include="VtTaskArg.h">
+      <Filter>Task</Filter>
+    </ClInclude>
+    <ClInclude Include="VtTaskEvent.h">
+      <Filter>Task</Filter>
+    </ClInclude>
+    <ClInclude Include="VtTaskManager.h">
+      <Filter>Task</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\UG64Bit.h">
+      <Filter>UGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\UGCBType.h">
+      <Filter>UGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\UGCell.h">
+      <Filter>UGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\ugceltyp.h">
+      <Filter>UGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\UGCnrBtn.h">
+      <Filter>UGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\UGCTarrw.h">
+      <Filter>UGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\UGCtrl.h">
+      <Filter>UGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\ugdefine.h">
+      <Filter>UGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\UGDLType.h">
+      <Filter>UGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\UGDrgDrp.h">
+      <Filter>UGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\UGDrwHnt.h">
+      <Filter>UGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\UGDtaSrc.h">
+      <Filter>UGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\UGEdit.h">
+      <Filter>UGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\UGEditBase.h">
+      <Filter>UGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\ugformat.h">
+      <Filter>UGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\uggdinfo.h">
+      <Filter>UGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\UGGrid.h">
+      <Filter>UGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\UGHint.h">
+      <Filter>UGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\ughscrol.h">
+      <Filter>UGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\uglstbox.h">
+      <Filter>UGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\UGMEdit.h">
+      <Filter>UGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\UGMemMan.h">
+      <Filter>UGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\UGMultiS.h">
+      <Filter>UGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\ugprint.h">
+      <Filter>UGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\ugptrlst.h">
+      <Filter>UGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\ugsidehd.h">
+      <Filter>UGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\UGStrOp.h">
+      <Filter>UGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\ugstruct.h">
+      <Filter>UGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\ugtab.h">
+      <Filter>UGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\UGTopHdg.h">
+      <Filter>UGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\ugvscrol.h">
+      <Filter>UGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\ugxpthemes.h">
+      <Filter>UGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\CellTypes\UGCTafnt.h">
+      <Filter>UGrid\CellType</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\CellTypes\UGCTAutoSize.h">
+      <Filter>UGrid\CellType</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\CellTypes\UGCTbutn.h">
+      <Filter>UGrid\CellType</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\CellTypes\UGCTDropGrid.h">
+      <Filter>UGrid\CellType</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\CellTypes\UGCTdtp.h">
+      <Filter>UGrid\CellType</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\CellTypes\ugctelps.h">
+      <Filter>UGrid\CellType</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\CellTypes\UGCTExpand.h">
+      <Filter>UGrid\CellType</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\CellTypes\UGCTLabeled.h">
+      <Filter>UGrid\CellType</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\CellTypes\UGCTMail.h">
+      <Filter>UGrid\CellType</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\CellTypes\UGCTMailSort.h">
+      <Filter>UGrid\CellType</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\CellTypes\UGCTMarquee.h">
+      <Filter>UGrid\CellType</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\CellTypes\UGCTmfnt.h">
+      <Filter>UGrid\CellType</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\CellTypes\UGCTNote.h">
+      <Filter>UGrid\CellType</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\CellTypes\ugctnotewnd.h">
+      <Filter>UGrid\CellType</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\CellTypes\UGCTOrder.h">
+      <Filter>UGrid\CellType</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\CellTypes\UGCTOutlookHeader.h">
+      <Filter>UGrid\CellType</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\CellTypes\UGCTpie.h">
+      <Filter>UGrid\CellType</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\CellTypes\UGCTpro1.h">
+      <Filter>UGrid\CellType</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\CellTypes\UGCTprog.h">
+      <Filter>UGrid\CellType</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\CellTypes\UGCTRado.h">
+      <Filter>UGrid\CellType</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\CellTypes\UGCTRemain.h">
+      <Filter>UGrid\CellType</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\CellTypes\UGCTsarw.h">
+      <Filter>UGrid\CellType</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\CellTypes\UGCTSeperateText.h">
+      <Filter>UGrid\CellType</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\CellTypes\UGCTsldr.h">
+      <Filter>UGrid\CellType</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\CellTypes\UGCTSpin.h">
+      <Filter>UGrid\CellType</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\EditControls\UTEdit.h">
+      <Filter>UGrid\EditCtrls</Filter>
+    </ClInclude>
+    <ClInclude Include="UGrid\EditControls\UTMaskedEdit.h">
+      <Filter>UGrid\EditCtrls</Filter>
+    </ClInclude>
+    <ClInclude Include="Ultimate Toolbox\source\UTSampleAbout\HtmlCtrl.h">
+      <Filter>UIWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="HdWindowManager.h">
+      <Filter>UIWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="RemainOrderWnd.h">
+      <Filter>UIWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="VtAcceptedOrderGrid.h">
+      <Filter>UIWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="VtPreOrderGrid.h">
+      <Filter>UIWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="VtProductAcceptedGrid.h">
+      <Filter>UIWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="BtnST.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="CeXDib.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="closure.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="cpptime.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="DeferPos.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="delegate.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="ETSLayout.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="GenericChildDialog.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="GradientStatic.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="GridButton.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="ShadeButtonST.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="SimpleBinStream.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="txtnum.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="VtEditCtrl.h">
+      <Filter>UIWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="VtLayoutManager.h">
+      <Filter>UIWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="VtStringUtil.h">
+      <Filter>UIWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="VtWindowManager.h">
+      <Filter>UIWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="wfext.h">
+      <Filter>UIWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="WndResizer.h">
+      <Filter>UIWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="XFormatNumber.h">
+      <Filter>UIWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="Xml\pugiconfig.hpp">
+      <Filter>Xml</Filter>
+    </ClInclude>
+    <ClInclude Include="Xml\pugixml.hpp">
+      <Filter>Xml</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\formatstdstring.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\VtTime.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="VtKrClient.h">
+      <Filter>Client</Filter>
+    </ClInclude>
+    <ClInclude Include="VtHdCtrl.h">
+      <Filter>HDCtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="VtHdClient.h">
+      <Filter>HDCtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="Skel\VtGrid.h">
+      <Filter>VtGrid</Filter>
+    </ClInclude>
+    <ClInclude Include="VtEntireBand.h">
+      <Filter>Index</Filter>
+    </ClInclude>
+    <ClInclude Include="VtFavoritGrid.h">
+      <Filter>Symbol</Filter>
+    </ClInclude>
+    <ClInclude Include="VtClient.h">
+      <Filter>Client</Filter>
+    </ClInclude>
+    <ClInclude Include="VtAccountGrid.h">
+      <Filter>Account</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="ChildFrm.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="ClassView.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="FileView.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="MainFrm.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="OutputWnd.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="PropertiesWnd.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="SMTrader.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="SMTraderDoc.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="SMTraderView.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="ViewTree.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="hdfcommagent.cpp">
+      <Filter>Client</Filter>
+    </ClCompile>
+    <ClCompile Include="VtAccount.cpp">
+      <Filter>Account</Filter>
+    </ClCompile>
+    <ClCompile Include="VtAccountAssetDlg.cpp">
+      <Filter>Account</Filter>
+    </ClCompile>
+    <ClCompile Include="VtAccountAssetGrid.cpp">
+      <Filter>Account</Filter>
+    </ClCompile>
+    <ClCompile Include="VtAccountManager.cpp">
+      <Filter>Account</Filter>
+    </ClCompile>
+    <ClCompile Include="VtAccountPasswordDlg.cpp">
+      <Filter>Account</Filter>
+    </ClCompile>
+    <ClCompile Include="VtAccountPasswordGrid.cpp">
+      <Filter>Account</Filter>
+    </ClCompile>
+    <ClCompile Include="VtAssetPage.cpp">
+      <Filter>Account</Filter>
+    </ClCompile>
+    <ClCompile Include="VtOrderAvailablePage.cpp">
+      <Filter>Account</Filter>
+    </ClCompile>
+    <ClCompile Include="VtSubAccountManager.cpp">
+      <Filter>Account</Filter>
+    </ClCompile>
+    <ClCompile Include="VtSaveManager.cpp">
+      <Filter>Archieve</Filter>
+    </ClCompile>
+    <ClCompile Include="Chart\ChartViewer.cpp">
+      <Filter>Chart</Filter>
+    </ClCompile>
+    <ClCompile Include="HdChartFrm.cpp">
+      <Filter>Chart</Filter>
+    </ClCompile>
+    <ClCompile Include="SSplitter.cpp">
+      <Filter>Chart</Filter>
+    </ClCompile>
+    <ClCompile Include="VtChartContainer.cpp">
+      <Filter>Chart</Filter>
+    </ClCompile>
+    <ClCompile Include="VtChartContainerManager.cpp">
+      <Filter>Chart</Filter>
+    </ClCompile>
+    <ClCompile Include="VtChartCtrl.cpp">
+      <Filter>Chart</Filter>
+    </ClCompile>
+    <ClCompile Include="VtChartCtrlManager.cpp">
+      <Filter>Chart</Filter>
+    </ClCompile>
+    <ClCompile Include="VtChartData.cpp">
+      <Filter>Chart</Filter>
+    </ClCompile>
+    <ClCompile Include="VtChartDataCollector.cpp">
+      <Filter>Chart</Filter>
+    </ClCompile>
+    <ClCompile Include="VtChartDataManager.cpp">
+      <Filter>Chart</Filter>
+    </ClCompile>
+    <ClCompile Include="VtChartDataReceiver.cpp">
+      <Filter>Chart</Filter>
+    </ClCompile>
+    <ClCompile Include="VtChartFavoriteGrid.cpp">
+      <Filter>Chart</Filter>
+    </ClCompile>
+    <ClCompile Include="VtChartFrm.cpp">
+      <Filter>Chart</Filter>
+    </ClCompile>
+    <ClCompile Include="VtChartManager.cpp">
+      <Filter>Chart</Filter>
+    </ClCompile>
+    <ClCompile Include="VtChartOrderManager.cpp">
+      <Filter>Chart</Filter>
+    </ClCompile>
+    <ClCompile Include="VtChartProperty.cpp">
+      <Filter>Chart</Filter>
+    </ClCompile>
+    <ClCompile Include="VtChartTimeToolBar.cpp">
+      <Filter>Chart</Filter>
+    </ClCompile>
+    <ClCompile Include="VtChartWindow.cpp">
+      <Filter>Chart</Filter>
+    </ClCompile>
+    <ClCompile Include="VtChartWindowManager.cpp">
+      <Filter>Chart</Filter>
+    </ClCompile>
+    <ClCompile Include="VtColorManager.cpp">
+      <Filter>Chart</Filter>
+    </ClCompile>
+    <ClCompile Include="VtDataCollectWnd.cpp">
+      <Filter>Chart</Filter>
+    </ClCompile>
+    <ClCompile Include="VtDataDlg.cpp">
+      <Filter>Chart</Filter>
+    </ClCompile>
+    <ClCompile Include="VtReferenceChart.cpp">
+      <Filter>Chart</Filter>
+    </ClCompile>
+    <ClCompile Include="VtSplitterManager.cpp">
+      <Filter>Chart</Filter>
+    </ClCompile>
+    <ClCompile Include="VtUniqueChartID.cpp">
+      <Filter>Chart</Filter>
+    </ClCompile>
+    <ClCompile Include="IniFile.cpp">
+      <Filter>Config</Filter>
+    </ClCompile>
+    <ClCompile Include="ZmConfigManager.cpp">
+      <Filter>Config</Filter>
+    </ClCompile>
+    <ClCompile Include="Drawing\VtBaseTracker.cpp">
+      <Filter>Drawing</Filter>
+    </ClCompile>
+    <ClCompile Include="Drawing\VtElement.cpp">
+      <Filter>Drawing</Filter>
+    </ClCompile>
+    <ClCompile Include="Drawing\VtEllipse.cpp">
+      <Filter>Drawing</Filter>
+    </ClCompile>
+    <ClCompile Include="Drawing\VtFibo.cpp">
+      <Filter>Drawing</Filter>
+    </ClCompile>
+    <ClCompile Include="Drawing\VtFiboTracker.cpp">
+      <Filter>Drawing</Filter>
+    </ClCompile>
+    <ClCompile Include="Drawing\VtHandle.cpp">
+      <Filter>Drawing</Filter>
+    </ClCompile>
+    <ClCompile Include="Drawing\VtHLine.cpp">
+      <Filter>Drawing</Filter>
+    </ClCompile>
+    <ClCompile Include="Drawing\VtHLineHandle.cpp">
+      <Filter>Drawing</Filter>
+    </ClCompile>
+    <ClCompile Include="Drawing\VtHLineTracker.cpp">
+      <Filter>Drawing</Filter>
+    </ClCompile>
+    <ClCompile Include="Drawing\VtLine.cpp">
+      <Filter>Drawing</Filter>
+    </ClCompile>
+    <ClCompile Include="Drawing\VtLineTracker.cpp">
+      <Filter>Drawing</Filter>
+    </ClCompile>
+    <ClCompile Include="Drawing\VtMultiLine.cpp">
+      <Filter>Drawing</Filter>
+    </ClCompile>
+    <ClCompile Include="Drawing\VtMultiLineTracker.cpp">
+      <Filter>Drawing</Filter>
+    </ClCompile>
+    <ClCompile Include="Drawing\VtPoint.cpp">
+      <Filter>Drawing</Filter>
+    </ClCompile>
+    <ClCompile Include="Drawing\VtPointHandle.cpp">
+      <Filter>Drawing</Filter>
+    </ClCompile>
+    <ClCompile Include="Drawing\VtRect.cpp">
+      <Filter>Drawing</Filter>
+    </ClCompile>
+    <ClCompile Include="Drawing\VtRectTracker.cpp">
+      <Filter>Drawing</Filter>
+    </ClCompile>
+    <ClCompile Include="Drawing\VtRedimHandle.cpp">
+      <Filter>Drawing</Filter>
+    </ClCompile>
+    <ClCompile Include="Drawing\VtShapesCollection.cpp">
+      <Filter>Drawing</Filter>
+    </ClCompile>
+    <ClCompile Include="Drawing\VtText.cpp">
+      <Filter>Drawing</Filter>
+    </ClCompile>
+    <ClCompile Include="Drawing\VtUndoBuffer.cpp">
+      <Filter>Drawing</Filter>
+    </ClCompile>
+    <ClCompile Include="Drawing\VtUniqueID.cpp">
+      <Filter>Drawing</Filter>
+    </ClCompile>
+    <ClCompile Include="Drawing\VtVLine.cpp">
+      <Filter>Drawing</Filter>
+    </ClCompile>
+    <ClCompile Include="Drawing\VtVLineHandle.cpp">
+      <Filter>Drawing</Filter>
+    </ClCompile>
+    <ClCompile Include="Drawing\VtVLineTracker.cpp">
+      <Filter>Drawing</Filter>
+    </ClCompile>
+    <ClCompile Include="Format\format.cc">
+      <Filter>Format</Filter>
+    </ClCompile>
+    <ClCompile Include="Format\posix.cc">
+      <Filter>Format</Filter>
+    </ClCompile>
+    <ClCompile Include="VtAccountFundGrid.cpp">
+      <Filter>Fund</Filter>
+    </ClCompile>
+    <ClCompile Include="VtFDMultiAcntPage.cpp">
+      <Filter>Fund</Filter>
+    </ClCompile>
+    <ClCompile Include="VtFDSubAcntPage.cpp">
+      <Filter>Fund</Filter>
+    </ClCompile>
+    <ClCompile Include="VtFund.cpp">
+      <Filter>Fund</Filter>
+    </ClCompile>
+    <ClCompile Include="VtFundAccount.cpp">
+      <Filter>Fund</Filter>
+    </ClCompile>
+    <ClCompile Include="VtFundDesigner.cpp">
+      <Filter>Fund</Filter>
+    </ClCompile>
+    <ClCompile Include="VtFundEditor.cpp">
+      <Filter>Fund</Filter>
+    </ClCompile>
+    <ClCompile Include="VtFundGrid.cpp">
+      <Filter>Fund</Filter>
+    </ClCompile>
+    <ClCompile Include="VtFundManager.cpp">
+      <Filter>Fund</Filter>
+    </ClCompile>
+    <ClCompile Include="VtFundMap.cpp">
+      <Filter>Fund</Filter>
+    </ClCompile>
+    <ClCompile Include="VtFundNameEditor.cpp">
+      <Filter>Fund</Filter>
+    </ClCompile>
+    <ClCompile Include="VtSubAcntGrid.cpp">
+      <Filter>Fund</Filter>
+    </ClCompile>
+    <ClCompile Include="VtFundOrderManager.cpp">
+      <Filter>FundOrder</Filter>
+    </ClCompile>
+    <ClCompile Include="VtFundOrderManagerSelecter.cpp">
+      <Filter>FundOrder</Filter>
+    </ClCompile>
+    <ClCompile Include="VtFundProductOrderManager.cpp">
+      <Filter>FundOrder</Filter>
+    </ClCompile>
+    <ClCompile Include="VtOrderCenterFundWnd.cpp">
+      <Filter>FundOrder</Filter>
+    </ClCompile>
+    <ClCompile Include="VtFundMiniJango.cpp">
+      <Filter>FundPosition</Filter>
+    </ClCompile>
+    <ClCompile Include="VtFundPLGrid.cpp">
+      <Filter>FundPosition</Filter>
+    </ClCompile>
+    <ClCompile Include="VtFundProductRemainGrid.cpp">
+      <Filter>FundPosition</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimWnd.cpp">
+      <Filter>Global</Filter>
+    </ClCompile>
+    <ClCompile Include="CmdWaitDlg.cpp">
+      <Filter>Global</Filter>
+    </ClCompile>
+    <ClCompile Include="VtGlobal.cpp">
+      <Filter>Global</Filter>
+    </ClCompile>
+    <ClCompile Include="WaitDlg.cpp">
+      <Filter>Global</Filter>
+    </ClCompile>
+    <ClCompile Include="WaitDlgThread.cpp">
+      <Filter>Global</Filter>
+    </ClCompile>
+    <ClCompile Include="Global\VtDefine.cpp">
+      <Filter>Global</Filter>
+    </ClCompile>
+    <ClCompile Include="Global\ZmStream.cpp">
+      <Filter>Global</Filter>
+    </ClCompile>
+    <ClCompile Include="VtHogaManager.cpp">
+      <Filter>Hoga</Filter>
+    </ClCompile>
+    <ClCompile Include="VtAtrIndex.cpp">
+      <Filter>Index</Filter>
+    </ClCompile>
+    <ClCompile Include="VtBaseBand.cpp">
+      <Filter>Index</Filter>
+    </ClCompile>
+    <ClCompile Include="VtBaseIndex.cpp">
+      <Filter>Index</Filter>
+    </ClCompile>
+    <ClCompile Include="VtBaseStress.cpp">
+      <Filter>Index</Filter>
+    </ClCompile>
+    <ClCompile Include="VtBollingerBandIndex.cpp">
+      <Filter>Index</Filter>
+    </ClCompile>
+    <ClCompile Include="VtDailyBand.cpp">
+      <Filter>Index</Filter>
+    </ClCompile>
+    <ClCompile Include="VtIndex.cpp">
+      <Filter>Index</Filter>
+    </ClCompile>
+    <ClCompile Include="VtIndexFactory.cpp">
+      <Filter>Index</Filter>
+    </ClCompile>
+    <ClCompile Include="VtIndexManager.cpp">
+      <Filter>Index</Filter>
+    </ClCompile>
+    <ClCompile Include="VtMacdIndex.cpp">
+      <Filter>Index</Filter>
+    </ClCompile>
+    <ClCompile Include="VtMaIndex.cpp">
+      <Filter>Index</Filter>
+    </ClCompile>
+    <ClCompile Include="VtNDailyBand.cpp">
+      <Filter>Index</Filter>
+    </ClCompile>
+    <ClCompile Include="VtOrbBand.cpp">
+      <Filter>Index</Filter>
+    </ClCompile>
+    <ClCompile Include="VtPriceChannelIndex.cpp">
+      <Filter>Index</Filter>
+    </ClCompile>
+    <ClCompile Include="VtRobo1Stress.cpp">
+      <Filter>Index</Filter>
+    </ClCompile>
+    <ClCompile Include="VtRsiIndex.cpp">
+      <Filter>Index</Filter>
+    </ClCompile>
+    <ClCompile Include="VtSimpleMaStress.cpp">
+      <Filter>Index</Filter>
+    </ClCompile>
+    <ClCompile Include="VtStochasticIndex.cpp">
+      <Filter>Index</Filter>
+    </ClCompile>
+    <ClCompile Include="VtTrixIndex.cpp">
+      <Filter>Index</Filter>
+    </ClCompile>
+    <ClCompile Include="VtUtf8Handler.cpp">
+      <Filter>Index</Filter>
+    </ClCompile>
+    <ClCompile Include="VtVolumeIndex.cpp">
+      <Filter>Index</Filter>
+    </ClCompile>
+    <ClCompile Include="Log\loguru.cpp">
+      <Filter>Log</Filter>
+    </ClCompile>
+    <ClCompile Include="VtLogManager.cpp">
+      <Filter>Log</Filter>
+    </ClCompile>
+    <ClCompile Include="VtLoginManager.cpp">
+      <Filter>Login</Filter>
+    </ClCompile>
+    <ClCompile Include="VtLogInDlg.cpp">
+      <Filter>Login</Filter>
+    </ClCompile>
+    <ClCompile Include="VtMainSiseGrid.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="VtMainToolbar.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="VtOrder.cpp">
+      <Filter>Order</Filter>
+    </ClCompile>
+    <ClCompile Include="VtOrderListGrid.cpp">
+      <Filter>Order</Filter>
+    </ClCompile>
+    <ClCompile Include="VtOrderManager.cpp">
+      <Filter>Order</Filter>
+    </ClCompile>
+    <ClCompile Include="VtOrderManagerSelector.cpp">
+      <Filter>Order</Filter>
+    </ClCompile>
+    <ClCompile Include="VtOrderQueueManager.cpp">
+      <Filter>Order</Filter>
+    </ClCompile>
+    <ClCompile Include="VtProductOrderManager.cpp">
+      <Filter>Order</Filter>
+    </ClCompile>
+    <ClCompile Include="VtProductOrderManagerSelector.cpp">
+      <Filter>Order</Filter>
+    </ClCompile>
+    <ClCompile Include="VtTotalOrderManager.cpp">
+      <Filter>Order</Filter>
+    </ClCompile>
+    <ClCompile Include="HdAssetGrid.cpp">
+      <Filter>OrderWindow\Grid</Filter>
+    </ClCompile>
+    <ClCompile Include="HdProfitLossGrid.cpp">
+      <Filter>OrderWindow\Grid</Filter>
+    </ClCompile>
+    <ClCompile Include="HdSymbolFutureGrid.cpp">
+      <Filter>OrderWindow\Grid</Filter>
+    </ClCompile>
+    <ClCompile Include="HdSymbolOptionGrid.cpp">
+      <Filter>OrderWindow\Grid</Filter>
+    </ClCompile>
+    <ClCompile Include="HdTaskArg.cpp">
+      <Filter>OrderWindow\Grid</Filter>
+    </ClCompile>
+    <ClCompile Include="VtConfigGrid.cpp">
+      <Filter>OrderWindow\Grid</Filter>
+    </ClCompile>
+    <ClCompile Include="VtOrderPanelGrid.cpp">
+      <Filter>OrderWindow\Grid</Filter>
+    </ClCompile>
+    <ClCompile Include="VtProductRemainGrid.cpp">
+      <Filter>OrderWindow\Grid</Filter>
+    </ClCompile>
+    <ClCompile Include="HdOrderDialog.cpp">
+      <Filter>OrderWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="HdOrderGrid.cpp">
+      <Filter>OrderWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="VtAccountRemainGrid.cpp">
+      <Filter>OrderWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="VtCutManager.cpp">
+      <Filter>OrderWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="VtOrderCenterWnd.cpp">
+      <Filter>OrderWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="VtOrderCenterWndHd.cpp">
+      <Filter>OrderWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="VtOrderConfigDlg.cpp">
+      <Filter>OrderWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="VtOrderConfigManager.cpp">
+      <Filter>OrderWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="VtOrderConfigPage.cpp">
+      <Filter>OrderWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="VtOrderDialogManager.cpp">
+      <Filter>OrderWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="VtOrderGridConfig.cpp">
+      <Filter>OrderWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="VtOrderLeftWnd.cpp">
+      <Filter>OrderWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="VtOrderLeftWndHd.cpp">
+      <Filter>OrderWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="VtOrderRightCancelHd.cpp">
+      <Filter>OrderWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="VtOrderRightConfigHd.cpp">
+      <Filter>OrderWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="VtOrderRightWnd.cpp">
+      <Filter>OrderWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="VtOrderRightWndHd.cpp">
+      <Filter>OrderWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="VtOrderSettlePage.cpp">
+      <Filter>OrderWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="VtOrderWnd.cpp">
+      <Filter>OrderWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="VtOrderWndHd.cpp">
+      <Filter>OrderWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="VtProductRemainGridEx.cpp">
+      <Filter>OrderWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="VtRealTickWnd.cpp">
+      <Filter>OrderWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="VtRealtimeRegisterManager.cpp">
+      <Filter>OrderWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="VtRealtimeTickQuoteGrid.cpp">
+      <Filter>OrderWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="VtRemainOrderGrid.cpp">
+      <Filter>OrderWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="VtStopOrderManager.cpp">
+      <Filter>OrderWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="VtTotalRemainGrid.cpp">
+      <Filter>OrderWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="HdAccountPLDlg.cpp">
+      <Filter>Position</Filter>
+    </ClCompile>
+    <ClCompile Include="HdAccountPLGrid.cpp">
+      <Filter>Position</Filter>
+    </ClCompile>
+    <ClCompile Include="HdProductRemainGrid.cpp">
+      <Filter>Position</Filter>
+    </ClCompile>
+    <ClCompile Include="VtPosition.cpp">
+      <Filter>Position</Filter>
+    </ClCompile>
+    <ClCompile Include="VtQuoteManager.cpp">
+      <Filter>Quote</Filter>
+    </ClCompile>
+    <ClCompile Include="ResizableLib\ResizableDialog.cpp">
+      <Filter>ResizableLib</Filter>
+    </ClCompile>
+    <ClCompile Include="ResizableLib\ResizableFormView.cpp">
+      <Filter>ResizableLib</Filter>
+    </ClCompile>
+    <ClCompile Include="ResizableLib\ResizableFrame.cpp">
+      <Filter>ResizableLib</Filter>
+    </ClCompile>
+    <ClCompile Include="ResizableLib\ResizableGrip.cpp">
+      <Filter>ResizableLib</Filter>
+    </ClCompile>
+    <ClCompile Include="ResizableLib\ResizableLayout.cpp">
+      <Filter>ResizableLib</Filter>
+    </ClCompile>
+    <ClCompile Include="ResizableLib\ResizableMDIChild.cpp">
+      <Filter>ResizableLib</Filter>
+    </ClCompile>
+    <ClCompile Include="ResizableLib\ResizableMDIFrame.cpp">
+      <Filter>ResizableLib</Filter>
+    </ClCompile>
+    <ClCompile Include="ResizableLib\ResizableMinMax.cpp">
+      <Filter>ResizableLib</Filter>
+    </ClCompile>
+    <ClCompile Include="ResizableLib\ResizableMsgSupport.cpp">
+      <Filter>ResizableLib</Filter>
+    </ClCompile>
+    <ClCompile Include="ResizableLib\ResizablePage.cpp">
+      <Filter>ResizableLib</Filter>
+    </ClCompile>
+    <ClCompile Include="ResizableLib\ResizablePageEx.cpp">
+      <Filter>ResizableLib</Filter>
+    </ClCompile>
+    <ClCompile Include="ResizableLib\ResizableSheet.cpp">
+      <Filter>ResizableLib</Filter>
+    </ClCompile>
+    <ClCompile Include="ResizableLib\ResizableSheetEx.cpp">
+      <Filter>ResizableLib</Filter>
+    </ClCompile>
+    <ClCompile Include="ResizableLib\ResizableSheetState.cpp">
+      <Filter>ResizableLib</Filter>
+    </ClCompile>
+    <ClCompile Include="ResizableLib\ResizableSplitterWnd.cpp">
+      <Filter>ResizableLib</Filter>
+    </ClCompile>
+    <ClCompile Include="ResizableLib\ResizableState.cpp">
+      <Filter>ResizableLib</Filter>
+    </ClCompile>
+    <ClCompile Include="ResizableLib\ResizableVersion.cpp">
+      <Filter>ResizableLib</Filter>
+    </ClCompile>
+    <ClCompile Include="ResizableLib\ResizableWndState.cpp">
+      <Filter>ResizableLib</Filter>
+    </ClCompile>
+    <ClCompile Include="Sound\Buffer.cpp">
+      <Filter>Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="Sound\errorprint.cpp">
+      <Filter>Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="Sound\Pipe.cpp">
+      <Filter>Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="Sound\PtrFifo.cpp">
+      <Filter>Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="Sound\SoundBase.cpp">
+      <Filter>Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="Sound\SoundFile.cpp">
+      <Filter>Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="Sound\SoundIn.cpp">
+      <Filter>Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="Sound\SoundOut.cpp">
+      <Filter>Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="HdFutureGrid.cpp">
+      <Filter>Symbol</Filter>
+    </ClCompile>
+    <ClCompile Include="HdFuturePage.cpp">
+      <Filter>Symbol</Filter>
+    </ClCompile>
+    <ClCompile Include="HdOptionGrid.cpp">
+      <Filter>Symbol</Filter>
+    </ClCompile>
+    <ClCompile Include="HdOptionPage.cpp">
+      <Filter>Symbol</Filter>
+    </ClCompile>
+    <ClCompile Include="HdSymbolSelecter.cpp">
+      <Filter>Symbol</Filter>
+    </ClCompile>
+    <ClCompile Include="VtOptionMonthSection.cpp">
+      <Filter>Symbol</Filter>
+    </ClCompile>
+    <ClCompile Include="VtProductCategory.cpp">
+      <Filter>Symbol</Filter>
+    </ClCompile>
+    <ClCompile Include="VtProductCategoryManager.cpp">
+      <Filter>Symbol</Filter>
+    </ClCompile>
+    <ClCompile Include="VtProductSection.cpp">
+      <Filter>Symbol</Filter>
+    </ClCompile>
+    <ClCompile Include="VtProductSubSection.cpp">
+      <Filter>Symbol</Filter>
+    </ClCompile>
+    <ClCompile Include="VtSymboGrid.cpp">
+      <Filter>Symbol</Filter>
+    </ClCompile>
+    <ClCompile Include="VtSymbol.cpp">
+      <Filter>Symbol</Filter>
+    </ClCompile>
+    <ClCompile Include="VtSymbolCatPage.cpp">
+      <Filter>Symbol</Filter>
+    </ClCompile>
+    <ClCompile Include="VtSymbolFavoriteDlg.cpp">
+      <Filter>Symbol</Filter>
+    </ClCompile>
+    <ClCompile Include="VtSymbolManager.cpp">
+      <Filter>Symbol</Filter>
+    </ClCompile>
+    <ClCompile Include="VtSymbolMaster.cpp">
+      <Filter>Symbol</Filter>
+    </ClCompile>
+    <ClCompile Include="VtSymbolMasterGrid.cpp">
+      <Filter>Symbol</Filter>
+    </ClCompile>
+    <ClCompile Include="VtSymbolSelector.cpp">
+      <Filter>Symbol</Filter>
+    </ClCompile>
+    <ClCompile Include="VtAccountFundSelector.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="VtStrategyGrid.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="VtStrategyToolWnd.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="VtSysArgGrid.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="VtSystemArgGroup.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="VtSystemGroup.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="VtSystemGroupManager.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="VtSystemProperty.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="VtSystemSetDlg.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="VtUsdEntConfigGrid.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="VtUsdStrategyConfigDlg.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="VtUsdStrategyConfigGrid.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="System\VtSignal.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="System\VtSystem.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="System\VtChannelCrossSystem.cpp">
+      <Filter>System\Regular</Filter>
+    </ClCompile>
+    <ClCompile Include="System\VtChannelJumpSystem.cpp">
+      <Filter>System\Regular</Filter>
+    </ClCompile>
+    <ClCompile Include="System\VtDailyHeightSystem.cpp">
+      <Filter>System\Regular</Filter>
+    </ClCompile>
+    <ClCompile Include="System\VtMacdSystem.cpp">
+      <Filter>System\Regular</Filter>
+    </ClCompile>
+    <ClCompile Include="System\VtMaSystem.cpp">
+      <Filter>System\Regular</Filter>
+    </ClCompile>
+    <ClCompile Include="System\VtOsillaterSystem.cpp">
+      <Filter>System\Regular</Filter>
+    </ClCompile>
+    <ClCompile Include="System\VtStochasticSystem.cpp">
+      <Filter>System\Regular</Filter>
+    </ClCompile>
+    <ClCompile Include="System\VtSystemManager.cpp">
+      <Filter>System\Regular</Filter>
+    </ClCompile>
+    <ClCompile Include="VtQIn1.cpp">
+      <Filter>System\Kosdaq</Filter>
+    </ClCompile>
+    <ClCompile Include="VtQIn2.cpp">
+      <Filter>System\Kosdaq</Filter>
+    </ClCompile>
+    <ClCompile Include="VtQIn3.cpp">
+      <Filter>System\Kosdaq</Filter>
+    </ClCompile>
+    <ClCompile Include="VtQIn4.cpp">
+      <Filter>System\Kosdaq</Filter>
+    </ClCompile>
+    <ClCompile Include="VtAlpha.cpp">
+      <Filter>System\Kospi</Filter>
+    </ClCompile>
+    <ClCompile Include="VtBeta.cpp">
+      <Filter>System\Kospi</Filter>
+    </ClCompile>
+    <ClCompile Include="VtTrUs1.cpp">
+      <Filter>System\Usd</Filter>
+    </ClCompile>
+    <ClCompile Include="VtTrUs2.cpp">
+      <Filter>System\Usd</Filter>
+    </ClCompile>
+    <ClCompile Include="VtTrUs3.cpp">
+      <Filter>System\Usd</Filter>
+    </ClCompile>
+    <ClCompile Include="VtUsComp.cpp">
+      <Filter>System\Usd</Filter>
+    </ClCompile>
+    <ClCompile Include="VtUsH2.cpp">
+      <Filter>System\Usd</Filter>
+    </ClCompile>
+    <ClCompile Include="VtUsI2.cpp">
+      <Filter>System\Usd</Filter>
+    </ClCompile>
+    <ClCompile Include="VtUsIn1.cpp">
+      <Filter>System\Usd</Filter>
+    </ClCompile>
+    <ClCompile Include="VtUsIn2.cpp">
+      <Filter>System\Usd</Filter>
+    </ClCompile>
+    <ClCompile Include="VtUsIn3.cpp">
+      <Filter>System\Usd</Filter>
+    </ClCompile>
+    <ClCompile Include="HdScheduler.cpp">
+      <Filter>Task</Filter>
+    </ClCompile>
+    <ClCompile Include="VtDoubleBufferedQueue.cpp">
+      <Filter>Task</Filter>
+    </ClCompile>
+    <ClCompile Include="VtProgressDlg.cpp">
+      <Filter>Task</Filter>
+    </ClCompile>
+    <ClCompile Include="VtTaskArg.cpp">
+      <Filter>Task</Filter>
+    </ClCompile>
+    <ClCompile Include="VtTaskManager.cpp">
+      <Filter>Task</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\UGCBType.cpp">
+      <Filter>UGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\UGCell.cpp">
+      <Filter>UGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\UGCelTyp.cpp">
+      <Filter>UGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\UGCnrBtn.cpp">
+      <Filter>UGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\UGCTarrw.cpp">
+      <Filter>UGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\UGCtrl.cpp">
+      <Filter>UGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\UGDLType.cpp">
+      <Filter>UGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\UGDrgDrp.cpp">
+      <Filter>UGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\UGDrwHnt.cpp">
+      <Filter>UGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\UGDtaSrc.cpp">
+      <Filter>UGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\UGEdit.cpp">
+      <Filter>UGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\UGEditBase.cpp">
+      <Filter>UGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\ugformat.cpp">
+      <Filter>UGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\uggdinfo.cpp">
+      <Filter>UGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\UGGrid.cpp">
+      <Filter>UGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\UGHint.cpp">
+      <Filter>UGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\ughscrol.cpp">
+      <Filter>UGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\ugLstBox.cpp">
+      <Filter>UGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\UGMEdit.cpp">
+      <Filter>UGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\UGMemMan.cpp">
+      <Filter>UGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\UGMultiS.cpp">
+      <Filter>UGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\ugprint.cpp">
+      <Filter>UGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\ugptrlst.cpp">
+      <Filter>UGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\ugsidehd.cpp">
+      <Filter>UGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\UGStrOp.cpp">
+      <Filter>UGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\ugtab.cpp">
+      <Filter>UGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\UGTopHdg.cpp">
+      <Filter>UGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\ugvscrol.cpp">
+      <Filter>UGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\UGXPThemes.cpp">
+      <Filter>UGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\CellTypes\UGCTafnt.cpp">
+      <Filter>UGrid\CellType</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\CellTypes\UGCTAutoSize.cpp">
+      <Filter>UGrid\CellType</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\CellTypes\UGCTbutn.cpp">
+      <Filter>UGrid\CellType</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\CellTypes\UGCTDropGrid.cpp">
+      <Filter>UGrid\CellType</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\CellTypes\UGCTdtp.cpp">
+      <Filter>UGrid\CellType</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\CellTypes\ugctelps.cpp">
+      <Filter>UGrid\CellType</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\CellTypes\UGCTExpand.cpp">
+      <Filter>UGrid\CellType</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\CellTypes\UGCTLabeled.cpp">
+      <Filter>UGrid\CellType</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\CellTypes\UGCTMail.cpp">
+      <Filter>UGrid\CellType</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\CellTypes\UGCTMailSort.cpp">
+      <Filter>UGrid\CellType</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\CellTypes\UGCTMarquee.cpp">
+      <Filter>UGrid\CellType</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\CellTypes\UGCTmfnt.cpp">
+      <Filter>UGrid\CellType</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\CellTypes\UGCTNote.cpp">
+      <Filter>UGrid\CellType</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\CellTypes\ugctnotewnd.cpp">
+      <Filter>UGrid\CellType</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\CellTypes\UGCTOrder.cpp">
+      <Filter>UGrid\CellType</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\CellTypes\UGCTOutlookHeader.cpp">
+      <Filter>UGrid\CellType</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\CellTypes\UGCTpie.cpp">
+      <Filter>UGrid\CellType</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\CellTypes\UGCTpro1.cpp">
+      <Filter>UGrid\CellType</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\CellTypes\UGCTprog.cpp">
+      <Filter>UGrid\CellType</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\CellTypes\UGCTRado.cpp">
+      <Filter>UGrid\CellType</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\CellTypes\UGCTRemain.cpp">
+      <Filter>UGrid\CellType</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\CellTypes\UGCTsarw.cpp">
+      <Filter>UGrid\CellType</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\CellTypes\UGCTSeperateText.cpp">
+      <Filter>UGrid\CellType</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\CellTypes\UGCTsldr.cpp">
+      <Filter>UGrid\CellType</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\CellTypes\UGCTSpin.cpp">
+      <Filter>UGrid\CellType</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\EditControls\UTEdit.cpp">
+      <Filter>UGrid\EditCtrls</Filter>
+    </ClCompile>
+    <ClCompile Include="UGrid\EditControls\UTMaskedEdit.cpp">
+      <Filter>UGrid\EditCtrls</Filter>
+    </ClCompile>
+    <ClCompile Include="HdWindowManager.cpp">
+      <Filter>UIWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="Ultimate Toolbox\source\UTSampleAbout\HtmlCtrl.cpp">
+      <Filter>UIWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="Ultimate Toolbox\source\OXLayoutManager.cpp">
+      <Filter>UIWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="RemainOrderWnd.cpp">
+      <Filter>UIWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="Ultimate Toolbox\source\UTBStrOp.cpp">
+      <Filter>UIWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="Ultimate Toolbox\source\UTSampleAbout\UTSampleAbout.cpp">
+      <Filter>UIWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="VtAcceptedOrderGrid.cpp">
+      <Filter>UIWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="VtPreOrderGrid.cpp">
+      <Filter>UIWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="VtProductAcceptedGrid.cpp">
+      <Filter>UIWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="BtnST.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="CeXDib.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="DeferPos.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="ETSLayout.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="GenericChildDialog.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="GradientStatic.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="GridButton.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="ShadeButtonST.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="txtnum.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="VtEditCtrl.cpp">
+      <Filter>UIWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="VtLayoutManager.cpp">
+      <Filter>UIWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="VtStringUtil.cpp">
+      <Filter>UIWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="VtWindowManager.cpp">
+      <Filter>UIWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="WndResizer.cpp">
+      <Filter>UIWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="XFormatNumber.cpp">
+      <Filter>UIWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="Xml\pugixml.cpp">
+      <Filter>Xml</Filter>
+    </ClCompile>
+    <ClCompile Include="VtKrClient.cpp">
+      <Filter>Client</Filter>
+    </ClCompile>
+    <ClCompile Include="VtHdCtrl.cpp">
+      <Filter>HDCtrl</Filter>
+    </ClCompile>
+    <ClCompile Include="VtHdClient.cpp">
+      <Filter>HDCtrl</Filter>
+    </ClCompile>
+    <ClCompile Include="Skel\VtGrid.cpp">
+      <Filter>VtGrid</Filter>
+    </ClCompile>
+    <ClCompile Include="VtEntireBand.cpp">
+      <Filter>Index</Filter>
+    </ClCompile>
+    <ClCompile Include="VtFavoritGrid.cpp">
+      <Filter>Symbol</Filter>
+    </ClCompile>
+    <ClCompile Include="VtClient.cpp">
+      <Filter>Client</Filter>
+    </ClCompile>
+    <ClCompile Include="VtAccountGrid.cpp">
+      <Filter>Account</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="SMTrader.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\file_view.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\file_view_hc.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\class_view.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\class_view_hc.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\fileview.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\fileview_hc.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\classview.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\classview_hc.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\explorer.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\explorer_hc.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\sort.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\sort_hc.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\menuimages.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\menuimages_hc.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\output_wnd.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\output_wnd_hc.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\properties_wnd.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\properties_wnd_hc.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\properties.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\properties_hc.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="UserImages.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\SMTraderDoc.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\SMTrader.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\Toolbar.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\Toolbar256.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\sm_logo.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\Arrow2 - Up.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\Gears.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\Search_4.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\search_3.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\search24.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\Arrow2 - Right.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\Plus.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\Minus.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\Arrow2 - Left.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\Arrow2 - Down.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\class_vi.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\bmp00002.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\sort_25.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\properti.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\menu_ima.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\file_vie.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\bmp00003.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\bmp00004.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\class_vi.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\bmp00005.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\calc2.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\bitmap_up_tri.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\bitmap_up.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\bmp00001.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\bitmap4.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\Gears_bitmap.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\set.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\bitmap1.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\bitmap_down_tri.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\bitmap_down.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\bitmap2.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\SMTrader.rc2">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,67 @@
+#pragma once
+#include "Global/TemplateSingleton.h"
+#include <string>
+#include <map>
+#include "VtAccountEvent.h"
+#include "Poco/BasicEvent.h"
+#include "SimpleBinStream.h"
+using same_endian_type = std::is_same<simple::LittleEndian, simple::LittleEndian>;
+using Poco::BasicEvent;
+
+class VtAccount;
+class VtAccountInfo;
+struct VtOrder;
+
+
+class VtAccountManager : public TemplateSingleton<VtAccountManager>
+{
+public:
+	VtAccountManager();
+	~VtAccountManager();
+
+	std::map<std::string, VtAccount*>& GetAccountMap() {
+		return AccountMap;
+	}
+
+	std::map<std::string, VtAccount*> AccountMap;
+	void AddAccount(VtAccount* acnt);
+	VtAccount* FindAccount(std::string acntNo);
+	VtAccount* FindAddAccount(std::string acntNo);
+	VtAccount* FindAccountByName(std::string acntName);
+
+	BasicEvent<VtAccountEventArgs> _AccountListReceivedEvent;
+	void FireAccountListReceived(VtAccountEventArgs&& arg)
+	{
+		_AccountListReceivedEvent(this, arg);
+	}
+
+	void SendEvent();
+
+	VtAccount* ActiveAccount() const { return _ActiveAccount; }
+	void ActiveAccount(VtAccount* val) { _ActiveAccount = val; }
+
+	/// <summary>
+	/// 계좌에 대한 상품별 잔고
+	/// </summary>
+	/// <param name="accountNo"></param>
+	void RequestProductRemain(std::string accountNo);
+	void RequestProductRemain();
+	/// <summary>
+	/// 계좌에 대한 상품별 잔고 수신
+	/// </summary>
+	void ReceivedProductRemain();
+	/// <summary>
+	/// 계좌에 대한 상황 - 예탁금 및 증거금
+	/// </summary>
+	/// <param name="acntNo"></param>
+	void RequestAccountDeposit(std::string acntNo);
+	void RequestAccountDeposit();
+	void UpdateAccountRemain(VtOrder* order);
+	void OnReceiveAccountDeposit(VtAccount* acnt);
+
+	void Save(simple::file_ostream<same_endian_type>& ss);
+	void Load(simple::file_istream<same_endian_type>& ss);
+private:
+	VtAccount* _ActiveAccount = nullptr;
+};
+

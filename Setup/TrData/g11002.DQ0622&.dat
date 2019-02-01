@@ -1,0 +1,23 @@
+[TRINFO]
+TRName    =종목명조회
+TRCode    =g11002.DQ0622&;
+ScreenNo  =     ; 실제 화면 번호
+Server    =1			; 접속 서버
+Compress  =1		; 압축 	0/1
+Encrypt   =0		; 암호화	0/1
+PublicAuth=0		; 공인인증 0/1
+OutputCnt =1		;Fid 출력값 갯수
+DataHeader=5	; 2:해외주문, 3:해외조회, 4:국내주문, 5:국내조회
+
+[INPUT]
+거래소구분		= 0, 1, 0, A; '1'-KRX
+거래소아이디	= 1, 2, 0, A; 종목에 있는 2, 3번째 자리 예) 101FC000  ==> '01'
+선옵구분		= 3, 1, 0, A; "F":선물, "O":옵션
+
+[OUTPUT]
+;ROWCNT1=0, 4, 0, A
+
+@START_OutRec1=*, 4, 0, A
+	종목코드=*, 32, 0, A
+@END_OutRec1
+

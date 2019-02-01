@@ -1,0 +1,28 @@
+CertRSA01			# KISA (한국정보보호진흥원)
+CrossCertCA			# CrossCert (한국전자인증)
+signGATE CA			# KICA, SignGATE (한국정보인증)
+NCASign CA			# NCASign (한국전산원)
+SignKorea CA		# SignKorea (한국증권전산)
+SignKorea Test CA		# SignKorea (한국증권전산)
+{
+	1.2.410.200004.5.1.1.5
+}	
+TradeSignCA			# TrageSign (한국무역정보통신)
+yessignCA 			# Yessign (금융결제원)
+
+CA131000002			# GPKI (행정자치부)
+CA131000001			# GPKI (행정자치부)
+yessignCA-TEST
+yessignCA-Test Class 1
+MND CA				# 국방부
+mpki mnd ca			# 국방부 테스트
+
+signGATE FTCA02		# TEST: KICA, SignGATE (한국정보인증) : RFC3280
+NCATESTSign3280CA	# TEST: NCASign (한국전산원) : RFC3280
+TestTradeSignCA		# TEST: TrageSign (한국무역정보통신) : RFC3280
+
+# RFC3280 Real
+KISA RootCA 1
+CrossCert Certificate Authority
+signGATE CA2
+#NCASignCA

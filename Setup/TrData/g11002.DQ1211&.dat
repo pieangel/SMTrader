@@ -1,0 +1,22 @@
+[TRINFO]
+TRName    =API거래가능품목조회
+TRCode    =g11002.DQ211&;
+ScreenNo  = ; 실제 화면 번호
+Server    =1; 접속 서버
+Compress  =1; 압축 	0/1
+Encrypt   =0; 암호화	0/1
+PublicAuth=0; 공인인증 0/1
+OutputCnt =1;Fid 출력값 갯수
+DataHeader=5; 2:해외주문, 3:해외조회, 4:국내주문, 5:국내조회
+
+[INPUT]
+조회구분	=  0,  1, 0, A ;// 1:전체, 2:통화/금리/지수, 3:주식선물
+조회일자	=  1,  8, 0, A 
+
+
+[OUTPUT]
+
+@START_OutRec1=*, 4, 0, A
+	거래가능품목코드 = *, 10, 0, A ;// 거래가능품목코드 ex) 101F...
+	거래가능품목명   = *, 30, 0, A; // 거래가능품목명   ex)코스피선물
+@END_OutRec1

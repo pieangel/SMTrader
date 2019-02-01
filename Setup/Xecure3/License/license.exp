@@ -1,0 +1,12 @@
+##
+## SoftForum XecureExp license
+## You don't need to modify this file except for the line that begins with '#'.
+##
+VERSION = 2
+KEY = 3F4A2FE7-7138F32B-16576ECF
+SID = BCAEC56F2BA6
+USER = "test"
+PRODUCT = "XecureConnect3.0"
+QTY = 1
+EXPIRE = 2011-08-21
+ISSUED = 2011-05-23

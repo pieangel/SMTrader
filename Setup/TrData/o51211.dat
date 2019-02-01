@@ -1,0 +1,19 @@
+[TRINFO]
+TRName    =해외현재가시세
+TRCode    =o51211;
+ScreenNo  =; 실제 화면 번호
+Server    =1			; 접속 서버
+Compress  =0; 압축 	0/1
+Encrypt   =0; 암호화	0/1
+PublicAuth=0; 공인인증 0/1
+OutputCnt =1;Fid 출력값 갯수
+DataHeader=3; 2:해외주문, 3:해외조회, 4:국내주문, 5:국내조회
+
+[INPUT]
+종목코드=0, 10, 0, A
+
+[OUTPUT]
+@START_OutRec1=2 ; Fid 출력값 갯수
+	길이     	=  0,   5, 0, A ; "strCnt"
+	버퍼		=  5, 467, 0, A ; "strBuff" 
+@END_OutRec1

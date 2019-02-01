@@ -1,0 +1,2614 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#ifndef APSTUDIO_INVOKED
+#include "targetver.h"
+#endif
+#include "afxres.h"
+#include "verrsrc.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// Korean (Korea) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_KOR)
+LANGUAGE LANG_KOREAN, SUBLANG_DEFAULT
+#pragma code_page(949)
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#ifndef APSTUDIO_INVOKED\r\n"
+    "#include ""targetver.h""\r\n"
+    "#endif\r\n"
+    "#include ""afxres.h""\r\n"
+    "#include ""verrsrc.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_KOR)\r\n"
+    "LANGUAGE 18, 1\r\n"
+    "#include ""res\\SMTrader.rc2""  // Microsoft Visual C++ 이외의 다른 도구에서 편집한 리소스입니다.\r\n"
+    "#include ""l.KOR\\afxres.rc""      // 표준 구성 요소\r\n"
+    "#include ""l.KOR\\afxprint.rc""    // 인쇄 미리 보기 리소스\r\n"
+    "#if !defined(_AFXDLL)\r\n"
+    "#include ""l.KOR\\afxribbon.rc""        // MFC 리본 및 컨트롤 막대 리소스\r\n"
+    "#endif\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON                    "res\\sm_logo.ico"
+
+IDR_SMTraderTYPE        ICON                    "res\\SMTraderDoc.ico"
+
+IDI_FILE_VIEW           ICON                    "res\\file_view.ico"
+
+IDI_FILE_VIEW_HC        ICON                    "res\\file_view_hc.ico"
+
+IDI_CLASS_VIEW          ICON                    "res\\class_view.ico"
+
+IDI_CLASS_VIEW_HC       ICON                    "res\\class_view_hc.ico"
+
+IDI_OUTPUT_WND          ICON                    "res\\output_wnd.ico"
+
+IDI_OUTPUT_WND_HC       ICON                    "res\\output_wnd_hc.ico"
+
+IDI_PROPERTIES_WND      ICON                    "res\\properties_wnd.ico"
+
+IDI_PROPERTIES_WND_HC   ICON                    "res\\properties_wnd_hc.ico"
+
+IDI_UP                  ICON                    "res\\Arrow2 - Up.ico"
+
+IDI_SET                 ICON                    "res\\Gears.ico"
+
+IDI_SEARCH4             ICON                    "res\\Search_4.ico"
+
+IDI_SEARCH16            ICON                    "res\\search_3.ico"
+
+IDI_SEARCH              ICON                    "res\\search24.ico"
+
+IDI_RIGHT               ICON                    "res\\Arrow2 - Right.ico"
+
+IDI_PLUS                ICON                    "res\\Plus.ico"
+
+IDI_MINUS               ICON                    "res\\Minus.ico"
+
+IDI_LEFT                ICON                    "res\\Arrow2 - Left.ico"
+
+IDI_DOWN                ICON                    "res\\Arrow2 - Down.ico"
+
+IDI_CLASS_VIEW1         ICON                    "res\\class_vi.ico"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDR_MAINFRAME           BITMAP                  "res\\Toolbar.bmp"
+
+IDR_MAINFRAME_256       BITMAP                  "res\\Toolbar256.bmp"
+
+IDR_SORT                BITMAP                  "res\\sort.bmp"
+
+IDB_SORT_24             BITMAP                  "res\\sort_hc.bmp"
+
+IDB_FILE_VIEW           BITMAP                  "res\\fileview.bmp"
+
+IDB_FILE_VIEW_24        BITMAP                  "res\\fileview_hc.bmp"
+
+IDB_CLASS_VIEW          BITMAP                  "res\\classview.bmp"
+
+IDB_CLASS_VIEW_24       BITMAP                  "res\\classview_hc.bmp"
+
+IDR_EXPLORER            BITMAP                  "res\\explorer.bmp"
+
+IDB_EXPLORER_24         BITMAP                  "res\\explorer_hc.bmp"
+
+IDR_MENU_IMAGES         BITMAP                  "res\\menuimages.bmp"
+
+IDB_MENU_IMAGES_24      BITMAP                  "res\\menuimages_hc.bmp"
+
+IDR_PROPERTIES          BITMAP                  "res\\properties.bmp"
+
+IDB_PROPERTIES_HC       BITMAP                  "res\\properties_hc.bmp"
+
+IDR_PRDT_256            BITMAP                  "res\\bmp00002.bmp"
+
+IDB_SORT_25             BITMAP                  "res\\sort_25.bmp"
+
+IDB_PROPERTIES_HC1      BITMAP                  "res\\properti.bmp"
+
+IDB_MENU_IMAGES_25      BITMAP                  "res\\menu_ima.bmp"
+
+IDB_FILE_VIEW_25        BITMAP                  "res\\file_vie.bmp"
+
+IDB_FILE_VIEW1          BITMAP                  "res\\bmp00003.bmp"
+
+IDB_EXPLORER_25         BITMAP                  "res\\bmp00004.bmp"
+
+IDB_CLASS_VIEW_25       BITMAP                  "res\\class_vi.bmp"
+
+IDB_CLASS_VIEW1         BITMAP                  "res\\bmp00005.bmp"
+
+IDB_CALC_ANIM2          BITMAP                  "res\\calc2.bmp"
+
+IDB_BITMAP_UP_TRI       BITMAP                  "res\\bitmap_up_tri.bmp"
+
+IDB_BITMAP_UP           BITMAP                  "res\\bitmap_up.bmp"
+
+IDB_BITMAP_TOOL2        BITMAP                  "res\\bmp00001.bmp"
+
+IDB_BITMAP_TOOL         BITMAP                  "res\\bitmap4.bmp"
+
+IDB_BITMAP_SET2         BITMAP                  "res\\Gears_bitmap.bmp"
+
+IDB_BITMAP_SET          BITMAP                  "res\\set.bmp"
+
+IDB_BITMAP_OUT          BITMAP                  "res\\bitmap1.bmp"
+
+IDB_BITMAP_DOWN_TRI     BITMAP                  "res\\bitmap_down_tri.bmp"
+
+IDB_BITMAP_DOWN         BITMAP                  "res\\bitmap_down.bmp"
+
+IDB_BITMAP_CANCEL       BITMAP                  "res\\bitmap2.bmp"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Toolbar
+//
+
+IDR_MAINFRAME TOOLBAR 16, 15
+BEGIN
+    BUTTON      ID_FILE_NEW
+    BUTTON      ID_FILE_OPEN
+    BUTTON      ID_FILE_SAVE
+    SEPARATOR
+    BUTTON      ID_EDIT_CUT
+    BUTTON      ID_EDIT_COPY
+    BUTTON      ID_EDIT_PASTE
+    SEPARATOR
+    BUTTON      ID_FILE_PRINT
+    BUTTON      ID_APP_ABOUT
+END
+
+IDR_MAINFRAME_256 TOOLBAR 16, 15
+BEGIN
+    BUTTON      ID_FILE_NEW
+    BUTTON      ID_FILE_OPEN
+    BUTTON      ID_FILE_SAVE
+    SEPARATOR
+    BUTTON      ID_EDIT_CUT
+    BUTTON      ID_EDIT_COPY
+    BUTTON      ID_EDIT_PASTE
+    SEPARATOR
+    BUTTON      ID_FILE_PRINT
+    BUTTON      ID_APP_ABOUT
+END
+
+IDR_SORT TOOLBAR 16, 15
+BEGIN
+    BUTTON      ID_SORT_MENU
+    BUTTON      ID_NEW_FOLDER
+END
+
+IDR_EXPLORER TOOLBAR 16, 15
+BEGIN
+    BUTTON      ID_PROPERTIES
+END
+
+IDR_MENU_IMAGES TOOLBAR 16, 15
+BEGIN
+    BUTTON      ID_WINDOW_MANAGER
+    SEPARATOR
+    BUTTON      ID_WINDOW_CASCADE
+    BUTTON      ID_WINDOW_TILE_HORZ
+    BUTTON      ID_TOOLS_MACRO
+    BUTTON      ID_SORTING_SORTALPHABETIC
+    BUTTON      ID_SORTING_SORTBYTYPE
+    BUTTON      ID_SORTING_SORTBYACCESS
+    BUTTON      ID_SORTING_GROUPBYTYPE
+END
+
+IDR_PROPERTIES TOOLBAR 16, 15
+BEGIN
+    BUTTON      ID_EXPAND_ALL
+    BUTTON      ID_SORTPROPERTIES
+    BUTTON      ID_PROPERTIES1
+    BUTTON      ID_PROPERTIES2
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MAINFRAME MENU
+BEGIN
+    POPUP "파일(&F)"
+    BEGIN
+        MENUITEM "서버메시지",                       ID_FILE_SERVER_MSG
+        MENUITEM "저장화면 열기",                     ID_FILE_OPEN_SCREEN
+        MENUITEM "끝내기(&X)",                     ID_APP_EXIT
+        MENUITEM "서버시간에맞추기",                    ID_SETTIME_TO_SERVER
+        MENUITEM "로그인테스트",                      ID_LOGIN_TEST
+    END
+    POPUP "계좌"
+    BEGIN
+        MENUITEM "서브계좌관리",                      ID_ACCOUNT_MANAGE_SUBACCOUNT
+        MENUITEM "예탁잔고 및 증거금",                  ID_ACCOUNT_SHOW_DEPOSIT
+        MENUITEM "계좌비밀번호관리",                    ID_ACCOUNT_MANAGE_PASSWORD
+    END
+    POPUP "주문"
+    BEGIN
+        MENUITEM "주문창",                         ID_ORDER_WINDOW
+        MENUITEM "미니잔고내역",                      ID_ORDER_BALANCE
+        MENUITEM "주문리스트",                       ID_ORDER_LIST
+        MENUITEM "스탑주문리스트",                     ID_ORDER_STOPLIST
+    END
+    POPUP "차트"
+    BEGIN
+        MENUITEM "차트주문",                        ID_CHART_ORDER
+        MENUITEM "스프레드차트",                      ID_CHART_SPREAD
+    END
+    POPUP "다계좌"
+    BEGIN
+        MENUITEM "다계좌관리",                       ID_MULTIACCOUNT_MANAGE
+        MENUITEM "다계좌주문창",                      ID_MULTIACCOUNT_WINDOW
+        MENUITEM "다계좌미니잔고",                     ID_MULTIACCOUNT_BRIEF_BALANCE
+    END
+    POPUP "전략"
+    BEGIN
+        MENUITEM "전략툴바",                        ID_STRATEGY_TOOLBAR
+    END
+END
+
+IDR_SMTraderTYPE MENU
+BEGIN
+    POPUP "파일(&F)"
+    BEGIN
+        MENUITEM "서버메시지",                       ID_FILE_SERVER_MSG
+        MENUITEM "저장화면 열기",                     ID_FILE_OPEN_SCREEN
+        MENUITEM "끝내기(&X)",                     ID_APP_EXIT
+        MENUITEM "로그인테스트",                      ID_LOGIN_TEST
+    END
+    POPUP "계좌"
+    BEGIN
+        MENUITEM "서브계좌관리",                      ID_ACCOUNT_MANAGE_SUBACCOUNT
+        MENUITEM "예탁잔고 및 증거금",                  ID_ACCOUNT_SHOW_DEPOSIT
+        MENUITEM "계좌비밀번호관리",                    ID_ACCOUNT_MANAGE_PASSWORD
+    END
+    POPUP "주문"
+    BEGIN
+        MENUITEM "주문창",                         ID_ORDER_WINDOW
+        MENUITEM "미니잔고내역",                      ID_ORDER_BALANCE
+        MENUITEM "주문리스트",                       ID_ORDER_LIST
+        MENUITEM "스탑주문리스트",                     ID_ORDER_STOPLIST
+    END
+    POPUP "차트"
+    BEGIN
+        MENUITEM "차트주문",                        ID_CHART_WINDOW
+        MENUITEM "스프레드차트",                      ID_CHART_SPREAD
+        MENUITEM "데이터수집",                       32787
+    END
+    POPUP "다계좌"
+    BEGIN
+        MENUITEM "다계좌관리",                       ID_MULTIACCOUNT_MANAGE
+        MENUITEM "다계좌주문창",                      ID_MULTIACCOUNT_WINDOW
+        MENUITEM "다계좌미니잔고",                     ID_MULTIACCOUNT_BRIEF_BALANCE
+    END
+    POPUP "전략"
+    BEGIN
+        MENUITEM "전략툴바",                        ID_STRATEGY_TOOLBAR
+    END
+END
+
+IDR_POPUP_EDIT MENU
+BEGIN
+    POPUP "편집"
+    BEGIN
+        MENUITEM "잘라내기(&T)\tCtrl+X",            ID_EDIT_CUT
+        MENUITEM "복사(&C)\tCtrl+C",              ID_EDIT_COPY
+        MENUITEM "붙여넣기(&P)\tCtrl+V",            ID_EDIT_PASTE
+    END
+END
+
+IDR_POPUP_SORT MENU
+BEGIN
+    POPUP "정렬"
+    BEGIN
+        MENUITEM "사전순 정렬(&S)",                  ID_SORTING_SORTALPHABETIC
+        MENUITEM "형식별 정렬(&T)",                  ID_SORTING_SORTBYTYPE
+        MENUITEM "액세스별 정렬(&E)",                 ID_SORTING_SORTBYACCESS
+        MENUITEM "형식별 그룹화(&Y)",                 ID_SORTING_GROUPBYTYPE
+    END
+END
+
+IDR_POPUP_EXPLORER MENU
+BEGIN
+    POPUP "탐색기"
+    BEGIN
+        MENUITEM "열기(&O)",                      ID_OPEN
+        MENUITEM "연결 프로그램(&W)....",             ID_OPEN_WITH
+        MENUITEM SEPARATOR
+        MENUITEM "컴파일(&C)",                     ID_DUMMY_COMPILE
+        MENUITEM SEPARATOR
+        MENUITEM "잘라내기(&T)\tCtrl+X",            ID_EDIT_CUT
+        MENUITEM "복사(&C)\tCtrl+C",              ID_EDIT_COPY
+        MENUITEM "제거(&R)",                      ID_EDIT_CLEAR
+        MENUITEM SEPARATOR
+        MENUITEM "속성(&P)...",                   ID_PROPERTIES
+    END
+END
+
+IDR_OUTPUT_POPUP MENU
+BEGIN
+    POPUP "팝업"
+    BEGIN
+        MENUITEM "복사(&C)",                      ID_EDIT_COPY
+        MENUITEM "지우기(&C)",                     ID_EDIT_CLEAR
+        MENUITEM SEPARATOR
+        MENUITEM "숨기기(&H)",                     ID_VIEW_OUTPUTWND
+    END
+END
+
+IDR_HELP_MENU MENU
+BEGIN
+    MENUITEM "SMTrader 정보(&A)...",          ID_APP_ABOUT
+END
+
+IDR_THEME_MENU MENU
+BEGIN
+    MENUITEM "Office 2007(파랑 스타일)(&B)",     ID_VIEW_APPLOOK_OFF_2007_BLUE
+    MENUITEM "Office 2007(검정 스타일)(&L)",     ID_VIEW_APPLOOK_OFF_2007_BLACK
+    MENUITEM "Office 2007(은색 스타일)(&S)",     ID_VIEW_APPLOOK_OFF_2007_SILVER
+    MENUITEM "Office 2007(바다색 스타일)(&A)",    ID_VIEW_APPLOOK_OFF_2007_AQUA
+    MENUITEM "Windows 7(&D)",               ID_VIEW_APPLOOK_WINDOWS_7
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Accelerator
+//
+
+IDR_MAINFRAME ACCELERATORS
+BEGIN
+    "N",            ID_FILE_NEW,            VIRTKEY, CONTROL
+    "O",            ID_FILE_OPEN,           VIRTKEY, CONTROL
+    "S",            ID_FILE_SAVE,           VIRTKEY, CONTROL
+    "P",            ID_FILE_PRINT,          VIRTKEY, CONTROL
+    "Z",            ID_EDIT_UNDO,           VIRTKEY, CONTROL
+    "X",            ID_EDIT_CUT,            VIRTKEY, CONTROL
+    "C",            ID_EDIT_COPY,           VIRTKEY, CONTROL
+    "V",            ID_EDIT_PASTE,          VIRTKEY, CONTROL
+    VK_BACK,        ID_EDIT_UNDO,           VIRTKEY, ALT
+    VK_DELETE,      ID_EDIT_CUT,            VIRTKEY, SHIFT
+    VK_INSERT,      ID_EDIT_COPY,           VIRTKEY, CONTROL
+    VK_INSERT,      ID_EDIT_PASTE,          VIRTKEY, SHIFT
+    VK_F6,          ID_NEXT_PANE,           VIRTKEY 
+    VK_F6,          ID_PREV_PANE,           VIRTKEY, SHIFT
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ABOUTBOX DIALOGEX 0, 0, 170, 62
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "SMTrader 정보"
+FONT 9, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    ICON            IDR_MAINFRAME,IDC_STATIC,14,14,21,20
+    LTEXT           "SMTrader, 버전 1.0",IDC_STATIC,42,14,114,8,SS_NOPREFIX
+    LTEXT           "Copyright (C) 2019",IDC_STATIC,42,26,114,8
+    DEFPUSHBUTTON   "확인",IDOK,113,41,50,14,WS_GROUP
+END
+
+IDD_LOGIN_MAIN DIALOGEX 0, 0, 163, 76
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "SMTrader 로그인"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "로그인",IDOK,83,58,31,14
+    PUSHBUTTON      "취소",IDCANCEL,121,58,27,14
+    LTEXT           "아이디",IDC_STATIC,8,5,54,8
+    LTEXT           "비밀번호",IDC_STATIC,8,24,56,8
+    LTEXT           "공인인증비번",IDC_STATIC,8,41,57,8
+    EDITTEXT        IDC_EDIT_ID,75,4,81,14,ES_CENTER | ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_PWD,75,20,81,14,ES_CENTER | ES_PASSWORD | ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_CERT,75,38,81,14,ES_CENTER | ES_PASSWORD
+    CONTROL         "저장",IDC_CHECK_SAVE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,58,31,10
+END
+
+IDD_HDF_CTRL DIALOGEX 0, 0, 137, 59
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dialog"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+END
+
+IDD_ZOOMSCROLLTRACK2_DIALOG DIALOGEX 0, 0, 529, 233
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_APPWINDOW
+CAPTION "Zooming and Scrolling with Track Line (2)"
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    CONTROL         "",IDC_ChartViewer,"Static",SS_BITMAP,92,4,15,13
+    CONTROL         "Pointer",IDC_PointerPB,"Button",BS_AUTORADIOBUTTON | BS_ICON | BS_PUSHLIKE | WS_GROUP,8,8,76,16
+    CONTROL         "Zoom In",IDC_ZoomInPB,"Button",BS_AUTORADIOBUTTON | BS_ICON | BS_PUSHLIKE,8,24,76,16
+    CONTROL         "Zoom Out",IDC_ZoomOutPB,"Button",BS_AUTORADIOBUTTON | BS_ICON | BS_PUSHLIKE,8,40,76,16
+    SCROLLBAR       IDC_HScrollBar,92,223,433,10
+    CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDFRAME,3,1,85,230
+    CONTROL         "",IDC_STARTDATE,"SysDateTimePick32",DTS_RIGHTALIGN | WS_TABSTOP,7,126,76,13
+    CONTROL         "",IDC_ENDDATE,"SysDateTimePick32",DTS_RIGHTALIGN | WS_TABSTOP,7,166,76,13
+    LTEXT           "Start Date",IDC_STATIC,8,116,65,9
+    LTEXT           "End Date",IDC_STATIC,8,156,65,9
+END
+
+IDD_VROBO_FORM DIALOGEX 0, 0, 320, 200
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
+FONT 9, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+END
+
+IDD_TIME_TOOLBAR DIALOGEX 0, 0, 320, 13
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    PUSHBUTTON      "월",IDC_BTN_MONTH,43,0,16,12
+    PUSHBUTTON      "주",IDC_BTN_WEEK,58,0,15,12
+    PUSHBUTTON      "일",IDC_BTN_DAY,73,0,15,12
+    DEFPUSHBUTTON   "분",IDC_BTN_MIN,88,0,13,12
+    COMBOBOX        IDC_COMBO_TIME,102,0,32,196,CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "틱",IDC_BTN_TICK,134,0,17,12
+    COMBOBOX        IDC_COMBO_TICK,152,0,37,196,CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "시간설정 :",IDC_STATIC_TIME,5,1,34,11
+    LTEXT           "시스템 :",IDC_STATIC_SYSTEM,195,1,28,11
+    COMBOBOX        IDC_COMBO_SYSTEM,228,0,91,196,CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+END
+
+IDD_SYSTEM_USD DIALOGEX 0, 0, 233, 274
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "전략설정창"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "전략",IDC_STATIC,5,2,16,8
+    COMBOBOX        IDC_COMBO_STRATEGY,29,0,89,240,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "계좌",IDC_BTN_ACCOUNT,1,14,27,14
+    LTEXT           "",IDC_STATIC_ACCOUNT,30,15,61,13,WS_BORDER
+    PUSHBUTTON      "종목",IDC_BTN_SYMBOL,92,14,27,14
+    LTEXT           "",IDC_STATIC_SYMBOL,121,15,50,13,WS_BORDER
+    LTEXT           "손익:",IDC_STATIC,177,17,22,8
+    RTEXT           "0",IDC_STATIC_PL,198,15,31,12,WS_BORDER
+    LTEXT           "진입시간",IDC_STATIC,4,33,32,8
+    CONTROL         "",IDC_DP_ENT_BEGIN,"SysDateTimePick32",DTS_RIGHTALIGN | DTS_UPDOWN | WS_TABSTOP | 0x8,40,29,64,15
+    LTEXT           "~",IDC_STATIC,108,32,9,8
+    CONTROL         "",IDC_DP_ENT_END,"SysDateTimePick32",DTS_RIGHTALIGN | DTS_UPDOWN | WS_TABSTOP | 0x8,118,30,63,15
+    LTEXT           "진입횟수",IDC_STATIC,182,34,32,8
+    EDITTEXT        IDC_EDIT_ENT_MAX,214,30,15,14,ES_RIGHT | ES_AUTOHSCROLL
+    LTEXT           "Static",IDC_STATIC_LIQ_GRID,2,111,229,46
+    LTEXT           "청산시간",IDC_STATIC,4,98,32,8
+    CONTROL         "",IDC_DP_LIQ,"SysDateTimePick32",DTS_RIGHTALIGN | DTS_UPDOWN | WS_TABSTOP | 0x8,40,94,66,15
+    LTEXT           "Static",IDC_STATIC_ENT_GRID,2,46,229,46
+    LTEXT           "최소손익",IDC_STATIC,93,177,30,8
+    EDITTEXT        IDC_EDIT_TS_PL,127,174,56,14,ES_RIGHT | ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_TS_PERCENT,184,174,24,14,ES_RIGHT | ES_AUTOHSCROLL
+    LTEXT           "%",IDC_STATIC,213,176,11,8
+    CONTROL         "손절",IDC_CHECK_LOSSCUT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,1,190,50,10
+    EDITTEXT        IDC_EDIT_LOSSCUT,127,188,56,14,ES_RIGHT | ES_AUTOHSCROLL
+    COMBOBOX        IDC_COMBO_LOSSCUT_TYPE,184,189,25,103,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "트레일링스탑",IDC_CHECK_TS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,1,177,63,10
+    DEFPUSHBUTTON   "적용",IDC_BTN_APPLY,121,0,31,13
+    PUSHBUTTON      "기타변수",IDC_BTN_EXTRA_VAR,1,216,231,12
+    LTEXT           "Static",IDC_STATIC_ARG,2,228,229,45
+    CONTROL         "목표이익",IDC_CHECK_PROFIT_TARGET,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,1,203,50,10
+    EDITTEXT        IDC_EDIT_PROFIT_TARGET,127,202,56,14,ES_RIGHT | ES_AUTOHSCROLL
+    COMBOBOX        IDC_COMBO_PROFIT_TARGET,184,203,25,64,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "정지시 잔고청산",IDC_CK_LIQ_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,119,97,70,10
+    LTEXT           "주문",IDC_STATIC,5,162,16,8
+    EDITTEXT        IDC_EDIT_ORDER_AMT,24,159,30,14,ES_RIGHT | ES_AUTOHSCROLL
+    CONTROL         "",IDC_SPIN_ORDER_AMT,"msctls_updown32",UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS,59,159,10,14
+    LTEXT           "당일진입",IDC_STATIC,163,162,30,8
+    RTEXT           "0",IDC_STATIC_ENT_CNT_TODAY,198,160,31,12,WS_BORDER
+    LTEXT           "최종진입가격",IDC_STATIC,64,162,45,8
+    RTEXT           "0",IDC_STATIC_LAST_ENT_PRICE,113,160,44,12,WS_BORDER
+    CONTROL         "실행",IDC_CHECK_RUN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,161,2,31,10
+END
+
+IDD_SYSTEM_PROPERTY DIALOGEX 0, 0, 140, 220
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "시스템설정"
+FONT 8, "@굴림", 400, 0, 0x0
+BEGIN
+    CONTROL         "",IDC_SYSTEM_PROP,"MfcPropertyGrid",0x100,7,7,126,206
+END
+
+IDD_SYS_PROP DIALOGEX 0, 0, 171, 239
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "시스템 설정"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    CONTROL         "",IDC_SYS_PROP,"MfcPropertyGrid",0x100,0,0,170,238
+END
+
+IDD_SYMBOL_SELECTOR DIALOGEX 0, 0, 403, 201
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+CAPTION "종목선택"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    CONTROL         "",IDC_TAB_CATEGORY,"SysTabControl32",0x0,0,0,326,158
+END
+
+IDD_SYMBOL_SELECTER_HD DIALOGEX 0, 0, 175, 262
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "종목선택"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "닫기",IDOK,125,248,50,14
+    CONTROL         "",IDC_TAB_FUTOPT,"SysTabControl32",0x0,1,2,175,246
+END
+
+IDD_SYMBOL_FAVORITE DIALOGEX 0, 0, 515, 183
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_CAPTION | WS_SYSMENU
+CAPTION "즐겨찾기"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    CONTROL         "",IDC_TAB_SYMBOL,"SysTabControl32",0x0,0,0,287,182
+    LTEXT           "Static",IDC_STATIC_FAVORITE,323,15,192,167,WS_BORDER
+    PUSHBUTTON      "<",IDC_BTN_OUT_ONE,289,82,31,14
+    PUSHBUTTON      "<<",IDC_BTN_OUT_ALL,289,101,31,14
+    PUSHBUTTON      "내림",IDC_BTN_DOWN,422,0,41,14
+    PUSHBUTTON      "올림",IDC_BTN_UP,471,0,43,14
+    LTEXT           "선택 종목",IDC_STATIC,324,3,32,8
+    PUSHBUTTON      ">",IDC_BTN_IN_ONE,289,64,31,14
+    PUSHBUTTON      "확인",ID_OK,290,164,29,14
+END
+
+IDD_SYM_CAT6 DIALOGEX 0, 0, 309, 176
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+END
+
+IDD_SYM_CAT5 DIALOGEX 0, 0, 309, 176
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+END
+
+IDD_SYM_CAT4 DIALOGEX 0, 0, 309, 176
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+END
+
+IDD_SYM_CAT3 DIALOGEX 0, 0, 309, 176
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+END
+
+IDD_SYM_CAT2 DIALOGEX 0, 0, 309, 176
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+END
+
+IDD_SYM_CAT1 DIALOGEX 0, 0, 357, 177
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+END
+
+IDD_SUBACNT DIALOGEX 0, 0, 311, 176
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_CAPTION | WS_SYSMENU
+CAPTION "서브계좌관리"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+END
+
+IDD_STRATEGE_TOOLS DIALOGEX 0, 0, 80, 267
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+CAPTION "전략"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "",IDC_STATIC_STRATEGY,0,0,80,266,WS_BORDER
+END
+
+IDD_REGISTER_USER DIALOGEX 0, 0, 257, 174
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "로그인"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    EDITTEXT        IDC_EDIT_USER_ID,137,90,96,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_USER_PWD,137,109,96,14,ES_PASSWORD | ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "접속",IDC_BTN_LOGIN,97,142,38,14
+    PUSHBUTTON      "종료",IDOK,142,142,42,14
+    PUSHBUTTON      "등록",IDC_BTN_REGISTER_USER,188,142,41,14
+    LTEXT           "사용자아이디",IDC_STATIC,78,93,57,8
+    LTEXT           "비밀번호",IDC_STATIC,78,112,58,8
+    CTEXT           "CoinTV-VRobo",IDC_STATIC,28,15,71,11
+    CONTROL         "",IDC_STATIC,"Static",SS_BITMAP,21,30,15,13
+END
+
+IDD_REALTIMETRACK_DIALOG DIALOGEX 0, 0, 492, 345
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_APPWINDOW
+CAPTION "Realtime Chart with Track Line"
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    CONTROL         "Run",IDC_RunPB,"Button",BS_AUTORADIOBUTTON | BS_ICON | BS_PUSHLIKE | WS_GROUP,7,8,73,16
+    CONTROL         "Freeze",IDC_FreezePB,"Button",BS_AUTORADIOBUTTON | BS_ICON | BS_PUSHLIKE,7,24,73,16
+    COMBOBOX        IDC_UpdatePeriod,8,71,73,72,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "",IDC_ChartViewer,"Static",SS_BITMAP,88,4,15,15
+    CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDFRAME,3,4,81,167
+    LTEXT           "Update Period (ms)",IDC_STATIC,8,58,68,12,SS_CENTERIMAGE
+    LTEXT           "Alpha",IDC_STATIC,11,120,30,12,SS_CENTERIMAGE
+    LTEXT           "Beta",IDC_STATIC,12,136,30,12,SS_CENTERIMAGE
+    LTEXT           "Gamma",IDC_STATIC,11,152,30,12,SS_CENTERIMAGE
+    LTEXT           "",IDC_AlphaValue,44,120,36,12,SS_CENTERIMAGE | SS_SUNKEN
+    LTEXT           "",IDC_GammaValue,44,152,36,12,SS_CENTERIMAGE | SS_SUNKEN
+    LTEXT           "",IDC_BetaValue,44,136,36,12,SS_CENTERIMAGE | SS_SUNKEN
+END
+
+IDD_REAL_TICK DIALOGEX 0, 0, 103, 389
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_VISIBLE | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "",IDC_STATIC_REAL_TICK,0,0,103,388,WS_BORDER
+END
+
+IDD_PROGRESS DIALOGEX 0, 0, 309, 42
+STYLE DS_SETFONT | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "Static",IDC_STATIC_STATE,0,14,309,14,WS_BORDER
+    LTEXT           "Static",IDC_STATIC_TASK,0,0,309,14,WS_BORDER
+    CONTROL         "",IDC_PROGRESS_CTRL,"msctls_progress32",WS_BORDER,0,28,309,14
+END
+
+IDD_ORDERGRID_CONFIG DIALOGEX 0, 0, 211, 134
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "주문영역설정"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    PUSHBUTTON      "닫기",IDOK,171,115,34,14
+    PUSHBUTTON      "취소",IDCANCEL,127,115,36,14,NOT WS_VISIBLE
+    GROUPBOX        "표시설정",IDC_STATIC,7,6,83,57
+    GROUPBOX        "종목체결",IDC_STATIC,7,67,84,63
+    GROUPBOX        "주문영역설정",IDC_STATIC,98,6,105,57
+    CONTROL         "이익/손실 설정 보이기",IDC_CHECK_SHOW_PLCONFIGWND,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,105,79,89,10
+    CONTROL         "'주문'열 표시",IDC_CHECK_SHOW_ORDERCOL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,16,17,57,10
+    CONTROL         "'STOP'열 표시",IDC_CHECK_SHOW_STOPCOL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,16,31,60,10
+    CONTROL         "'건수'열 표시",IDC_CHECK_SHOW_COUNTCOL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,16,45,57,10
+    CONTROL         "종목체결 표시",IDC_CHECK_SHOW_TICKWND,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,16,80,62,10
+    LTEXT           "위치:",IDC_STATIC,17,98,18,8
+    CONTROL         "좌",IDC_RADIO_TICKLEFT,"Button",BS_AUTORADIOBUTTON,41,96,20,10
+    CONTROL         "우",IDC_RADIO_TICKRIGHT,"Button",BS_AUTORADIOBUTTON,68,96,20,10
+    LTEXT           "체결표시수:",IDC_STATIC,18,112,40,8
+    EDITTEXT        IDC_EDIT_TICK_COUNT,64,108,20,14,ES_RIGHT | ES_AUTOHSCROLL
+    LTEXT           "기본 높이 : 18, 너비 : 58",IDC_STATIC,104,18,81,8
+    LTEXT           "높이:",IDC_STATIC,103,31,18,8
+    EDITTEXT        IDC_EDIT_CELL_HEIGHT,125,28,22,14,ES_RIGHT | ES_AUTOHSCROLL
+    LTEXT           "너비:",IDC_STATIC,153,32,18,8
+    EDITTEXT        IDC_EDIT_CELL_WIDTH,173,28,22,14,ES_RIGHT | ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "적용",ID_APPLY,170,45,26,14
+END
+
+IDD_ORDER_WND_HD DIALOGEX 0, 0, 575, 237
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_MINIMIZEBOX | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+CAPTION "주문창"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    PUSHBUTTON      "",IDC_BTN_SHOW_LEFT,0,0,15,14
+    PUSHBUTTON      "",IDC_BTN_SHOWRIGHT,306,0,15,14
+    PUSHBUTTON      "",IDC_BTN_DELWND,269,0,15,14
+    PUSHBUTTON      "",IDC_BTN_ADDWND,287,0,15,14
+    DEFPUSHBUTTON   "조회",IDC_BTN_GET_ACNT_INFO,123,0,21,14,BS_FLAT
+    COMBOBOX        IDC_COMBO_ACCOUNT_HD,40,0,83,256,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "계좌",IDC_STATIC_ACNT,19,3,16,8
+    LTEXT           "계좌이름",IDC_STATIC_ACNT_NAME,146,3,53,8
+    PUSHBUTTON      "펀드편집창",IDC_BTN_EDIT_FUND,124,38,60,14
+END
+
+IDD_ORDER_WND DIALOGEX 0, 0, 541, 484
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+EXSTYLE WS_EX_CONTROLPARENT
+CAPTION "주문창"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    GROUPBOX        "Static",IDC_STATIC_LEFT,0,0,48,40
+    GROUPBOX        "Static",IDC_STATIC_CENTER,106,0,48,40
+    GROUPBOX        "Static",IDC_STATIC_RIGHT,432,0,48,40
+END
+
+IDD_ORDER_TOTAL DIALOGEX 0, 0, 639, 416
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+CAPTION "주문보기"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "계좌번호:",IDC_STATIC,7,5,34,8
+    COMBOBOX        IDC_COMBO_ACCOUNT,44,2,81,126,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    EDITTEXT        IDC_EDIT_ACCOUNT_NAME,128,1,84,14,ES_AUTOHSCROLL
+    CONTROL         "상태필터",IDC_MFCBUTTON_STATE,"MfcButton",WS_TABSTOP,237,2,50,14
+    LTEXT           "종목필터:",IDC_STATIC,297,4,33,8
+    COMBOBOX        IDC_COMBO_SYMBOL,331,3,48,30,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "취소주문",IDC_CHECK_SHOW_CANCEL_ORDER,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,393,6,45,10
+    CONTROL         "실계좌",IDC_CHECK_SHOW_REAL_ACCOUNT_ONLY,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,454,7,38,10
+    LTEXT           "",IDC_STATIC_ORDER,0,18,639,397,0,WS_EX_CLIENTEDGE
+END
+
+IDD_ORDER_SETTLE DIALOGEX 0, 0, 105, 289
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    CONTROL         "이익실현",IDC_CHECK_PROFIT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,15,45,10
+    EDITTEXT        IDC_EDIT_PROFIT,50,13,41,14,ES_RIGHT | ES_AUTOHSCROLL
+    CONTROL         "",IDC_SPIN_PROFIT,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS,80,12,10,14
+    CONTROL         "손실제한",IDC_CHECK_LOSS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,28,45,10
+    EDITTEXT        IDC_EDIT_LOSS,50,26,41,14,ES_RIGHT | ES_AUTOHSCROLL
+    CONTROL         "",IDC_SPIN_LOSS,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS,80,26,10,14
+    PUSHBUTTON      "적용",IDC_BUTTON_PROFIT_LOSS,50,40,41,14
+    CONTROL         "시장가",IDC_RADIO_ATMARKET,"Button",BS_AUTORADIOBUTTON,6,69,38,10
+    CONTROL         "STOP",IDC_RADIO_STOP,"Button",BS_AUTORADIOBUTTON,6,82,33,10
+    EDITTEXT        IDC_EDIT_PS_STOP,50,80,41,14,ES_RIGHT | ES_AUTOHSCROLL
+    CONTROL         "",IDC_SPIN_PS_STOP,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS,80,80,10,14
+    CONTROL         "트레일링 스탑",IDC_CHECK_TRAIL_STOP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,102,62,10
+    LTEXT           "기준손절틱",IDC_STATIC,6,125,38,8
+    EDITTEXT        IDC_EDIT_TS_DEFAULT_LOSS,50,121,41,14,ES_RIGHT | ES_AUTOHSCROLL
+    CONTROL         "",IDC_SPIN_TS_DEFAULT_LOSS,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS,80,121,11,14
+    LTEXT           "이익",IDC_STATIC,6,140,16,8
+    EDITTEXT        IDC_EDIT_TS_PROFIT,50,137,41,14,ES_RIGHT | ES_AUTOHSCROLL
+    CONTROL         "",IDC_SPIN_PS_PROFIT,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS,80,137,11,14
+    LTEXT           "추적",IDC_STATIC,6,155,16,8
+    EDITTEXT        IDC_EDIT_TS_TRAIL,50,152,41,14,ES_RIGHT | ES_AUTOHSCROLL
+    CONTROL         "",IDC_SPIN_TS,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS,80,152,11,14
+    CONTROL         "시장가",IDC_RADIO_TS_ATMARKET,"Button",BS_AUTORADIOBUTTON,6,185,38,10
+    CONTROL         "STOP",IDC_RADIO_TS_STOP,"Button",BS_AUTORADIOBUTTON,6,200,33,10
+    EDITTEXT        IDC_EDIT_TS_STOP,50,198,41,14,ES_RIGHT | ES_AUTOHSCROLL
+    CONTROL         "",IDC_SPIN_TS_STOP,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS,80,177,10,14
+    LTEXT           "체결시 이익/손실설정",IDC_STATIC,5,2,85,8
+    LTEXT           "(평균가기준)",IDC_STATIC,6,43,43,8
+    GROUPBOX        "주문유형",IDC_STATIC,1,58,91,40
+    GROUPBOX        "",IDC_STATIC,1,114,92,55
+    GROUPBOX        "주문유형",IDC_STATIC,2,172,91,46
+END
+
+IDD_ORDER_RIGHT_HD DIALOGEX 0, 0, 111, 345
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_VISIBLE | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    CONTROL         "",IDC_TAB_CONFIG,"SysTabControl32",0x0,0,0,111,203
+END
+
+IDD_ORDER_RIGHT_CONFIG_HD DIALOGEX 0, 0, 101, 244
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    CONTROL         "마우스 선택",IDC_RADIO_BY_MOUSE_SELECT,"Button",BS_AUTORADIOBUTTON | WS_GROUP,10,51,72,10
+    CONTROL         "마우스 위치",IDC_RADIO_BY_MOUSE_POS,"Button",BS_AUTORADIOBUTTON,10,64,75,10
+    CONTROL         "마지막 주문 취소",IDC_CANCEL_LAST_ORDER,"Button",BS_AUTORADIOBUTTON | WS_DISABLED | WS_GROUP,10,94,78,10
+    CONTROL         "선택위치 주문취소",IDC_CANCEL_SELECTED,"Button",BS_AUTORADIOBUTTON,10,108,80,10
+    CONTROL         "원클릭",IDC_ONE_CLICK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,11,43,10
+    CONTROL         "Space Bar 주문",IDC_SPACEBAR_ORDER,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,25,72,10
+    LTEXT           "정렬 : Alt Key",IDC_STATIC,22,37,57,8
+    GROUPBOX        "",IDC_STATIC,5,45,89,33
+    GROUPBOX        "오른쪽 마우스 클릭",IDC_STATIC,5,82,89,42
+    CONTROL         "손익 천단위 표시",IDC_FORMAT_THOUSAND,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,126,76,10
+    GROUPBOX        "설정",IDC_STATIC,0,0,100,244
+END
+
+IDD_ORDER_RIGHT_CANCEL_HD DIALOGEX 0, 0, 99, 244
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "종목",IDC_STATIC,10,12,16,8
+    LTEXT           "가격",IDC_STATIC,9,29,16,8
+    PUSHBUTTON      "마지막취소",IDC_BTN_CANCEL_LAST,48,9,50,14
+    CONTROL         "뒤부터",IDC_CK_FROMRECENT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,55,26,38,10
+    EDITTEXT        IDC_EDIT_CANCEL,7,45,40,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "선택취소",IDC_BTN_CANCEL_SELECTED,49,44,49,14
+    LTEXT           "",IDC_STATIC_CANCEL,0,68,101,176
+END
+
+IDD_ORDER_RIGHT DIALOGEX 0, 0, 112, 498
+STYLE DS_SETFONT | DS_FIXEDSYS | DS_CONTROL | WS_CHILD | WS_VISIBLE | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "게좌상황",IDC_STATIC_ACCOUNT_REMAIN,0,0,111,75,WS_BORDER
+    LTEXT           "종목마스터",IDC_STATIC_SYMBOL_MASTER,0,77,111,151,WS_BORDER
+    CONTROL         "",IDC_TAB_CONFIG,"SysTabControl32",0x0,0,231,111,266
+END
+
+IDD_ORDER_LEFT_HD DIALOGEX 0, 0, 116, 476
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_VISIBLE | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "Static",IDC_ASSET,0,0,116,27
+    LTEXT           "Static",IDC_SYMBOL_OPTION,0,164,116,312
+    CONTROL         "잔고",IDC_RADIO_BALANCE,"Button",BS_AUTORADIOBUTTON,4,73,31,10
+    CONTROL         "현재",IDC_RADIO_CURRENT,"Button",BS_AUTORADIOBUTTON,43,73,31,10
+    CONTROL         "예상",IDC_RADIO_EXPECT,"Button",BS_AUTORADIOBUTTON,82,73,31,10
+    LTEXT           "Static",IDC_PROFIT_LOSS,0,28,116,40
+    COMBOBOX        IDC_COMBO_PRODUCT,0,150,64,117,CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_COMBO_OPTION,68,150,48,110,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Static",IDC_SYMBOL_FUTURE,0,87,116,62
+END
+
+IDD_ORDER_LEFT DIALOGEX 0, 0, 107, 443
+STYLE DS_SETFONT | DS_FIXEDSYS | DS_CONTROL | WS_CHILD | WS_VISIBLE | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "미체결",IDC_STATIC,2,2,28,8
+    PUSHBUTTON      "선택취소",IDC_BTN_CANCEL_SEL,34,0,36,12,BS_FLAT
+    LTEXT           "미체결",IDC_STATIC_ACCEPTED,0,12,107,101,WS_BORDER
+    LTEXT           "잔고",IDC_STATIC,0,117,16,8
+    PUSHBUTTON      "선택청산",IDC_BTN_LIQ_SEL,34,115,36,12,BS_FLAT
+    LTEXT           "종목별잔고",IDC_STATIC_REMAIN_LIST,0,128,107,101,WS_BORDER
+    LTEXT           "전체잔고",IDC_STATIC_REMAIN_TOTAL,0,228,107,39,WS_BORDER
+    LTEXT           "실시간 시세",IDC_STATIC_REAL_TICKQUOTE,0,268,107,174,WS_BORDER
+    PUSHBUTTON      "일괄취소",IDC_BTN_CANCEL_ALL,71,0,36,12,BS_FLAT
+    PUSHBUTTON      "일괄청산",IDC_BTN_LIQ_ALL,71,115,36,12,BS_FLAT
+END
+
+IDD_ORDER_CONFIG DIALOGEX 0, 0, 122, 314
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    CONTROL         "원클릭",IDC_CHECK_ONECLICK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,5,38,10
+    CONTROL         "호가고정",IDC_CHECK_FIX_HOGA,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,60,5,45,10
+    CONTROL         "Space Bar 주문",IDC_CHECK_ORDER_BYSPACE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,19,65,10
+    CONTROL         "단축키 사용(F5~F8)",IDC_CHECK_USE_SHORTCUT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,81,10
+    CONTROL         "단축키 주문확인",IDC_CHECK_CONFIRM_SHORTCUTORDER,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,100,69,10
+    LTEXT           "오른쪽 마우스 클릭",IDC_STATIC,14,119,64,8
+    CONTROL         "마지막 주문 취소",IDC_RADIO_CANCEL_LASTORDER,"Button",BS_AUTORADIOBUTTON,11,138,71,10
+    CONTROL         "선택위치 주문 취소",IDC_RADIO_CANCEL_ORDER_BYSELPOS,"Button",BS_AUTORADIOBUTTON,11,151,79,10
+    GROUPBOX        "주문영역 설정",IDC_STATIC,8,173,101,66
+    LTEXT           "기본 H : 18 W : 58",IDC_STATIC,18,183,60,8
+    LTEXT           "H:",IDC_STATIC,15,201,8,8
+    LTEXT           "W:",IDC_STATIC,15,218,10,8
+    EDITTEXT        IDC_EDIT_ORDER_CELL_HEIGHT,37,198,40,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_ORDER_CELL_WIDTH,37,217,40,14,ES_AUTOHSCROLL
+    CONTROL         "",IDC_SPIN_ORDER_CELL_HEIGHT,"msctls_updown32",UDS_ARROWKEYS,78,198,10,14
+    CONTROL         "",IDC_SPIN_ORDER_CELL_WIDTH,"msctls_updown32",UDS_ARROWKEYS,78,218,10,14
+    LTEXT           "정렬 : Alt Key",IDC_STATIC,7,33,45,8
+    GROUPBOX        "",IDC_STATIC,7,41,101,40
+    CONTROL         "마우스 선택",IDC_RADIO_BY_MOUSE_SELECT,"Button",BS_AUTORADIOBUTTON,13,50,71,10
+    CONTROL         "마우스 위치",IDC_RADIO_BY_MOUSE_POS,"Button",BS_AUTORADIOBUTTON,12,66,55,10
+END
+
+IDD_ORDER_CENTER_HD DIALOGEX 0, 0, 425, 506
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_VISIBLE
+EXSTYLE WS_EX_CLIENTEDGE
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    COMBOBOX        IDC_COMBO_PRODUCT_HD,24,0,79,273,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "STOP",IDC_STATIC_STOP,321,25,24,8,NOT WS_VISIBLE
+    EDITTEXT        IDC_EDIT_STOPVAL,354,23,24,14,ES_RIGHT | ES_AUTOHSCROLL | ES_NUMBER | NOT WS_VISIBLE
+    CONTROL         "",IDC_SPIN_STOPVAL,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS | NOT WS_VISIBLE,261,14,11,14
+    CONTROL         "호가고정",IDC_CK_FIXED_CENTER,"Button",BS_AUTOCHECKBOX | NOT WS_VISIBLE | WS_TABSTOP,361,4,48,8
+    EDITTEXT        IDC_EDIT_ORDER_AMOUNT,26,14,32,14,ES_RIGHT | ES_AUTOHSCROLL | ES_NUMBER
+    CONTROL         "",IDC_SPIN_ORDER_AMOUNT,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS,53,14,10,14
+    PUSHBUTTON      "1",IDC_BTN_ORDER_AMT1,64,14,19,14
+    PUSHBUTTON      "2",IDC_BTN_ORDER_AMT2,85,14,19,14,BS_FLAT
+    PUSHBUTTON      "3",IDC_BTN_ORDER_AMT3,106,14,19,14,BS_FLAT
+    PUSHBUTTON      "4",IDC_BTN_ORDER_AMT4,127,14,19,14,BS_FLAT
+    PUSHBUTTON      "5",IDC_BTN_ORDER_AMT5,148,14,19,14,BS_FLAT
+    PUSHBUTTON      "6",IDC_BTN_ORDER_AMT6,169,14,19,14,BS_FLAT
+    LTEXT           "종목",IDC_STATIC_PRODUCT,2,3,16,8,0,WS_EX_TRANSPARENT
+    PUSHBUTTON      "",IDC_BTN_SEL_SYMBOL,103,0,13,12,BS_FLAT
+    LTEXT           "상품이름",IDC_STATIC_PRODUCT_NAME,126,3,86,8,0,WS_EX_TRANSPARENT
+    LTEXT           "종목 평가 손익 상황",IDC_STATIC_PRODUCT_REMAIN,0,28,258,25
+    LTEXT           "주문창",IDC_STATIC_ORDER_PANEL,0,69,320,376
+    PUSHBUTTON      "설정",IDC_BUTTON_SETTING,1,14,23,14
+    PUSHBUTTON      "잔고(0)",IDC_BTN_REMAIN,190,14,33,14
+    PUSHBUTTON      "매수가능",IDC_BTN_AVAIL,321,6,34,14,NOT WS_VISIBLE
+    PUSHBUTTON      "모두청산",IDC_BTN_LIQ,273,0,37,14,NOT WS_VISIBLE
+    LTEXT           "",IDC_STATIC_MSG,0,447,320,58,NOT WS_VISIBLE | WS_BORDER
+    EDITTEXT        IDC_EDIT_AMT,281,15,20,14,ES_RIGHT | ES_AUTOHSCROLL | NOT WS_VISIBLE
+    LTEXT           "",IDC_STATIC_REAL_TICK,321,69,103,376
+    PUSHBUTTON      "체결된잔고(0)",IDC_BTN_REMAIN_FUND,213,0,59,14
+    LTEXT           "중앙설정",IDC_STATIC_SET,0,55,320,14
+END
+
+IDD_ORDER_CENTER_FUND DIALOGEX 0, 0, 425, 468
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_VISIBLE
+EXSTYLE WS_EX_CLIENTEDGE
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    COMBOBOX        IDC_COMBO_PRODUCT_HD,24,0,61,273,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "STOP",IDC_STATIC_STOP,261,42,18,8
+    EDITTEXT        IDC_EDIT_STOPVAL,283,40,21,14,ES_RIGHT | ES_AUTOHSCROLL | ES_NUMBER
+    CONTROL         "",IDC_SPIN_STOPVAL,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS,261,14,11,14
+    CONTROL         "호가고정",IDC_CK_FIXED_CENTER,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,261,30,42,8
+    EDITTEXT        IDC_EDIT_ORDER_AMOUNT,26,14,32,14,ES_RIGHT | ES_AUTOHSCROLL | ES_NUMBER
+    CONTROL         "",IDC_SPIN_ORDER_AMOUNT,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS,53,14,10,14
+    PUSHBUTTON      "1",IDC_BTN_ORDER_AMT1,64,14,19,14
+    PUSHBUTTON      "2",IDC_BTN_ORDER_AMT2,85,14,19,14,BS_FLAT
+    PUSHBUTTON      "3",IDC_BTN_ORDER_AMT3,106,14,19,14,BS_FLAT
+    PUSHBUTTON      "4",IDC_BTN_ORDER_AMT4,127,14,19,14,BS_FLAT
+    PUSHBUTTON      "5",IDC_BTN_ORDER_AMT5,148,14,19,14,BS_FLAT
+    PUSHBUTTON      "6",IDC_BTN_ORDER_AMT6,169,14,19,14,BS_FLAT
+    LTEXT           "종목",IDC_STATIC,2,3,16,8
+    PUSHBUTTON      "종목",IDC_BTN_SEL_SYMBOL,85,0,21,14,BS_FLAT
+    LTEXT           "상품이름",IDC_STATIC_PRODUCT_NAME,107,1,86,12,WS_BORDER
+    LTEXT           "종목 평가 손익 상황",IDC_STATIC_PRODUCT_REMAIN,0,28,258,25,WS_BORDER
+    LTEXT           "주문창",IDC_STATIC_ORDER_PANEL,0,55,320,391,WS_BORDER
+    PUSHBUTTON      "설정",IDC_BUTTON_SETTING,1,14,23,14
+    PUSHBUTTON      "잔고(0)",IDC_BTN_REMAIN,189,14,33,14
+    PUSHBUTTON      "가능(0)",IDC_BTN_AVAIL,223,14,33,14
+    PUSHBUTTON      "모두청산",IDC_BTN_LIQ,219,1,37,13
+    LTEXT           "",IDC_STATIC_MSG,0,454,318,14,NOT WS_VISIBLE | WS_BORDER
+    EDITTEXT        IDC_EDIT_AMT,281,15,20,14,ES_RIGHT | ES_AUTOHSCROLL | NOT WS_VISIBLE
+    LTEXT           "",IDC_STATIC_REAL_TICK,321,55,103,391,WS_BORDER
+END
+
+IDD_ORDER_CENTER DIALOGEX 0, 0, 326, 510
+STYLE DS_SETFONT | DS_FIXEDSYS | DS_CONTROL | WS_CHILD | WS_VISIBLE | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "종목",IDC_STATIC,2,3,16,8
+    LTEXT           "계좌",IDC_STATIC,2,18,16,8
+    COMBOBOX        IDC_COMBO_PRODUCT5,24,0,80,273,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_COMBO_ACCOUNT5,24,14,104,256,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "..",IDC_BTN_SEL_SYMBOL,107,0,21,13,BS_FLAT
+    LTEXT           "상품이름",IDC_STATIC_PRODUCT_NAME,132,0,189,12,WS_BORDER
+    EDITTEXT        IDC_EDIT_ACNT_PWD,132,14,37,13,ES_PASSWORD | ES_AUTOHSCROLL
+    PUSHBUTTON      "조회",IDC_BTN_GET_ACNT_INFO,171,14,37,14,BS_FLAT
+    PUSHBUTTON      "<<",IDC_BTN_LEFT_EXTEND,1,28,22,14,BS_FLAT
+    EDITTEXT        IDC_EDIT_ORDER_AMOUNT,27,29,32,14,ES_RIGHT | ES_AUTOHSCROLL | ES_NUMBER
+    CONTROL         "",IDC_SPIN_ORDER_AMOUNT,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS,19,28,10,14
+    PUSHBUTTON      "1",IDC_BTN_ORDER_AMT1,60,28,20,14
+    PUSHBUTTON      "2",IDC_BTN_ORDER_AMT2,81,28,23,14,BS_FLAT
+    PUSHBUTTON      "3",IDC_BTN_ORDER_AMT3,105,28,19,14,BS_FLAT
+    PUSHBUTTON      "4",IDC_BTN_ORDER_AMT4,125,28,20,14,BS_FLAT
+    PUSHBUTTON      "5",IDC_BTN_ORDER_AMT5,146,28,19,14,BS_FLAT
+    PUSHBUTTON      "6",IDC_BTN_ORDER_AMT6,166,28,22,14,BS_FLAT
+    PUSHBUTTON      ">>",IDC_BTN_RIGHT_EXTEND,303,28,20,14,BS_FLAT
+    LTEXT           "종목 평가 손익 상황",IDC_STATIC_PRODUCT_REMAIN,1,43,265,26,WS_BORDER
+    LTEXT           "STOP",IDC_STATIC,269,57,18,8
+    EDITTEXT        IDC_EDIT_STOPVAL,290,54,28,14,ES_RIGHT | ES_AUTOHSCROLL | ES_NUMBER
+    CONTROL         "",IDC_SPIN_STOPVAL,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS,312,54,10,14
+    PUSHBUTTON      "호주달러",IDC_BTN_FV1,1,70,31,14,BS_FLAT
+    PUSHBUTTON      "일본지수",IDC_BTN_FV2,32,70,31,14,BS_FLAT
+    PUSHBUTTON      "오일",IDC_BTN_FV3,63,70,31,14,BS_FLAT
+    PUSHBUTTON      "S&&P",IDC_BTN_FV4,94,70,31,14,BS_FLAT
+    PUSHBUTTON      "A50",IDC_BTN_FV5,125,70,31,14,BS_FLAT
+    PUSHBUTTON      "유로FX",IDC_BTN_FV8,218,70,31,14,BS_FLAT
+    PUSHBUTTON      "금",IDC_BTN_FV6,156,70,31,14,BS_FLAT
+    PUSHBUTTON      "유로달러",IDC_BTN_FV7,187,70,31,14,BS_FLAT
+    PUSHBUTTON      "종목설정",IDC_BTN_FAVORITE,270,70,53,14,BS_FLAT
+    LTEXT           "주문창",IDC_STATIC_ORDER_PANEL,2,86,321,379,WS_BORDER
+    PUSHBUTTON      "전종목청산",IDC_BTN_LIQ_ALL,1,465,62,14
+    PUSHBUTTON      "현종목청산",IDC_BTN_LIQ_SEL,66,465,57,14
+    PUSHBUTTON      "전종목취소",IDC_BTN_CANCEL_ALL,198,465,61,14
+    PUSHBUTTON      "현종목취소",IDC_BTN_CANCEL_SEL,262,465,64,14
+    CTEXT           "잔고(0)",IDC_STATIC_REMAIN,189,29,38,12,WS_BORDER
+    LTEXT           "가능(0)",IDC_STATIC_ORDER_AVBL,229,29,37,12,WS_BORDER
+END
+
+IDD_ORDER_AVAILABLE DIALOGEX 0, 0, 309, 176
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_VISIBLE
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+END
+
+IDD_OPT_PAGE DIALOGEX 0, 0, 116, 226
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_VISIBLE | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "",IDC_STATIC_OPT_GRID,0,32,114,193,WS_BORDER
+    LTEXT           "시장",IDC_STATIC,0,4,23,8
+    COMBOBOX        IDC_COMBO_OPT_MARKET,27,0,84,137,CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "월물",IDC_STATIC,0,18,24,8
+    COMBOBOX        IDC_COMBO_OPT_MONTH,27,16,84,126,CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+END
+
+IDD_MINI_JANGO_FUND DIALOGEX 0, 0, 141, 161
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_MINIMIZEBOX | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+CAPTION "펀드미니잔고"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "",IDC_STATIC_MINI_SUB,0,69,141,92,SS_CENTERIMAGE,WS_EX_CLIENTEDGE
+    LTEXT           "",IDC_STATIC_MINI_TOP,0,17,141,51,0,WS_EX_CLIENTEDGE
+    COMBOBOX        IDC_COMBO_FUND,2,2,85,132,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "A",IDC_CHECK_ACNT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,92,4,16,10
+    CONTROL         "S",IDC_CHECK_SUBACNT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,113,4,15,10
+END
+
+IDD_MINI_JANGO DIALOGEX 0, 0, 141, 161
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_MINIMIZEBOX | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+CAPTION "미니잔고"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "",IDC_STATIC_MINI_SUB,0,69,141,92,SS_CENTERIMAGE,WS_EX_CLIENTEDGE
+    LTEXT           "",IDC_STATIC_MINI_TOP,0,17,141,51,0,WS_EX_CLIENTEDGE
+    COMBOBOX        IDC_COMBO_ACCOUNT,2,2,84,132,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "U",IDC_CHECK_THOUSAND,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,88,4,19,10
+    CONTROL         "S",IDC_CHECK_SUBACNT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,109,4,15,10
+END
+
+IDD_MESSAGE_BOARD DIALOGEX 0, 0, 309, 176
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_VISIBLE
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+END
+
+IDD_MAIN_TOOLBAR DIALOGEX 0, 0, 245, 54
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    PUSHBUTTON      "계좌주문",IDC_BTN_ACNT_ORDER,0,0,50,14
+    PUSHBUTTON      "펀드주문",IDC_FUND_ORDER,63,0,50,14
+    PUSHBUTTON      "계좌미니잔고",IDC_BTN_ACNT_MJ,126,0,50,14
+    PUSHBUTTON      "펀드미니잔고",IDC_BTN_FUND_MJ,189,0,50,14
+    LTEXT           "",IDC_STATIC_SISE,0,16,238,36
+END
+
+IDD_LOGIN DIALOGEX 0, 0, 351, 139
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+END
+
+IDD_INDEX_PROPERTY DIALOGEX 0, 0, 213, 283
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "지표 삽입"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "닫기",IDOK,163,269,50,14
+    CONTROL         "",IDC_INDEX_PROPERTY,"MfcPropertyGrid",WS_BORDER | 0x100,1,2,212,265
+    PUSHBUTTON      "삽입",IDC_BTN_INSERT,113,268,50,14
+END
+
+IDD_FUT_PAGE DIALOGEX 0, 0, 162, 237
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_VISIBLE | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "",IDC_STATIC_FUT_GRID,1,15,159,221,WS_BORDER
+    LTEXT           "시장",IDC_STATIC_FUT,1,3,36,8
+    COMBOBOX        IDC_COMBO_FUT_MARKET,44,0,102,166,CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+END
+
+IDD_FUND_SUBACCOUNTPAGE DIALOGEX 0, 0, 335, 188
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    LTEXT           "Static",IDC_STATIC_SUBACNT_TARGET,159,0,176,188,WS_BORDER
+    LTEXT           "Static",IDC_STATIC_SUBACNT_SOURCE,0,0,160,121,WS_BORDER
+    LTEXT           "서브계좌코드",IDC_STATIC,3,136,54,8
+    EDITTEXT        IDC_EDIT_SUBACNT_CODE,57,133,61,14,ES_AUTOHSCROLL
+    LTEXT           "서브계좌명",IDC_STATIC,3,155,53,8
+    EDITTEXT        IDC_EDIT_SUB_ACNT_NAME,57,152,61,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "확인",IDC_BTN_OK,56,170,31,14
+    PUSHBUTTON      "수정",IDC_BTN_MOD,124,132,31,14
+    PUSHBUTTON      "생성",IDC_BTN_CREATE,124,151,31,14
+    PUSHBUTTON      "저장",IDC_BTN_SAVE,89,170,31,14
+    PUSHBUTTON      "취소",IDC_BTN_CLOSE,1,170,31,14,NOT WS_VISIBLE
+    PUSHBUTTON      "삭제",IDC_BTN_DEL,124,169,31,14
+END
+
+IDD_FUND_NAME DIALOGEX 0, 0, 255, 54
+STYLE DS_LOCALEDIT | DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "펀드이름 설정"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,151,40,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,205,40,50,14
+    LTEXT           "펀드명 : ",IDC_STATIC,11,17,30,8
+    EDITTEXT        IDC_EDIT_FUND_NAME,54,14,190,14,ES_AUTOHSCROLL
+END
+
+IDD_FUND_EDITOR DIALOGEX 0, 0, 403, 242
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "펀드관리"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "비등록계좌 :",IDC_STATIC,16,28,63,8
+    LTEXT           "등록계좌",IDC_STATIC,225,28,53,8
+    LTEXT           "",IDC_STATIC_ACNT_TARGET,225,41,162,132,WS_BORDER
+    LTEXT           "",IDC_STATIC_ACNT_SOURCE,14,41,162,132,WS_BORDER
+    PUSHBUTTON      "▶",IDC_BTN_ACNT_IN,189,58,22,14
+    PUSHBUTTON      "▶▶",IDC_BTN_ACNT_IN_ALL,189,84,22,14
+    PUSHBUTTON      "◀",IDC_BTN_ACNT_OUT,189,110,22,14
+    PUSHBUTTON      "◀◀",IDC_BTN_ACNT_OUT_ALL,189,136,22,14
+    PUSHBUTTON      "▲",IDC_BTN_UP,331,25,28,14
+    PUSHBUTTON      "▼",IDC_BTN_DOWN,360,25,28,14
+    LTEXT           "현재등록계좌 합계 :",IDC_STATIC,226,178,75,8
+    LTEXT           "Static",IDC_STATIC_SUM_SEUNGSU,306,177,23,8
+    LTEXT           "Static",IDC_STATIC_SUM_RATIO,340,177,43,8
+    GROUPBOX        "현재선택계좌정보",IDC_STATIC,82,188,306,28
+    PUSHBUTTON      "확인",IDC_BTN_OK,311,223,36,14
+    PUSHBUTTON      "취소",IDC_BTN_CANCEL,351,223,37,14
+    LTEXT           "계좌 :",IDC_STATIC,91,200,26,8
+    LTEXT           "Static",IDC_STATIC_ACNT_NAME,124,200,89,8
+    LTEXT           "승수 :",IDC_STATIC,223,200,24,8
+    EDITTEXT        IDC_EDIT_SEUNSU,253,198,30,14,ES_RIGHT | ES_AUTOHSCROLL
+    LTEXT           "비율 :",IDC_STATIC,287,200,29,8
+    LTEXT           "Static",IDC_STATIC_RATIO,326,200,51,8
+    LTEXT           "펀드명 :",IDC_STATIC,16,9,28,8
+    EDITTEXT        IDC_EDIT_FUND_NAME,49,6,190,14,ES_AUTOHSCROLL
+END
+
+IDD_FUND_DESIGNER DIALOGEX 0, 0, 343, 212
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+CAPTION "다계좌관리"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    CONTROL         "",IDC_TAB_FD,"SysTabControl32",0x0,1,0,342,212
+END
+
+IDD_FUND_ACCOUNTPAGE DIALOGEX 0, 0, 330, 189
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    CONTROL         "",IDC_TREE_FUNDLIST,"SysTreeView32",TVS_HASBUTTONS | TVS_HASLINES | TVS_SHOWSELALWAYS | TVS_TRACKSELECT | TVS_INFOTIP | WS_BORDER | WS_HSCROLL | WS_TABSTOP,0,22,98,163
+    LTEXT           "Static",IDC_STATIC_FUND_DETAIL,98,22,230,163,WS_BORDER
+    PUSHBUTTON      "새펀드",IDC_BTN_FUND_NEW,3,4,55,14
+    PUSHBUTTON      "펀드설정",IDC_BTN_FUND_SETTINGS,68,4,55,14
+    PUSHBUTTON      "펀드명 변경",IDC_BTN_FUND_MODIFY,133,4,55,14
+    PUSHBUTTON      "펀드 삭제",IDC_BTN_FUND_DELETE,198,4,55,14
+    PUSHBUTTON      "▲",IDC_BTN_UP,263,4,28,14
+    PUSHBUTTON      "▼",IDC_BTN_DOWN,291,4,28,14
+END
+
+IDD_DIALOG_EMBED DIALOGEX 0, 0, 309, 176
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dialog"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,198,155,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,252,155,50,14
+END
+
+IDD_DIALOG_CHART1 DIALOGEX 0, 0, 663, 311
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_VISIBLE | WS_SYSMENU
+EXSTYLE WS_EX_CLIENTEDGE
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    CONTROL         "",IDC_STATIC_CHART,"Static",SS_BITMAP,31,50,15,13
+    SCROLLBAR       ID_CHART_HSCRL,32,290,130,11
+    EDITTEXT        ID_CHART_EDIT_COUNT,243,241,40,14,ES_RIGHT | ES_AUTOHSCROLL
+    CONTROL         "확",ID_CHART_BTN_ZOOMIN,"MfcButton",WS_TABSTOP,347,238,50,14
+    CONTROL         "축",ID_CHART_BTN_ZOOMOUT,"MfcButton",WS_TABSTOP,403,238,50,14
+    CONTROL         "전",ID_CHART_BTN_FULLSCRN,"MfcButton",WS_TABSTOP,465,238,50,14
+    CONTROL         "지",ID_CHART_BTN_DEL,"MfcButton",WS_TABSTOP,527,241,50,14
+END
+
+IDD_DIALOG_CHART DIALOGEX 0, 0, 663, 311
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_VISIBLE | WS_SYSMENU
+EXSTYLE WS_EX_CLIENTEDGE
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    CONTROL         "",IDC_STATIC_CHART,"Static",SS_BITMAP,31,50,15,13
+    SCROLLBAR       ID_CHART_HSCRL,32,290,130,11
+    EDITTEXT        ID_CHART_EDIT_COUNT,243,241,40,14,ES_RIGHT | ES_AUTOHSCROLL
+    CONTROL         "확",ID_CHART_BTN_ZOOMIN,"MfcButton",WS_TABSTOP,347,238,50,14
+    CONTROL         "축",ID_CHART_BTN_ZOOMOUT,"MfcButton",WS_TABSTOP,403,238,50,14
+    CONTROL         "전",ID_CHART_BTN_FULLSCRN,"MfcButton",WS_TABSTOP,465,238,50,14
+    CONTROL         "지",ID_CHART_BTN_DEL,"MfcButton",WS_TABSTOP,527,241,50,14
+END
+
+IDD_DATA_COL DIALOGEX 0, 0, 309, 176
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dialog"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,198,155,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,252,155,50,14
+    PUSHBUTTON      "start",IDC_BTN_START,43,21,50,14
+    PUSHBUTTON      "end",IDC_BTN_END,192,23,50,14
+END
+
+IDD_CHART_PROPERTY DIALOGEX 0, 0, 175, 176
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "설정창"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,125,162,50,14
+    CONTROL         "",IDC_PROP_CHART,"MfcPropertyGrid",0x100,1,0,174,159
+    PUSHBUTTON      "적용",IDC_BTN_APPLY,74,161,50,14
+END
+
+IDD_CHART_CONTAINER DIALOGEX 0, 0, 309, 176
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+CAPTION "차트"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "",IDC_STATIC_GRID,248,17,58,116,WS_BORDER
+END
+
+IDD_CHART DIALOGEX 0, 0, 586, 269
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_VISIBLE
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    SCROLLBAR       ID_CHART_HSCRL,0,254,465,14
+    EDITTEXT        ID_CHART_EDIT_COUNT,469,254,38,14,ES_AUTOHSCROLL
+    CONTROL         "",IDC_STATIC_CHART,"Static",SS_BITMAP,16,12,15,13
+    CONTROL         "확",ID_CHART_BTN_ZOOMIN,"MfcButton",WS_TABSTOP,507,254,19,14
+    CONTROL         "지",ID_CHART_BTN_DEL,"MfcButton",WS_TABSTOP,566,254,19,14
+    CONTROL         "전",ID_CHART_BTN_FULLSCRN,"MfcButton",WS_TABSTOP,545,254,19,14
+    CONTROL         "축",ID_CHART_BTN_ZOOMOUT,"MfcButton",WS_TABSTOP,526,254,19,14
+END
+
+IDD_CENTER_CONFIG DIALOGEX 0, 0, 323, 49
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_VISIBLE | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    CONTROL         "이익실현",IDC_CHECK_CUT_PROFIT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,14,43,10,WS_EX_TRANSPARENT
+    EDITTEXT        IDC_EDIT_CUT_PROFIT,55,12,24,14,ES_RIGHT | ES_AUTOHSCROLL
+    CONTROL         "",IDC_SPIN_CUT_PROFIT,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS,103,12,11,14
+    CONTROL         "손실제한",IDC_CHECK_CUT_LOSS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,30,44,10,WS_EX_TRANSPARENT
+    EDITTEXT        IDC_EDIT_CUT_LOSS,55,28,24,14,ES_RIGHT | ES_AUTOHSCROLL
+    CONTROL         "",IDC_SPIN_CUT_LOSS,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS,81,28,11,14
+    PUSHBUTTON      "적용",IDC_BUTTON_PROFIT_LOSS,80,12,24,14
+    CONTROL         "시장가",IDC_RADIO_ATMARKET,"Button",BS_AUTORADIOBUTTON,130,18,38,10,WS_EX_TRANSPARENT
+    CONTROL         "Stop",IDC_RADIO_ATPRICE,"Button",BS_AUTORADIOBUTTON,130,30,31,10,WS_EX_TRANSPARENT
+    EDITTEXT        IDC_EDIT_ORDER_TYPE_SLIP,166,28,25,14,ES_RIGHT | ES_AUTOHSCROLL
+    CONTROL         "",IDC_SPIN_ORDER_TYPE_SLIP,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS,179,8,11,14
+    GROUPBOX        "체결시 이익/손실설정(평균가기준)",IDC_STATIC_FILL_PL,3,2,311,40,0,WS_EX_TRANSPARENT
+    GROUPBOX        "주문유형",IDC_STATIC_ORDER_TYPE,125,8,72,37,0,WS_EX_TRANSPARENT
+END
+
+IDD_BUSY_DLG DIALOGEX 0, 0, 256, 49
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "취소",IDOK,7,34,50,14,NOT WS_VISIBLE
+    CONTROL         "",IDC_BUSY_PIC,"Static",SS_BLACKFRAME,188,14,50,27
+    LTEXT           "",IDC_BUSY_TEXT,19,17,160,19
+END
+
+IDD_ASSET_CONTAINER DIALOGEX 0, 0, 309, 176
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "예탁잔고 및 증거금"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    CONTROL         "",IDC_TAB_ASSET_CONTAINER,"SysTabControl32",0x0,0,0,309,175
+END
+
+IDD_ASSET DIALOGEX 0, 0, 211, 106
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_VISIBLE
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    COMBOBOX        IDC_COMBO_ACCOUNT,1,1,115,132,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "증거금",IDC_BTN_COMMIT,132,1,35,14
+    PUSHBUTTON      "조회",IDC_BTN_SEARCH,169,1,35,14
+    LTEXT           "",IDC_STATIC_ASSET,1,17,207,88,WS_BORDER
+END
+
+IDD_ACNT_FUND_SELECTOR DIALOGEX 0, 0, 149, 249
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "계좌선택"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    CONTROL         "전체",IDC_RADIO_ENTIRE,"Button",BS_AUTORADIOBUTTON,5,5,31,10
+    CONTROL         "계좌",IDC_RADIO_ACNT,"Button",BS_AUTORADIOBUTTON,53,5,31,10
+    CONTROL         "펀드",IDC_RADIO_FUND,"Button",BS_AUTORADIOBUTTON,101,5,31,10
+    LTEXT           "Static",IDC_STATIC_GRID,1,17,147,232,WS_BORDER
+END
+
+IDD_ACCOUNT_PWD DIALOGEX 0, 0, 225, 237
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "계좌비밀번호 설정"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "",IDC_STATIC_ACNT_PWD,0,0,225,215,WS_BORDER
+    PUSHBUTTON      "저장",IDC_BTN_SAVE,145,218,37,14
+    PUSHBUTTON      "닫기",IDC_BTN_CLOSE,183,218,37,14
+    CONTROL         "비밀번호보기",IDC_CHECK_SHOW_PWD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,220,60,10
+END
+
+IDD_ACCOUNT_ASSET DIALOGEX 0, 0, 259, 99
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "예탁잔고 및 증거금"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    CONTROL         "",IDC_TAB_ACCOUNT_ASSET,"SysTabControl32",0x0,0,0,259,98
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x40004L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "041204B0"
+        BEGIN
+            VALUE "CompanyName", "TODO: <회사 이름>"
+            VALUE "FileDescription", "SMTrader"
+            VALUE "FileVersion", "1.0.0.1"
+            VALUE "InternalName", "SMTrader.exe"
+            VALUE "LegalCopyright", "TODO: (c) <회사 이름>.  All rights reserved."
+            VALUE "OriginalFilename", "SMTrader.exe"
+            VALUE "ProductName", "TODO: <제품 이름>"
+            VALUE "ProductVersion", "1.0.0.1"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x412, 1200
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_ABOUTBOX, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 163
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 55
+    END
+
+    IDD_LOGIN_MAIN, DIALOG
+    BEGIN
+    END
+
+    IDD_HDF_CTRL, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 130
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 52
+    END
+
+    IDD_ZOOMSCROLLTRACK2_DIALOG, DIALOG
+    BEGIN
+        RIGHTMARGIN, 527
+    END
+
+    IDD_VROBO_FORM, DIALOG
+    BEGIN
+    END
+
+    IDD_TIME_TOOLBAR, DIALOG
+    BEGIN
+    END
+
+    IDD_SYSTEM_USD, DIALOG
+    BEGIN
+        LEFTMARGIN, 1
+    END
+
+    IDD_SYSTEM_PROPERTY, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 133
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 213
+    END
+
+    IDD_SYS_PROP, DIALOG
+    BEGIN
+    END
+
+    IDD_SYMBOL_SELECTOR, DIALOG
+    BEGIN
+        RIGHTMARGIN, 401
+        BOTTOMMARGIN, 199
+    END
+
+    IDD_SYMBOL_SELECTER_HD, DIALOG
+    BEGIN
+    END
+
+    IDD_SYMBOL_FAVORITE, DIALOG
+    BEGIN
+    END
+
+    IDD_SYM_CAT6, DIALOG
+    BEGIN
+    END
+
+    IDD_SYM_CAT5, DIALOG
+    BEGIN
+    END
+
+    IDD_SYM_CAT4, DIALOG
+    BEGIN
+    END
+
+    IDD_SYM_CAT3, DIALOG
+    BEGIN
+    END
+
+    IDD_SYM_CAT2, DIALOG
+    BEGIN
+    END
+
+    IDD_SYM_CAT1, DIALOG
+    BEGIN
+    END
+
+    IDD_SUBACNT, DIALOG
+    BEGIN
+        RIGHTMARGIN, 309
+    END
+
+    IDD_STRATEGE_TOOLS, DIALOG
+    BEGIN
+    END
+
+    IDD_REGISTER_USER, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 250
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 167
+    END
+
+    IDD_REALTIMETRACK_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 485
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 338
+    END
+
+    IDD_REAL_TICK, DIALOG
+    BEGIN
+    END
+
+    IDD_PROGRESS, DIALOG
+    BEGIN
+    END
+
+    IDD_ORDERGRID_CONFIG, DIALOG
+    BEGIN
+    END
+
+    IDD_ORDER_WND_HD, DIALOG
+    BEGIN
+    END
+
+    IDD_ORDER_WND, DIALOG
+    BEGIN
+    END
+
+    IDD_ORDER_TOTAL, DIALOG
+    BEGIN
+        BOTTOMMARGIN, 262
+    END
+
+    IDD_ORDER_SETTLE, DIALOG
+    BEGIN
+        BOTTOMMARGIN, 237
+    END
+
+    IDD_ORDER_RIGHT_HD, DIALOG
+    BEGIN
+    END
+
+    IDD_ORDER_RIGHT_CONFIG_HD, DIALOG
+    BEGIN
+    END
+
+    IDD_ORDER_RIGHT_CANCEL_HD, DIALOG
+    BEGIN
+    END
+
+    IDD_ORDER_RIGHT, DIALOG
+    BEGIN
+        BOTTOMMARGIN, 463
+    END
+
+    IDD_ORDER_LEFT_HD, DIALOG
+    BEGIN
+        BOTTOMMARGIN, 468
+    END
+
+    IDD_ORDER_LEFT, DIALOG
+    BEGIN
+        BOTTOMMARGIN, 425
+    END
+
+    IDD_ORDER_CONFIG, DIALOG
+    BEGIN
+    END
+
+    IDD_ORDER_CENTER_HD, DIALOG
+    BEGIN
+        RIGHTMARGIN, 424
+    END
+
+    IDD_ORDER_CENTER_FUND, DIALOG
+    BEGIN
+        RIGHTMARGIN, 424
+    END
+
+    IDD_ORDER_CENTER, DIALOG
+    BEGIN
+    END
+
+    IDD_ORDER_AVAILABLE, DIALOG
+    BEGIN
+    END
+
+    IDD_OPT_PAGE, DIALOG
+    BEGIN
+        RIGHTMARGIN, 114
+    END
+
+    IDD_MINI_JANGO_FUND, DIALOG
+    BEGIN
+    END
+
+    IDD_MINI_JANGO, DIALOG
+    BEGIN
+    END
+
+    IDD_MESSAGE_BOARD, DIALOG
+    BEGIN
+    END
+
+    IDD_MAIN_TOOLBAR, DIALOG
+    BEGIN
+        BOTTOMMARGIN, 50
+    END
+
+    IDD_LOGIN, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 344
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 132
+    END
+
+    IDD_INDEX_PROPERTY, DIALOG
+    BEGIN
+    END
+
+    IDD_FUT_PAGE, DIALOG
+    BEGIN
+        BOTTOMMARGIN, 226
+    END
+
+    IDD_FUND_SUBACCOUNTPAGE, DIALOG
+    BEGIN
+        RIGHTMARGIN, 315
+    END
+
+    IDD_FUND_NAME, DIALOG
+    BEGIN
+    END
+
+    IDD_FUND_EDITOR, DIALOG
+    BEGIN
+    END
+
+    IDD_FUND_DESIGNER, DIALOG
+    BEGIN
+        RIGHTMARGIN, 339
+        BOTTOMMARGIN, 204
+    END
+
+    IDD_FUND_ACCOUNTPAGE, DIALOG
+    BEGIN
+        BOTTOMMARGIN, 186
+    END
+
+    IDD_DIALOG_EMBED, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 302
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 169
+    END
+
+    IDD_DIALOG_CHART1, DIALOG
+    BEGIN
+        RIGHTMARGIN, 662
+        BOTTOMMARGIN, 279
+    END
+
+    IDD_DIALOG_CHART, DIALOG
+    BEGIN
+        RIGHTMARGIN, 662
+        BOTTOMMARGIN, 279
+    END
+
+    IDD_DATA_COL, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 302
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 169
+    END
+
+    IDD_CHART_PROPERTY, DIALOG
+    BEGIN
+    END
+
+    IDD_CHART_CONTAINER, DIALOG
+    BEGIN
+    END
+
+    IDD_CHART, DIALOG
+    BEGIN
+        RIGHTMARGIN, 585
+        BOTTOMMARGIN, 268
+    END
+
+    IDD_CENTER_CONFIG, DIALOG
+    BEGIN
+        RIGHTMARGIN, 320
+    END
+
+    IDD_BUSY_DLG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 249
+    END
+
+    IDD_ASSET_CONTAINER, DIALOG
+    BEGIN
+    END
+
+    IDD_ASSET, DIALOG
+    BEGIN
+        RIGHTMARGIN, 210
+        BOTTOMMARGIN, 104
+    END
+
+    IDD_ACNT_FUND_SELECTOR, DIALOG
+    BEGIN
+        BOTTOMMARGIN, 160
+    END
+
+    IDD_ACCOUNT_PWD, DIALOG
+    BEGIN
+    END
+
+    IDD_ACCOUNT_ASSET, DIALOG
+    BEGIN
+        BOTTOMMARGIN, 96
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// AFX_DIALOG_LAYOUT
+//
+
+IDD_LOGIN_MAIN AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_HDF_CTRL AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_TIME_TOOLBAR AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_SYSTEM_USD AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_SYSTEM_PROPERTY AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_SYS_PROP AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_SYMBOL_SELECTER_HD AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_SUBACNT AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_STRATEGE_TOOLS AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_REAL_TICK AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_PROGRESS AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_ORDERGRID_CONFIG AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_ORDER_WND_HD AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_ORDER_TOTAL AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_ORDER_RIGHT_HD AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_ORDER_RIGHT_CONFIG_HD AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_ORDER_RIGHT_CANCEL_HD AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_ORDER_LEFT_HD AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_ORDER_CENTER_HD AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_ORDER_CENTER_FUND AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_ORDER_AVAILABLE AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_OPT_PAGE AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_MINI_JANGO_FUND AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_MINI_JANGO AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_MAIN_TOOLBAR AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_FUT_PAGE AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_FUND_SUBACCOUNTPAGE AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_FUND_NAME AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_FUND_EDITOR AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_FUND_DESIGNER AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_FUND_ACCOUNTPAGE AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_DIALOG_EMBED AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_DIALOG_CHART1 AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_DIALOG_CHART AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_DATA_COL AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_CHART_CONTAINER AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_CENTER_CONFIG AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_BUSY_DLG AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_ASSET_CONTAINER AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_ASSET AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_ACNT_FUND_SELECTOR AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_ACCOUNT_PWD AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_ACCOUNT_ASSET AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog Info
+//
+
+IDD_SYSTEM_PROPERTY DLGINIT
+BEGIN
+    IDC_SYSTEM_PROP, 0x37c, 413, 0
+0x4d3c, 0x4346, 0x7250, 0x706f, 0x7265, 0x7974, 0x7247, 0x6469, 0x485f, 
+0x6165, 0x6564, 0x4372, 0x7274, 0x3e6c, 0x5254, 0x4555, 0x2f3c, 0x464d, 
+0x5043, 0x6f72, 0x6570, 0x7472, 0x4779, 0x6972, 0x5f64, 0x6548, 0x6461, 
+0x7265, 0x7443, 0x6c72, 0x3c3e, 0x464d, 0x5043, 0x6f72, 0x6570, 0x7472, 
+0x4779, 0x6972, 0x5f64, 0x6544, 0x6373, 0x6972, 0x7470, 0x6f69, 0x416e, 
+0x6572, 0x3e61, 0x5254, 0x4555, 0x2f3c, 0x464d, 0x5043, 0x6f72, 0x6570, 
+0x7472, 0x4779, 0x6972, 0x5f64, 0x6544, 0x6373, 0x6972, 0x7470, 0x6f69, 
+0x416e, 0x6572, 0x3e61, 0x4d3c, 0x4346, 0x7250, 0x706f, 0x7265, 0x7974, 
+0x7247, 0x6469, 0x415f, 0x706c, 0x6168, 0x6562, 0x6974, 0x4d63, 0x646f, 
+0x3e65, 0x4146, 0x534c, 0x3c45, 0x4d2f, 0x4346, 0x7250, 0x706f, 0x7265, 
+0x7974, 0x7247, 0x6469, 0x415f, 0x706c, 0x6168, 0x6562, 0x6974, 0x4d63, 
+0x646f, 0x3e65, 0x4d3c, 0x4346, 0x7250, 0x706f, 0x7265, 0x7974, 0x7247, 
+0x6469, 0x4d5f, 0x646f, 0x6669, 0x6569, 0x5064, 0x6f72, 0x6570, 0x7472, 
+0x6569, 0x3e73, 0x4146, 0x534c, 0x3c45, 0x4d2f, 0x4346, 0x7250, 0x706f, 
+0x7265, 0x7974, 0x7247, 0x6469, 0x4d5f, 0x646f, 0x6669, 0x6569, 0x5064, 
+0x6f72, 0x6570, 0x7472, 0x6569, 0x3e73, 0x4d3c, 0x4346, 0x7250, 0x706f, 
+0x7265, 0x7974, 0x7247, 0x6469, 0x565f, 0x4453, 0x746f, 0x654e, 0x4c74, 
+0x6f6f, 0x3e6b, 0x5254, 0x4555, 0x2f3c, 0x464d, 0x5043, 0x6f72, 0x6570, 
+0x7472, 0x4779, 0x6972, 0x5f64, 0x5356, 0x6f44, 0x4e74, 0x7465, 0x6f4c, 
+0x6b6f, 0x3c3e, 0x464d, 0x5043, 0x6f72, 0x6570, 0x7472, 0x4779, 0x6972, 
+0x5f64, 0x6544, 0x6373, 0x6972, 0x7470, 0x6f69, 0x526e, 0x776f, 0x3e73, 
+0x3c33, 0x4d2f, 0x4346, 0x7250, 0x706f, 0x7265, 0x7974, 0x7247, 0x6469, 
+0x445f, 0x7365, 0x7263, 0x7069, 0x6974, 0x6e6f, 0x6f52, 0x7377, "\076" 
+    0
+END
+
+IDD_SYS_PROP DLGINIT
+BEGIN
+    IDC_SYS_PROP, 0x37c, 413, 0
+0x4d3c, 0x4346, 0x7250, 0x706f, 0x7265, 0x7974, 0x7247, 0x6469, 0x485f, 
+0x6165, 0x6564, 0x4372, 0x7274, 0x3e6c, 0x5254, 0x4555, 0x2f3c, 0x464d, 
+0x5043, 0x6f72, 0x6570, 0x7472, 0x4779, 0x6972, 0x5f64, 0x6548, 0x6461, 
+0x7265, 0x7443, 0x6c72, 0x3c3e, 0x464d, 0x5043, 0x6f72, 0x6570, 0x7472, 
+0x4779, 0x6972, 0x5f64, 0x6544, 0x6373, 0x6972, 0x7470, 0x6f69, 0x416e, 
+0x6572, 0x3e61, 0x5254, 0x4555, 0x2f3c, 0x464d, 0x5043, 0x6f72, 0x6570, 
+0x7472, 0x4779, 0x6972, 0x5f64, 0x6544, 0x6373, 0x6972, 0x7470, 0x6f69, 
+0x416e, 0x6572, 0x3e61, 0x4d3c, 0x4346, 0x7250, 0x706f, 0x7265, 0x7974, 
+0x7247, 0x6469, 0x415f, 0x706c, 0x6168, 0x6562, 0x6974, 0x4d63, 0x646f, 
+0x3e65, 0x4146, 0x534c, 0x3c45, 0x4d2f, 0x4346, 0x7250, 0x706f, 0x7265, 
+0x7974, 0x7247, 0x6469, 0x415f, 0x706c, 0x6168, 0x6562, 0x6974, 0x4d63, 
+0x646f, 0x3e65, 0x4d3c, 0x4346, 0x7250, 0x706f, 0x7265, 0x7974, 0x7247, 
+0x6469, 0x4d5f, 0x646f, 0x6669, 0x6569, 0x5064, 0x6f72, 0x6570, 0x7472, 
+0x6569, 0x3e73, 0x4146, 0x534c, 0x3c45, 0x4d2f, 0x4346, 0x7250, 0x706f, 
+0x7265, 0x7974, 0x7247, 0x6469, 0x4d5f, 0x646f, 0x6669, 0x6569, 0x5064, 
+0x6f72, 0x6570, 0x7472, 0x6569, 0x3e73, 0x4d3c, 0x4346, 0x7250, 0x706f, 
+0x7265, 0x7974, 0x7247, 0x6469, 0x565f, 0x4453, 0x746f, 0x654e, 0x4c74, 
+0x6f6f, 0x3e6b, 0x5254, 0x4555, 0x2f3c, 0x464d, 0x5043, 0x6f72, 0x6570, 
+0x7472, 0x4779, 0x6972, 0x5f64, 0x5356, 0x6f44, 0x4e74, 0x7465, 0x6f4c, 
+0x6b6f, 0x3c3e, 0x464d, 0x5043, 0x6f72, 0x6570, 0x7472, 0x4779, 0x6972, 
+0x5f64, 0x6544, 0x6373, 0x6972, 0x7470, 0x6f69, 0x526e, 0x776f, 0x3e73, 
+0x3c33, 0x4d2f, 0x4346, 0x7250, 0x706f, 0x7265, 0x7974, 0x7247, 0x6469, 
+0x445f, 0x7365, 0x7263, 0x7069, 0x6974, 0x6e6f, 0x6f52, 0x7377, "\076" 
+    0
+END
+
+IDD_REALTIMETRACK_DIALOG DLGINIT
+BEGIN
+    IDC_UpdatePeriod, 0x403, 4, 0
+0x3532, 0x0030, 
+    IDC_UpdatePeriod, 0x403, 4, 0
+0x3035, 0x0030, 
+    IDC_UpdatePeriod, 0x403, 4, 0
+0x3537, 0x0030, 
+    IDC_UpdatePeriod, 0x403, 5, 0
+0x3031, 0x3030, "\000" 
+    IDC_UpdatePeriod, 0x403, 5, 0
+0x3231, 0x3035, "\000" 
+    IDC_UpdatePeriod, 0x403, 5, 0
+0x3531, 0x3030, "\000" 
+    IDC_UpdatePeriod, 0x403, 5, 0
+0x3731, 0x3035, "\000" 
+    IDC_UpdatePeriod, 0x403, 5, 0
+0x3032, 0x3030, "\000" 
+    0
+END
+
+IDD_ORDER_TOTAL DLGINIT
+BEGIN
+    IDC_MFCBUTTON_STATE, 0x37c, 369, 0
+0x4d3c, 0x4346, 0x7542, 0x7474, 0x6e6f, 0x535f, 0x7974, 0x656c, 0x343e, 
+0x2f3c, 0x464d, 0x4243, 0x7475, 0x6f74, 0x5f6e, 0x7453, 0x6c79, 0x3e65, 
+0x4d3c, 0x4346, 0x7542, 0x7474, 0x6e6f, 0x415f, 0x7475, 0x736f, 0x7a69, 
+0x3e65, 0x4146, 0x534c, 0x3c45, 0x4d2f, 0x4346, 0x7542, 0x7474, 0x6e6f, 
+0x415f, 0x7475, 0x736f, 0x7a69, 0x3e65, 0x4d3c, 0x4346, 0x7542, 0x7474, 
+0x6e6f, 0x545f, 0x6f6f, 0x746c, 0x7069, 0x3c3e, 0x4d2f, 0x4346, 0x7542, 
+0x7474, 0x6e6f, 0x545f, 0x6f6f, 0x746c, 0x7069, 0x3c3e, 0x464d, 0x4243, 
+0x7475, 0x6f74, 0x5f6e, 0x7546, 0x6c6c, 0x6554, 0x7478, 0x6f54, 0x6c6f, 
+0x543e, 0x5552, 0x3c45, 0x4d2f, 0x4346, 0x7542, 0x7474, 0x6e6f, 0x465f, 
+0x6c75, 0x546c, 0x7865, 0x5474, 0x6f6f, 0x3e6c, 0x4d3c, 0x4346, 0x7542, 
+0x7474, 0x6e6f, 0x435f, 0x7275, 0x6f73, 0x5472, 0x7079, 0x3e65, 0x3131, 
+0x2f3c, 0x464d, 0x4243, 0x7475, 0x6f74, 0x5f6e, 0x7543, 0x7372, 0x726f, 
+0x7954, 0x6570, 0x3c3e, 0x464d, 0x4243, 0x7475, 0x6f74, 0x5f6e, 0x6d49, 
+0x6761, 0x5465, 0x7079, 0x3e65, 0x3c38, 0x4d2f, 0x4346, 0x7542, 0x7474, 
+0x6e6f, 0x495f, 0x616d, 0x6567, 0x7954, 0x6570, 0x3c3e, 0x464d, 0x4243, 
+0x7475, 0x6f74, 0x5f6e, 0x6d49, 0x6761, 0x4f65, 0x546e, 0x706f, 0x463e, 
+0x4c41, 0x4553, 0x2f3c, 0x464d, 0x4243, 0x7475, 0x6f74, 0x5f6e, 0x6d49, 
+0x6761, 0x4f65, 0x546e, 0x706f, 0x3c3e, 0x464d, 0x4243, 0x7475, 0x6f74, 
+0x5f6e, 0x6d49, 0x6761, 0x4f65, 0x526e, 0x6769, 0x7468, 0x463e, 0x4c41, 
+0x4553, 0x2f3c, 0x464d, 0x4243, 0x7475, 0x6f74, 0x5f6e, 0x6d49, 0x6761, 
+0x4f65, 0x526e, 0x6769, 0x7468, "\076" 
+    0
+END
+
+IDD_INDEX_PROPERTY DLGINIT
+BEGIN
+    IDC_INDEX_PROPERTY, 0x37c, 413, 0
+0x4d3c, 0x4346, 0x7250, 0x706f, 0x7265, 0x7974, 0x7247, 0x6469, 0x485f, 
+0x6165, 0x6564, 0x4372, 0x7274, 0x3e6c, 0x5254, 0x4555, 0x2f3c, 0x464d, 
+0x5043, 0x6f72, 0x6570, 0x7472, 0x4779, 0x6972, 0x5f64, 0x6548, 0x6461, 
+0x7265, 0x7443, 0x6c72, 0x3c3e, 0x464d, 0x5043, 0x6f72, 0x6570, 0x7472, 
+0x4779, 0x6972, 0x5f64, 0x6544, 0x6373, 0x6972, 0x7470, 0x6f69, 0x416e, 
+0x6572, 0x3e61, 0x5254, 0x4555, 0x2f3c, 0x464d, 0x5043, 0x6f72, 0x6570, 
+0x7472, 0x4779, 0x6972, 0x5f64, 0x6544, 0x6373, 0x6972, 0x7470, 0x6f69, 
+0x416e, 0x6572, 0x3e61, 0x4d3c, 0x4346, 0x7250, 0x706f, 0x7265, 0x7974, 
+0x7247, 0x6469, 0x415f, 0x706c, 0x6168, 0x6562, 0x6974, 0x4d63, 0x646f, 
+0x3e65, 0x4146, 0x534c, 0x3c45, 0x4d2f, 0x4346, 0x7250, 0x706f, 0x7265, 
+0x7974, 0x7247, 0x6469, 0x415f, 0x706c, 0x6168, 0x6562, 0x6974, 0x4d63, 
+0x646f, 0x3e65, 0x4d3c, 0x4346, 0x7250, 0x706f, 0x7265, 0x7974, 0x7247, 
+0x6469, 0x4d5f, 0x646f, 0x6669, 0x6569, 0x5064, 0x6f72, 0x6570, 0x7472, 
+0x6569, 0x3e73, 0x4146, 0x534c, 0x3c45, 0x4d2f, 0x4346, 0x7250, 0x706f, 
+0x7265, 0x7974, 0x7247, 0x6469, 0x4d5f, 0x646f, 0x6669, 0x6569, 0x5064, 
+0x6f72, 0x6570, 0x7472, 0x6569, 0x3e73, 0x4d3c, 0x4346, 0x7250, 0x706f, 
+0x7265, 0x7974, 0x7247, 0x6469, 0x565f, 0x4453, 0x746f, 0x654e, 0x4c74, 
+0x6f6f, 0x3e6b, 0x5254, 0x4555, 0x2f3c, 0x464d, 0x5043, 0x6f72, 0x6570, 
+0x7472, 0x4779, 0x6972, 0x5f64, 0x5356, 0x6f44, 0x4e74, 0x7465, 0x6f4c, 
+0x6b6f, 0x3c3e, 0x464d, 0x5043, 0x6f72, 0x6570, 0x7472, 0x4779, 0x6972, 
+0x5f64, 0x6544, 0x6373, 0x6972, 0x7470, 0x6f69, 0x526e, 0x776f, 0x3e73, 
+0x3c32, 0x4d2f, 0x4346, 0x7250, 0x706f, 0x7265, 0x7974, 0x7247, 0x6469, 
+0x445f, 0x7365, 0x7263, 0x7069, 0x6974, 0x6e6f, 0x6f52, 0x7377, "\076" 
+    0
+END
+
+IDD_DIALOG_CHART1 DLGINIT
+BEGIN
+    ID_CHART_BTN_ZOOMIN, 0x37c, 369, 0
+0x4d3c, 0x4346, 0x7542, 0x7474, 0x6e6f, 0x535f, 0x7974, 0x656c, 0x343e, 
+0x2f3c, 0x464d, 0x4243, 0x7475, 0x6f74, 0x5f6e, 0x7453, 0x6c79, 0x3e65, 
+0x4d3c, 0x4346, 0x7542, 0x7474, 0x6e6f, 0x415f, 0x7475, 0x736f, 0x7a69, 
+0x3e65, 0x4146, 0x534c, 0x3c45, 0x4d2f, 0x4346, 0x7542, 0x7474, 0x6e6f, 
+0x415f, 0x7475, 0x736f, 0x7a69, 0x3e65, 0x4d3c, 0x4346, 0x7542, 0x7474, 
+0x6e6f, 0x545f, 0x6f6f, 0x746c, 0x7069, 0x3c3e, 0x4d2f, 0x4346, 0x7542, 
+0x7474, 0x6e6f, 0x545f, 0x6f6f, 0x746c, 0x7069, 0x3c3e, 0x464d, 0x4243, 
+0x7475, 0x6f74, 0x5f6e, 0x7546, 0x6c6c, 0x6554, 0x7478, 0x6f54, 0x6c6f, 
+0x543e, 0x5552, 0x3c45, 0x4d2f, 0x4346, 0x7542, 0x7474, 0x6e6f, 0x465f, 
+0x6c75, 0x546c, 0x7865, 0x5474, 0x6f6f, 0x3e6c, 0x4d3c, 0x4346, 0x7542, 
+0x7474, 0x6e6f, 0x435f, 0x7275, 0x6f73, 0x5472, 0x7079, 0x3e65, 0x3131, 
+0x2f3c, 0x464d, 0x4243, 0x7475, 0x6f74, 0x5f6e, 0x7543, 0x7372, 0x726f, 
+0x7954, 0x6570, 0x3c3e, 0x464d, 0x4243, 0x7475, 0x6f74, 0x5f6e, 0x6d49, 
+0x6761, 0x5465, 0x7079, 0x3e65, 0x3c38, 0x4d2f, 0x4346, 0x7542, 0x7474, 
+0x6e6f, 0x495f, 0x616d, 0x6567, 0x7954, 0x6570, 0x3c3e, 0x464d, 0x4243, 
+0x7475, 0x6f74, 0x5f6e, 0x6d49, 0x6761, 0x4f65, 0x546e, 0x706f, 0x463e, 
+0x4c41, 0x4553, 0x2f3c, 0x464d, 0x4243, 0x7475, 0x6f74, 0x5f6e, 0x6d49, 
+0x6761, 0x4f65, 0x546e, 0x706f, 0x3c3e, 0x464d, 0x4243, 0x7475, 0x6f74, 
+0x5f6e, 0x6d49, 0x6761, 0x4f65, 0x526e, 0x6769, 0x7468, 0x463e, 0x4c41, 
+0x4553, 0x2f3c, 0x464d, 0x4243, 0x7475, 0x6f74, 0x5f6e, 0x6d49, 0x6761, 
+0x4f65, 0x526e, 0x6769, 0x7468, "\076" 
+    ID_CHART_BTN_ZOOMOUT, 0x37c, 369, 0
+0x4d3c, 0x4346, 0x7542, 0x7474, 0x6e6f, 0x535f, 0x7974, 0x656c, 0x343e, 
+0x2f3c, 0x464d, 0x4243, 0x7475, 0x6f74, 0x5f6e, 0x7453, 0x6c79, 0x3e65, 
+0x4d3c, 0x4346, 0x7542, 0x7474, 0x6e6f, 0x415f, 0x7475, 0x736f, 0x7a69, 
+0x3e65, 0x4146, 0x534c, 0x3c45, 0x4d2f, 0x4346, 0x7542, 0x7474, 0x6e6f, 
+0x415f, 0x7475, 0x736f, 0x7a69, 0x3e65, 0x4d3c, 0x4346, 0x7542, 0x7474, 
+0x6e6f, 0x545f, 0x6f6f, 0x746c, 0x7069, 0x3c3e, 0x4d2f, 0x4346, 0x7542, 
+0x7474, 0x6e6f, 0x545f, 0x6f6f, 0x746c, 0x7069, 0x3c3e, 0x464d, 0x4243, 
+0x7475, 0x6f74, 0x5f6e, 0x7546, 0x6c6c, 0x6554, 0x7478, 0x6f54, 0x6c6f, 
+0x543e, 0x5552, 0x3c45, 0x4d2f, 0x4346, 0x7542, 0x7474, 0x6e6f, 0x465f, 
+0x6c75, 0x546c, 0x7865, 0x5474, 0x6f6f, 0x3e6c, 0x4d3c, 0x4346, 0x7542, 
+0x7474, 0x6e6f, 0x435f, 0x7275, 0x6f73, 0x5472, 0x7079, 0x3e65, 0x3131, 
+0x2f3c, 0x464d, 0x4243, 0x7475, 0x6f74, 0x5f6e, 0x7543, 0x7372, 0x726f, 
+0x7954, 0x6570, 0x3c3e, 0x464d, 0x4243, 0x7475, 0x6f74, 0x5f6e, 0x6d49, 
+0x6761, 0x5465, 0x7079, 0x3e65, 0x3c38, 0x4d2f, 0x4346, 0x7542, 0x7474, 
+0x6e6f, 0x495f, 0x616d, 0x6567, 0x7954, 0x6570, 0x3c3e, 0x464d, 0x4243, 
+0x7475, 0x6f74, 0x5f6e, 0x6d49, 0x6761, 0x4f65, 0x546e, 0x706f, 0x463e, 
+0x4c41, 0x4553, 0x2f3c, 0x464d, 0x4243, 0x7475, 0x6f74, 0x5f6e, 0x6d49, 
+0x6761, 0x4f65, 0x546e, 0x706f, 0x3c3e, 0x464d, 0x4243, 0x7475, 0x6f74, 
+0x5f6e, 0x6d49, 0x6761, 0x4f65, 0x526e, 0x6769, 0x7468, 0x463e, 0x4c41, 
+0x4553, 0x2f3c, 0x464d, 0x4243, 0x7475, 0x6f74, 0x5f6e, 0x6d49, 0x6761, 
+0x4f65, 0x526e, 0x6769, 0x7468, "\076" 
+    ID_CHART_BTN_FULLSCRN, 0x37c, 369, 0
+0x4d3c, 0x4346, 0x7542, 0x7474, 0x6e6f, 0x535f, 0x7974, 0x656c, 0x343e, 
+0x2f3c, 0x464d, 0x4243, 0x7475, 0x6f74, 0x5f6e, 0x7453, 0x6c79, 0x3e65, 
+0x4d3c, 0x4346, 0x7542, 0x7474, 0x6e6f, 0x415f, 0x7475, 0x736f, 0x7a69, 
+0x3e65, 0x4146, 0x534c, 0x3c45, 0x4d2f, 0x4346, 0x7542, 0x7474, 0x6e6f, 
+0x415f, 0x7475, 0x736f, 0x7a69, 0x3e65, 0x4d3c, 0x4346, 0x7542, 0x7474, 
+0x6e6f, 0x545f, 0x6f6f, 0x746c, 0x7069, 0x3c3e, 0x4d2f, 0x4346, 0x7542, 
+0x7474, 0x6e6f, 0x545f, 0x6f6f, 0x746c, 0x7069, 0x3c3e, 0x464d, 0x4243, 
+0x7475, 0x6f74, 0x5f6e, 0x7546, 0x6c6c, 0x6554, 0x7478, 0x6f54, 0x6c6f, 
+0x543e, 0x5552, 0x3c45, 0x4d2f, 0x4346, 0x7542, 0x7474, 0x6e6f, 0x465f, 
+0x6c75, 0x546c, 0x7865, 0x5474, 0x6f6f, 0x3e6c, 0x4d3c, 0x4346, 0x7542, 
+0x7474, 0x6e6f, 0x435f, 0x7275, 0x6f73, 0x5472, 0x7079, 0x3e65, 0x3131, 
+0x2f3c, 0x464d, 0x4243, 0x7475, 0x6f74, 0x5f6e, 0x7543, 0x7372, 0x726f, 
+0x7954, 0x6570, 0x3c3e, 0x464d, 0x4243, 0x7475, 0x6f74, 0x5f6e, 0x6d49, 
+0x6761, 0x5465, 0x7079, 0x3e65, 0x3c38, 0x4d2f, 0x4346, 0x7542, 0x7474, 
+0x6e6f, 0x495f, 0x616d, 0x6567, 0x7954, 0x6570, 0x3c3e, 0x464d, 0x4243, 
+0x7475, 0x6f74, 0x5f6e, 0x6d49, 0x6761, 0x4f65, 0x546e, 0x706f, 0x463e, 
+0x4c41, 0x4553, 0x2f3c, 0x464d, 0x4243, 0x7475, 0x6f74, 0x5f6e, 0x6d49, 
+0x6761, 0x4f65, 0x546e, 0x706f, 0x3c3e, 0x464d, 0x4243, 0x7475, 0x6f74, 
+0x5f6e, 0x6d49, 0x6761, 0x4f65, 0x526e, 0x6769, 0x7468, 0x463e, 0x4c41, 
+0x4553, 0x2f3c, 0x464d, 0x4243, 0x7475, 0x6f74, 0x5f6e, 0x6d49, 0x6761, 
+0x4f65, 0x526e, 0x6769, 0x7468, "\076" 
+    ID_CHART_BTN_DEL, 0x37c, 369, 0
+0x4d3c, 0x4346, 0x7542, 0x7474, 0x6e6f, 0x535f, 0x7974, 0x656c, 0x343e, 
+0x2f3c, 0x464d, 0x4243, 0x7475, 0x6f74, 0x5f6e, 0x7453, 0x6c79, 0x3e65, 
+0x4d3c, 0x4346, 0x7542, 0x7474, 0x6e6f, 0x415f, 0x7475, 0x736f, 0x7a69, 
+0x3e65, 0x4146, 0x534c, 0x3c45, 0x4d2f, 0x4346, 0x7542, 0x7474, 0x6e6f, 
+0x415f, 0x7475, 0x736f, 0x7a69, 0x3e65, 0x4d3c, 0x4346, 0x7542, 0x7474, 
+0x6e6f, 0x545f, 0x6f6f, 0x746c, 0x7069, 0x3c3e, 0x4d2f, 0x4346, 0x7542, 
+0x7474, 0x6e6f, 0x545f, 0x6f6f, 0x746c, 0x7069, 0x3c3e, 0x464d, 0x4243, 
+0x7475, 0x6f74, 0x5f6e, 0x7546, 0x6c6c, 0x6554, 0x7478, 0x6f54, 0x6c6f, 
+0x543e, 0x5552, 0x3c45, 0x4d2f, 0x4346, 0x7542, 0x7474, 0x6e6f, 0x465f, 
+0x6c75, 0x546c, 0x7865, 0x5474, 0x6f6f, 0x3e6c, 0x4d3c, 0x4346, 0x7542, 
+0x7474, 0x6e6f, 0x435f, 0x7275, 0x6f73, 0x5472, 0x7079, 0x3e65, 0x3131, 
+0x2f3c, 0x464d, 0x4243, 0x7475, 0x6f74, 0x5f6e, 0x7543, 0x7372, 0x726f, 
+0x7954, 0x6570, 0x3c3e, 0x464d, 0x4243, 0x7475, 0x6f74, 0x5f6e, 0x6d49, 
+0x6761, 0x5465, 0x7079, 0x3e65, 0x3c38, 0x4d2f, 0x4346, 0x7542, 0x7474, 
+0x6e6f, 0x495f, 0x616d, 0x6567, 0x7954, 0x6570, 0x3c3e, 0x464d, 0x4243, 
+0x7475, 0x6f74, 0x5f6e, 0x6d49, 0x6761, 0x4f65, 0x546e, 0x706f, 0x463e, 
+0x4c41, 0x4553, 0x2f3c, 0x464d, 0x4243, 0x7475, 0x6f74, 0x5f6e, 0x6d49, 
+0x6761, 0x4f65, 0x546e, 0x706f, 0x3c3e, 0x464d, 0x4243, 0x7475, 0x6f74, 
+0x5f6e, 0x6d49, 0x6761, 0x4f65, 0x526e, 0x6769, 0x7468, 0x463e, 0x4c41, 
+0x4553, 0x2f3c, 0x464d, 0x4243, 0x7475, 0x6f74, 0x5f6e, 0x6d49, 0x6761, 
+0x4f65, 0x526e, 0x6769, 0x7468, "\076" 
+    0
+END
+
+IDD_DIALOG_CHART DLGINIT
+BEGIN
+    ID_CHART_BTN_ZOOMIN, 0x37c, 369, 0
+0x4d3c, 0x4346, 0x7542, 0x7474, 0x6e6f, 0x535f, 0x7974, 0x656c, 0x343e, 
+0x2f3c, 0x464d, 0x4243, 0x7475, 0x6f74, 0x5f6e, 0x7453, 0x6c79, 0x3e65, 
+0x4d3c, 0x4346, 0x7542, 0x7474, 0x6e6f, 0x415f, 0x7475, 0x736f, 0x7a69, 
+0x3e65, 0x4146, 0x534c, 0x3c45, 0x4d2f, 0x4346, 0x7542, 0x7474, 0x6e6f, 
+0x415f, 0x7475, 0x736f, 0x7a69, 0x3e65, 0x4d3c, 0x4346, 0x7542, 0x7474, 
+0x6e6f, 0x545f, 0x6f6f, 0x746c, 0x7069, 0x3c3e, 0x4d2f, 0x4346, 0x7542, 
+0x7474, 0x6e6f, 0x545f, 0x6f6f, 0x746c, 0x7069, 0x3c3e, 0x464d, 0x4243, 
+0x7475, 0x6f74, 0x5f6e, 0x7546, 0x6c6c, 0x6554, 0x7478, 0x6f54, 0x6c6f, 
+0x543e, 0x5552, 0x3c45, 0x4d2f, 0x4346, 0x7542, 0x7474, 0x6e6f, 0x465f, 
+0x6c75, 0x546c, 0x7865, 0x5474, 0x6f6f, 0x3e6c, 0x4d3c, 0x4346, 0x7542, 
+0x7474, 0x6e6f, 0x435f, 0x7275, 0x6f73, 0x5472, 0x7079, 0x3e65, 0x3131, 
+0x2f3c, 0x464d, 0x4243, 0x7475, 0x6f74, 0x5f6e, 0x7543, 0x7372, 0x726f, 
+0x7954, 0x6570, 0x3c3e, 0x464d, 0x4243, 0x7475, 0x6f74, 0x5f6e, 0x6d49, 
+0x6761, 0x5465, 0x7079, 0x3e65, 0x3c38, 0x4d2f, 0x4346, 0x7542, 0x7474, 
+0x6e6f, 0x495f, 0x616d, 0x6567, 0x7954, 0x6570, 0x3c3e, 0x464d, 0x4243, 
+0x7475, 0x6f74, 0x5f6e, 0x6d49, 0x6761, 0x4f65, 0x546e, 0x706f, 0x463e, 
+0x4c41, 0x4553, 0x2f3c, 0x464d, 0x4243, 0x7475, 0x6f74, 0x5f6e, 0x6d49, 
+0x6761, 0x4f65, 0x546e, 0x706f, 0x3c3e, 0x464d, 0x4243, 0x7475, 0x6f74, 
+0x5f6e, 0x6d49, 0x6761, 0x4f65, 0x526e, 0x6769, 0x7468, 0x463e, 0x4c41, 
+0x4553, 0x2f3c, 0x464d, 0x4243, 0x7475, 0x6f74, 0x5f6e, 0x6d49, 0x6761, 
+0x4f65, 0x526e, 0x6769, 0x7468, "\076" 
+    ID_CHART_BTN_ZOOMOUT, 0x37c, 369, 0
+0x4d3c, 0x4346, 0x7542, 0x7474, 0x6e6f, 0x535f, 0x7974, 0x656c, 0x343e, 
+0x2f3c, 0x464d, 0x4243, 0x7475, 0x6f74, 0x5f6e, 0x7453, 0x6c79, 0x3e65, 
+0x4d3c, 0x4346, 0x7542, 0x7474, 0x6e6f, 0x415f, 0x7475, 0x736f, 0x7a69, 
+0x3e65, 0x4146, 0x534c, 0x3c45, 0x4d2f, 0x4346, 0x7542, 0x7474, 0x6e6f, 
+0x415f, 0x7475, 0x736f, 0x7a69, 0x3e65, 0x4d3c, 0x4346, 0x7542, 0x7474, 
+0x6e6f, 0x545f, 0x6f6f, 0x746c, 0x7069, 0x3c3e, 0x4d2f, 0x4346, 0x7542, 
+0x7474, 0x6e6f, 0x545f, 0x6f6f, 0x746c, 0x7069, 0x3c3e, 0x464d, 0x4243, 
+0x7475, 0x6f74, 0x5f6e, 0x7546, 0x6c6c, 0x6554, 0x7478, 0x6f54, 0x6c6f, 
+0x543e, 0x5552, 0x3c45, 0x4d2f, 0x4346, 0x7542, 0x7474, 0x6e6f, 0x465f, 
+0x6c75, 0x546c, 0x7865, 0x5474, 0x6f6f, 0x3e6c, 0x4d3c, 0x4346, 0x7542, 
+0x7474, 0x6e6f, 0x435f, 0x7275, 0x6f73, 0x5472, 0x7079, 0x3e65, 0x3131, 
+0x2f3c, 0x464d, 0x4243, 0x7475, 0x6f74, 0x5f6e, 0x7543, 0x7372, 0x726f, 
+0x7954, 0x6570, 0x3c3e, 0x464d, 0x4243, 0x7475, 0x6f74, 0x5f6e, 0x6d49, 
+0x6761, 0x5465, 0x7079, 0x3e65, 0x3c38, 0x4d2f, 0x4346, 0x7542, 0x7474, 
+0x6e6f, 0x495f, 0x616d, 0x6567, 0x7954, 0x6570, 0x3c3e, 0x464d, 0x4243, 
+0x7475, 0x6f74, 0x5f6e, 0x6d49, 0x6761, 0x4f65, 0x546e, 0x706f, 0x463e, 
+0x4c41, 0x4553, 0x2f3c, 0x464d, 0x4243, 0x7475, 0x6f74, 0x5f6e, 0x6d49, 
+0x6761, 0x4f65, 0x546e, 0x706f, 0x3c3e, 0x464d, 0x4243, 0x7475, 0x6f74, 
+0x5f6e, 0x6d49, 0x6761, 0x4f65, 0x526e, 0x6769, 0x7468, 0x463e, 0x4c41, 
+0x4553, 0x2f3c, 0x464d, 0x4243, 0x7475, 0x6f74, 0x5f6e, 0x6d49, 0x6761, 
+0x4f65, 0x526e, 0x6769, 0x7468, "\076" 
+    ID_CHART_BTN_FULLSCRN, 0x37c, 369, 0
+0x4d3c, 0x4346, 0x7542, 0x7474, 0x6e6f, 0x535f, 0x7974, 0x656c, 0x343e, 
+0x2f3c, 0x464d, 0x4243, 0x7475, 0x6f74, 0x5f6e, 0x7453, 0x6c79, 0x3e65, 
+0x4d3c, 0x4346, 0x7542, 0x7474, 0x6e6f, 0x415f, 0x7475, 0x736f, 0x7a69, 
+0x3e65, 0x4146, 0x534c, 0x3c45, 0x4d2f, 0x4346, 0x7542, 0x7474, 0x6e6f, 
+0x415f, 0x7475, 0x736f, 0x7a69, 0x3e65, 0x4d3c, 0x4346, 0x7542, 0x7474, 
+0x6e6f, 0x545f, 0x6f6f, 0x746c, 0x7069, 0x3c3e, 0x4d2f, 0x4346, 0x7542, 
+0x7474, 0x6e6f, 0x545f, 0x6f6f, 0x746c, 0x7069, 0x3c3e, 0x464d, 0x4243, 
+0x7475, 0x6f74, 0x5f6e, 0x7546, 0x6c6c, 0x6554, 0x7478, 0x6f54, 0x6c6f, 
+0x543e, 0x5552, 0x3c45, 0x4d2f, 0x4346, 0x7542, 0x7474, 0x6e6f, 0x465f, 
+0x6c75, 0x546c, 0x7865, 0x5474, 0x6f6f, 0x3e6c, 0x4d3c, 0x4346, 0x7542, 
+0x7474, 0x6e6f, 0x435f, 0x7275, 0x6f73, 0x5472, 0x7079, 0x3e65, 0x3131, 
+0x2f3c, 0x464d, 0x4243, 0x7475, 0x6f74, 0x5f6e, 0x7543, 0x7372, 0x726f, 
+0x7954, 0x6570, 0x3c3e, 0x464d, 0x4243, 0x7475, 0x6f74, 0x5f6e, 0x6d49, 
+0x6761, 0x5465, 0x7079, 0x3e65, 0x3c38, 0x4d2f, 0x4346, 0x7542, 0x7474, 
+0x6e6f, 0x495f, 0x616d, 0x6567, 0x7954, 0x6570, 0x3c3e, 0x464d, 0x4243, 
+0x7475, 0x6f74, 0x5f6e, 0x6d49, 0x6761, 0x4f65, 0x546e, 0x706f, 0x463e, 
+0x4c41, 0x4553, 0x2f3c, 0x464d, 0x4243, 0x7475, 0x6f74, 0x5f6e, 0x6d49, 
+0x6761, 0x4f65, 0x546e, 0x706f, 0x3c3e, 0x464d, 0x4243, 0x7475, 0x6f74, 
+0x5f6e, 0x6d49, 0x6761, 0x4f65, 0x526e, 0x6769, 0x7468, 0x463e, 0x4c41, 
+0x4553, 0x2f3c, 0x464d, 0x4243, 0x7475, 0x6f74, 0x5f6e, 0x6d49, 0x6761, 
+0x4f65, 0x526e, 0x6769, 0x7468, "\076" 
+    ID_CHART_BTN_DEL, 0x37c, 369, 0
+0x4d3c, 0x4346, 0x7542, 0x7474, 0x6e6f, 0x535f, 0x7974, 0x656c, 0x343e, 
+0x2f3c, 0x464d, 0x4243, 0x7475, 0x6f74, 0x5f6e, 0x7453, 0x6c79, 0x3e65, 
+0x4d3c, 0x4346, 0x7542, 0x7474, 0x6e6f, 0x415f, 0x7475, 0x736f, 0x7a69, 
+0x3e65, 0x4146, 0x534c, 0x3c45, 0x4d2f, 0x4346, 0x7542, 0x7474, 0x6e6f, 
+0x415f, 0x7475, 0x736f, 0x7a69, 0x3e65, 0x4d3c, 0x4346, 0x7542, 0x7474, 
+0x6e6f, 0x545f, 0x6f6f, 0x746c, 0x7069, 0x3c3e, 0x4d2f, 0x4346, 0x7542, 
+0x7474, 0x6e6f, 0x545f, 0x6f6f, 0x746c, 0x7069, 0x3c3e, 0x464d, 0x4243, 
+0x7475, 0x6f74, 0x5f6e, 0x7546, 0x6c6c, 0x6554, 0x7478, 0x6f54, 0x6c6f, 
+0x543e, 0x5552, 0x3c45, 0x4d2f, 0x4346, 0x7542, 0x7474, 0x6e6f, 0x465f, 
+0x6c75, 0x546c, 0x7865, 0x5474, 0x6f6f, 0x3e6c, 0x4d3c, 0x4346, 0x7542, 
+0x7474, 0x6e6f, 0x435f, 0x7275, 0x6f73, 0x5472, 0x7079, 0x3e65, 0x3131, 
+0x2f3c, 0x464d, 0x4243, 0x7475, 0x6f74, 0x5f6e, 0x7543, 0x7372, 0x726f, 
+0x7954, 0x6570, 0x3c3e, 0x464d, 0x4243, 0x7475, 0x6f74, 0x5f6e, 0x6d49, 
+0x6761, 0x5465, 0x7079, 0x3e65, 0x3c38, 0x4d2f, 0x4346, 0x7542, 0x7474, 
+0x6e6f, 0x495f, 0x616d, 0x6567, 0x7954, 0x6570, 0x3c3e, 0x464d, 0x4243, 
+0x7475, 0x6f74, 0x5f6e, 0x6d49, 0x6761, 0x4f65, 0x546e, 0x706f, 0x463e, 
+0x4c41, 0x4553, 0x2f3c, 0x464d, 0x4243, 0x7475, 0x6f74, 0x5f6e, 0x6d49, 
+0x6761, 0x4f65, 0x546e, 0x706f, 0x3c3e, 0x464d, 0x4243, 0x7475, 0x6f74, 
+0x5f6e, 0x6d49, 0x6761, 0x4f65, 0x526e, 0x6769, 0x7468, 0x463e, 0x4c41, 
+0x4553, 0x2f3c, 0x464d, 0x4243, 0x7475, 0x6f74, 0x5f6e, 0x6d49, 0x6761, 
+0x4f65, 0x526e, 0x6769, 0x7468, "\076" 
+    0
+END
+
+IDD_CHART_PROPERTY DLGINIT
+BEGIN
+    IDC_PROP_CHART, 0x37c, 413, 0
+0x4d3c, 0x4346, 0x7250, 0x706f, 0x7265, 0x7974, 0x7247, 0x6469, 0x485f, 
+0x6165, 0x6564, 0x4372, 0x7274, 0x3e6c, 0x5254, 0x4555, 0x2f3c, 0x464d, 
+0x5043, 0x6f72, 0x6570, 0x7472, 0x4779, 0x6972, 0x5f64, 0x6548, 0x6461, 
+0x7265, 0x7443, 0x6c72, 0x3c3e, 0x464d, 0x5043, 0x6f72, 0x6570, 0x7472, 
+0x4779, 0x6972, 0x5f64, 0x6544, 0x6373, 0x6972, 0x7470, 0x6f69, 0x416e, 
+0x6572, 0x3e61, 0x5254, 0x4555, 0x2f3c, 0x464d, 0x5043, 0x6f72, 0x6570, 
+0x7472, 0x4779, 0x6972, 0x5f64, 0x6544, 0x6373, 0x6972, 0x7470, 0x6f69, 
+0x416e, 0x6572, 0x3e61, 0x4d3c, 0x4346, 0x7250, 0x706f, 0x7265, 0x7974, 
+0x7247, 0x6469, 0x415f, 0x706c, 0x6168, 0x6562, 0x6974, 0x4d63, 0x646f, 
+0x3e65, 0x4146, 0x534c, 0x3c45, 0x4d2f, 0x4346, 0x7250, 0x706f, 0x7265, 
+0x7974, 0x7247, 0x6469, 0x415f, 0x706c, 0x6168, 0x6562, 0x6974, 0x4d63, 
+0x646f, 0x3e65, 0x4d3c, 0x4346, 0x7250, 0x706f, 0x7265, 0x7974, 0x7247, 
+0x6469, 0x4d5f, 0x646f, 0x6669, 0x6569, 0x5064, 0x6f72, 0x6570, 0x7472, 
+0x6569, 0x3e73, 0x4146, 0x534c, 0x3c45, 0x4d2f, 0x4346, 0x7250, 0x706f, 
+0x7265, 0x7974, 0x7247, 0x6469, 0x4d5f, 0x646f, 0x6669, 0x6569, 0x5064, 
+0x6f72, 0x6570, 0x7472, 0x6569, 0x3e73, 0x4d3c, 0x4346, 0x7250, 0x706f, 
+0x7265, 0x7974, 0x7247, 0x6469, 0x565f, 0x4453, 0x746f, 0x654e, 0x4c74, 
+0x6f6f, 0x3e6b, 0x5254, 0x4555, 0x2f3c, 0x464d, 0x5043, 0x6f72, 0x6570, 
+0x7472, 0x4779, 0x6972, 0x5f64, 0x5356, 0x6f44, 0x4e74, 0x7465, 0x6f4c, 
+0x6b6f, 0x3c3e, 0x464d, 0x5043, 0x6f72, 0x6570, 0x7472, 0x4779, 0x6972, 
+0x5f64, 0x6544, 0x6373, 0x6972, 0x7470, 0x6f69, 0x526e, 0x776f, 0x3e73, 
+0x3c33, 0x4d2f, 0x4346, 0x7250, 0x706f, 0x7265, 0x7974, 0x7247, 0x6469, 
+0x445f, 0x7365, 0x7263, 0x7069, 0x6974, 0x6e6f, 0x6f52, 0x7377, "\076" 
+    0
+END
+
+IDD_CHART DLGINIT
+BEGIN
+    ID_CHART_BTN_ZOOMIN, 0x37c, 369, 0
+0x4d3c, 0x4346, 0x7542, 0x7474, 0x6e6f, 0x535f, 0x7974, 0x656c, 0x343e, 
+0x2f3c, 0x464d, 0x4243, 0x7475, 0x6f74, 0x5f6e, 0x7453, 0x6c79, 0x3e65, 
+0x4d3c, 0x4346, 0x7542, 0x7474, 0x6e6f, 0x415f, 0x7475, 0x736f, 0x7a69, 
+0x3e65, 0x4146, 0x534c, 0x3c45, 0x4d2f, 0x4346, 0x7542, 0x7474, 0x6e6f, 
+0x415f, 0x7475, 0x736f, 0x7a69, 0x3e65, 0x4d3c, 0x4346, 0x7542, 0x7474, 
+0x6e6f, 0x545f, 0x6f6f, 0x746c, 0x7069, 0x3c3e, 0x4d2f, 0x4346, 0x7542, 
+0x7474, 0x6e6f, 0x545f, 0x6f6f, 0x746c, 0x7069, 0x3c3e, 0x464d, 0x4243, 
+0x7475, 0x6f74, 0x5f6e, 0x7546, 0x6c6c, 0x6554, 0x7478, 0x6f54, 0x6c6f, 
+0x543e, 0x5552, 0x3c45, 0x4d2f, 0x4346, 0x7542, 0x7474, 0x6e6f, 0x465f, 
+0x6c75, 0x546c, 0x7865, 0x5474, 0x6f6f, 0x3e6c, 0x4d3c, 0x4346, 0x7542, 
+0x7474, 0x6e6f, 0x435f, 0x7275, 0x6f73, 0x5472, 0x7079, 0x3e65, 0x3131, 
+0x2f3c, 0x464d, 0x4243, 0x7475, 0x6f74, 0x5f6e, 0x7543, 0x7372, 0x726f, 
+0x7954, 0x6570, 0x3c3e, 0x464d, 0x4243, 0x7475, 0x6f74, 0x5f6e, 0x6d49, 
+0x6761, 0x5465, 0x7079, 0x3e65, 0x3c38, 0x4d2f, 0x4346, 0x7542, 0x7474, 
+0x6e6f, 0x495f, 0x616d, 0x6567, 0x7954, 0x6570, 0x3c3e, 0x464d, 0x4243, 
+0x7475, 0x6f74, 0x5f6e, 0x6d49, 0x6761, 0x4f65, 0x546e, 0x706f, 0x463e, 
+0x4c41, 0x4553, 0x2f3c, 0x464d, 0x4243, 0x7475, 0x6f74, 0x5f6e, 0x6d49, 
+0x6761, 0x4f65, 0x546e, 0x706f, 0x3c3e, 0x464d, 0x4243, 0x7475, 0x6f74, 
+0x5f6e, 0x6d49, 0x6761, 0x4f65, 0x526e, 0x6769, 0x7468, 0x463e, 0x4c41, 
+0x4553, 0x2f3c, 0x464d, 0x4243, 0x7475, 0x6f74, 0x5f6e, 0x6d49, 0x6761, 
+0x4f65, 0x526e, 0x6769, 0x7468, "\076" 
+    ID_CHART_BTN_DEL, 0x37c, 369, 0
+0x4d3c, 0x4346, 0x7542, 0x7474, 0x6e6f, 0x535f, 0x7974, 0x656c, 0x343e, 
+0x2f3c, 0x464d, 0x4243, 0x7475, 0x6f74, 0x5f6e, 0x7453, 0x6c79, 0x3e65, 
+0x4d3c, 0x4346, 0x7542, 0x7474, 0x6e6f, 0x415f, 0x7475, 0x736f, 0x7a69, 
+0x3e65, 0x4146, 0x534c, 0x3c45, 0x4d2f, 0x4346, 0x7542, 0x7474, 0x6e6f, 
+0x415f, 0x7475, 0x736f, 0x7a69, 0x3e65, 0x4d3c, 0x4346, 0x7542, 0x7474, 
+0x6e6f, 0x545f, 0x6f6f, 0x746c, 0x7069, 0x3c3e, 0x4d2f, 0x4346, 0x7542, 
+0x7474, 0x6e6f, 0x545f, 0x6f6f, 0x746c, 0x7069, 0x3c3e, 0x464d, 0x4243, 
+0x7475, 0x6f74, 0x5f6e, 0x7546, 0x6c6c, 0x6554, 0x7478, 0x6f54, 0x6c6f, 
+0x543e, 0x5552, 0x3c45, 0x4d2f, 0x4346, 0x7542, 0x7474, 0x6e6f, 0x465f, 
+0x6c75, 0x546c, 0x7865, 0x5474, 0x6f6f, 0x3e6c, 0x4d3c, 0x4346, 0x7542, 
+0x7474, 0x6e6f, 0x435f, 0x7275, 0x6f73, 0x5472, 0x7079, 0x3e65, 0x3131, 
+0x2f3c, 0x464d, 0x4243, 0x7475, 0x6f74, 0x5f6e, 0x7543, 0x7372, 0x726f, 
+0x7954, 0x6570, 0x3c3e, 0x464d, 0x4243, 0x7475, 0x6f74, 0x5f6e, 0x6d49, 
+0x6761, 0x5465, 0x7079, 0x3e65, 0x3c38, 0x4d2f, 0x4346, 0x7542, 0x7474, 
+0x6e6f, 0x495f, 0x616d, 0x6567, 0x7954, 0x6570, 0x3c3e, 0x464d, 0x4243, 
+0x7475, 0x6f74, 0x5f6e, 0x6d49, 0x6761, 0x4f65, 0x546e, 0x706f, 0x463e, 
+0x4c41, 0x4553, 0x2f3c, 0x464d, 0x4243, 0x7475, 0x6f74, 0x5f6e, 0x6d49, 
+0x6761, 0x4f65, 0x546e, 0x706f, 0x3c3e, 0x464d, 0x4243, 0x7475, 0x6f74, 
+0x5f6e, 0x6d49, 0x6761, 0x4f65, 0x526e, 0x6769, 0x7468, 0x463e, 0x4c41, 
+0x4553, 0x2f3c, 0x464d, 0x4243, 0x7475, 0x6f74, 0x5f6e, 0x6d49, 0x6761, 
+0x4f65, 0x526e, 0x6769, 0x7468, "\076" 
+    ID_CHART_BTN_FULLSCRN, 0x37c, 369, 0
+0x4d3c, 0x4346, 0x7542, 0x7474, 0x6e6f, 0x535f, 0x7974, 0x656c, 0x343e, 
+0x2f3c, 0x464d, 0x4243, 0x7475, 0x6f74, 0x5f6e, 0x7453, 0x6c79, 0x3e65, 
+0x4d3c, 0x4346, 0x7542, 0x7474, 0x6e6f, 0x415f, 0x7475, 0x736f, 0x7a69, 
+0x3e65, 0x4146, 0x534c, 0x3c45, 0x4d2f, 0x4346, 0x7542, 0x7474, 0x6e6f, 
+0x415f, 0x7475, 0x736f, 0x7a69, 0x3e65, 0x4d3c, 0x4346, 0x7542, 0x7474, 
+0x6e6f, 0x545f, 0x6f6f, 0x746c, 0x7069, 0x3c3e, 0x4d2f, 0x4346, 0x7542, 
+0x7474, 0x6e6f, 0x545f, 0x6f6f, 0x746c, 0x7069, 0x3c3e, 0x464d, 0x4243, 
+0x7475, 0x6f74, 0x5f6e, 0x7546, 0x6c6c, 0x6554, 0x7478, 0x6f54, 0x6c6f, 
+0x543e, 0x5552, 0x3c45, 0x4d2f, 0x4346, 0x7542, 0x7474, 0x6e6f, 0x465f, 
+0x6c75, 0x546c, 0x7865, 0x5474, 0x6f6f, 0x3e6c, 0x4d3c, 0x4346, 0x7542, 
+0x7474, 0x6e6f, 0x435f, 0x7275, 0x6f73, 0x5472, 0x7079, 0x3e65, 0x3131, 
+0x2f3c, 0x464d, 0x4243, 0x7475, 0x6f74, 0x5f6e, 0x7543, 0x7372, 0x726f, 
+0x7954, 0x6570, 0x3c3e, 0x464d, 0x4243, 0x7475, 0x6f74, 0x5f6e, 0x6d49, 
+0x6761, 0x5465, 0x7079, 0x3e65, 0x3c38, 0x4d2f, 0x4346, 0x7542, 0x7474, 
+0x6e6f, 0x495f, 0x616d, 0x6567, 0x7954, 0x6570, 0x3c3e, 0x464d, 0x4243, 
+0x7475, 0x6f74, 0x5f6e, 0x6d49, 0x6761, 0x4f65, 0x546e, 0x706f, 0x463e, 
+0x4c41, 0x4553, 0x2f3c, 0x464d, 0x4243, 0x7475, 0x6f74, 0x5f6e, 0x6d49, 
+0x6761, 0x4f65, 0x546e, 0x706f, 0x3c3e, 0x464d, 0x4243, 0x7475, 0x6f74, 
+0x5f6e, 0x6d49, 0x6761, 0x4f65, 0x526e, 0x6769, 0x7468, 0x463e, 0x4c41, 
+0x4553, 0x2f3c, 0x464d, 0x4243, 0x7475, 0x6f74, 0x5f6e, 0x6d49, 0x6761, 
+0x4f65, 0x526e, 0x6769, 0x7468, "\076" 
+    ID_CHART_BTN_ZOOMOUT, 0x37c, 369, 0
+0x4d3c, 0x4346, 0x7542, 0x7474, 0x6e6f, 0x535f, 0x7974, 0x656c, 0x343e, 
+0x2f3c, 0x464d, 0x4243, 0x7475, 0x6f74, 0x5f6e, 0x7453, 0x6c79, 0x3e65, 
+0x4d3c, 0x4346, 0x7542, 0x7474, 0x6e6f, 0x415f, 0x7475, 0x736f, 0x7a69, 
+0x3e65, 0x4146, 0x534c, 0x3c45, 0x4d2f, 0x4346, 0x7542, 0x7474, 0x6e6f, 
+0x415f, 0x7475, 0x736f, 0x7a69, 0x3e65, 0x4d3c, 0x4346, 0x7542, 0x7474, 
+0x6e6f, 0x545f, 0x6f6f, 0x746c, 0x7069, 0x3c3e, 0x4d2f, 0x4346, 0x7542, 
+0x7474, 0x6e6f, 0x545f, 0x6f6f, 0x746c, 0x7069, 0x3c3e, 0x464d, 0x4243, 
+0x7475, 0x6f74, 0x5f6e, 0x7546, 0x6c6c, 0x6554, 0x7478, 0x6f54, 0x6c6f, 
+0x543e, 0x5552, 0x3c45, 0x4d2f, 0x4346, 0x7542, 0x7474, 0x6e6f, 0x465f, 
+0x6c75, 0x546c, 0x7865, 0x5474, 0x6f6f, 0x3e6c, 0x4d3c, 0x4346, 0x7542, 
+0x7474, 0x6e6f, 0x435f, 0x7275, 0x6f73, 0x5472, 0x7079, 0x3e65, 0x3131, 
+0x2f3c, 0x464d, 0x4243, 0x7475, 0x6f74, 0x5f6e, 0x7543, 0x7372, 0x726f, 
+0x7954, 0x6570, 0x3c3e, 0x464d, 0x4243, 0x7475, 0x6f74, 0x5f6e, 0x6d49, 
+0x6761, 0x5465, 0x7079, 0x3e65, 0x3c38, 0x4d2f, 0x4346, 0x7542, 0x7474, 
+0x6e6f, 0x495f, 0x616d, 0x6567, 0x7954, 0x6570, 0x3c3e, 0x464d, 0x4243, 
+0x7475, 0x6f74, 0x5f6e, 0x6d49, 0x6761, 0x4f65, 0x546e, 0x706f, 0x463e, 
+0x4c41, 0x4553, 0x2f3c, 0x464d, 0x4243, 0x7475, 0x6f74, 0x5f6e, 0x6d49, 
+0x6761, 0x4f65, 0x546e, 0x706f, 0x3c3e, 0x464d, 0x4243, 0x7475, 0x6f74, 
+0x5f6e, 0x6d49, 0x6761, 0x4f65, 0x526e, 0x6769, 0x7468, 0x463e, 0x4c41, 
+0x4553, 0x2f3c, 0x464d, 0x4243, 0x7475, 0x6f74, 0x5f6e, 0x6d49, 0x6761, 
+0x4f65, 0x526e, 0x6769, 0x7468, "\076" 
+    0
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE
+BEGIN
+    IDP_OLE_INIT_FAILED     "OLE를 초기화할 수 없습니다. OLE 라이브러리 버전이 올바른지 확인하십시오."
+END
+
+STRINGTABLE
+BEGIN
+    IDR_MAINFRAME           "SMTrader"
+    IDR_SMTraderTYPE        "\nSMTrader\nSMTrader\n\n\nSMTrader.Document\nSMTrader.Document"
+    ID_WINDOW_MANAGER       "창(&W)..."
+END
+
+STRINGTABLE
+BEGIN
+    AFX_IDS_APP_TITLE       "SMTrader"
+    AFX_IDS_IDLEMESSAGE     "준비"
+END
+
+STRINGTABLE
+BEGIN
+    ID_INDICATOR_EXT        "EXT"
+    ID_INDICATOR_CAPS       "CAP"
+    ID_INDICATOR_NUM        "NUM"
+    ID_INDICATOR_SCRL       "SCRL"
+    ID_INDICATOR_OVR        "OVR"
+    ID_INDICATOR_REC        "REC"
+END
+
+STRINGTABLE
+BEGIN
+    ID_FILE_NEW             "새 문서를 만듭니다.\n새로 만들기"
+    ID_FILE_OPEN            "기존 문서를 엽니다.\n열기"
+    ID_FILE_CLOSE           "활성 문서를 닫습니다.\n닫기"
+    ID_FILE_SAVE            "활성 문서를 저장합니다.\n저장"
+    ID_FILE_SAVE_AS         "활성 문서를 새 이름으로 저장합니다.\n다른 이름으로 저장"
+    ID_FILE_PAGE_SETUP      "인쇄 옵션을 변경합니다.\n페이지 설정"
+    ID_FILE_PRINT_SETUP     "프린터 및 인쇄 옵션을 변경합니다.\n인쇄 설정"
+    ID_FILE_PRINT           "활성 문서를 인쇄합니다.\n인쇄"
+    ID_FILE_PRINT_DIRECT    "현재 옵션을 사용하여 활성 문서를 인쇄합니다.\n빠른 인쇄"
+    ID_FILE_PRINT_PREVIEW   "전체 페이지를 표시합니다.\n인쇄 미리 보기"
+END
+
+STRINGTABLE
+BEGIN
+    ID_APP_ABOUT            "프로그램 정보, 버전 번호 및 저작권을 표시합니다.\n정보"
+    ID_APP_EXIT             "문서를 저장할지를 묻고 응용 프로그램을 끝냅니다.\n끝내기"
+END
+
+STRINGTABLE
+BEGIN
+    ID_FILE_MRU_FILE1       "현재 문서를 엽니다."
+    ID_FILE_MRU_FILE2       "현재 문서를 엽니다."
+    ID_FILE_MRU_FILE3       "현재 문서를 엽니다."
+    ID_FILE_MRU_FILE4       "현재 문서를 엽니다."
+    ID_FILE_MRU_FILE5       "현재 문서를 엽니다."
+    ID_FILE_MRU_FILE6       "현재 문서를 엽니다."
+    ID_FILE_MRU_FILE7       "현재 문서를 엽니다."
+    ID_FILE_MRU_FILE8       "현재 문서를 엽니다."
+    ID_FILE_MRU_FILE9       "현재 문서를 엽니다."
+    ID_FILE_MRU_FILE10      "현재 문서를 엽니다."
+    ID_FILE_MRU_FILE11      "현재 문서를 엽니다."
+    ID_FILE_MRU_FILE12      "현재 문서를 엽니다."
+    ID_FILE_MRU_FILE13      "현재 문서를 엽니다."
+    ID_FILE_MRU_FILE14      "현재 문서를 엽니다."
+    ID_FILE_MRU_FILE15      "현재 문서를 엽니다."
+    ID_FILE_MRU_FILE16      "현재 문서를 엽니다."
+END
+
+STRINGTABLE
+BEGIN
+    ID_NEXT_PANE            "다음 창으로 전환합니다.\n다음 창"
+    ID_PREV_PANE            "이전 창으로 전환합니다.\n이전 창"
+END
+
+STRINGTABLE
+BEGIN
+    ID_WINDOW_NEW           "활성 문서에 대해 다른 창을 엽니다.\n새 창"
+    ID_WINDOW_ARRANGE       "창의 아래쪽에 아이콘을 정렬합니다.\n아이콘 정렬"
+    ID_WINDOW_CASCADE       "창이 겹치도록 계단식으로 정렬합니다.\n계단식 창 배열"
+    ID_WINDOW_TILE_HORZ     "창이 겹치지 않도록 바둑판식으로 정렬합니다.\n바둑판식 창 배열"
+    ID_WINDOW_TILE_VERT     "창이 겹치지 않도록 바둑판식으로 정렬합니다.\n바둑판식 창 배열"
+    ID_WINDOW_SPLIT         "활성 창을 여러 개의 창으로 분할합니다.\n분할"
+END
+
+STRINGTABLE
+BEGIN
+    ID_EDIT_CLEAR           "선택 영역을 지웁니다.\n지우기"
+    ID_EDIT_CLEAR_ALL       "모두 지웁니다.\n모두 지우기"
+    ID_EDIT_COPY            "선택 영역을 복사하여 클립보드에 넣습니다.\n복사"
+    ID_EDIT_CUT             "선택 영역을 잘라내어 클립보드에 넣습니다.\n잘라내기"
+    ID_EDIT_FIND            "지정한 텍스트를 찾습니다.\n찾기"
+    ID_EDIT_PASTE           "클립보드 내용을 삽입합니다.\n붙여넣기"
+    ID_EDIT_REPEAT          "마지막 작업을 반복합니다.\n반복"
+    ID_EDIT_REPLACE         "특정 텍스트를 다른 텍스트로 바꿉니다.\n바꾸기"
+    ID_EDIT_SELECT_ALL      "전체 문서를 선택합니다.\n모두 선택"
+    ID_EDIT_UNDO            "마지막 작업 실행을 취소합니다.\n실행 취소"
+    ID_EDIT_REDO            "이전에 실행 취소된 작업을 다시 실행합니다.\n다시 실행"
+END
+
+STRINGTABLE
+BEGIN
+    ID_VIEW_STATUS_BAR      "상태 표시줄을 표시하거나 숨깁니다.\n상태 표시줄 설정/해제"
+END
+
+STRINGTABLE
+BEGIN
+    AFX_IDS_SCSIZE          "창 크기를 변경합니다."
+    AFX_IDS_SCMOVE          "창 위치를 변경합니다."
+    AFX_IDS_SCMINIMIZE      "창을 아이콘으로 축소합니다."
+    AFX_IDS_SCMAXIMIZE      "창을 전체 화면 크기로 확대합니다."
+    AFX_IDS_SCNEXTWINDOW    "다음 문서 창으로 전환합니다."
+    AFX_IDS_SCPREVWINDOW    "이전 문서 창으로 전환합니다."
+    AFX_IDS_SCCLOSE         "문서를 저장할 것인지 확인하고 활성 창을 닫습니다."
+END
+
+STRINGTABLE
+BEGIN
+    AFX_IDS_SCRESTORE       "창을 보통 크기로 복원합니다."
+    AFX_IDS_SCTASKLIST      "작업 목록을 활성화합니다."
+    AFX_IDS_MDICHILD        "이 창을 활성화합니다."
+END
+
+STRINGTABLE
+BEGIN
+    AFX_IDS_PREVIEW_CLOSE   "인쇄 미리 보기 모드를 닫습니다.\n미리 보기 취소"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_STATUS_PANE1        "창 1"
+    IDS_STATUS_PANE2        "창 2"
+    IDS_TOOLBAR_STANDARD    "표준"
+    IDS_TOOLBAR_CUSTOMIZE   "사용자 지정..."
+END
+
+STRINGTABLE
+BEGIN
+    IDS_FILE_VIEW           "파일 뷰"
+    IDS_CLASS_VIEW          "클래스 뷰"
+    IDS_OUTPUT_WND          "출력"
+    IDS_PROPERTIES_WND      "속성"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_EXPLORER            "탐색기"
+    IDS_EDIT_MENU           "편집"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_BUILD_TAB           "빌드"
+    IDS_DEBUG_TAB           "디버그"
+    IDS_FIND_TAB            "찾기"
+END
+
+STRINGTABLE
+BEGIN
+    ID_FILE_SERVER_MSG      "서버메시지를 확인합니다.\n서버메시지"
+    ID_FILE_OPEN_SCREEN     "저장된 화면을 불러옵니다.\n저장화면 열기"
+    ID_SETTIME_TO_SERVER    "서버에시간맞추기\n서버에 시간을 맞춥니다."
+    ID_ACCOUNT_MANAGE_SUBACCOUNT "서브계좌를 관리합니다.\n서브계좌 관리"
+    ID_ACCOUNT_SHOW_DEPOSIT "예탁 잔고 및 증거금을 보여줍니다.\n예탁잔고 및 증거금"
+    ID_ACCOUNT_MANAGE_PASSWORD "계좌 비밀번호를 관리합니다. \n계좌비밀번호관리"
+    ID_ORDER_WINDOW         "주문창을 띄웁니다. \n주문창"
+    ID_ORDER_BALANCE        "잔고내역을 간단하게 보여줍니다. \n미니잔고내역"
+    ID_ORDER_LIST           "주문목록을 보여줍니다. \n주문리스트"
+    ID_ORDER_STOPLIST       "스탑주문 목록을 보여줍니다. \n스탑주문리스트"
+    ID_CHART_WINDOW         "차트로 주문을 냅니다. \n차트주문"
+    ID_CHART_SPREAD         "스프레드 차트를 보여줍니다.\n스프레드차트"
+    ID_MULTIACCOUNT_MANAGE  "다계좌를 관리합니다.\n다계좌관리"
+END
+
+STRINGTABLE
+BEGIN
+    ID_MULTIACCOUNT_WINDOW  "다계좌 주문창을 띄웁니다.\n다계좌주문창"
+    ID_MULTIACCOUNT_BRIEF_BALANCE "다계좌 잔고를 간단하게 보여줍니다.\n다계좌미니잔고"
+    ID_STRATEGY_TOOLBAR     "전략 목록을 보여줍니다.\n전략목록"
+END
+
+#endif    // Korean (Korea) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_KOR)
+LANGUAGE 18, 1
+#include "res\SMTrader.rc2"  // Microsoft Visual C++ 이외의 다른 도구에서 편집한 리소스입니다.
+#include "l.KOR\afxres.rc"      // 표준 구성 요소
+#include "l.KOR\afxprint.rc"    // 인쇄 미리 보기 리소스
+#if !defined(_AFXDLL)
+#include "l.KOR\afxribbon.rc"        // MFC 리본 및 컨트롤 막대 리소스
+#endif
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

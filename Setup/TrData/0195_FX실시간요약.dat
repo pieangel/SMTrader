@@ -1,0 +1,24 @@
+[TRINFO]
+TRName=FX주문실시간요약
+TRCode=0195;
+ScreenNo=; 실제 화면 번호
+Server=1			; 접속 서버 
+Compress=0; 압축 	0/1
+Encrypt=0; 암호화	0/1
+PublicAuth=1; 공인인증 0/1
+OutputCnt=1;Fid 출력값 갯수
+DataHeader=3; 2:해외주문, 3:해외조회, 4:국내주문, 5:국내조회
+
+[INPUT]
+
+[OUTPUT]
+@START_OutRec1=1 ; FX주문실시간요약
+	자산내역		= 000, 04, 0, A ; "000"	'RFX8
+	key             = 004, 11, 0, A ; "001"
+	계좌번호        = 015, 06, 0, A ; "002"
+	종목코드        = 021, 32, 0, A ; "003"
+	매도OPEN_Q      = 053, 10, 0, A ; "004"
+	매도평균가      = 063, 20, 0, A ; "005"
+	매도평균가      = 083, 20, 0, A ; "004"
+	매수OPEN_Q      = 103, 10, 0, A ; "005"
+@END_OutRec1

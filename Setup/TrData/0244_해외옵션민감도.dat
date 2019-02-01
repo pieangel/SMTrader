@@ -1,0 +1,39 @@
+[TRINFO]
+TRName=해외옵션민감도
+TRCode=0244;
+ScreenNo=; 실제 화면 번호
+Server=1			; 접속 서버 
+Compress=0; 압축 	0/1
+Encrypt=0; 암호화	0/1
+PublicAuth=1; 공인인증 0/1
+OutputCnt=1;Fid 출력값 갯수
+DataHeader=3; 2:해외주문, 3:해외조회, 4:국내주문, 5:국내조회
+
+[INPUT]
+
+[OUTPUT]
+@START_OutRec1=11 ;										
+	Data구분      	=	 0	,	 4,	0	,	A	;CAMG
+	종목코드        =	 4	,	32,	0	,	A	;
+	대표내재변동성  =	36	,	 6,	0	,	A	;
+	내재변동성      =	42	,	 6,	0	,	A	;
+	델타            =	48	,	 7,	0	,	A	;
+	감마            =	55	,	 7,	0	,	A	;
+	세타            =	62	,	 7,	0	,	A	;
+	베가            =	69	,	 7,	0	,	A	;
+	로우            =	76	,	 7,	0	,	A	;
+	이론가          =	83	,	 6,	0	,	A	;
+	종목코드2       =	89	,	32,	0	,	A	;
+@END_OutRec1
+
+
+
+
+
+
+
+
+
+
+
+

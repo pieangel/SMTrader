@@ -1,0 +1,46 @@
+[TRINFO]
+TRName    =FX포지션미청산조회
+TRCode    =g11004.AQ0908%;
+ScreenNo  = ; 실제 화면 번호
+Server    =1; 접속 서버
+Compress  =1; 압축 	0/1
+Encrypt   =0; 암호화	0/1
+PublicAuth=0; 공인인증 0/1
+OutputCnt =1;Fid 출력값 갯수
+DataHeader=3; 2:해외주문, 3:해외조회, 4:국내주문, 5:국내조회
+
+[INPUT]
+조회구분    =  0,  1, 0, A;1: 계좌별
+로그인아이디=  1,  8, 0, A
+계좌번호    =  9,  6, 0, A
+비밀번호    = 15,  8, 0, E
+그룹명      = 23, 20, 0, A
+
+[OUTPUT]
+처리코드  = 0,  5, 0, A;
+처리메시지= 5, 80, 0, A;
+
+@START_OutRec1=*,  5, 0, A;/* rowcnt        */
+	계좌번호	= *, 6, 0, A;	/*  [acct_no]acct_no     */
+	Position ID	= *, 80, 0, A;	/*  [Position ID]FXCM Position ID     */
+	trd_no		= *, 20, 0, A;	/*  [trd_no]Order No 청산시에 사용되는 trd_no     */
+	trd_seq		= *, 5, 0, A;	/*  [청산시에 사용.]청산시에 사용.     */
+	종목코드	= *, 32, 0, A;	/*  [종목코드]종목코드     */
+	매매구분	= *, 1, 0, A;	/*  [매매구분]매매구분     */
+	진입수량	= *, 10, 0, A;	/*  [진입수량]진입수량     */
+	진입가격	= *, 20, 0, A;	/*  [진입가격]진입가격     */
+	STOP가격	= *, 20, 0, A;	/*  [STOP가격]STOP가격     */
+	LIMIT가격	= *, 20, 0, A;	/*  [LIMIT가격]LIMIT가격     */
+	평가손익	= *, 20, 0, A;	/*  [평가손익]평가손익     */
+	RollOver이자	= *, 20, 0, A;	/*  [RollOver이자]RollOver이자     */
+	Commision	= *, 20, 0, A;	/*  [Commision]Commision     */
+	위탁수수료	= *, 20, 0, A;	/*  [위탁수수료]위탁수수료     */
+	trailing_stop	= *, 5, 0, A;	/*  [trailing_stop]trailing_stop     */
+	trailing_last_p	= *, 20, 0, A;	/*  [trailing_last_p]trailing_last_p     */
+	거래소시간	= *, 20, 0, A;	/*  [거래소시간]거래소시간     */
+	매수		= *, 20, 0, A;	/*  [매수]     */
+	매도		= *, 20, 0, A;	/*  [매도]     */
+	손익pip		= *, 20, 0, A;	/*  [손익pip]손익pip     */
+	환산가치	= *, 20, 0, A;	/*  [환산가치]환산가치     */
+
+@END_OutRec1

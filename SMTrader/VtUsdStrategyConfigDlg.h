@@ -1,0 +1,118 @@
+#pragma once
+#include "VtUsdStrategyConfigGrid.h"
+#include <map>
+#include <string>
+#include "VtSysArgGrid.h"
+#include <tuple>
+#include "System/VtSystem.h"
+#include "ShadeButtonST.h"
+#include "VtUsdEntConfigGrid.h"
+// VtUsdStrategyConfigDlg dialog
+class VtSystem;
+class VtSymbol;
+class VtAccount;
+class VtFund;
+class VtStrategyGrid;
+class VtUsdStrategyConfigDlg : public CDialogEx
+{
+	DECLARE_DYNAMIC(VtUsdStrategyConfigDlg)
+
+public:
+	VtUsdStrategyConfigDlg(CWnd* pParent = nullptr);   // standard constructor
+	virtual ~VtUsdStrategyConfigDlg();
+
+// Dialog Data
+#ifdef AFX_DESIGN_TIME
+	enum { IDD = IDD_SYSTEM_USD };
+#endif
+
+	VtSystem* System() const { return _System; }
+	void System(VtSystem* val) { _System = val; }
+	int SelRow() const { return _SelRow; }
+	void SelRow(int val) { _SelRow = val; }
+	VtStrategyGrid* StGrid() const { return _StGrid; }
+	void StGrid(VtStrategyGrid* val) { _StGrid = val; }
+protected:
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+
+	DECLARE_MESSAGE_MAP()
+public:
+	CButton _ChecktLossCut;
+	CButton _CheckTs;
+	CComboBox _ComboLosscutType;
+	CComboBox _ComboStrategy;
+	CDateTimeCtrl _DpEntBegin;
+	CDateTimeCtrl _DpEntEnd;
+	CDateTimeCtrl _DpLiq;
+	CEdit _EditEntMax;
+	CEdit _EditLosscut;
+	CEdit _EditTsPercent;
+	CEdit _EditTsPl;
+	CStatic _StaticPl;
+	CStatic _StaticAccount;
+	CStatic _StaticSymbol;
+	virtual BOOL OnInitDialog();
+
+private:
+	void InitComboMap();
+	std::map<int, std::pair<std::string, VtSystem*>> _SystemMap;
+	VtUsdEntConfigGrid _EntGrid;
+	VtUsdStrategyConfigGrid _LiqGrid;
+	VtSysArgGrid _ArgGrid;
+	int _SelSysIndex = 0;
+	bool _ShowArgGrid;
+	void ResizeWindow();
+	VtSystem* _System = nullptr;
+	void InitControls();
+	int FindSystemIndex(std::string sysName);
+	bool _EnableTrailStop;
+	bool _EnableLossCut;
+	bool _EnableTargetCut;
+	bool _LiqByStop;
+	int _SelRow = -1;
+	bool _ShowingGrid = false;
+	VtStrategyGrid* _StGrid = nullptr;
+public:
+	afx_msg void OnBnClickedBtnAccount();
+	afx_msg void OnBnClickedBtnSymbol();
+	CComboBox _ComboProfitTarget;
+	CButton _CheckTargetCut;
+	CEdit _EditProfitTarget;
+	void SetTargetAcntOrFund(std::tuple<int, VtAccount*, VtFund*>& selItem);
+	afx_msg void OnCbnSelchangeComboStrategy();
+	void SetSymbol(VtSymbol* sym);
+	afx_msg void OnBnClickedBtnExtraVar();
+	virtual void PostNcDestroy();
+	afx_msg void OnBnClickedBtnApply();
+	afx_msg void OnCbnSelchangeComboLosscutType();
+	afx_msg void OnCbnSelchangeComboProfitTarget();
+
+public:
+	std::tuple<int, VtAccount*, VtFund* > TargetInfo;
+	VtSymbol* _SelSymbol;
+	VtFund* _Fund = nullptr;
+	VtAccount* _Account = nullptr;
+	int _Type = 0;
+	ValueType _LossCutType = ValueType::Tick;
+	ValueType _TargetProfitType = ValueType::Tick;
+	afx_msg void OnBnClickedCheckTs();
+	afx_msg void OnBnClickedCheckLosscut();
+	afx_msg void OnBnClickedCheckProfitTarget();
+	afx_msg void OnBnClickedCkLiqAll();
+	CButton _CheckLiqByStop;
+	CShadeButtonST _BtnAcnt;
+	CShadeButtonST _BtnApply;
+	CShadeButtonST _BtnExtraVar;
+	CShadeButtonST _BtnSymbol;
+	CEdit _EditOrderAmt;
+	CSpinButtonCtrl _SpinOrderAmt;
+	CStatic _EntCntToday;
+	void OnHogaCount(double uac, double ubc);
+	void OnHogaQty(double uas, double ubs);
+	afx_msg void OnClose();
+	afx_msg void OnBnClickedCheckRun();
+	CButton _CheckRun;
+	CStatic _StaticLastEntPrice;
+	void OnRealTimeEvent();
+	void RefreshRealTimeValue(std::string argName, CString value);
+};

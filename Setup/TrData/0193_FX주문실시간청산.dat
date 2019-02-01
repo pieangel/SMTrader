@@ -1,0 +1,33 @@
+[TRINFO]
+TRName=FX주문실시간청산내역
+TRCode=0193;
+ScreenNo=; 실제 화면 번호
+Server=1			; 접속 서버 
+Compress=0; 압축 	0/1
+Encrypt=0; 암호화	0/1
+PublicAuth=1; 공인인증 0/1
+OutputCnt=1;Fid 출력값 갯수
+DataHeader=3; 2:해외주문, 3:해외조회, 4:국내주문, 5:국내조회
+
+[INPUT]
+
+[OUTPUT]
+@START_OutRec1=17 ; FX주문실시간미체결내역
+		fx청산내역	= 0,  4,	0,  A;	/*  [fx청산내역]     */	
+		key		= 4,  11,	0,  A;	/*  [key]     */	
+		acct_no		= 15,   6,	0,  A;	/*  [acct_no]     */	
+		FXCM Position ID	= 21,  80,  0,  A;	/*  [FXCM Position ID]     */	
+		종목코드	= 101, 32,  0,  A;	/*  [종목코드]     */	
+		청산수량	= 133, 10,  0,  A;	/*  [close_q]     */	
+		매매구분	= 143,  1,  0,  A;	/*  [매매구분]     */	
+		진입가격	= 144, 20,  0,  A;	/*  [진입가격]     */	
+		청산가격	= 164, 20,  0,  A;	/*  [close_p]     */	
+		평가손익	= 184, 20,  0,  A;	/*  [평가손익]     */	
+		Commision	= 204, 20,  0,  A;	/*  [Commision]     */	
+		RollOver이자	= 224, 20,  0,  A;	/*  [RollOver이자]     */	
+		open_time	= 244, 20,  0,  A;	/*  [open_time]     */	
+		close_time	= 264,  20,  0,  A;	/*  [close_time]     */	
+		MFG 가결제손익	= 284,   1,  0,  A;	/*  [MFG 가결제손익]     */	
+		PIP		= 285, 20,  0, A;	/*  [PIP]     */	
+		PIP COST		= 305, 20,  0,  A;	/*  [PIP COST]     */
+@END_OutRec1

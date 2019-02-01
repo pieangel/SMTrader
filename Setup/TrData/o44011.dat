@@ -1,0 +1,20 @@
+[TRINFO]
+TRName    =서버 현재시간 가져오기
+TRCode    =o44011;
+ScreenNo  =; 실제 화면 번호
+Server    =1			; 접속 서버
+Compress  =0; 압축 	0/1
+Encrypt   =0; 암호화	0/1
+PublicAuth=0; 공인인증 0/1
+OutputCnt =1;Fid 출력값 갯수
+DataHeader=1; 2:해외주문, 3:해외조회, 4:국내주문, 5:국내조회
+
+[INPUT]
+더미코드=0, 5, 0, A
+
+[OUTPUT]
+@START_OutRec1=1 ; Fid 출력값 갯수
+	서버일자			= 000,  8, 0, A ; "000"
+	서버시간            = 008,  6, 0, A ; "001"
+
+@END_OutRec1

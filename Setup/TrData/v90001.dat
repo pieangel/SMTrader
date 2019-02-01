@@ -1,0 +1,29 @@
+[TRINFO]
+TRName    =마스터파일수신
+TRCode    =v90001;
+ScreenNo  =; 실제 화면 번호
+Server    =1			; 접속 서버
+Compress  =0; 압축 	0/1
+Encrypt   =0; 암호화	0/1
+PublicAuth=0; 공인인증 0/1
+OutputCnt =1;Fid 출력값 갯수
+DataHeader=1; 1:일반서비스, 2:해외주문, 3:해외조회, 4:국내주문, 5:국내조회
+; TR방식
+
+[INPUT]										
+	파일명		=	0	,	128	,	0	,	A	
+										
+[OUTPUT]										
+@START_OutRec1=1; 										
+	파일명			=	  0,	128	,	0	,	A	;					
+	응답코드		=	 128,	4	,	0	,	A	;
+	파일크기		=	 132,	8	,	0	,	A	;
+@END_OutRec1										
+										
+@START_OutRec2=1
+	데이터		=	*	,	64	,	0	,	A	;
+@END_OutRec2										
+
+예제:
+[jfucode.cod]
+

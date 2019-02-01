@@ -1,0 +1,22 @@
+[TRINFO]
+TRName=FX주문실시간자산내역
+TRCode=0194;
+ScreenNo=; 실제 화면 번호
+Server=1			; 접속 서버 
+Compress=0; 압축 	0/1
+Encrypt=0; 암호화	0/1
+PublicAuth=1; 공인인증 0/1
+OutputCnt=1;Fid 출력값 갯수
+DataHeader=3; 2:해외주문, 3:해외조회, 4:국내주문, 5:국내조회
+
+[INPUT]
+
+[OUTPUT]
+@START_OutRec1=1 ; FX주문실시간자산내역
+	자산내역		= 000, 04, 0, A ; "000"	'RFX7
+	key             = 004, 11, 0, A ; "001"
+	계좌번호        = 015, 06, 0, A ; "002"
+	예탁총액        = 021, 20, 0, A ; "003"
+	위탁증거금      = 041, 20, 0, A ; "004"
+	유지증거금      = 061, 20, 0, A ; "005"
+@END_OutRec1

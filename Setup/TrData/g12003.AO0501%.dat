@@ -1,0 +1,98 @@
+[TRINFO]
+TRName=FX신규주문
+TRCode=g12003.AO0501%;
+ScreenNo=     ; 실제 화면 번호
+Server=1			; 접속 서버
+Compress=0		; 압축 	0/1
+Encrypt=1		; 암호화	0/1
+PublicAuth=1		; 공인인증 0/1
+OutputCnt=0		;Fid 출력값 갯수
+DataHeader=2	; 2:해외주문, 3:해외조회, 4:국내주문, 5:국내조회
+
+[INPUT]
+계좌번호		=   0,  6, 0, A ;
+비밀번호		=   6,  8, 0, E ;
+종목코드		=  14, 32, 0, A ;
+매매구분		=  46,  1, 0, A ; 1매수, 2매도
+주문가격		=  47, 20, 0, A ; 1.23456(소수점 포함 형태)
+주문수량		=  67, 15, 0, A ;
+주문TR			=  82, 10, 0, A ; CEO:예약주문,CTMO:시장가주문,CMO:현재가주문,CLOSETMO:시장가청산,CLOSEMO:현재가청산
+가격조건		=  92,  1, 0, A ; 1:지정가STOP(역지정가),2:시장가,3:현재가,4:지정가LIMIT
+주문전략구분	=  93,  1, 0, A ; 1:일반,2:STOP ORDER,3:STOP TRAILING,4:STOP LIMIT,5:STOP LIMIT TRAILING,6:LIMIT ORDER
+Stop지정가격	=  94, 20, 0, A ; STOP ORDER 지정가격
+Limit지정가격	= 114, 20, 0, A ; LIMIT ORDER 지정가격
+MarketRange		= 134,  5, 0, A ; 체결범위
+Trailing_Stop	= 139, 10, 0, A ; Trailing Stop
+TrdNo			= 149, 20, 0, A ; 청산주문시필요 - AQ0915의 TrdNo
+TrdSeq			= 169,  5, 0, A ; 청산주문시필요 - AQ0915의 TrdSeq
+
+
+[OUTPUT]
+@START_OutRec1=4
+	레벨   		=   0,  1, 0, A	; 항상 'A'
+	주문번호   	=   1, 20, 0, A
+	처리코드   	=  11,  5, 0, A
+	처리메시지 	=  16, 80, 0, A
+@END_OutRec1
+
+
+/* 시장가(At Best) 매수 수량2 */
+[0119861234    EUR/USD                         11.28232             3              CTMO      21                                                                                ]
+
+/* 시장가(Market Range - 4) 매수 수량2 */
+[0116321234    USD/JPY                         1106.434             2              CMO       31                                        4                                       ]
+
+/* 시장가(At Best) 매수 Stop 수량1 */
+[0116321234    EUR/USD                         11.28201             1              CTMO      221.28180                                                                         ]
+
+/* 시장가(At Best) 매수 Limit 수량1 */
+[0116321234    EUR/USD                         11.28287             1              CTMO      26                    1.28299                                                     ]
+
+/* 시장가(At Best) 매수 Stop/Limit 수량1 */
+[0116321234    EUR/USD                         11.28287             1              CTMO      241.28230             1.28299                                                     ]
+
+/* 시장가(At Best) 매수 Stop/Limit/Trailing-10 수량1 */
+[0116321234    EUR/USD                         11.28287             1              CTMO      251.28230             1.28299                  10                                 ]
+
+/* 예약-지정가(지정가Limit) 매수 수량1 */
+[0116321234    EUR/USD                         11.28038             1              CEO       41                                                                                ]
+
+/* 예약-역지정가(지정가Stop) 매수 수량1 */
+[0116321234    EUR/USD                         11.28393             1              CEO       11                                                                                ]
+
+/* 예약-지정가(지정가Limit) Stop/Limit 매수 수량1 */
+[0116321234    EUR/USD                         11.28038             1              CEO       441.28000             1.28999                                                     ]
+//예약 Stop 비정상
+[0024811234    EUR/USD                         11.21038             1              CEO       421.51000]
+//예약 Stop 정상
+[0024811234    EUR/USD                         11.20038             1              CEO       421.19000]
+// 예약 Stop 정상 Limit 정상
+[0024811234    EUR/USD                         11.20038             1              CEO       441.19000             1.28999]
+// 예약 Stop 정상 Limit 비정상
+[0024811234    EUR/USD                         11.20038             1              CEO       441.19000             1.18999]
+// 예약 Stop 비정상 Limit 정상
+[0024811234    EUR/USD                         11.20038             1              CEO       441.59000             1.28999]
+// 예약 Stop 비정상 Limit 비정상
+[0024811234    EUR/USD                         11.20038             1              CEO       441.59000             1.18999]
+
+/* 청산(At Best) 매수(->매도) 수량2 */
+[0116321234    EUR/USD                         21.61479             2              CLOSETMO  21                                                       00000000004VU100027100001]
+0119861234    EUR/USD                         21.61479             2              CLOSETMO  21                                                       00000000004Xb100001300001
+
+/* 청산(At Best) 매도(->매수) 수량1 */
+[0116321234    USD/JPY                         1106.876             1              CLOSETMO  21                                                       00000000004VU100033600001]
+
+/* 청산(At Best) 매수(->매도) 수량2개중 1개만청산 */
+[0116321234    USD/JPY                         2106.841             1              CLOSETMO  21                                                       00000000004VU100036600002]
+
+0119861234    EUR/USD                         21.61479             1              CLOSETMO  21                                                       00000000004Xb100001500001
+
+/* 청산(Market Range - 10) 매도(->매수) 수량1 */
+[0116321234    USD/JPY                         1106.857             3              CLOSEMO   31                                        10             00000000004VU100034000001]
+
+
+// 비정상 예약주문
+0119861234    EUR/USD                         21.18038             1              CEO       41
+0024811234    EUR/USD                         21.18038             1              CEO       41
+// 정상예약주문
+0119861234    EUR/USD                         11.18038             1              CEO       41
