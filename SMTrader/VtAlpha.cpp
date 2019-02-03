@@ -105,7 +105,7 @@ void VtAlpha::InitArgs()
 	VtSystem::InitArgs();
 
 	_EntranceStartTime.hour = 9;
-	_EntranceStartTime.min = 5;
+	_EntranceStartTime.min = 0;
 	_EntranceStartTime.sec = 0;
 
 	_EntranceEndTime.hour = 14;
