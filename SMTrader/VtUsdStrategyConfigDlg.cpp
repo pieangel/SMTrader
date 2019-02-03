@@ -186,12 +186,12 @@ void VtUsdStrategyConfigDlg::ResizeWindow()
 	if (_ShowArgGrid) {
 		_ArgGrid.ShowWindow(SW_SHOW);
 		_BtnExtraVar.SetIcon(IDI_UP);
-		SetWindowPos(nullptr, 0, 0, rcWnd.Width(), rcWnd.Height() + rcGrid.Height(), SWP_NOMOVE);
+		SetWindowPos(nullptr, 0, 0, rcWnd.Width(), rcWnd.Height() + rcGrid.Height() + 2, SWP_NOMOVE);
 	}
 	else {
 		_ArgGrid.ShowWindow(SW_HIDE);
 		_BtnExtraVar.SetIcon(IDI_DOWN);
-		SetWindowPos(nullptr, 0, 0, rcWnd.Width(), rcWnd.Height() - rcGrid.Height(), SWP_NOMOVE);
+		SetWindowPos(nullptr, 0, 0, rcWnd.Width(), rcWnd.Height() - rcGrid.Height() + 2, SWP_NOMOVE);
 	}
 }
 
