@@ -432,13 +432,13 @@ HBRUSH VtOrderConfigDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	HBRUSH hBrush = NULL;
 	switch (nCtlColor)
 	{
-	case CTLCOLOR_DLG:
-		// just return a not NULL brush handle
-		if (_CenterWnd->Activated())
-			hBrush = (HBRUSH)_BrushBackSel;
-		else
-			hBrush = (HBRUSH)_BrushBackNor;
-		break;
+// 	case CTLCOLOR_DLG:
+// 		// just return a not NULL brush handle
+// 		if (_CenterWnd->Activated())
+// 			hBrush = (HBRUSH)_BrushBackSel;
+// 		else
+// 			hBrush = (HBRUSH)_BrushBackNor;
+// 		break;
 	case CTLCOLOR_STATIC:
 	{
 		// set text color, transparent back node then 

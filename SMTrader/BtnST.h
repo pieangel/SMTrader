@@ -112,6 +112,10 @@ public:
 
 
 
+	COLORREF BorderShadow() const { return m_cBorderShadow; }
+	void BorderShadow(COLORREF val) { m_cBorderShadow = val; }
+	COLORREF BorderLight() const { return m_cBorderLight; }
+	void BorderLight(COLORREF val) { m_cBorderLight = val; }
 	// ClassWizard generated virtual function overrides
     //{{AFX_VIRTUAL(CButtonST)
 	public:
@@ -217,6 +221,8 @@ protected:
 	BOOL		m_bDrawBorder;		// Draw border?
 	BOOL		m_bDrawFlatFocus;	// Draw focus rectangle for flat button?
 	COLORREF	m_crColors[BTNST_MAX_COLORS];	// Colors to be used
+	COLORREF    m_cBorderShadow;
+	COLORREF    m_cBorderLight;
 	HWND		m_hParentWndMenu;	// Handle to window for menu selection
 	BOOL		m_bMenuDisplayed;	// Is menu displayed ?
 

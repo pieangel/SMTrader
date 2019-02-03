@@ -44,6 +44,7 @@ void VtProgressDlg::DoDataExchange(CDataExchange* pDX)
 
 
 BEGIN_MESSAGE_MAP(VtProgressDlg, CDialogEx)
+	ON_WM_CTLCOLOR()
 END_MESSAGE_MAP()
 
 
@@ -53,8 +54,19 @@ END_MESSAGE_MAP()
 BOOL VtProgressDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
+	VERIFY(_BrushBackNor.CreateSolidBrush(RGB(3, 30, 82)));
 	// TODO:  Add extra initialization here
 	//::AfxBeginThread((AFX_THREADPROC)threadfunc, (LPVOID)this);
+	_StaticState.SetTextColor(RGB(255, 255, 255));
+	_StaticState.SetColor(RGB(3, 30, 82));
+	_StaticState.SetGradientColor(RGB(3, 30, 82));
+	_StaticState.SetTextAlign(1);
+
+	_StaticTask.SetTextColor(RGB(255, 255, 255));
+	_StaticTask.SetColor(RGB(3, 30, 82));
+	_StaticTask.SetGradientColor(RGB(3, 30, 82));
+	_StaticTask.SetTextAlign(1);
+
 	HdScheduler* taskMgr = HdScheduler::GetInstance();
 	taskMgr->ProgressDlg(this);
 	taskMgr->GetSymbolCode();
@@ -79,7 +91,6 @@ void VtProgressDlg::SetTaskInfo(HdTaskInfo& taskInfo)
 {
 	if (taskInfo.argVec.size() == 0)
 		return;
-
 	_StaticTask.SetWindowText(taskInfo.TaskName.c_str());
 	int index = taskInfo.TotalTaskCount - taskInfo.RemainTaskCount;
 	if (index < taskInfo.argVec.size()) {
@@ -106,4 +117,21 @@ void VtProgressDlg::OnCancel()
 	// TODO: Add your specialized code here and/or call the base class
 	DestroyWindow();
 	CDialogEx::OnCancel();
+}
+
+
+HBRUSH VtProgressDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+{
+	HBRUSH hBrush = NULL;
+	if (pWnd->GetDlgCtrlID() == IDC_STATIC_STATE || 
+		pWnd->GetDlgCtrlID() == IDC_STATIC_TASK)
+	{
+		pDC->SetBkMode(TRANSPARENT);
+		pDC->SetTextColor(RGB(255, 255, 255));
+		pDC->SetBkColor(RGB(3, 30, 82));
+	}
+	_StaticState.SetTextAlign(1);
+	_StaticTask.SetTextAlign(1);
+	hBrush = (HBRUSH)_BrushBackNor;
+	return hBrush;
 }

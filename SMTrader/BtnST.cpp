@@ -39,6 +39,9 @@ CButtonST::CButtonST()
 	m_bIsDisabled		= FALSE;
 	m_bMouseOnButton	= FALSE;
 
+	m_cBorderShadow = RGB(0, 0, 255);
+	m_cBorderLight = RGB(255, 255, 0);
+
 	FreeResources(FALSE);
 
 	// Default type is "flat" button
@@ -2407,11 +2410,13 @@ DWORD CButtonST::OnDrawBorder(CDC* pDC, CRect* pRect)
 		if (m_bIsFlat)
 		{
 			if (m_bDrawBorder)
-				pDC->Draw3dRect(pRect, ::GetSysColor(COLOR_BTNSHADOW), ::GetSysColor(COLOR_BTNHILIGHT));
+				pDC->Draw3dRect(pRect, m_cBorderShadow, m_cBorderLight);
+			//pDC->Draw3dRect(pRect, ::GetSysColor(COLOR_BTNSHADOW), ::GetSysColor(COLOR_BTNHILIGHT));
 		}
 		else    
 		{
-			CBrush brBtnShadow(GetSysColor(COLOR_BTNSHADOW));
+			//CBrush brBtnShadow(GetSysColor(COLOR_BTNSHADOW));
+			CBrush brBtnShadow(m_cBorderShadow);
 			pDC->FrameRect(pRect, &brBtnShadow);
 		}
 	}
@@ -2425,7 +2430,8 @@ DWORD CButtonST::OnDrawBorder(CDC* pDC, CRect* pRect)
 		if (m_bIsFlat)
 		{
 			if (m_bMouseOnButton && m_bDrawBorder)
-				pDC->Draw3dRect(pRect, ::GetSysColor(COLOR_BTNSHADOW), ::GetSysColor(COLOR_BTNSHADOW));
+				pDC->Draw3dRect(pRect, m_cBorderShadow, m_cBorderLight);
+			//pDC->Draw3dRect(pRect, ::GetSysColor(COLOR_BTNSHADOW), ::GetSysColor(COLOR_BTNSHADOW));
 		}
 		else
 		{

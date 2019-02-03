@@ -2,6 +2,8 @@
 #include "afxwin.h"
 #include "afxcmn.h"
 #include "HdTaskArg.h"
+#include "GradientStatic.h"
+#include "XStatic/XColorStatic.h"
 
 // VtProgressDlg dialog
 UINT threadfunc(LPVOID pp);
@@ -24,14 +26,16 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
+	CBrush _BrushBackNor;
 	virtual BOOL OnInitDialog();
-	CStatic _StaticState;
+	CGradientStatic _StaticState;
+	CGradientStatic _StaticTask;
 	void CloseDialog();
 	CProgressCtrl _PrgCtrl;
-	CStatic _StaticTask;
 	void SetPrgressPos(int pos);
 	void SetTaskInfo(HdTaskInfo& taskInfo);
 	CMainFrame* MainFrm = nullptr;
 	virtual void PostNcDestroy();
 	virtual void OnCancel();
+	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 };

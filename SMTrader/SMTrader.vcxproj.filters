@@ -1321,6 +1321,12 @@
     <ClInclude Include="VtAccountGrid.h">
       <Filter>Account</Filter>
     </ClInclude>
+    <ClInclude Include="XStatic\FontSize.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="XStatic\XColorStatic.h">
+      <Filter>Util</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ChildFrm.cpp">
@@ -2381,6 +2387,12 @@
     </ClCompile>
     <ClCompile Include="VtAccountGrid.cpp">
       <Filter>Account</Filter>
+    </ClCompile>
+    <ClCompile Include="XStatic\FontSize.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="XStatic\XColorStatic.cpp">
+      <Filter>Util</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

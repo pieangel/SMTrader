@@ -588,6 +588,8 @@
     <ClInclude Include="XFormatNumber.h" />
     <ClInclude Include="Xml\pugiconfig.hpp" />
     <ClInclude Include="Xml\pugixml.hpp" />
+    <ClInclude Include="XStatic\FontSize.h" />
+    <ClInclude Include="XStatic\XColorStatic.h" />
     <ClInclude Include="ZmConfigManager.h" />
   </ItemGroup>
   <ItemGroup>
@@ -960,6 +962,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="XStatic\FontSize.cpp" />
+    <ClCompile Include="XStatic\XColorStatic.cpp" />
     <ClCompile Include="ZmConfigManager.cpp" />
   </ItemGroup>
   <ItemGroup>

@@ -1,5 +1,8 @@
 #pragma once
-
+#include "GradientStatic.h"
+#include "ShadeButtonST.h"
+#include "BtnST.h"
+#include "afxwin.h"
 
 // VtLogInDlg dialog
 
@@ -30,4 +33,18 @@ public:
 	bool Save = true;
 	CString id, pwd, cert;
 	virtual BOOL OnInitDialog();
+private:
+	CBrush _BrushBackNor;
+public:
+	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
+	CGradientStatic _StaticCert;
+	CGradientStatic _StaticID;
+	CGradientStatic _StaticPwd;
+	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
+	CButtonST _BtnCancel;
+	CButtonST _BtnSignIn;
+	afx_msg void OnBnClickedBtnLogin();
+	afx_msg void OnBnClickedBtnCancel();
+	afx_msg void OnBnClickedBtnCan();
+	CButtonST _BtnCan;
 };

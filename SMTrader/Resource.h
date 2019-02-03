@@ -311,13 +311,18 @@
 #define IDC_ChartViewer                 1000
 #define IDC_ASSET                       1000
 #define IDC_STATIC_ASSET                1000
+#define IDC_STATIC_ID                   1000
 #define IDC_TAB_CATEGORY                1001
 #define IDC_SYMBOL_OPTION               1001
+#define IDC_STATIC_PWD                  1001
 #define ID_OK                           1002
 #define IDC_RADIO_BALANCE               1002
+#define IDC_STATIC_CERT                 1002
 #define IDC_RADIO_CURRENT               1003
 #define IDC_UpdatePeriod                1004
 #define IDC_RADIO_EXPECT                1004
+#define IDC_BUTTON1                     1004
+#define IDC_BTN_CAN                     1004
 #define IDC_PointerPB                   1005
 #define IDC_PROFIT_LOSS                 1005
 #define IDC_ZoomInPB                    1006
@@ -624,7 +629,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        310
 #define _APS_NEXT_COMMAND_VALUE         32793
-#define _APS_NEXT_CONTROL_VALUE         1000
+#define _APS_NEXT_CONTROL_VALUE         1005
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif
