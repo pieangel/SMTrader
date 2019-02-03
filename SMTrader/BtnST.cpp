@@ -40,7 +40,7 @@ CButtonST::CButtonST()
 	m_bMouseOnButton	= FALSE;
 
 	m_cBorderShadow = RGB(0, 0, 255);
-	m_cBorderLight = RGB(255, 255, 0);
+	m_cBorderLight = RGB(0, 0, 255);
 
 	FreeResources(FALSE);
 

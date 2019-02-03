@@ -1327,6 +1327,30 @@
     <ClInclude Include="XStatic\XColorStatic.h">
       <Filter>Util</Filter>
     </ClInclude>
+    <ClInclude Include="VtKp1a.h">
+      <Filter>System\Kospi</Filter>
+    </ClInclude>
+    <ClInclude Include="VtKp2s.h">
+      <Filter>System\Kospi</Filter>
+    </ClInclude>
+    <ClInclude Include="VtKp3s.h">
+      <Filter>System\Kospi</Filter>
+    </ClInclude>
+    <ClInclude Include="VtKp4b.h">
+      <Filter>System\Kospi</Filter>
+    </ClInclude>
+    <ClInclude Include="VtKp5In1.h">
+      <Filter>System\Kospi</Filter>
+    </ClInclude>
+    <ClInclude Include="VtKp6In2.h">
+      <Filter>System\Kospi</Filter>
+    </ClInclude>
+    <ClInclude Include="VtQF2.h">
+      <Filter>System\Kosdaq</Filter>
+    </ClInclude>
+    <ClInclude Include="VtQH2.h">
+      <Filter>System\Kosdaq</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ChildFrm.cpp">
@@ -2393,6 +2417,30 @@
     </ClCompile>
     <ClCompile Include="XStatic\XColorStatic.cpp">
       <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="VtKp1a.cpp">
+      <Filter>System\Kospi</Filter>
+    </ClCompile>
+    <ClCompile Include="VtKp2s.cpp">
+      <Filter>System\Kospi</Filter>
+    </ClCompile>
+    <ClCompile Include="VtKp3s.cpp">
+      <Filter>System\Kospi</Filter>
+    </ClCompile>
+    <ClCompile Include="VtKp4b.cpp">
+      <Filter>System\Kospi</Filter>
+    </ClCompile>
+    <ClCompile Include="VtKp5In1.cpp">
+      <Filter>System\Kospi</Filter>
+    </ClCompile>
+    <ClCompile Include="VtKp6In2.cpp">
+      <Filter>System\Kospi</Filter>
+    </ClCompile>
+    <ClCompile Include="VtQF2.cpp">
+      <Filter>System\Kosdaq</Filter>
+    </ClCompile>
+    <ClCompile Include="VtQH2.cpp">
+      <Filter>System\Kosdaq</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

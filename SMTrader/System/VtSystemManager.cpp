@@ -26,6 +26,14 @@
 #include "../VtQIn2.h"
 #include "../VtQIn3.h"
 #include "../VtQIn4.h"
+#include "../VtKp1a.h"
+#include "../VtKp2s.h"
+#include "../VtKp3s.h"
+#include "../VtKp4b.h"
+#include "../VtKp5In1.h"
+#include "../VtKp6In2.h"
+#include "../VtQH2.h"
+#include "../VtQF2.h"
 
 using namespace std::chrono;
 VtSystemManager::VtSystemManager()
@@ -76,6 +84,24 @@ VtSystem* VtSystemManager::CreateSystem(VtSystemType systemType)
 	case VtSystemType::Beta:
 		system = new VtBeta(VtSystemType::Beta, _T("Beta"));
 		break;
+	case VtSystemType::KP_1A:
+		system = new VtKp1a(VtSystemType::KP_1A, _T("KP_1A"));
+		break;
+	case VtSystemType::KP_2S:
+		system = new VtKp2s(VtSystemType::KP_2S, _T("KP_2S"));
+		break;
+	case VtSystemType::KP_3S:
+		system = new VtKp3s(VtSystemType::KP_3S, _T("KP_3S"));
+		break;
+	case VtSystemType::KP_4B:
+		system = new VtKp4b(VtSystemType::KP_4B, _T("KP_4B"));
+		break;
+	case VtSystemType::KP_5IN1:
+		system = new VtKp5In1(VtSystemType::KP_5IN1, _T("KP_5IN1"));
+		break;
+	case VtSystemType::KP_6IN2:
+		system = new VtKp6In2(VtSystemType::KP_6IN2, _T("KP_6IN2"));
+		break;
 	case VtSystemType::Q_IN1:
 		system = new VtQIn1(VtSystemType::Q_IN1, _T("Q_IN1"));
 		break;
@@ -87,6 +113,12 @@ VtSystem* VtSystemManager::CreateSystem(VtSystemType systemType)
 		break;
 	case VtSystemType::Q_IN4:
 		system = new VtQIn4(VtSystemType::Q_IN4, _T("Q_IN4"));
+		break;
+	case VtSystemType::Q_H2:
+		system = new VtQH2(VtSystemType::Q_H2, _T("Q_H2"));
+		break;
+	case VtSystemType::Q_F2:
+		system = new VtQIn4(VtSystemType::Q_F2, _T("Q_F2"));
 		break;
 	case VtSystemType::TR_US1:
 		system = new VtTrUs1(VtSystemType::TR_US1, _T("TR_US1"));

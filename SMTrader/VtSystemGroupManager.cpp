@@ -65,8 +65,12 @@ void VtSystemGroupManager::InitSystemGroup()
 	
 	sysGrp.Name(_T("주가지수선물"));
 	sysGrp.Type(VtSystemGroupType::KOSPI200F);
-	sysGrp.AddSystem(VtSystemType::Alpha);
-	sysGrp.AddSystem(VtSystemType::Beta);
+	sysGrp.AddSystem(VtSystemType::KP_1A);
+	sysGrp.AddSystem(VtSystemType::KP_2S);
+	sysGrp.AddSystem(VtSystemType::KP_3S);
+	sysGrp.AddSystem(VtSystemType::KP_4B);
+	sysGrp.AddSystem(VtSystemType::KP_5IN1);
+	sysGrp.AddSystem(VtSystemType::KP_6IN2);
 	_SystemGroupVec.push_back(sysGrp);
 
 	sysGrp.ClearSystems();
@@ -81,6 +85,8 @@ void VtSystemGroupManager::InitSystemGroup()
 	sysGrp.AddSystem(VtSystemType::Q_IN2);
 	sysGrp.AddSystem(VtSystemType::Q_IN3);
 	sysGrp.AddSystem(VtSystemType::Q_IN4);
+	sysGrp.AddSystem(VtSystemType::Q_H2);
+	sysGrp.AddSystem(VtSystemType::Q_F2);
 	_SystemGroupVec.push_back(sysGrp);
 
 	sysGrp.ClearSystems();

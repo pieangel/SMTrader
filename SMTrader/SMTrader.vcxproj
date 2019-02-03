@@ -466,6 +466,12 @@
     <ClInclude Include="VtIndexDefine.h" />
     <ClInclude Include="VtIndexFactory.h" />
     <ClInclude Include="VtIndexManager.h" />
+    <ClInclude Include="VtKp1a.h" />
+    <ClInclude Include="VtKp2s.h" />
+    <ClInclude Include="VtKp3s.h" />
+    <ClInclude Include="VtKp4b.h" />
+    <ClInclude Include="VtKp5In1.h" />
+    <ClInclude Include="VtKp6In2.h" />
     <ClInclude Include="VtKrClient.h" />
     <ClInclude Include="VtLayoutManager.h" />
     <ClInclude Include="VtLogInDlg.h" />
@@ -517,6 +523,8 @@
     <ClInclude Include="VtProductSection.h" />
     <ClInclude Include="VtProductSubSection.h" />
     <ClInclude Include="VtProgressDlg.h" />
+    <ClInclude Include="VtQF2.h" />
+    <ClInclude Include="VtQH2.h" />
     <ClInclude Include="VtQIn1.h" />
     <ClInclude Include="VtQIn2.h" />
     <ClInclude Include="VtQIn3.h" />
@@ -848,6 +856,12 @@
     <ClCompile Include="VtIndex.cpp" />
     <ClCompile Include="VtIndexFactory.cpp" />
     <ClCompile Include="VtIndexManager.cpp" />
+    <ClCompile Include="VtKp1a.cpp" />
+    <ClCompile Include="VtKp2s.cpp" />
+    <ClCompile Include="VtKp3s.cpp" />
+    <ClCompile Include="VtKp4b.cpp" />
+    <ClCompile Include="VtKp5In1.cpp" />
+    <ClCompile Include="VtKp6In2.cpp" />
     <ClCompile Include="VtKrClient.cpp" />
     <ClCompile Include="VtLayoutManager.cpp" />
     <ClCompile Include="VtLogInDlg.cpp" />
@@ -897,6 +911,8 @@
     <ClCompile Include="VtProductSection.cpp" />
     <ClCompile Include="VtProductSubSection.cpp" />
     <ClCompile Include="VtProgressDlg.cpp" />
+    <ClCompile Include="VtQF2.cpp" />
+    <ClCompile Include="VtQH2.cpp" />
     <ClCompile Include="VtQIn1.cpp" />
     <ClCompile Include="VtQIn2.cpp" />
     <ClCompile Include="VtQIn3.cpp" />
