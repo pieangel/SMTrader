@@ -453,6 +453,66 @@ void VtSystem::Load(simple::file_istream<same_endian_type>& ss)
 	}
 }
 
+bool VtSystem::CheckAtrLiqForBuy()
+{
+	if (_Symbol && _LastEntryTime != 0) {
+
+		// 현재 종목의 시고저종을 가져온다.
+		std::string dataKey = VtChartDataManager::MakeChartDataKey(_Symbol->ShortCode, VtChartType::MIN, _Cycle);
+		std::vector<double>& timeArray = _RefDataMap[dataKey]->GetDataArray(_T("time"));
+		std::vector<double>& closeArray = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+		std::vector<double>& highArray = _RefDataMap[dataKey]->GetDataArray(_T("high"));
+		std::vector<double>& lowArray = _RefDataMap[dataKey]->GetDataArray(_T("low"));
+
+		std::vector<double>::iterator itt = std::find(timeArray.begin(), timeArray.end(), _LastEntryTime);
+		// 가장 최근에 진입한 봉의 다음 봉의 인덱스를 찾음
+		int index = std::distance(timeArray.begin(), itt++);
+		// 가장 최근에 진입한 봉의 다음봉부터 현재봉까지의 값 중에서 최고, 최저값을 찾는다.
+		auto minMaxIndex = std::minmax_element(closeArray.begin() + index, closeArray.end());
+		double maxClose = closeArray[std::distance(closeArray.begin(), minMaxIndex.second)];
+		double atr = GetAtr(closeArray.size() - 1, _ATR, highArray.data(), lowArray.data(), closeArray.data());
+		if (closeArray.back() < maxClose - atr * _ATRMulti) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	else {
+		return false;
+	}
+}
+
+bool VtSystem::CheckAtrLiqForSell()
+{
+	if (_Symbol && _EnableATRLiq && _LastEntryTime != 0) {
+
+		// 현재 종목의 시고저종을 가져온다.
+		std::string dataKey = VtChartDataManager::MakeChartDataKey(_Symbol->ShortCode, VtChartType::MIN, _Cycle);
+		std::vector<double>& timeArray = _RefDataMap[dataKey]->GetDataArray(_T("time"));
+		std::vector<double>& closeArray = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+		std::vector<double>& highArray = _RefDataMap[dataKey]->GetDataArray(_T("high"));
+		std::vector<double>& lowArray = _RefDataMap[dataKey]->GetDataArray(_T("low"));
+
+		std::vector<double>::iterator itt = std::find(timeArray.begin(), timeArray.end(), _LastEntryTime);
+		// 가장 최근에 진입한 봉의 다음 봉의 인덱스를 찾음
+		int index = std::distance(timeArray.begin(), itt++);
+		// 가장 최근에 진입한 봉의 다음봉부터 현재봉까지의 값 중에서 최고, 최저값을 찾는다.
+		auto minMaxIndex = std::minmax_element(closeArray.begin() + index, closeArray.end());
+		double minClose = closeArray[std::distance(closeArray.begin(), minMaxIndex.first)];
+		double atr = GetAtr(closeArray.size() - 1, _ATR, highArray.data(), lowArray.data(), closeArray.data());
+		if (closeArray.back() > minClose + atr * _ATRMulti) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	else {
+		return false;
+	}
+}
+
 void VtSystem::AddSystemArg(std::string groupName, VtSystemArg arg)
 {
 	VtSystemArgGroup* argGrp = FindArgGroup(groupName);

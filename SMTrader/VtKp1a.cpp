@@ -134,14 +134,14 @@ void VtKp1a::InitArgs()
 	arg.Desc = _T("Kbc>Kac 값을 설정 합니다.");
 	AddSystemArg(_T("매수진입"), arg);
 
-	arg.Name = _T("Qbc-Qac");
+	arg.Name = _T("Qbc>Qac");
 	arg.Type = VtParamType::STRING;
 	arg.sValue = _T("1");
 	arg.Enable = true;
-	arg.Desc = _T("Qbc-Qac 값을 설정 합니다.");
+	arg.Desc = _T("Qbc>Qac 값을 설정 합니다.");
 	AddSystemArg(_T("매수진입"), arg);
 
-	arg.Name = _T("Uac-Ubc");
+	arg.Name = _T("Uac>Ubc");
 	arg.Type = VtParamType::STRING;
 	arg.sValue = _T("1");
 	arg.Enable = true;
@@ -162,19 +162,75 @@ void VtKp1a::InitArgs()
 	arg.Desc = _T("Kbc>Kac 값을 설정 합니다.");
 	AddSystemArg(_T("매도진입"), arg);
 
-	arg.Name = _T("Qac-Qbc");
+	arg.Name = _T("Qac>Qbc");
 	arg.Type = VtParamType::STRING;
 	arg.sValue = _T("1");
 	arg.Enable = true;
-	arg.Desc = _T("Qac-Qbc 값을 설정 합니다.");
+	arg.Desc = _T("Qac>Qbc 값을 설정 합니다.");
 	AddSystemArg(_T("매도진입"), arg);
 
-	arg.Name = _T("Ubc-Uac");
+	arg.Name = _T("Ubc>Uac");
 	arg.Type = VtParamType::STRING;
 	arg.sValue = _T("1");
 	arg.Enable = true;
-	arg.Desc = _T("Ubc-Uac 값을 설정 합니다.");
+	arg.Desc = _T("Ubc>Uac 값을 설정 합니다.");
 	AddSystemArg(_T("매도진입"), arg);
+
+	arg.Name = _T("Kbs-Kas");
+	arg.Type = VtParamType::STRING;
+	arg.sValue = _T("1500");
+	arg.Enable = true;
+	arg.Desc = _T("Kbs-Kas 값을 설정 합니다.");
+	AddSystemArg(_T("매도청산"), arg);
+
+	arg.Name = _T("Kbc>Kac");
+	arg.Type = VtParamType::STRING;
+	arg.sValue = _T("1");
+	arg.Enable = true;
+	arg.Desc = _T("Kbc>Kac 값을 설정 합니다.");
+	AddSystemArg(_T("매도청산"), arg);
+
+	arg.Name = _T("Qbc>Qac");
+	arg.Type = VtParamType::STRING;
+	arg.sValue = _T("1");
+	arg.Enable = true;
+	arg.Desc = _T("Qbc>Qac 값을 설정 합니다.");
+	AddSystemArg(_T("매도청산"), arg);
+
+	arg.Name = _T("Uac>Ubc");
+	arg.Type = VtParamType::STRING;
+	arg.sValue = _T("1");
+	arg.Enable = true;
+	arg.Desc = _T("Uac-Ubc 값을 설정 합니다.");
+	AddSystemArg(_T("매도청산"), arg);
+
+	arg.Name = _T("Kas-Kbs");
+	arg.Type = VtParamType::STRING;
+	arg.sValue = _T("1500");
+	arg.Enable = true;
+	arg.Desc = _T("Kas-Kbs 값을 설정 합니다.");
+	AddSystemArg(_T("매수청산"), arg);
+
+	arg.Name = _T("Kac>Kbc");
+	arg.Type = VtParamType::STRING;
+	arg.sValue = _T("1");
+	arg.Enable = true;
+	arg.Desc = _T("Kbc>Kac 값을 설정 합니다.");
+	AddSystemArg(_T("매수청산"), arg);
+
+	arg.Name = _T("Qac>Qbc");
+	arg.Type = VtParamType::STRING;
+	arg.sValue = _T("1");
+	arg.Enable = true;
+	arg.Desc = _T("Qac>Qbc 값을 설정 합니다.");
+	AddSystemArg(_T("매수청산"), arg);
+
+	arg.Name = _T("Ubc>Uac");
+	arg.Type = VtParamType::STRING;
+	arg.sValue = _T("1");
+	arg.Enable = true;
+	arg.Desc = _T("Ubc>Uac 값을 설정 합니다.");
+	AddSystemArg(_T("매수청산"), arg);
 
 	arg.Name = _T("ATR");
 	arg.Type = VtParamType::STRING;
@@ -382,23 +438,9 @@ void VtKp1a::OnTimer()
 	// 시스템 변수를 읽어 온다.
 	ReadExtraArgs();
 
-	VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();
-	VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
-	std::string code = sym->ShortCode;
-	std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::DAY, 1);
-	std::vector<double>& highArray = _RefDataMap[dataKey]->GetDataArray(_T("high"));
-	std::vector<double>& lowArray = _RefDataMap[dataKey]->GetDataArray(_T("low"));
-
-	double preDayHigh = highArray[highArray.size() - 2];
-	double preDayLow = lowArray[lowArray.size() - 2];
-	_PreHL = preDayHigh - preDayLow;
-	_Band = _PreHL * _BandMulti;
-
 	int curTime = VtChartDataCollector::GetLocalTime();
 
 	if (_CurPosition == VtPositionType::None) {
-		_LongFilter = _PreHL < _FilterMulti;
-		_ShortFilter = _PreHL < _FilterMulti;
 
 		if (CheckEntranceForBuy()) {
 			LOG_F(INFO, _T("매수진입성공"));
@@ -443,6 +485,10 @@ void VtKp1a::UpdateSystem(int index)
 
 bool VtKp1a::CheckEntranceForBuy()
 {
+	// 밴드에 의한 조건을 먼저 확인한다.
+	if (!CheckEntranceByBandForBuy())
+		return false;
+
 	VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();
 	std::vector<bool> argCond;
 	// 매수 진입
@@ -474,7 +520,7 @@ bool VtKp1a::CheckEntranceForBuy()
 					}
 					break;
 				}
-				else if (arg.Name.compare(_T("Kbc-Kac")) == 0) {
+				else if (arg.Name.compare(_T("Kbc>Kac")) == 0) {
 					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
 					// 매도 호가 총수량
 					std::string code = sym->ShortCode + (_T("SHTC"));
@@ -488,7 +534,7 @@ bool VtKp1a::CheckEntranceForBuy()
 
 					double param = std::stod(arg.sValue);
 
-					if (Kbc.back() - Kac.back() > param) {
+					if (Kbc.back()*param > Kac.back()) {
 						argCond.push_back(true);
 					}
 					else {
@@ -496,7 +542,7 @@ bool VtKp1a::CheckEntranceForBuy()
 					}
 					break;
 				}
-				else if (arg.Name.compare(_T("Qbc-Qac")) == 0) {
+				else if (arg.Name.compare(_T("Qbc>Qac")) == 0) {
 					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("105F"));
 					// 매도 호가 총수량
 					std::string code = sym->ShortCode + (_T("SHTQ"));
@@ -510,7 +556,7 @@ bool VtKp1a::CheckEntranceForBuy()
 
 					double param = std::stod(arg.sValue);
 
-					if (Qbc.back() - Qac.back() > param) {
+					if (Qbc.back()*param > Qac.back()) {
 						argCond.push_back(true);
 					}
 					else {
@@ -518,8 +564,8 @@ bool VtKp1a::CheckEntranceForBuy()
 					}
 					break;
 				}
-				else if (arg.Name.compare(_T("Uac-Ubc")) == 0) {
-					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("1175F"));
+				else if (arg.Name.compare(_T("Uac>Ubc")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("175F"));
 					// 매도 호가 총수량
 					std::string code = sym->ShortCode + (_T("SHTQ"));
 					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, 5);
@@ -532,7 +578,7 @@ bool VtKp1a::CheckEntranceForBuy()
 
 					double param = std::stod(arg.sValue);
 
-					if (Uac.back() - Ubc.back() > param) {
+					if (Uac.back()*param > Ubc.back()) {
 						argCond.push_back(true);
 					}
 					else {
@@ -557,6 +603,10 @@ bool VtKp1a::CheckEntranceForBuy()
 
 bool VtKp1a::CheckEntranceForSell()
 {
+	// 밴드에 의한 조건을 먼저 확인한다.
+	if (!CheckEntranceByBandForSell())
+		return false;
+
 	VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();
 	std::vector<bool> argCond;
 	// 매수 진입
@@ -588,7 +638,7 @@ bool VtKp1a::CheckEntranceForSell()
 					}
 					break;
 				}
-				else if (arg.Name.compare(_T("Kac-Kbc")) == 0) {
+				else if (arg.Name.compare(_T("Kac>Kbc")) == 0) {
 					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
 					// 매도 호가 총수량
 					std::string code = sym->ShortCode + (_T("SHTC"));
@@ -602,7 +652,7 @@ bool VtKp1a::CheckEntranceForSell()
 
 					double param = std::stod(arg.sValue);
 
-					if (Kac.back() - Kbc.back() > param) {
+					if (Kac.back()*param - Kbc.back()) {
 						argCond.push_back(true);
 					}
 					else {
@@ -610,7 +660,7 @@ bool VtKp1a::CheckEntranceForSell()
 					}
 					break;
 				}
-				else if (arg.Name.compare(_T("Qac-Qbc")) == 0) {
+				else if (arg.Name.compare(_T("Qac>Qbc")) == 0) {
 					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("105F"));
 					// 매도 호가 총수량
 					std::string code = sym->ShortCode + (_T("SHTQ"));
@@ -624,7 +674,7 @@ bool VtKp1a::CheckEntranceForSell()
 
 					double param = std::stod(arg.sValue);
 
-					if (Qac.back() - Qbc.back() > param) {
+					if (Qac.back()*param > Qbc.back()) {
 						argCond.push_back(true);
 					}
 					else {
@@ -632,8 +682,8 @@ bool VtKp1a::CheckEntranceForSell()
 					}
 					break;
 				}
-				else if (arg.Name.compare(_T("Ubc-Uac")) == 0) {
-					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("1175F"));
+				else if (arg.Name.compare(_T("Ubc>Uac")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("175F"));
 					// 매도 호가 총수량
 					std::string code = sym->ShortCode + (_T("SHTQ"));
 					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, 5);
@@ -646,7 +696,7 @@ bool VtKp1a::CheckEntranceForSell()
 
 					double param = std::stod(arg.sValue);
 
-					if (Uac.back() - Ubc.back() > param) {
+					if (Ubc.back()*param > Uac.back()) {
 						argCond.push_back(true);
 					}
 					else {
@@ -682,12 +732,27 @@ void VtKp1a::ReadExtraArgs()
 			if (arg.Enable) {
 				if (arg.Name.compare(_T("ATRMulti")) == 0) {
 					_ATRMulti = std::stod(arg.sValue);
+					_EnableATRLiq = true;
 				}
 				else if (arg.Name.compare(_T("BandMulti")) == 0) {
 					_BandMulti = std::stod(arg.sValue);
 				}
 				else if (arg.Name.compare(_T("FilterMulti")) == 0) {
 					_FilterMulti = std::stod(arg.sValue);
+				}
+				else if (arg.Name.compare(_T("ATRTime")) == 0) {
+					std::string src = arg.sValue;
+					std::string hour, min;
+					size_t pos = src.find(':', 0);
+					hour = src.substr(0, pos);
+					min = src.substr(pos + 1, src.length() - pos);
+					_ATRTime.hour = std::stoi(hour);
+					_ATRTime.min = std::stoi(min);
+					_ATRTime.sec = 0;
+					_ATRTime.mil = 0;
+				}
+				else if (arg.Name.compare(_T("ATR")) == 0) {
+					_ATR = std::stoi(arg.sValue);
 				}
 			}
 		}
@@ -697,48 +762,289 @@ void VtKp1a::ReadExtraArgs()
 bool VtKp1a::CheckLiqForBuy()
 {
 	VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();
-	VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
+	std::vector<bool> argCond;
+	// 매수 진입
+	VtSystemArgGroup* argGrp = GetArgGroup(_T("매수청산"));
+	if (argGrp) {
+		std::vector<VtSystemArg>& argVec = argGrp->GetArgVec();
+		for (auto it = argVec.begin(); it != argVec.end(); ++it) {
+			VtSystemArg& arg = *it;
+			if (arg.Enable) {
+				if (arg.Name.compare(_T("Kas-Kbs")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTQ"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, 5);
+					std::vector<double>& Kas = _RefDataMap[dataKey]->GetDataArray(_T("close"));
 
-	std::string dataKey = VtChartDataManager::MakeChartDataKey(sym->ShortCode, VtChartType::MIN, _Cycle);
-	std::vector<double>& timeArray = _RefDataMap[dataKey]->GetDataArray(_T("time"));
-	std::vector<double>& closeArray = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTQ"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, 5);
+					std::vector<double>& Kbs = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					double param = std::stod(arg.sValue);
+
+					if (Kas.back() - Kbs.back() > param) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+					break;
+				}
+				else if (arg.Name.compare(_T("Kac>Kbc")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, 5);
+					std::vector<double>& Kac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTQ"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, 5);
+					std::vector<double>& Kbc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					double param = std::stod(arg.sValue);
+
+					if (Kac.back()*param - Kbc.back()) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+					break;
+				}
+				else if (arg.Name.compare(_T("Qac>Qbc")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("105F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTQ"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, 5);
+					std::vector<double>& Qac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTQ"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, 5);
+					std::vector<double>& Qbc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					double param = std::stod(arg.sValue);
+
+					if (Qac.back()*param > Qbc.back()) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+					break;
+				}
+				else if (arg.Name.compare(_T("Ubc>Uac")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("175F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTQ"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, 5);
+					std::vector<double>& Uac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTQ"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, 5);
+					std::vector<double>& Ubc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					double param = std::stod(arg.sValue);
+
+					if (Ubc.back()*param > Uac.back()) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+					break;
+				}
+			}
+		}
+	}
+
+	if (argCond.size() > 0) {
+		bool preCond = true;
+		// 하나의 조건이라도 거짓이면 거짓
+		auto it = std::find(argCond.begin(), argCond.end(), false);
+		if (it != argCond.end())
+			preCond = false;
+		return preCond && CheckAtrLiqForBuy() ? true : false;
+	}
+	else {  // ATR 단독 청산 조건
+		return CheckAtrLiqForBuy();
+	}
+}
+
+bool VtKp1a::CheckEntranceByBand()
+{
+	if (!_Symbol)
+		return false;
+
+	std::string code = _Symbol->ShortCode;
+	std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::DAY, 1);
 	std::vector<double>& highArray = _RefDataMap[dataKey]->GetDataArray(_T("high"));
 	std::vector<double>& lowArray = _RefDataMap[dataKey]->GetDataArray(_T("low"));
 
-	std::vector<double>::iterator it = std::find(timeArray.begin(), timeArray.end(), _LastEntryTime);
-	int index = std::distance(timeArray.begin(), it);
-	auto minMaxIndex = std::minmax_element(closeArray.begin() + index, closeArray.end());
-	double maxClose = closeArray[std::distance(closeArray.begin(), minMaxIndex.second)];
-	double atr20 = GetAtr(closeArray.size() - 1, 20, highArray.data(), lowArray.data(), closeArray.data());
-	if (closeArray.back() < maxClose - atr20 * _ATRMulti) {
-		return true;
-	}
-	else {
+	double preDayHigh = highArray[highArray.size() - 2];
+	double preDayLow = lowArray[lowArray.size() - 2];
+	_PreHL = preDayHigh - preDayLow;
+	_Band = _PreHL * _BandMulti;
+	return false;
+}
+
+bool VtKp1a::CheckEntranceByBandForBuy()
+{
+	std::string code = _Symbol->ShortCode;
+	std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::DAY, 1);
+	std::vector<double>& highArray = _RefDataMap[dataKey]->GetDataArray(_T("high"));
+	std::vector<double>& lowArray = _RefDataMap[dataKey]->GetDataArray(_T("low"));
+
+	double preDayHigh = highArray[highArray.size() - 2];
+	double preDayLow = lowArray[lowArray.size() - 2];
+	_PreHL = preDayHigh - preDayLow;
+	// 전날 변동폭이 클때는 진입하지 않는다.
+	if (_FilterMulti > _PreHL)
 		return false;
-	}
+	_Band = _PreHL * _BandMulti;
+	if (_Symbol->Quote.close > _Symbol->Quote.open + _Band)
+		return true;
+	else
+		return false;
+}
+
+bool VtKp1a::CheckEntranceByBandForSell()
+{
+	std::string code = _Symbol->ShortCode;
+	std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::DAY, 1);
+	std::vector<double>& highArray = _RefDataMap[dataKey]->GetDataArray(_T("high"));
+	std::vector<double>& lowArray = _RefDataMap[dataKey]->GetDataArray(_T("low"));
+
+	double preDayHigh = highArray[highArray.size() - 2];
+	double preDayLow = lowArray[lowArray.size() - 2];
+	_PreHL = preDayHigh - preDayLow;
+	// 전날 변동폭이 클때는 진입하지 않는다.
+	if (_FilterMulti > _PreHL)
+		return false;
+	_Band = _PreHL * _BandMulti;
+	if (_Symbol->Quote.close < _Symbol->Quote.open - _Band)
+		return true;
+	else
+		return false;
 }
 
 bool VtKp1a::CheckLiqForSell()
 {
 	VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();
-	VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
+	std::vector<bool> argCond;
+	// 매수 진입
+	VtSystemArgGroup* argGrp = GetArgGroup(_T("매도청산"));
+	if (argGrp) {
+		std::vector<VtSystemArg>& argVec = argGrp->GetArgVec();
+		for (auto it = argVec.begin(); it != argVec.end(); ++it) {
+			VtSystemArg& arg = *it;
+			if (arg.Enable) {
+				if (arg.Name.compare(_T("Kbs-Kas")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTQ"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, 5);
+					std::vector<double>& Kas = _RefDataMap[dataKey]->GetDataArray(_T("close"));
 
-	std::string dataKey = VtChartDataManager::MakeChartDataKey(sym->ShortCode, VtChartType::MIN, _Cycle);
-	std::vector<double>& timeArray = _RefDataMap[dataKey]->GetDataArray(_T("time"));
-	std::vector<double>& closeArray = _RefDataMap[dataKey]->GetDataArray(_T("close"));
-	std::vector<double>& highArray = _RefDataMap[dataKey]->GetDataArray(_T("high"));
-	std::vector<double>& lowArray = _RefDataMap[dataKey]->GetDataArray(_T("low"));
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTQ"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, 5);
+					std::vector<double>& Kbs = _RefDataMap[dataKey]->GetDataArray(_T("close"));
 
-	std::vector<double>::iterator it = std::find(timeArray.begin(), timeArray.end(), _LastEntryTime);
-	int index = std::distance(timeArray.begin(), it);
-	auto minMaxIndex = std::minmax_element(closeArray.begin() + index, closeArray.end());
-	double minClose = closeArray[std::distance(closeArray.begin(), minMaxIndex.first)];
-	double atr20 = GetAtr(closeArray.size() - 1, 20, highArray.data(), lowArray.data(), closeArray.data());
-	if (closeArray.back() > minClose + atr20 * _ATRMulti) {
-		return true;
+					double param = std::stod(arg.sValue);
+
+					if (Kbs.back() - Kas.back() > param) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+					break;
+				}
+				else if (arg.Name.compare(_T("Kbc>Kac")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, 5);
+					std::vector<double>& Kac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTQ"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, 5);
+					std::vector<double>& Kbc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					double param = std::stod(arg.sValue);
+
+					if (Kbc.back()*param > Kac.back()) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+					break;
+				}
+				else if (arg.Name.compare(_T("Qbc>Qac")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("105F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTQ"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, 5);
+					std::vector<double>& Qac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTQ"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, 5);
+					std::vector<double>& Qbc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					double param = std::stod(arg.sValue);
+
+					if (Qbc.back()*param > Qac.back()) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+					break;
+				}
+				else if (arg.Name.compare(_T("Uac>Ubc")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("175F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTQ"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, 5);
+					std::vector<double>& Uac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTQ"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, 5);
+					std::vector<double>& Ubc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					double param = std::stod(arg.sValue);
+
+					if (Uac.back()*param > Ubc.back()) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+					break;
+				}
+			}
+		}
 	}
-	else {
-		return false;
+
+	if (argCond.size() > 0) {
+		bool preCond = true;
+		// 하나의 조건이라도 거짓이면 거짓
+		auto it = std::find(argCond.begin(), argCond.end(), false);
+		if (it != argCond.end())
+			preCond = false;
+		return preCond && CheckAtrLiqForSell() ? true : false;
+	}
+	else {  // ATR 단독 청산 조건
+		return CheckAtrLiqForSell();
 	}
 }
 

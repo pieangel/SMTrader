@@ -178,6 +178,22 @@ public:
 	void Load(simple::file_istream<same_endian_type>& ss);
 	std::string SymbolCode() const { return _SymbolCode; }
 	void SymbolCode(std::string val) { _SymbolCode = val; }
+	int EntryBarIndex() const { return _EntryBarIndex; }
+	void EntryBarIndex(int val) { _EntryBarIndex = val; }
+	VtTime ATRTime() const { return _ATRTime; }
+	void ATRTime(VtTime val) { _ATRTime = val; }
+	int ATR() const { return _ATR; }
+	void ATR(int val) { _ATR = val; }
+	bool CheckAtrLiqForBuy();
+	bool CheckAtrLiqForSell();
+	double ATRMulti() const { return _ATRMulti; }
+	void ATRMulti(double val) { _ATRMulti = val; }
+	double BandMulti() const { return _BandMulti; }
+	void BandMulti(double val) { _BandMulti = val; }
+	double FilterMulti() const { return _FilterMulti; }
+	void FilterMulti(double val) { _FilterMulti = val; }
+	int LastEntryTime() const { return _LastEntryTime; }
+	void LastEntryTime(int val) { _LastEntryTime = val; }
 protected:
 	void PutOrder(int price, VtPositionType position, VtPriceType priceType = VtPriceType::Price);
 	void PutOrder(VtPosition* posi, int price, bool liqud = false);
@@ -344,5 +360,26 @@ protected:
 	/// </summary>
 	int _Cycle = 1;
 	std::string _SymbolCode = _T("");
+	/// <summary>
+	/// 당일 진입 가능한 봉의 인덱스
+	/// </summary>
+	int _EntryBarIndex = 0;
+	/// <summary>
+	/// ATR로 청산 가능한 시간. ATR청산은 이 시간 이후로 청산가능하다.
+	/// </summary>
+	VtTime _ATRTime;
+	/// <summary>
+	/// ATR 청산이 가능한지 여부 : 참일때만 ATR로 청산이 가능하다.
+	/// </summary>
+	bool _EnableATRLiq = false;
+	/// <summary>
+	/// 청산에 적용할 ATR 값
+	/// </summary>
+	int _ATR = 0;
+
+	double _ATRMulti = 2.0;
+	double _BandMulti = 0.25;
+	double _FilterMulti = 3.0;
+	int _LastEntryTime = 0;
 };
 

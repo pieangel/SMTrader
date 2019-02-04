@@ -32,6 +32,10 @@ public:
 	bool CheckEntranceForSell();
 	bool CheckLiqForSell();
 	bool CheckLiqForBuy();
+	bool CheckEntranceByBand();
+	bool CheckEntranceByBandForBuy();
+	bool CheckEntranceByBandForSell();
+	
 	VtPositionType CheckEntranceForBuy(size_t index);
 	VtPositionType CheckEntranceForSell(size_t index);
 	VtPositionType CheckLiqForSell(size_t index);
