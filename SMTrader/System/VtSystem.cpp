@@ -513,6 +513,147 @@ bool VtSystem::CheckAtrLiqForSell()
 	}
 }
 
+bool VtSystem::CheckAtrLiq()
+{
+	VtTime time = VtGlobal::GetLocalTime();
+	if (time.hour >= _ATRTime.hour && time.min >= _ATRTime.min) {
+		if (_Symbol && _LastEntryTime != 0) {
+
+			// 현재 종목의 시고저종을 가져온다.
+			std::string dataKey = VtChartDataManager::MakeChartDataKey(_Symbol->ShortCode, VtChartType::MIN, _Cycle);
+			std::vector<double>& timeArray = _RefDataMap[dataKey]->GetDataArray(_T("time"));
+			std::vector<double>& closeArray = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+			std::vector<double>& highArray = _RefDataMap[dataKey]->GetDataArray(_T("high"));
+			std::vector<double>& lowArray = _RefDataMap[dataKey]->GetDataArray(_T("low"));
+
+			std::vector<double>::iterator itt = std::find(timeArray.begin(), timeArray.end(), _LastEntryTime);
+			// 가장 최근에 진입한 봉의 다음 봉의 인덱스를 찾음
+			int index = std::distance(timeArray.begin(), itt++);
+			// 가장 최근에 진입한 봉의 다음봉부터 현재봉까지의 값 중에서 최고, 최저값을 찾는다.
+			auto minMaxIndex = std::minmax_element(closeArray.begin() + index, closeArray.end());
+			double atr = GetAtr(closeArray.size() - 1, _ATR, highArray.data(), lowArray.data(), closeArray.data());
+			if (_CurPosition == VtPositionType::Buy) {
+				double maxClose = closeArray[std::distance(closeArray.begin(), minMaxIndex.second)];
+				if (closeArray.back() < maxClose - atr * _ATRMulti) {
+					return true;
+				}
+				else {
+					return false;
+				}
+			}
+			else if (_CurPosition == VtPositionType::Sell) {
+				double minClose = closeArray[std::distance(closeArray.begin(), minMaxIndex.first)];
+				if (closeArray.back() > minClose + atr * _ATRMulti) {
+					return true;
+				}
+				else {
+					return false;
+				}
+			}
+			else
+				return false;
+		}
+		else {
+			return false;
+		}
+	}
+}
+
+bool VtSystem::CheckAtrLiq(int index)
+{
+	VtTime time = VtGlobal::GetLocalTime();
+	if (time.hour >= _ATRTime.hour && time.min >= _ATRTime.min) {
+		if (_Symbol && _LastEntryTime != 0) {
+
+			// 현재 종목의 시고저종을 가져온다.
+			std::string dataKey = VtChartDataManager::MakeChartDataKey(_Symbol->ShortCode, VtChartType::MIN, _Cycle);
+			std::vector<double>& timeArray = _RefDataMap[dataKey]->GetDataArray(_T("time"));
+			std::vector<double>& closeArray = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+			std::vector<double>& highArray = _RefDataMap[dataKey]->GetDataArray(_T("high"));
+			std::vector<double>& lowArray = _RefDataMap[dataKey]->GetDataArray(_T("low"));
+
+			std::vector<double>::iterator itt = std::find(timeArray.begin(), timeArray.end(), _LastEntryTime);
+			// 찾지 못하면 거짓을 반환한다.
+			if (itt == std::end(timeArray))
+				return false;
+			// 가장 최근에 진입한 봉의 다음 봉의 인덱스를 찾음
+			int index = std::distance(timeArray.begin(), itt++);
+			// 가장 최근에 진입한 봉의 다음봉부터 현재봉까지의 값 중에서 최고, 최저값을 찾는다.
+			auto minMaxIndex = std::minmax_element(closeArray.begin() + index, closeArray.end());
+			double atr = GetAtr(index, _ATR, highArray.data(), lowArray.data(), closeArray.data());
+			if (_CurPosition == VtPositionType::Buy) {
+				double maxClose = closeArray[std::distance(closeArray.begin(), minMaxIndex.second)];
+				if (closeArray[index] < maxClose - atr * _ATRMulti) {
+					return true;
+				}
+				else {
+					return false;
+				}
+			}
+			else if (_CurPosition == VtPositionType::Sell) {
+				double minClose = closeArray[std::distance(closeArray.begin(), minMaxIndex.first)];
+				if (closeArray[index] > minClose + atr * _ATRMulti) {
+					return true;
+				}
+				else {
+					return false;
+				}
+			}
+			else
+				return false;
+		}
+		else {
+			return false;
+		}
+	}
+}
+
+int VtSystem::GetDailyIndex(int index)
+{
+	if (!_Symbol)
+		return -1;
+
+	std::string dataKey = VtChartDataManager::MakeChartDataKey(_Symbol->ShortCode, VtChartType::MIN, _Cycle);
+	std::vector<double>& dateArray = _RefDataMap[dataKey]->GetDataArray(_T("date"));
+	if (dateArray.size() == 0 || index < 0 || index >= dateArray.size())
+		return -1;
+	if (dateArray.size() == 1 || index == 0)
+		return 0;
+	int dateIndex = 0;
+	for (size_t i = index; i >= 0; --i) {
+		double pre = dateArray[i - 1];
+		double cur = dateArray[i];
+		if (pre != cur)
+			break;
+		dateIndex++;
+	}
+
+	return dateIndex;
+}
+
+int VtSystem::GetDailyIndex()
+{
+	if (!_Symbol)
+		return -1;
+
+	std::string dataKey = VtChartDataManager::MakeChartDataKey(_Symbol->ShortCode, VtChartType::MIN, _Cycle);
+	std::vector<double>& dateArray = _RefDataMap[dataKey]->GetDataArray(_T("date"));
+	if (dateArray.size() == 0)
+		return -1;
+	if (dateArray.size() == 1)
+		return 0;
+	int dateIndex = 0;
+	for (size_t i = dateArray.size() - 1; i >= 0; --i) {
+		double pre = dateArray[i - 1];
+		double cur = dateArray[i];
+		if (pre != cur)
+			break;
+		dateIndex++;
+	}
+
+	return dateIndex;
+}
+
 void VtSystem::AddSystemArg(std::string groupName, VtSystemArg arg)
 {
 	VtSystemArgGroup* argGrp = FindArgGroup(groupName);

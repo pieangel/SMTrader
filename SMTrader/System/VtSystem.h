@@ -186,6 +186,10 @@ public:
 	void ATR(int val) { _ATR = val; }
 	bool CheckAtrLiqForBuy();
 	bool CheckAtrLiqForSell();
+	bool CheckAtrLiq();
+	bool CheckAtrLiq(int index);
+	int GetDailyIndex(int index);
+	int GetDailyIndex();
 	double ATRMulti() const { return _ATRMulti; }
 	void ATRMulti(double val) { _ATRMulti = val; }
 	double BandMulti() const { return _BandMulti; }
