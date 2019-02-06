@@ -38,6 +38,7 @@ std::pair<bool, int > findInVector(const std::vector<T>  & vecOfElements, const 
 
 
 VtKp1a::VtKp1a()
+	:VtSystem()
 {
 	InitArgs();
 }
@@ -168,6 +169,16 @@ void VtKp1a::InitArgs()
 	_LiqTime.sec = 30;
 
 	_MaxEntrance = 1;
+
+	_EntryBarIndex = 0;
+	_ATRTime.hour = 9;
+	_ATRTime.min = 0;
+	_ATRTime.sec = 0;
+	_ATR = 20;
+
+	_ATRMulti = 2.0;
+	_BandMulti = 0.25;
+	_FilterMulti = 3.0;
 
 	VtSystemArg arg;
 
@@ -817,6 +828,9 @@ void VtKp1a::ReadExtraArgs()
 				}
 				else if (arg.Name.compare(_T("ATR")) == 0) {
 					_ATR = std::stoi(arg.sValue);
+				}
+				else if (arg.Name.compare(_T("EntryBarIndex")) == 0) {
+					_EntryBarIndex = std::stoi(arg.sValue);
 				}
 			}
 		}

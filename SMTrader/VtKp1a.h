@@ -50,19 +50,8 @@ public:
 	bool CheckEntranceByOpenForSell(size_t index);
 
 private:
-	double _ATRMulti = 2.0;
-	double _BandMulti = 0.25;
-	double _FilterMulti = 3.0;
-
 	double _PreHL = 0.0;
 	double _Band = 0.0;
-	bool _LongTrigger = false;
-	bool _ShortTrigger = false;
-	bool _xLongTrigger = false;
-	bool _xShortTrigger = false;
-	bool _LongFilter = false;
-	bool _ShortFilter = false;
-	int _LastEntryTime = 0;
 };
 
 
