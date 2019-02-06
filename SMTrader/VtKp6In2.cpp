@@ -99,7 +99,7 @@ void VtKp6In2::SetDataSrc()
 		AddDataSource(code, VtChartType::MIN, _Cycle);
 	}
 
-	sym = prdtCatMgr->GetRecentFutureSymbol(_T("105F"));
+	sym = prdtCatMgr->GetRecentFutureSymbol(_T("106F"));
 	if (sym) {
 		std::string symCode = sym->ShortCode;
 		_DataSrcSymbolVec.push_back(symCode);
@@ -618,7 +618,7 @@ bool VtKp6In2::CheckEntranceForBuy()
 					break;
 				}
 				else if (arg.Name.compare(_T("Qbc>Qac")) == 0) {
-					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("105F"));
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("106F"));
 					// 매도 호가 총수량
 					std::string code = sym->ShortCode + (_T("SHTC"));
 					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
@@ -736,7 +736,7 @@ bool VtKp6In2::CheckEntranceForSell()
 					break;
 				}
 				else if (arg.Name.compare(_T("Qac>Qbc")) == 0) {
-					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("105F"));
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("106F"));
 					// 매도 호가 총수량
 					std::string code = sym->ShortCode + (_T("SHTC"));
 					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
@@ -893,7 +893,7 @@ bool VtKp6In2::CheckLiqForBuy()
 					break;
 				}
 				else if (arg.Name.compare(_T("Qac>Qbc")) == 0) {
-					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("105F"));
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("106F"));
 					// 매도 호가 총수량
 					std::string code = sym->ShortCode + (_T("SHTC"));
 					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
@@ -1169,7 +1169,7 @@ bool VtKp6In2::CheckLiqForSell()
 					break;
 				}
 				else if (arg.Name.compare(_T("Qbc>Qac")) == 0) {
-					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("105F"));
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("106F"));
 					// 매도 호가 총수량
 					std::string code = sym->ShortCode + (_T("SHTC"));
 					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
@@ -1317,7 +1317,7 @@ bool VtKp6In2::CheckEntranceForBuy(size_t index)
 					break;
 				}
 				else if (arg.Name.compare(_T("Qbc>Qac")) == 0) {
-					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("105F"));
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("106F"));
 					// 매도 호가 총수량
 					std::string code = sym->ShortCode + (_T("SHTC"));
 					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
@@ -1485,7 +1485,7 @@ bool VtKp6In2::CheckEntranceForSell(size_t index)
 					break;
 				}
 				else if (arg.Name.compare(_T("Qac>Qbc")) == 0) {
-					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("105F"));
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("106F"));
 					// 매도 호가 총수량
 					std::string code = sym->ShortCode + (_T("SHTC"));
 					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
@@ -1650,7 +1650,7 @@ bool VtKp6In2::CheckLiqForSell(size_t index)
 					break;
 				}
 				else if (arg.Name.compare(_T("Qbc>Qac")) == 0) {
-					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("105F"));
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("106F"));
 					// 매도 호가 총수량
 					std::string code = sym->ShortCode + (_T("SHTC"));
 					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
@@ -1817,7 +1817,7 @@ bool VtKp6In2::CheckLiqForBuy(size_t index)
 					break;
 				}
 				else if (arg.Name.compare(_T("Qac>Qbc")) == 0) {
-					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("105F"));
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("106F"));
 					// 매도 호가 총수량
 					std::string code = sym->ShortCode + (_T("SHTC"));
 					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
