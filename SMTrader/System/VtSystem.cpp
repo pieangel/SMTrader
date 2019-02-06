@@ -29,6 +29,7 @@ VtSystem::VtSystem()
 	_LastSignalType = VtPositionType::None;
 	_OldSignal = VtPositionType::None;
 	_AppliedData = false;
+
 	_EntranceStartTime.hour = 9;
 	_EntranceStartTime.min = 5;
 	_EntranceStartTime.sec = 0;

@@ -953,23 +953,6 @@ bool VtKp1a::CheckLiqForBuy()
 	}
 }
 
-bool VtKp1a::CheckEntranceByBand()
-{
-	if (!_Symbol)
-		return false;
-
-	std::string code = _Symbol->ShortCode;
-	std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::DAY, 1);
-	std::vector<double>& highArray = _RefDataMap[dataKey]->GetDataArray(_T("high"));
-	std::vector<double>& lowArray = _RefDataMap[dataKey]->GetDataArray(_T("low"));
-
-	double preDayHigh = highArray[highArray.size() - 2];
-	double preDayLow = lowArray[lowArray.size() - 2];
-	_PreHL = preDayHigh - preDayLow;
-	_Band = _PreHL * _BandMulti;
-	return false;
-}
-
 bool VtKp1a::CheckEntranceByBandForBuy()
 {
 	if (!_Symbol)
@@ -1074,19 +1057,6 @@ bool VtKp1a::CheckEntranceByBandForSell(size_t index)
 		return true;
 	else
 		return false;
-}
-
-bool VtKp1a::CheckEntranceByOpen()
-{
-	if (!_Symbol)
-		return false;
-
-	std::string code = _Symbol->ShortCode;
-	std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
-	std::vector<double>& openArray = _RefDataMap[dataKey]->GetDataArray(_T("open"));
-	std::vector<double>& closeArray = _RefDataMap[dataKey]->GetDataArray(_T("close"));
-
-	return false;
 }
 
 bool VtKp1a::CheckEntranceByOpenForBuy()

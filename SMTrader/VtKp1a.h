@@ -32,10 +32,8 @@ public:
 	bool CheckEntranceForSell();
 	bool CheckLiqForSell();
 	bool CheckLiqForBuy();
-	bool CheckEntranceByBand();
 	bool CheckEntranceByBandForBuy();
 	bool CheckEntranceByBandForSell();
-	bool CheckEntranceByOpen();
 	bool CheckEntranceByOpenForBuy();
 	bool CheckEntranceByOpenForSell();
 	
