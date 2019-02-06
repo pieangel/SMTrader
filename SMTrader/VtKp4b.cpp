@@ -603,7 +603,7 @@ bool VtKp4b::CheckEntranceForBuy()
 					std::vector<double>& Kac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
 
 					// 매수 호가 총수량
-					code = sym->ShortCode + (_T("BHTQ"));
+					code = sym->ShortCode + (_T("BHTC"));
 					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
 					std::vector<double>& Kbc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
 
