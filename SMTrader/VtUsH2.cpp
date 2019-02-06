@@ -108,21 +108,21 @@ void VtUsH2::InitArgs()
 
 	VtSystem::InitArgs();
 
-	_Cycle = 1;
+	_Cycle = 5;
 
 	_EntranceStartTime.hour = 9;
-	_EntranceStartTime.min = 0;
+	_EntranceStartTime.min = 15;
 	_EntranceStartTime.sec = 0;
 
 	_EntranceEndTime.hour = 14;
-	_EntranceEndTime.min = 30;
+	_EntranceEndTime.min = 40;
 	_EntranceEndTime.sec = 0;
 
 	_LiqTime.hour = 15;
-	_LiqTime.min = 34;
-	_LiqTime.sec = 30;
+	_LiqTime.min = 30;
+	_LiqTime.sec = 0;
 
-	_MaxEntrance = 2;
+	_MaxEntrance = 1;
 
 	_EntryBarIndex = 0;
 	_ATRTime.hour = 14;

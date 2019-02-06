@@ -111,18 +111,18 @@ void VtUsIn1::InitArgs()
 	_Cycle = 1;
 
 	_EntranceStartTime.hour = 9;
-	_EntranceStartTime.min = 0;
+	_EntranceStartTime.min = 3;
 	_EntranceStartTime.sec = 0;
 
-	_EntranceEndTime.hour = 14;
-	_EntranceEndTime.min = 30;
+	_EntranceEndTime.hour = 15;
+	_EntranceEndTime.min = 0;
 	_EntranceEndTime.sec = 0;
 
 	_LiqTime.hour = 15;
-	_LiqTime.min = 34;
-	_LiqTime.sec = 30;
+	_LiqTime.min = 32;
+	_LiqTime.sec = 0;
 
-	_MaxEntrance = 2;
+	_MaxEntrance = 3;
 
 	_EntryBarIndex = 0;
 	_ATRTime.hour = 14;
@@ -139,7 +139,7 @@ void VtUsIn1::InitArgs()
 	arg.Name = _T("Uac>Ubc");
 	arg.Type = VtParamType::STRING;
 	arg.sValue = _T("0.7");
-	arg.Enable = false;
+	arg.Enable = true;
 	arg.Desc = _T("Uac-Ubc 값을 설정 합니다.");
 	AddSystemArg(_T("매수진입"), arg);
 
@@ -167,7 +167,7 @@ void VtUsIn1::InitArgs()
 	arg.Name = _T("Ubc>Uac");
 	arg.Type = VtParamType::STRING;
 	arg.sValue = _T("0.7");
-	arg.Enable = false;
+	arg.Enable = true;
 	arg.Desc = _T("Ubc>Uac 값을 설정 합니다.");
 	AddSystemArg(_T("매도진입"), arg);
 
@@ -195,8 +195,8 @@ void VtUsIn1::InitArgs()
 
 	arg.Name = _T("Ubc>Uac");
 	arg.Type = VtParamType::STRING;
-	arg.sValue = _T("0.6");
-	arg.Enable = false;
+	arg.sValue = _T("0.9");
+	arg.Enable = true;
 	arg.Desc = _T("Ubc>Uac 값을 설정 합니다.");
 	AddSystemArg(_T("매수청산"), arg);
 
@@ -209,7 +209,7 @@ void VtUsIn1::InitArgs()
 
 	arg.Name = _T("Kac>Kbc");
 	arg.Type = VtParamType::STRING;
-	arg.sValue = _T("1");
+	arg.sValue = _T("0.9");
 	arg.Enable = false;
 	arg.Desc = _T("Kbc>Kac 값을 설정 합니다.");
 	AddSystemArg(_T("매수청산"), arg);
@@ -223,8 +223,8 @@ void VtUsIn1::InitArgs()
 
 	arg.Name = _T("Uac>Ubc");
 	arg.Type = VtParamType::STRING;
-	arg.sValue = _T("0.6");
-	arg.Enable = false;
+	arg.sValue = _T("0.9");
+	arg.Enable = true;
 	arg.Desc = _T("Uac-Ubc 값을 설정 합니다.");
 	AddSystemArg(_T("매도청산"), arg);
 
