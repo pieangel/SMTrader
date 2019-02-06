@@ -594,7 +594,6 @@ bool VtKp2s::CheckEntranceForBuy()
 					else {
 						argCond.push_back(false);
 					}
-					break;
 				}
 				else if (arg.Name.compare(_T("Kbc>Kac")) == 0) {
 					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
@@ -616,7 +615,6 @@ bool VtKp2s::CheckEntranceForBuy()
 					else {
 						argCond.push_back(false);
 					}
-					break;
 				}
 				else if (arg.Name.compare(_T("Qbc>Qac")) == 0) {
 					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("106F"));
@@ -638,7 +636,6 @@ bool VtKp2s::CheckEntranceForBuy()
 					else {
 						argCond.push_back(false);
 					}
-					break;
 				}
 				else if (arg.Name.compare(_T("Uac>Ubc")) == 0) {
 					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("175F"));
@@ -660,7 +657,6 @@ bool VtKp2s::CheckEntranceForBuy()
 					else {
 						argCond.push_back(false);
 					}
-					break;
 				}
 			}
 		}
@@ -712,7 +708,6 @@ bool VtKp2s::CheckEntranceForSell()
 					else {
 						argCond.push_back(false);
 					}
-					break;
 				}
 				else if (arg.Name.compare(_T("Kac>Kbc")) == 0) {
 					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
@@ -734,7 +729,6 @@ bool VtKp2s::CheckEntranceForSell()
 					else {
 						argCond.push_back(false);
 					}
-					break;
 				}
 				else if (arg.Name.compare(_T("Qac>Qbc")) == 0) {
 					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("106F"));
@@ -756,7 +750,6 @@ bool VtKp2s::CheckEntranceForSell()
 					else {
 						argCond.push_back(false);
 					}
-					break;
 				}
 				else if (arg.Name.compare(_T("Ubc>Uac")) == 0) {
 					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("175F"));
@@ -778,7 +771,6 @@ bool VtKp2s::CheckEntranceForSell()
 					else {
 						argCond.push_back(false);
 					}
-					break;
 				}
 			}
 		}
@@ -869,7 +861,6 @@ bool VtKp2s::CheckLiqForBuy()
 					else {
 						argCond.push_back(false);
 					}
-					break;
 				}
 				else if (arg.Name.compare(_T("Kac>Kbc")) == 0) {
 					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
@@ -891,7 +882,6 @@ bool VtKp2s::CheckLiqForBuy()
 					else {
 						argCond.push_back(false);
 					}
-					break;
 				}
 				else if (arg.Name.compare(_T("Qac>Qbc")) == 0) {
 					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("106F"));
@@ -913,7 +903,6 @@ bool VtKp2s::CheckLiqForBuy()
 					else {
 						argCond.push_back(false);
 					}
-					break;
 				}
 				else if (arg.Name.compare(_T("Ubc>Uac")) == 0) {
 					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("175F"));
@@ -935,7 +924,6 @@ bool VtKp2s::CheckLiqForBuy()
 					else {
 						argCond.push_back(false);
 					}
-					break;
 				}
 			}
 		}
@@ -1145,7 +1133,6 @@ bool VtKp2s::CheckLiqForSell()
 					else {
 						argCond.push_back(false);
 					}
-					break;
 				}
 				else if (arg.Name.compare(_T("Kbc>Kac")) == 0) {
 					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
@@ -1167,7 +1154,6 @@ bool VtKp2s::CheckLiqForSell()
 					else {
 						argCond.push_back(false);
 					}
-					break;
 				}
 				else if (arg.Name.compare(_T("Qbc>Qac")) == 0) {
 					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("106F"));
@@ -1189,7 +1175,6 @@ bool VtKp2s::CheckLiqForSell()
 					else {
 						argCond.push_back(false);
 					}
-					break;
 				}
 				else if (arg.Name.compare(_T("Uac>Ubc")) == 0) {
 					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("175F"));
@@ -1211,7 +1196,6 @@ bool VtKp2s::CheckLiqForSell()
 					else {
 						argCond.push_back(false);
 					}
-					break;
 				}
 			}
 		}
@@ -1281,7 +1265,6 @@ bool VtKp2s::CheckEntranceForBuy(size_t index)
 					else {
 						argCond.push_back(false);
 					}
-					break;
 				}
 				else if (arg.Name.compare(_T("Kbc>Kac")) == 0) {
 					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
@@ -1315,7 +1298,6 @@ bool VtKp2s::CheckEntranceForBuy(size_t index)
 					else {
 						argCond.push_back(false);
 					}
-					break;
 				}
 				else if (arg.Name.compare(_T("Qbc>Qac")) == 0) {
 					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("106F"));
@@ -1348,7 +1330,6 @@ bool VtKp2s::CheckEntranceForBuy(size_t index)
 					else {
 						argCond.push_back(false);
 					}
-					break;
 				}
 				else if (arg.Name.compare(_T("Uac>Ubc")) == 0) {
 					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("175F"));
@@ -1382,7 +1363,6 @@ bool VtKp2s::CheckEntranceForBuy(size_t index)
 					else {
 						argCond.push_back(false);
 					}
-					break;
 				}
 			}
 		}
@@ -1449,7 +1429,6 @@ bool VtKp2s::CheckEntranceForSell(size_t index)
 					else {
 						argCond.push_back(false);
 					}
-					break;
 				}
 				else if (arg.Name.compare(_T("Kac>Kbc")) == 0) {
 					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
@@ -1483,7 +1462,6 @@ bool VtKp2s::CheckEntranceForSell(size_t index)
 					else {
 						argCond.push_back(false);
 					}
-					break;
 				}
 				else if (arg.Name.compare(_T("Qac>Qbc")) == 0) {
 					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("106F"));
@@ -1517,7 +1495,6 @@ bool VtKp2s::CheckEntranceForSell(size_t index)
 					else {
 						argCond.push_back(false);
 					}
-					break;
 				}
 				else if (arg.Name.compare(_T("Ubc>Uac")) == 0) {
 					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("175F"));
@@ -1551,7 +1528,6 @@ bool VtKp2s::CheckEntranceForSell(size_t index)
 					else {
 						argCond.push_back(false);
 					}
-					break;
 				}
 			}
 		}
@@ -1614,7 +1590,6 @@ bool VtKp2s::CheckLiqForSell(size_t index)
 					else {
 						argCond.push_back(false);
 					}
-					break;
 				}
 				else if (arg.Name.compare(_T("Kbc>Kac")) == 0) {
 					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
@@ -1648,7 +1623,6 @@ bool VtKp2s::CheckLiqForSell(size_t index)
 					else {
 						argCond.push_back(false);
 					}
-					break;
 				}
 				else if (arg.Name.compare(_T("Qbc>Qac")) == 0) {
 					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("106F"));
@@ -1682,7 +1656,6 @@ bool VtKp2s::CheckLiqForSell(size_t index)
 					else {
 						argCond.push_back(false);
 					}
-					break;
 				}
 				else if (arg.Name.compare(_T("Uac>Ubc")) == 0) {
 					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("175F"));
@@ -1716,7 +1689,6 @@ bool VtKp2s::CheckLiqForSell(size_t index)
 					else {
 						argCond.push_back(false);
 					}
-					break;
 				}
 			}
 		}
@@ -1781,7 +1753,6 @@ bool VtKp2s::CheckLiqForBuy(size_t index)
 					else {
 						argCond.push_back(false);
 					}
-					break;
 				}
 				else if (arg.Name.compare(_T("Kac>Kbc")) == 0) {
 					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
@@ -1815,7 +1786,6 @@ bool VtKp2s::CheckLiqForBuy(size_t index)
 					else {
 						argCond.push_back(false);
 					}
-					break;
 				}
 				else if (arg.Name.compare(_T("Qac>Qbc")) == 0) {
 					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("106F"));
@@ -1849,7 +1819,6 @@ bool VtKp2s::CheckLiqForBuy(size_t index)
 					else {
 						argCond.push_back(false);
 					}
-					break;
 				}
 				else if (arg.Name.compare(_T("Ubc>Uac")) == 0) {
 					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("175F"));
@@ -1883,7 +1852,6 @@ bool VtKp2s::CheckLiqForBuy(size_t index)
 					else {
 						argCond.push_back(false);
 					}
-					break;
 				}
 			}
 		}
