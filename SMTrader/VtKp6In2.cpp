@@ -154,7 +154,7 @@ void VtKp6In2::InitArgs()
 
 	VtSystem::InitArgs();
 
-	_Cycle = 5;
+	_Cycle = 1;
 
 	_EntranceStartTime.hour = 9;
 	_EntranceStartTime.min = 0;
@@ -165,7 +165,7 @@ void VtKp6In2::InitArgs()
 	_EntranceEndTime.sec = 0;
 
 	_LiqTime.hour = 15;
-	_LiqTime.min = 34;
+	_LiqTime.min = 19;
 	_LiqTime.sec = 30;
 
 	_MaxEntrance = 1;

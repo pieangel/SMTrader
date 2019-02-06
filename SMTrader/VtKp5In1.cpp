@@ -155,7 +155,7 @@ void VtKp5In1::InitArgs()
 
 	VtSystem::InitArgs();
 
-	_Cycle = 5;
+	_Cycle = 1;
 
 	_EntranceStartTime.hour = 9;
 	_EntranceStartTime.min = 0;
@@ -166,10 +166,10 @@ void VtKp5In1::InitArgs()
 	_EntranceEndTime.sec = 0;
 
 	_LiqTime.hour = 15;
-	_LiqTime.min = 34;
+	_LiqTime.min = 24;
 	_LiqTime.sec = 30;
 
-	_MaxEntrance = 1;
+	_MaxEntrance = 2;
 
 	_EntryBarIndex = 0;
 	_ATRTime.hour = 9;

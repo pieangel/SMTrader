@@ -166,7 +166,7 @@ void VtKp2s::InitArgs()
 	_EntranceEndTime.sec = 0;
 
 	_LiqTime.hour = 15;
-	_LiqTime.min = 34;
+	_LiqTime.min = 14;
 	_LiqTime.sec = 30;
 
 	_MaxEntrance = 1;
@@ -561,6 +561,9 @@ void VtKp2s::UpdateSystem(int index)
 
 bool VtKp2s::CheckEntranceForBuy()
 {
+	// 시가 필터 적용
+	if (!CheckEntranceByOpenForBuy())
+		return false;
 	// 밴드에 의한 조건을 먼저 확인한다.
 	if (!CheckEntranceByBandForBuy())
 		return false;
@@ -675,6 +678,9 @@ bool VtKp2s::CheckEntranceForBuy()
 
 bool VtKp2s::CheckEntranceForSell()
 {
+	// 시가 필터 적용
+	if (!CheckEntranceByOpenForSell())
+		return false;
 	// 밴드에 의한 조건을 먼저 확인한다.
 	if (!CheckEntranceByBandForSell())
 		return false;
@@ -1219,9 +1225,12 @@ bool VtKp2s::CheckEntranceForBuy(size_t index)
 {
 	if (index < 0 || index >= ChartDataSize)
 		return false;
+	// 시가 필터 적용
+	if (!CheckEntranceByOpenForBuy(index))
+		return false;
 
 	// 밴드에 의한 조건을 먼저 확인한다.
-	if (!CheckEntranceByBandForBuy())
+	if (!CheckEntranceByBandForBuy(index))
 		return false;
 
 	VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();
@@ -1383,9 +1392,11 @@ bool VtKp2s::CheckEntranceForSell(size_t index)
 {
 	if (index < 0 || index >= ChartDataSize)
 		return false;
-
+	// 시가 필터 적용
+	if (!CheckEntranceByOpenForSell(index))
+		return false;
 	// 밴드에 의한 조건을 먼저 확인한다.
-	if (!CheckEntranceByBandForSell())
+	if (!CheckEntranceByBandForSell(index))
 		return false;
 
 	VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();

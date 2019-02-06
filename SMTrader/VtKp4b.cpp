@@ -166,7 +166,7 @@ void VtKp4b::InitArgs()
 	_EntranceEndTime.sec = 0;
 
 	_LiqTime.hour = 15;
-	_LiqTime.min = 34;
+	_LiqTime.min = 29;
 	_LiqTime.sec = 30;
 
 	_MaxEntrance = 1;
@@ -399,6 +399,10 @@ VtPositionType VtKp4b::UpdateSignal(int index)
 		_CurPosition = VtPositionType::None;
 	}
 
+	// DayIndex에 의한 확인
+	if (GetDailyIndex(index) <= 0)
+		return _ExpPosition;
+
 	// 예상 매수 진입 포지션을 알아본다.
 	if (CheckEntranceForBuy(index)) {
 		_ExpPosition = VtPositionType::Buy;
@@ -507,6 +511,9 @@ void VtKp4b::OnTimer()
 	if (!IsEnterableByTime())
 		return;
 
+	// DayIndex에 의한 통제
+	if (GetDailyIndex() <= 0)
+		return;
 
 	if (!_Symbol)
 		return;
@@ -561,6 +568,9 @@ void VtKp4b::UpdateSystem(int index)
 
 bool VtKp4b::CheckEntranceForBuy()
 {
+	// 시가 필터 적용
+	if (!CheckEntranceByOpenForBuy())
+		return false;
 	// 밴드에 의한 조건을 먼저 확인한다.
 	if (!CheckEntranceByBandForBuy())
 		return false;
@@ -675,6 +685,9 @@ bool VtKp4b::CheckEntranceForBuy()
 
 bool VtKp4b::CheckEntranceForSell()
 {
+	// 시가 필터 적용
+	if (!CheckEntranceByOpenForSell())
+		return false;
 	// 밴드에 의한 조건을 먼저 확인한다.
 	if (!CheckEntranceByBandForSell())
 		return false;
@@ -1220,8 +1233,11 @@ bool VtKp4b::CheckEntranceForBuy(size_t index)
 	if (index < 0 || index >= ChartDataSize)
 		return false;
 
+	// 시가 필터 적용
+	if (!CheckEntranceByOpenForBuy(index))
+		return false;
 	// 밴드에 의한 조건을 먼저 확인한다.
-	if (!CheckEntranceByBandForBuy())
+	if (!CheckEntranceByBandForBuy(index))
 		return false;
 
 	VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();
@@ -1383,9 +1399,11 @@ bool VtKp4b::CheckEntranceForSell(size_t index)
 {
 	if (index < 0 || index >= ChartDataSize)
 		return false;
-
+	// 시가 필터 적용
+	if (!CheckEntranceByOpenForSell(index))
+		return false;
 	// 밴드에 의한 조건을 먼저 확인한다.
-	if (!CheckEntranceByBandForSell())
+	if (!CheckEntranceByBandForSell(index))
 		return false;
 
 	VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();
