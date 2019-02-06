@@ -160,8 +160,8 @@ void VtKp6In2::InitArgs()
 	_EntranceStartTime.min = 0;
 	_EntranceStartTime.sec = 0;
 
-	_EntranceEndTime.hour = 14;
-	_EntranceEndTime.min = 30;
+	_EntranceEndTime.hour = 15;
+	_EntranceEndTime.min = 0;
 	_EntranceEndTime.sec = 0;
 
 	_LiqTime.hour = 15;

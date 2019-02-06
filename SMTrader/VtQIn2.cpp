@@ -131,18 +131,18 @@ void VtQIn2::InitArgs()
 
 	VtSystem::InitArgs();
 
-	_Cycle = 5;
+	_Cycle = 1;
 
 	_EntranceStartTime.hour = 9;
-	_EntranceStartTime.min = 0;
+	_EntranceStartTime.min = 1;
 	_EntranceStartTime.sec = 0;
 
 	_EntranceEndTime.hour = 14;
-	_EntranceEndTime.min = 30;
+	_EntranceEndTime.min = 15;
 	_EntranceEndTime.sec = 0;
 
 	_LiqTime.hour = 15;
-	_LiqTime.min = 34;
+	_LiqTime.min = 19;
 	_LiqTime.sec = 30;
 
 	_MaxEntrance = 2;

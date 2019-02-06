@@ -136,15 +136,15 @@ void VtQH2::InitArgs()
 	_Cycle = 5;
 
 	_EntranceStartTime.hour = 9;
-	_EntranceStartTime.min = 0;
+	_EntranceStartTime.min = 5;
 	_EntranceStartTime.sec = 0;
 
-	_EntranceEndTime.hour = 14;
-	_EntranceEndTime.min = 30;
+	_EntranceEndTime.hour = 15;
+	_EntranceEndTime.min = 15;
 	_EntranceEndTime.sec = 0;
 
 	_LiqTime.hour = 15;
-	_LiqTime.min = 34;
+	_LiqTime.min = 14;
 	_LiqTime.sec = 30;
 
 	_MaxEntrance = 2;
@@ -282,7 +282,7 @@ void VtQH2::InitArgs()
 
 	arg.Name = _T("ATR Time");
 	arg.Type = VtParamType::STRING;
-	arg.sValue = _T("9:00");
+	arg.sValue = _T("14:30");
 	arg.Enable = true;
 	arg.Desc = _T("ATR Time값을 설정 합니다.");
 	AddSystemArg(_T("기타변수"), arg);
