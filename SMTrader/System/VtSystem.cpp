@@ -121,7 +121,7 @@ bool VtSystem::LiqByEndTime()
 		return false;
 
 	VtTime time = VtGlobal::GetLocalTime();
-	if (time.hour >= _LiqTime.hour && time.min >= _LiqTime.min) {
+	if (time.hour >= _LiqTime.hour && time.min >= _LiqTime.min && time.sec >= _LiqTime.sec) {
 		// 여기서 청산을 진행한다.
 		if (LiqudAll())
 			return true;
@@ -130,6 +130,38 @@ bool VtSystem::LiqByEndTime()
 	}
 
 	return false;
+}
+
+bool VtSystem::LiqByEndTime(int index)
+{
+	if (_CurPosition == VtPositionType::None || !_Symbol)
+		return false;
+
+	std::string dataKey = VtChartDataManager::MakeChartDataKey(_Symbol->ShortCode, VtChartType::MIN, _Cycle);
+	std::vector<double>& timeArray = _RefDataMap[dataKey]->GetDataArray(_T("time"));
+	if (timeArray.size() == 0 || index < 0 || index >= timeArray.size())
+		return false;
+
+	VtTime time = VtGlobal::GetTime(timeArray[index]);
+	if (time.hour >= _LiqTime.hour && time.min >= _LiqTime.min && time.sec >= _LiqTime.sec) {
+		// 여기서 청산을 진행한다.
+		if (LiqudAll())
+			return true;
+		else
+			return false;
+	}
+
+	return false;
+}
+
+int VtSystem::FindDateIndex(double date, std::vector<double>& dateArray)
+{
+	for (int i = dateArray.size() - 1; i >= 0; --i) {
+		if (date == dateArray[i])
+			return i;
+	}
+
+	return -1;
 }
 
 void VtSystem::PutOrder(int price, VtPositionType position, VtPriceType priceType )
@@ -330,6 +362,14 @@ bool VtSystem::LiqudAll()
 	}
 }
 
+void VtSystem::Symbol(VtSymbol* val)
+{
+	_Symbol = val;
+	// 일별 데이터 추가
+	VtChartData* data = AddDataSource(_Symbol->ShortCode, VtChartType::DAY, 1);
+	data->RequestChartData();
+}
+
 void VtSystem::SetDataSrc()
 {
 	
@@ -357,6 +397,30 @@ void VtSystem::SetDataSrc(VtSymbol* sym, VtChartType type, int cycle)
 		AddDataSource(code, VtChartType::MIN, 1);
 	}
 }
+
+/*
+/// <summary>
+/// 당일 진입 가능한 봉의 인덱스
+/// </summary>
+int _EntryBarIndex = 0;
+/// <summary>
+/// ATR로 청산 가능한 시간. ATR청산은 이 시간 이후로 청산가능하다.
+/// </summary>
+VtTime _ATRTime;
+/// <summary>
+/// ATR 청산이 가능한지 여부 : 참일때만 ATR로 청산이 가능하다.
+/// </summary>
+bool _EnableATRLiq = false;
+/// <summary>
+/// 청산에 적용할 ATR 값
+/// </summary>
+int _ATR = 0;
+
+double _ATRMulti = 2.0;
+double _BandMulti = 0.25;
+double _FilterMulti = 3.0;
+int _LastEntryTime = 0;
+*/
 
 void VtSystem::Save(simple::file_ostream<same_endian_type>& ss)
 {
@@ -388,6 +452,12 @@ void VtSystem::Save(simple::file_ostream<same_endian_type>& ss)
 	ss << (int)_PriceType; // 진입 가격 타입
 	ss << _SymbolCode; // 시스템 대상 종목 코드
 	ss << _Cycle; // 시스템 실행 주기
+	ss << _EntryBarIndex;
+	ss << _ATRTime.hour << _ATRTime.min << _ATRTime.sec;
+	ss << _ATR;
+	ss << _ATRMulti;
+	ss << _BandMulti;
+	ss << _FilterMulti;
 
 	// 시스템 매개변수를 그룹별로 저장한다.
 	ss << _ArgGroupMap.size();
@@ -397,6 +467,14 @@ void VtSystem::Save(simple::file_ostream<same_endian_type>& ss)
 	}
 }
 
+/*
+ss << _EntryBarIndex;
+ss << _ATRTime.hour << _ATRTime.min << _ATRTime.sec;
+ss << _ATR;
+ss << _ATRMulti;
+ss << _BandMulti;
+ss << _FilterMulti;
+*/
 void VtSystem::Load(simple::file_istream<same_endian_type>& ss)
 {
 	ss >> _Name; // 시스템 이름
@@ -427,6 +505,13 @@ void VtSystem::Load(simple::file_istream<same_endian_type>& ss)
 	ss >> _PriceType; // 진입 가격 타입
 	ss >> _SymbolCode; // 시스템 대상 종목 코드
 	ss >> _Cycle; // 시스템 실행 주기
+	ss >> _EntryBarIndex;
+	ss >> _ATRTime.hour >> _ATRTime.min >> _ATRTime.sec;
+	ss >> _ATR;
+	ss >> _ATRMulti;
+	ss >> _BandMulti;
+	ss >> _FilterMulti;
+
 	if (_SysTargetType == TargetType::RealAccount) {
 		VtAccountManager* acntMgr = VtAccountManager::GetInstance();
 		_Account = acntMgr->FindAccount(_SysTargetName);
@@ -447,10 +532,15 @@ void VtSystem::Load(simple::file_istream<same_endian_type>& ss)
 	ss >> argGrpCount;
 	if (argGrpCount == 0)
 		return;
+	// 기존의 매개변수 그룹과 변수들을 모두 제거해 준다.
+	_ArgGroupMap.clear();
 	for (int i = 0; i < argGrpCount; ++i) {
 		VtSystemArgGroup argGrp;
 		argGrp.Load(ss);
+		AddSystemArgGroup(argGrp.Name(), argGrp);
 	}
+
+	_ArgsLoaded = true;
 }
 
 bool VtSystem::CheckAtrLiqForBuy()
@@ -557,6 +647,8 @@ bool VtSystem::CheckAtrLiq()
 			return false;
 		}
 	}
+	else
+		return false;
 }
 
 bool VtSystem::CheckAtrLiq(int index)
@@ -606,6 +698,8 @@ bool VtSystem::CheckAtrLiq(int index)
 			return false;
 		}
 	}
+	else
+		return false;
 }
 
 int VtSystem::GetDailyIndex(int index)
@@ -664,6 +758,14 @@ void VtSystem::AddSystemArg(std::string groupName, VtSystemArg arg)
 		group.Name(groupName);
 		group.AddSystemArg(arg.Name, arg);
 		_ArgGroupMap.push_back(group);
+	}
+}
+
+void VtSystem::AddSystemArgGroup(std::string groupName, VtSystemArgGroup grp)
+{
+	VtSystemArgGroup* argGrp = FindArgGroup(groupName);
+	if (!argGrp) {
+		_ArgGroupMap.push_back(grp);
 	}
 }
 

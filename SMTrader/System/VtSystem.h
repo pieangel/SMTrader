@@ -156,10 +156,11 @@ public:
 	/// 시스템 종료 시간에 따른 포지션 청산 함수
 	/// </summary>
 	bool LiqByEndTime();
+	bool LiqByEndTime(int index);
 	int EntryToday() const { return _EntryToday; }
 	void EntryToday(int val) { _EntryToday = val; }
 	VtSymbol* Symbol() const { return _Symbol; }
-	void Symbol(VtSymbol* val) { _Symbol = val; }
+	void Symbol(VtSymbol* val);
 	virtual void SetDataSrc();
 	void SetDataSrc(VtSymbol* sym, VtChartType type, int cycle);
 	bool LiqByStop() const { return _LiqByStop; }
@@ -199,6 +200,7 @@ public:
 	int LastEntryTime() const { return _LastEntryTime; }
 	void LastEntryTime(int val) { _LastEntryTime = val; }
 protected:
+	int FindDateIndex(double date, std::vector<double>& dateArray);
 	void PutOrder(int price, VtPositionType position, VtPriceType priceType = VtPriceType::Price);
 	void PutOrder(VtPosition* posi, int price, bool liqud = false);
 	bool LiqudAll();
@@ -218,6 +220,7 @@ protected:
 	// 시스템 매개변수는 group 별로 분류되며, group 밑에 실제 매개변수들이 맵 형태로 저장되어 있다.
 	// 시스템 매개 변수는 그룹이름과 매개변수를 주면 그룹 밑으로 들어가게 된다.
 	void AddSystemArg(std::string groupName, VtSystemArg arg);
+	void AddSystemArgGroup(std::string groupName, VtSystemArgGroup argGrp);
 	std::vector<VtSystemArgGroup> _ArgGroupMap;
 	VtDate* _Date = nullptr;
 	VtTime* _Time = nullptr;
@@ -363,6 +366,9 @@ protected:
 	/// 시스템 수행 주기 - 분단위
 	/// </summary>
 	int _Cycle = 1;
+	/// <summary>
+	/// 심볼 코드
+	/// </summary>
 	std::string _SymbolCode = _T("");
 	/// <summary>
 	/// 당일 진입 가능한 봉의 인덱스
@@ -385,5 +391,6 @@ protected:
 	double _BandMulti = 0.25;
 	double _FilterMulti = 3.0;
 	int _LastEntryTime = 0;
+	bool _ArgsLoaded = false;
 };
 

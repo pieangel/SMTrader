@@ -72,6 +72,7 @@ private:
 	int _SelRow = -1;
 	bool _ShowingGrid = false;
 	VtStrategyGrid* _StGrid = nullptr;
+	int _WndHeight = 0;
 public:
 	afx_msg void OnBnClickedBtnAccount();
 	afx_msg void OnBnClickedBtnSymbol();
@@ -115,4 +116,6 @@ public:
 	CStatic _StaticLastEntPrice;
 	void OnRealTimeEvent();
 	void RefreshRealTimeValue(std::string argName, CString value);
+	void RefreshRealTimeValue(int index, std::string argName, CString value);
+	afx_msg void OnEnChangeEditOrderAmt();
 };

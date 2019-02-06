@@ -88,6 +88,7 @@ BEGIN_MESSAGE_MAP(VtUsdStrategyConfigDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_CK_LIQ_ALL, &VtUsdStrategyConfigDlg::OnBnClickedCkLiqAll)
 	ON_WM_CLOSE()
 	ON_BN_CLICKED(IDC_CHECK_RUN, &VtUsdStrategyConfigDlg::OnBnClickedCheckRun)
+	ON_EN_CHANGE(IDC_EDIT_ORDER_AMT, &VtUsdStrategyConfigDlg::OnEnChangeEditOrderAmt)
 END_MESSAGE_MAP()
 
 
@@ -146,6 +147,9 @@ BOOL VtUsdStrategyConfigDlg::OnInitDialog()
 
 	InitControls();
 
+	CRect rcWnd;
+	GetWindowRect(rcWnd);
+	_WndHeight = rcWnd.Height();
 	ResizeWindow();
 
 	return TRUE;  // return TRUE unless you set the focus to a control
@@ -186,12 +190,12 @@ void VtUsdStrategyConfigDlg::ResizeWindow()
 	if (_ShowArgGrid) {
 		_ArgGrid.ShowWindow(SW_SHOW);
 		_BtnExtraVar.SetIcon(IDI_UP);
-		SetWindowPos(nullptr, 0, 0, rcWnd.Width(), rcWnd.Height() + rcGrid.Height() + 2, SWP_NOMOVE);
+		SetWindowPos(nullptr, 0, 0, rcWnd.Width(), _WndHeight + rcGrid.Height() - 71, SWP_NOMOVE);
 	}
 	else {
 		_ArgGrid.ShowWindow(SW_HIDE);
 		_BtnExtraVar.SetIcon(IDI_DOWN);
-		SetWindowPos(nullptr, 0, 0, rcWnd.Width(), rcWnd.Height() - rcGrid.Height() + 2, SWP_NOMOVE);
+		SetWindowPos(nullptr, 0, 0, rcWnd.Width(), _WndHeight - rcGrid.Height() + 4, SWP_NOMOVE);
 	}
 }
 
@@ -527,9 +531,9 @@ void VtUsdStrategyConfigDlg::OnBnClickedBtnApply()
 		for (size_t i = 0; i < argVec.size(); ++i) {
 			VtSystemArg& arg = argVec[i];
 			CString strValue;
-			_LiqGrid.QuickGetText(6, i, &strValue);
+			_LiqGrid.QuickGetText(7, i, &strValue);
 			arg.sValue = (LPCTSTR)strValue;
-			_LiqGrid.GetCell(5, i, &cell);
+			_LiqGrid.GetCell(6, i, &cell);
 			double num = cell.GetNumber();
 			num == 1.0 ? arg.Enable = true : arg.Enable = false;
 		}
@@ -678,4 +682,20 @@ void VtUsdStrategyConfigDlg::RefreshRealTimeValue(std::string argName, CString v
 {
 	_EntGrid.RefreshRealTimeValue(argName, value);
 	_LiqGrid.RefreshRealTimeValue(argName, value);
+}
+
+void VtUsdStrategyConfigDlg::RefreshRealTimeValue(int index, std::string argName, CString value)
+{
+	index == 0 ? _EntGrid.RefreshRealTimeValue(argName, value) : _LiqGrid.RefreshRealTimeValue(argName, value);
+}
+
+
+void VtUsdStrategyConfigDlg::OnEnChangeEditOrderAmt()
+{
+	// TODO:  If this is a RICHEDIT control, the control will not
+	// send this notification unless you override the CDialogEx::OnInitDialog()
+	// function and call CRichEditCtrl().SetEventMask()
+	// with the ENM_CHANGE flag ORed into the mask.
+
+	// TODO:  Add your control notification handler code here
 }

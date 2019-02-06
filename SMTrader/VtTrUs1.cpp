@@ -543,7 +543,7 @@ bool VtTrUs1::CheckEntranceForBuy()
 						argCond.push_back(false);
 					}
 				}
-				else if (arg.Name.compare(_T("Kbc>Kac")) == 0) {
+				else if (arg.Name.compare(_T("Kbs>Kas")) == 0) {
 					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
 					std::string code = sym->ShortCode + (_T("SHTQ"));
 					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, 1);
@@ -667,7 +667,7 @@ bool VtTrUs1::CheckEntranceForSell()
 						argCond.push_back(false);
 					}
 				}
-				else if (arg.Name.compare(_T("Kbc>Kac")) == 0) {
+				else if (arg.Name.compare(_T("Kbs>Kas")) == 0) {
 					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
 					std::string code = sym->ShortCode + (_T("SHTQ"));
 					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, 1);
@@ -780,7 +780,7 @@ bool VtTrUs1::CheckLiqForBuy()
 						argCond.push_back(false);
 					}
 				}
-				else if (arg.Name.compare(_T("Kaa>Kbs")) == 0) {
+				else if (arg.Name.compare(_T("Kas>Kbs")) == 0) {
 					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
 					std::string code = sym->ShortCode + (_T("SHTQ"));
 					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, 1);
@@ -894,7 +894,7 @@ bool VtTrUs1::CheckLiqForSell()
 						argCond.push_back(false);
 					}
 				}
-				else if (arg.Name.compare(_T("Kbc>Kac")) == 0) {
+				else if (arg.Name.compare(_T("Kbs>Kas")) == 0) {
 					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
 					std::string code = sym->ShortCode + (_T("SHTQ"));
 					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, 1);
@@ -1049,7 +1049,7 @@ VtPositionType VtTrUs1::CheckEntranceForBuy(size_t index)
 						argCond.push_back(false);
 					}
 				}
-				else if (arg.Name.compare(_T("Kbc>Kac")) == 0) {
+				else if (arg.Name.compare(_T("Kbs>Kas")) == 0) {
 					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
 					// 매도 호가 총수량
 					std::string code = sym->ShortCode + (_T("SHTQ"));
@@ -1219,7 +1219,7 @@ VtPositionType VtTrUs1::CheckEntranceForSell(size_t index)
 						argCond.push_back(false);
 					}
 				}
-				else if (arg.Name.compare(_T("Kbc>Kac")) == 0) {
+				else if (arg.Name.compare(_T("Kbs>Kas")) == 0) {
 					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
 					// 매도 호가 총수량
 					std::string code = sym->ShortCode + (_T("SHTQ"));
@@ -1360,7 +1360,7 @@ VtPositionType VtTrUs1::CheckLiqForSell(size_t index)
 						argCond.push_back(false);
 					}
 				}
-				else if (arg.Name.compare(_T("Kbc>Kac")) == 0) {
+				else if (arg.Name.compare(_T("Kbs>Kas")) == 0) {
 					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
 					// 매도 호가 총수량
 					std::string code = sym->ShortCode + (_T("SHTQ"));

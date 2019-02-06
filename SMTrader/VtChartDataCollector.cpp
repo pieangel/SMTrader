@@ -111,11 +111,6 @@ void VtChartDataCollector::OnTimerEvent(VtChartData* chartData)
 
 	int lastIndex = ChartDataSize - 1;
 	std::vector<double>& timeData = chartData->GetDataArray(_T("time"));
-	std::vector<double>& openData = chartData->GetDataArray(_T("open"));
-	std::vector<double>& highData = chartData->GetDataArray(_T("high"));
-	std::vector<double>& lowData = chartData->GetDataArray(_T("low"));
-	std::vector<double>& closeData = chartData->GetDataArray(_T("close"));
-
 	int curTime = GetLocalTime();
 	int oldTime = (int)timeData.back();
 	int curHourMin = VtChartDataCollector::GetHourMin(curTime, chartData->Cycle());
@@ -125,12 +120,20 @@ void VtChartDataCollector::OnTimerEvent(VtChartData* chartData)
 	} 
 
 	if (curHourMin != oldHourMin) {
+		std::vector<double>& dateData = chartData->GetDataArray(_T("date"));
+		std::vector<double>& openData = chartData->GetDataArray(_T("open"));
+		std::vector<double>& highData = chartData->GetDataArray(_T("high"));
+		std::vector<double>& lowData = chartData->GetDataArray(_T("low"));
+		std::vector<double>& closeData = chartData->GetDataArray(_T("close"));
+
+		VtChartData::ShiftLeft(dateData, 1);
 		VtChartData::ShiftLeft(timeData, 1);
 		VtChartData::ShiftLeft(openData, 1);
 		VtChartData::ShiftLeft(highData, 1);
 		VtChartData::ShiftLeft(lowData, 1);
 		VtChartData::ShiftLeft(closeData, 1);
 
+		dateData[lastIndex] = GetLocalDate();
 		timeData[lastIndex] = curHourMin * 100.0;
 		openData[lastIndex] = closeData[lastIndex - 1];
 		highData[lastIndex] = closeData[lastIndex - 1];

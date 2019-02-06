@@ -35,11 +35,19 @@ public:
 	bool CheckEntranceByBand();
 	bool CheckEntranceByBandForBuy();
 	bool CheckEntranceByBandForSell();
+	bool CheckEntranceByOpen();
+	bool CheckEntranceByOpenForBuy();
+	bool CheckEntranceByOpenForSell();
 	
-	VtPositionType CheckEntranceForBuy(size_t index);
-	VtPositionType CheckEntranceForSell(size_t index);
-	VtPositionType CheckLiqForSell(size_t index);
-	VtPositionType CheckLiqForBuy(size_t index);
+	bool CheckEntranceForBuy(size_t index);
+	bool CheckEntranceForSell(size_t index);
+	bool CheckLiqForSell(size_t index);
+	bool CheckLiqForBuy(size_t index);
+
+	bool CheckEntranceByBandForBuy(size_t index);
+	bool CheckEntranceByBandForSell(size_t index);
+	bool CheckEntranceByOpenForBuy(size_t index);
+	bool CheckEntranceByOpenForSell(size_t index);
 
 private:
 	double _ATRMulti = 2.0;
