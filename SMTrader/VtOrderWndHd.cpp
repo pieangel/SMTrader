@@ -1449,7 +1449,7 @@ void VtOrderWndHd::OnBnClickedBtnGetAcntInfo()
 	{
 		VtAccount* acnt = (VtAccount*)_ComboAcnt.GetItemDataPtr(curSel);
 		if (acnt)
-			acnt->GetAccountInfoNFee(1);
+			acnt->GetAccountProfitLossDirect();
 	}
 }
 

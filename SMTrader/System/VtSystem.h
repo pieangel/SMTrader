@@ -157,6 +157,47 @@ public:
 	/// </summary>
 	bool LiqByEndTime();
 	bool LiqByEndTime(int index);
+
+	bool CheckEntranceByBandForBuy();
+	bool CheckEntranceByBandForSell();
+	bool CheckEntranceByOpenForBuy();
+	bool CheckEntranceByOpenForSell();
+
+	bool CheckEntranceByBandForBuy(size_t index);
+	bool CheckEntranceByBandForSell(size_t index);
+	bool CheckEntranceByOpenForBuy(size_t index);
+	bool CheckEntranceByOpenForSell(size_t index);
+
+	virtual bool CheckEntranceForBuyForKospi();
+	virtual bool CheckEntranceForSellForKospi();
+	virtual bool CheckLiqForSellForKospi();
+	virtual bool CheckLiqForBuyForKospi();
+
+	virtual bool CheckEntranceForBuyForKospi(size_t index);
+	virtual bool CheckEntranceForSellForKospi(size_t index);
+	virtual bool CheckLiqForSellForKospi(size_t index);
+	virtual bool CheckLiqForBuyForKospi(size_t index);
+
+	virtual bool CheckEntranceForBuyForKosdaq();
+	virtual bool CheckEntranceForSellForKosdaq();
+	virtual bool CheckLiqForSellForKosdaq();
+	virtual bool CheckLiqForBuyForKosdaq();
+
+	virtual bool CheckEntranceForBuyForKosdaq(size_t index);
+	virtual bool CheckEntranceForSellForKosdaq(size_t index);
+	virtual bool CheckLiqForSellForKosdaq(size_t index);
+	virtual bool CheckLiqForBuyForKosdaq(size_t index);
+
+	virtual bool CheckEntranceForBuyForUsd();
+	virtual bool CheckEntranceForSellForUsd();
+	virtual bool CheckLiqForSellForUsd();
+	virtual bool CheckLiqForBuyForUsd();
+
+	virtual bool CheckEntranceForBuyForUsd(size_t index);
+	virtual bool CheckEntranceForSellForUsd(size_t index);
+	virtual bool CheckLiqForSellForUsd(size_t index);
+	virtual bool CheckLiqForBuyForUsd(size_t index);
+
 	int EntryToday() const { return _EntryToday; }
 	void EntryToday(int val) { _EntryToday = val; }
 	VtSymbol* Symbol() const { return _Symbol; }
@@ -199,6 +240,10 @@ public:
 	void FilterMulti(double val) { _FilterMulti = val; }
 	int LastEntryTime() const { return _LastEntryTime; }
 	void LastEntryTime(int val) { _LastEntryTime = val; }
+	bool EnableByOpen() const { return _EnableByOpen; }
+	void EnableByOpen(bool val) { _EnableByOpen = val; }
+	bool EnableByBand() const { return _EnableByBand; }
+	void EnableByBand(bool val) { _EnableByBand = val; }
 protected:
 	int FindDateIndex(double date, std::vector<double>& dateArray);
 	void PutOrder(int price, VtPositionType position, VtPriceType priceType = VtPriceType::Price);
@@ -392,5 +437,7 @@ protected:
 	double _FilterMulti = 3.0;
 	int _LastEntryTime = 0;
 	bool _ArgsLoaded = false;
+	bool _EnableByOpen = false;
+	bool _EnableByBand = false;
 };
 

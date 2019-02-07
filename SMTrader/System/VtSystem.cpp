@@ -21,6 +21,9 @@
 #include "../VtRealtimeRegisterManager.h"
 #include "../VtFundManager.h"
 #include "../VtSymbolManager.h"
+#include "../VtProductCategoryManager.h"
+#include "../VtUsdStrategyConfigDlg.h"
+
 
 VtSystem::VtSystem()
 {
@@ -153,6 +156,3498 @@ bool VtSystem::LiqByEndTime(int index)
 	}
 
 	return false;
+}
+
+bool VtSystem::CheckEntranceByBandForBuy()
+{
+	if (!_Symbol)
+		return false;
+
+	std::string code = _Symbol->ShortCode;
+	std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::DAY, 1);
+	std::vector<double>& highArray = _RefDataMap[dataKey]->GetDataArray(_T("high"));
+	std::vector<double>& lowArray = _RefDataMap[dataKey]->GetDataArray(_T("low"));
+
+	double preDayHigh = highArray[highArray.size() - 2];
+	double preDayLow = lowArray[lowArray.size() - 2];
+	double _PreHL = preDayHigh - preDayLow;
+	// 전날 변동폭이 클때는 진입하지 않는다.
+	if (_FilterMulti > _PreHL)
+		return false;
+	double _Band = _PreHL * _BandMulti;
+	if (_Symbol->Quote.close > _Symbol->Quote.open + _Band)
+		return true;
+	else
+		return false;
+}
+
+bool VtSystem::CheckEntranceByBandForBuy(size_t index)
+{
+	if (!_Symbol || index < 0 || index >= ChartDataSize)
+		return false;
+
+	std::string code = _Symbol->ShortCode;
+	std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::DAY, 1);
+	std::vector<double>& dayDateArray = _RefDataMap[dataKey]->GetDataArray(_T("date"));
+	std::vector<double>& highArray = _RefDataMap[dataKey]->GetDataArray(_T("high"));
+	std::vector<double>& lowArray = _RefDataMap[dataKey]->GetDataArray(_T("low"));
+
+	dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+	std::vector<double>& maindateArray = _RefDataMap[dataKey]->GetDataArray(_T("date"));
+	int curDayIndex = FindDateIndex(maindateArray[index], dayDateArray);
+	if (curDayIndex == 0)
+		return false;
+
+	double preDayHigh = highArray[curDayIndex - 1];
+	double preDayLow = lowArray[curDayIndex - 1];
+	double _PreHL = preDayHigh - preDayLow;
+	// 전날 변동폭이 클때는 진입하지 않는다.
+	if (_FilterMulti > _PreHL)
+		return false;
+	double _Band = _PreHL * _BandMulti;
+	if (_Symbol->Quote.close > _Symbol->Quote.open + _Band)
+		return true;
+	else
+		return false;
+}
+
+bool VtSystem::CheckEntranceByBandForSell()
+{
+	if (!_Symbol)
+		return false;
+
+	std::string code = _Symbol->ShortCode;
+	std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::DAY, 1);
+	std::vector<double>& highArray = _RefDataMap[dataKey]->GetDataArray(_T("high"));
+	std::vector<double>& lowArray = _RefDataMap[dataKey]->GetDataArray(_T("low"));
+
+	double preDayHigh = highArray[highArray.size() - 2];
+	double preDayLow = lowArray[lowArray.size() - 2];
+	double _PreHL = preDayHigh - preDayLow;
+	// 전날 변동폭이 클때는 진입하지 않는다.
+	if (_FilterMulti > _PreHL)
+		return false;
+	double _Band = _PreHL * _BandMulti;
+	if (_Symbol->Quote.close < _Symbol->Quote.open - _Band)
+		return true;
+	else
+		return false;
+}
+
+bool VtSystem::CheckEntranceByBandForSell(size_t index)
+{
+	if (!_Symbol || index < 0 || index >= ChartDataSize)
+		return false;
+
+	std::string code = _Symbol->ShortCode;
+	std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::DAY, 1);
+	std::vector<double>& dayDateArray = _RefDataMap[dataKey]->GetDataArray(_T("date"));
+	std::vector<double>& highArray = _RefDataMap[dataKey]->GetDataArray(_T("high"));
+	std::vector<double>& lowArray = _RefDataMap[dataKey]->GetDataArray(_T("low"));
+
+	dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+	std::vector<double>& maindateArray = _RefDataMap[dataKey]->GetDataArray(_T("date"));
+	int curDayIndex = FindDateIndex(maindateArray[index], dayDateArray);
+	if (curDayIndex == 0)
+		return false;
+
+	double preDayHigh = highArray[curDayIndex - 1];
+	double preDayLow = lowArray[curDayIndex - 1];
+	double _PreHL = preDayHigh - preDayLow;
+	// 전날 변동폭이 클때는 진입하지 않는다.
+	if (_FilterMulti > _PreHL)
+		return false;
+	double _Band = _PreHL * _BandMulti;
+	if (_Symbol->Quote.close < _Symbol->Quote.open - _Band)
+		return true;
+	else
+		return false;
+}
+
+bool VtSystem::CheckEntranceByOpenForBuy()
+{
+	if (!_Symbol)
+		return false;
+
+	return  _Symbol->Quote.close > _Symbol->Quote.open ? true : false;
+}
+
+bool VtSystem::CheckEntranceByOpenForBuy(size_t index)
+{
+	if (!_Symbol || index < 0 || index >= ChartDataSize)
+		return false;
+
+	std::string code = _Symbol->ShortCode;
+	std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::DAY, 1);
+	std::vector<double>& dayDateArray = _RefDataMap[dataKey]->GetDataArray(_T("date"));
+	std::vector<double>& openArray = _RefDataMap[dataKey]->GetDataArray(_T("open"));
+	std::vector<double>& closeArray = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+	dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+	std::vector<double>& maindateArray = _RefDataMap[dataKey]->GetDataArray(_T("date"));
+	int curDayIndex = FindDateIndex(maindateArray[index], dayDateArray);
+
+	dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::DAY, 1);
+	if (openArray.size() == 0 || closeArray.size() == 0)
+		return false;
+
+	return  closeArray[curDayIndex] > openArray[curDayIndex] ? true : false;
+}
+
+bool VtSystem::CheckEntranceByOpenForSell()
+{
+	if (!_Symbol)
+		return false;
+
+	return  _Symbol->Quote.close < _Symbol->Quote.open ? true : false;
+}
+
+bool VtSystem::CheckEntranceByOpenForSell(size_t index)
+{
+	if (!_Symbol || index < 0 || index >= ChartDataSize)
+		return false;
+
+	std::string code = _Symbol->ShortCode;
+	std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::DAY, 1);
+	std::vector<double>& dayDateArray = _RefDataMap[dataKey]->GetDataArray(_T("date"));
+	std::vector<double>& openArray = _RefDataMap[dataKey]->GetDataArray(_T("open"));
+	std::vector<double>& closeArray = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+	dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+	std::vector<double>& maindateArray = _RefDataMap[dataKey]->GetDataArray(_T("date"));
+	int curDayIndex = FindDateIndex(maindateArray[index], dayDateArray);
+
+	dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::DAY, 1);
+	if (openArray.size() == 0 || closeArray.size() == 0)
+		return false;
+
+	return  closeArray[curDayIndex] < openArray[curDayIndex] ? true : false;
+}
+
+bool VtSystem::CheckEntranceForBuyForKospi()
+{
+	VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();
+	std::vector<bool> argCond;
+	// 매수 진입
+	VtSystemArgGroup* argGrp = GetArgGroup(_T("매수진입"));
+	if (argGrp) {
+		std::vector<VtSystemArg>& argVec = argGrp->GetArgVec();
+		for (auto it = argVec.begin(); it != argVec.end(); ++it) {
+			VtSystemArg& arg = *it;
+			if (arg.Enable) {
+				if (arg.Name.compare(_T("Kbs-Kas")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTQ"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kas = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTQ"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kbs = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					double param = std::stod(arg.sValue);
+
+					if (Kbs.back() - Kas.back() > param) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Kbc>Kac")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kbc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					double param = std::stod(arg.sValue);
+
+					if (Kbc.back()*param > Kac.back()) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Qbc>Qac")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("106F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Qac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Qbc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					double param = std::stod(arg.sValue);
+
+					if (Qbc.back()*param > Qac.back()) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Uac>Ubc")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("175F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Uac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Ubc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					double param = std::stod(arg.sValue);
+
+					if (Uac.back()*param > Ubc.back()) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+			}
+		}
+	}
+
+	if (argCond.size() == 0)
+		return false;
+
+	// 하나의 조건이라도 거짓이면 신호 없음. 모두가 참이면 매수 반환
+	auto it = std::find(argCond.begin(), argCond.end(), false);
+	if (it != argCond.end())
+		return false;
+	else
+		return true;
+
+}
+
+bool VtSystem::CheckEntranceForBuyForKospi(size_t index)
+{
+	if (index < 0 || index >= ChartDataSize)
+		return false;
+
+	// 밴드에 의한 조건을 먼저 확인한다.
+	if (!CheckEntranceByBandForBuy())
+		return false;
+
+	VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();
+	std::vector<bool> argCond;
+	// 매수 진입
+	VtSystemArgGroup* argGrp = GetArgGroup(_T("매수진입"));
+	if (argGrp) {
+		std::vector<VtSystemArg>& argVec = argGrp->GetArgVec();
+		for (auto it = argVec.begin(); it != argVec.end(); ++it) {
+			VtSystemArg& arg = *it;
+			if (arg.Enable) {
+				if (arg.Name.compare(_T("Kbs-Kas")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTQ"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kas = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Kas.size() == 0)
+						continue;
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTQ"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kbs = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Kbs.size() == 0)
+						continue;
+
+					if (_ShowRealtime && _UsdCfgDlg) {
+						//_UsdCfgDlg->OnHogaCount(lastUac, lastUbc);
+						double ratio = Kbs[index] - Kas[index];
+						CString value;
+						value.Format(_T("%.2f"), ratio);
+						_UsdCfgDlg->RefreshRealTimeValue(0, arg.Name, value);
+					}
+
+					double param = std::stod(arg.sValue);
+
+					if (Kbs[index] - Kas[index] > param) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Kbc>Kac")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Kac.size() == 0)
+						continue;
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kbc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Kbc.size() == 0)
+						continue;
+
+					if (_ShowRealtime && _UsdCfgDlg) {
+						//_UsdCfgDlg->OnHogaCount(lastUac, lastUbc);
+						double ratio = Kac[index] / Kbc[index];
+						CString value;
+						value.Format(_T("%.2f"), ratio);
+						_UsdCfgDlg->RefreshRealTimeValue(0, arg.Name, value);
+					}
+
+					double param = std::stod(arg.sValue);
+
+					if (Kbc[index] * param > Kac[index]) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Qbc>Qac")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("106F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Qac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Qac.size() == 0)
+						continue;
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Qbc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Qbc.size() == 0)
+						continue;
+					if (_ShowRealtime && _UsdCfgDlg) {
+						//_UsdCfgDlg->OnHogaCount(lastUac, lastUbc);
+						double ratio = Qac[index] / Qbc[index];
+						CString value;
+						value.Format(_T("%.2f"), ratio);
+						_UsdCfgDlg->RefreshRealTimeValue(0, arg.Name, value);
+					}
+
+					double param = std::stod(arg.sValue);
+
+					if (Qbc[index] * param > Qac[index]) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Uac>Ubc")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("175F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Uac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Uac.size() == 0)
+						continue;;
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Ubc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Ubc.size() == 0)
+						continue;
+
+					if (_ShowRealtime && _UsdCfgDlg) {
+						//_UsdCfgDlg->OnHogaCount(lastUac, lastUbc);
+						double ratio = Uac[index] / Ubc[index];
+						CString value;
+						value.Format(_T("%.2f"), ratio);
+						_UsdCfgDlg->RefreshRealTimeValue(0, arg.Name, value);
+					}
+
+					double param = std::stod(arg.sValue);
+
+					if (Uac[index] * param > Ubc[index]) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+			}
+		}
+	}
+
+	if (argCond.size() == 0)
+		return false;
+
+	// 하나의 조건이라도 거짓이면 신호 없음. 모두가 참이면 매수 반환
+	auto it = std::find(argCond.begin(), argCond.end(), false);
+	if (it != argCond.end())
+		return false;
+	else
+		return true;
+}
+
+bool VtSystem::CheckEntranceForSellForKospi()
+{
+	// 밴드에 의한 조건을 먼저 확인한다.
+	if (!CheckEntranceByBandForSell())
+		return false;
+
+	VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();
+	std::vector<bool> argCond;
+	// 매수 진입
+	VtSystemArgGroup* argGrp = GetArgGroup(_T("매도진입"));
+	if (argGrp) {
+		std::vector<VtSystemArg>& argVec = argGrp->GetArgVec();
+		for (auto it = argVec.begin(); it != argVec.end(); ++it) {
+			VtSystemArg& arg = *it;
+			if (arg.Enable) {
+				if (arg.Name.compare(_T("Kas-Kbs")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTQ"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kas = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTQ"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kbs = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					double param = std::stod(arg.sValue);
+
+					if (Kas.back() - Kbs.back() > param) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Kac>Kbc")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kbc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					double param = std::stod(arg.sValue);
+
+					if (Kac.back()*param - Kbc.back()) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Qac>Qbc")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("106F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Qac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Qbc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					double param = std::stod(arg.sValue);
+
+					if (Qac.back()*param > Qbc.back()) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Ubc>Uac")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("175F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Uac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Ubc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					double param = std::stod(arg.sValue);
+
+					if (Ubc.back()*param > Uac.back()) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+			}
+		}
+	}
+
+	if (argCond.size() == 0)
+		return false;
+
+	// 하나의 조건이라도 거짓이면 신호 없음. 모두가 참이면 매수 반환
+	auto it = std::find(argCond.begin(), argCond.end(), false);
+	if (it != argCond.end())
+		return false;
+	else
+		return true;
+
+}
+
+bool VtSystem::CheckEntranceForSellForKospi(size_t index)
+{
+	if (index < 0 || index >= ChartDataSize)
+		return false;
+
+	// 밴드에 의한 조건을 먼저 확인한다.
+	if (!CheckEntranceByBandForSell())
+		return false;
+
+	VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();
+	std::vector<bool> argCond;
+	// 매수 진입
+	VtSystemArgGroup* argGrp = GetArgGroup(_T("매도진입"));
+	if (argGrp) {
+		std::vector<VtSystemArg>& argVec = argGrp->GetArgVec();
+		for (auto it = argVec.begin(); it != argVec.end(); ++it) {
+			VtSystemArg& arg = *it;
+			if (arg.Enable) {
+				if (arg.Name.compare(_T("Kas-Kbs")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTQ"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kas = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Kas.size() == 0)
+						continue;
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTQ"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kbs = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Kbs.size() == 0)
+						continue;
+
+					if (_ShowRealtime && _UsdCfgDlg) {
+						//_UsdCfgDlg->OnHogaCount(lastUac, lastUbc);
+						double ratio = Kas[index] - Kbs[index];
+						CString value;
+						value.Format(_T("%.2f"), ratio);
+						_UsdCfgDlg->RefreshRealTimeValue(0, arg.Name, value);
+					}
+
+					double param = std::stod(arg.sValue);
+
+					if (Kas[index] - Kbs[index] > param) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Kac>Kbc")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Kac.size() == 0)
+						continue;
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kbc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Kbc.size() == 0)
+						continue;
+
+					if (_ShowRealtime && _UsdCfgDlg) {
+						//_UsdCfgDlg->OnHogaCount(lastUac, lastUbc);
+						double ratio = Kbc[index] / Kac[index];
+						CString value;
+						value.Format(_T("%.2f"), ratio);
+						_UsdCfgDlg->RefreshRealTimeValue(0, arg.Name, value);
+					}
+
+					double param = std::stod(arg.sValue);
+
+					if (Kac[index] * param - Kbc[index]) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Qac>Qbc")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("106F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Qac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Qac.size() == 0)
+						continue;
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Qbc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Qbc.size() == 0)
+						continue;
+
+					if (_ShowRealtime && _UsdCfgDlg) {
+						//_UsdCfgDlg->OnHogaCount(lastUac, lastUbc);
+						double ratio = Qbc[index] / Qac[index];
+						CString value;
+						value.Format(_T("%.2f"), ratio);
+						_UsdCfgDlg->RefreshRealTimeValue(0, arg.Name, value);
+					}
+
+					double param = std::stod(arg.sValue);
+
+					if (Qac[index] * param > Qbc[index]) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Ubc>Uac")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("175F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Uac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Uac.size() == 0)
+						continue;
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Ubc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Ubc.size() == 0)
+						continue;
+
+					if (_ShowRealtime && _UsdCfgDlg) {
+						//_UsdCfgDlg->OnHogaCount(lastUac, lastUbc);
+						double ratio = Uac[index] / Ubc[index];
+						CString value;
+						value.Format(_T("%.2f"), ratio);
+						_UsdCfgDlg->RefreshRealTimeValue(0, arg.Name, value);
+					}
+
+					double param = std::stod(arg.sValue);
+
+					if (Ubc[index] * param > Uac[index]) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+			}
+		}
+	}
+
+	if (argCond.size() == 0)
+		return false;
+
+	// 하나의 조건이라도 거짓이면 신호 없음. 모두가 참이면 매수 반환
+	auto it = std::find(argCond.begin(), argCond.end(), false);
+	if (it != argCond.end())
+		return false;
+	else
+		return true;
+
+}
+
+bool VtSystem::CheckLiqForSellForKospi()
+{
+	VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();
+	std::vector<bool> argCond;
+	// 매수 진입
+	VtSystemArgGroup* argGrp = GetArgGroup(_T("매도청산"));
+	if (argGrp) {
+		std::vector<VtSystemArg>& argVec = argGrp->GetArgVec();
+		for (auto it = argVec.begin(); it != argVec.end(); ++it) {
+			VtSystemArg& arg = *it;
+			if (arg.Enable) {
+				if (arg.Name.compare(_T("Kbs-Kas")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTQ"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kas = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTQ"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kbs = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					double param = std::stod(arg.sValue);
+
+					if (Kbs.back() - Kas.back() > param) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Kbc>Kac")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kbc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					double param = std::stod(arg.sValue);
+
+					if (Kbc.back()*param > Kac.back()) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Qbc>Qac")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("106F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Qac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Qbc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					double param = std::stod(arg.sValue);
+
+					if (Qbc.back()*param > Qac.back()) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Uac>Ubc")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("175F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Uac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Ubc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					double param = std::stod(arg.sValue);
+
+					if (Uac.back()*param > Ubc.back()) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+			}
+		}
+	}
+
+	if (argCond.size() > 0) {
+		bool preCond = true;
+		// 하나의 조건이라도 거짓이면 거짓
+		auto it = std::find(argCond.begin(), argCond.end(), false);
+		if (it != argCond.end())
+			preCond = false;
+		return preCond && CheckAtrLiqForSell() ? true : false;
+	}
+	else {  // ATR 단독 청산 조건
+		return CheckAtrLiqForSell();
+	}
+}
+
+bool VtSystem::CheckLiqForSellForKospi(size_t index)
+{
+	if (index < 0 || index >= ChartDataSize)
+		return false;
+
+	VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();
+	std::vector<bool> argCond;
+	// 매수 진입
+	VtSystemArgGroup* argGrp = GetArgGroup(_T("매도청산"));
+	if (argGrp) {
+		std::vector<VtSystemArg>& argVec = argGrp->GetArgVec();
+		for (auto it = argVec.begin(); it != argVec.end(); ++it) {
+			VtSystemArg& arg = *it;
+			if (arg.Enable) {
+				if (arg.Name.compare(_T("Kbs-Kas")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTQ"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kas = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Kas.size() == 0)
+						continue;
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTQ"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kbs = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Kbs.size() == 0)
+						continue;
+
+					if (_ShowRealtime && _UsdCfgDlg) {
+						//_UsdCfgDlg->OnHogaCount(lastUac, lastUbc);
+						double ratio = Kbs[index] - Kas[index];
+						CString value;
+						value.Format(_T("%.2f"), ratio);
+						_UsdCfgDlg->RefreshRealTimeValue(1, arg.Name, value);
+					}
+
+					double param = std::stod(arg.sValue);
+
+					if (Kbs[index] - Kas[index] > param) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Kbc>Kac")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Kac.size() == 0)
+						continue;
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kbc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Kbc.size() == 0)
+						continue;
+
+					if (_ShowRealtime && _UsdCfgDlg) {
+						//_UsdCfgDlg->OnHogaCount(lastUac, lastUbc);
+						double ratio = Kac[index] / Kbc[index];
+						CString value;
+						value.Format(_T("%.2f"), ratio);
+						_UsdCfgDlg->RefreshRealTimeValue(1, arg.Name, value);
+					}
+
+					double param = std::stod(arg.sValue);
+
+					if (Kbc[index] * param > Kac[index]) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Qbc>Qac")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("106F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Qac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Qac.size() == 0)
+						continue;
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Qbc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Qbc.size() == 0)
+						continue;
+
+					if (_ShowRealtime && _UsdCfgDlg) {
+						//_UsdCfgDlg->OnHogaCount(lastUac, lastUbc);
+						double ratio = Qac[index] / Qbc[index];
+						CString value;
+						value.Format(_T("%.2f"), ratio);
+						_UsdCfgDlg->RefreshRealTimeValue(1, arg.Name, value);
+					}
+
+					double param = std::stod(arg.sValue);
+
+					if (Qbc[index] * param > Qac[index]) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Uac>Ubc")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("175F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Uac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Uac.size() == 0)
+						continue;
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Ubc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Ubc.size() == 0)
+						continue;
+
+					if (_ShowRealtime && _UsdCfgDlg) {
+						//_UsdCfgDlg->OnHogaCount(lastUac, lastUbc);
+						double ratio = Ubc[index] / Uac[index];
+						CString value;
+						value.Format(_T("%.2f"), ratio);
+						_UsdCfgDlg->RefreshRealTimeValue(1, arg.Name, value);
+					}
+
+					double param = std::stod(arg.sValue);
+
+					if (Uac[index] * param > Ubc[index]) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+			}
+		}
+	}
+
+	if (argCond.size() > 0) {
+		bool preCond = true;
+		// 하나의 조건이라도 거짓이면 거짓
+		auto it = std::find(argCond.begin(), argCond.end(), false);
+		if (it != argCond.end())
+			preCond = false;
+		return preCond && CheckAtrLiqForSell() ? true : false;
+	}
+	else {  // ATR 단독 청산 조건
+		return CheckAtrLiqForSell();
+	}
+}
+
+bool VtSystem::CheckLiqForBuyForKospi()
+{
+	VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();
+	std::vector<bool> argCond;
+	// 매수 진입
+	VtSystemArgGroup* argGrp = GetArgGroup(_T("매수청산"));
+	if (argGrp) {
+		std::vector<VtSystemArg>& argVec = argGrp->GetArgVec();
+		for (auto it = argVec.begin(); it != argVec.end(); ++it) {
+			VtSystemArg& arg = *it;
+			if (arg.Enable) {
+				if (arg.Name.compare(_T("Kas-Kbs")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTQ"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kas = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTQ"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kbs = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					double param = std::stod(arg.sValue);
+
+					if (Kas.back() - Kbs.back() > param) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Kac>Kbc")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kbc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					double param = std::stod(arg.sValue);
+
+					if (Kac.back()*param - Kbc.back()) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Qac>Qbc")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("106F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Qac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Qbc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					double param = std::stod(arg.sValue);
+
+					if (Qac.back()*param > Qbc.back()) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Ubc>Uac")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("175F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Uac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Ubc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					double param = std::stod(arg.sValue);
+
+					if (Ubc.back()*param > Uac.back()) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+			}
+		}
+	}
+
+	if (argCond.size() > 0) {
+		bool preCond = true;
+		// 하나의 조건이라도 거짓이면 거짓
+		auto it = std::find(argCond.begin(), argCond.end(), false);
+		if (it != argCond.end())
+			preCond = false;
+		return preCond && CheckAtrLiqForBuy() ? true : false;
+	}
+	else {  // ATR 단독 청산 조건
+		return CheckAtrLiqForBuy();
+	}
+
+}
+
+bool VtSystem::CheckLiqForBuyForKospi(size_t index)
+{
+	if (index < 0 || index >= ChartDataSize)
+		return false;
+
+	VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();
+	std::vector<bool> argCond;
+	// 매수 진입
+	VtSystemArgGroup* argGrp = GetArgGroup(_T("매수청산"));
+	if (argGrp) {
+		std::vector<VtSystemArg>& argVec = argGrp->GetArgVec();
+		for (auto it = argVec.begin(); it != argVec.end(); ++it) {
+			VtSystemArg& arg = *it;
+			if (arg.Enable) {
+				if (arg.Name.compare(_T("Kas-Kbs")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTQ"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kas = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Kas.size() == 0)
+						continue;
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTQ"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kbs = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Kbs.size() == 0)
+						continue;
+
+					if (_ShowRealtime && _UsdCfgDlg) {
+						//_UsdCfgDlg->OnHogaCount(lastUac, lastUbc);
+						double ratio = Kas[index] - Kbs[index];
+						CString value;
+						value.Format(_T("%.2f"), ratio);
+						_UsdCfgDlg->RefreshRealTimeValue(1, arg.Name, value);
+					}
+
+					double param = std::stod(arg.sValue);
+
+					if (Kas[index] - Kbs[index] > param) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Kac>Kbc")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Kac.size() == 0)
+						continue;
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kbc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Kbc.size() == 0)
+						continue;
+
+					if (_ShowRealtime && _UsdCfgDlg) {
+						//_UsdCfgDlg->OnHogaCount(lastUac, lastUbc);
+						double ratio = Kbc[index] / Kac[index];
+						CString value;
+						value.Format(_T("%.2f"), ratio);
+						_UsdCfgDlg->RefreshRealTimeValue(1, arg.Name, value);
+					}
+
+					double param = std::stod(arg.sValue);
+
+					if (Kac[index] * param - Kbc[index]) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Qac>Qbc")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("106F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Qac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Qac.size() == 0)
+						continue;
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Qbc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Qbc.size() == 0)
+						continue;
+
+					if (_ShowRealtime && _UsdCfgDlg) {
+						//_UsdCfgDlg->OnHogaCount(lastUac, lastUbc);
+						double ratio = Qbc[index] / Qac[index];
+						CString value;
+						value.Format(_T("%.2f"), ratio);
+						_UsdCfgDlg->RefreshRealTimeValue(1, arg.Name, value);
+					}
+
+					double param = std::stod(arg.sValue);
+
+					if (Qac[index] * param > Qbc[index]) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Ubc>Uac")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("175F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Uac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Uac.size() == 0)
+						continue;
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Ubc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Ubc.size() == 0)
+						continue;
+
+					if (_ShowRealtime && _UsdCfgDlg) {
+						//_UsdCfgDlg->OnHogaCount(lastUac, lastUbc);
+						double ratio = Uac[index] / Ubc[index];
+						CString value;
+						value.Format(_T("%.2f"), ratio);
+						_UsdCfgDlg->RefreshRealTimeValue(1, arg.Name, value);
+					}
+
+					double param = std::stod(arg.sValue);
+
+					if (Ubc[index] * param > Uac[index]) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+			}
+		}
+	}
+
+	if (argCond.size() > 0) {
+		bool preCond = true;
+		// 하나의 조건이라도 거짓이면 거짓
+		auto it = std::find(argCond.begin(), argCond.end(), false);
+		if (it != argCond.end())
+			preCond = false;
+		return preCond && CheckAtrLiqForBuy() ? true : false;
+	}
+	else {  // ATR 단독 청산 조건
+		return CheckAtrLiqForBuy();
+	}
+}
+
+
+bool VtSystem::CheckEntranceForBuyForKosdaq()
+{
+	// 밴드에 의한 조건을 먼저 확인한다.
+	if (!CheckEntranceByBandForBuy())
+		return false;
+
+	VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();
+	std::vector<bool> argCond;
+	// 매수 진입
+	VtSystemArgGroup* argGrp = GetArgGroup(_T("매수진입"));
+	if (argGrp) {
+		std::vector<VtSystemArg>& argVec = argGrp->GetArgVec();
+		for (auto it = argVec.begin(); it != argVec.end(); ++it) {
+			VtSystemArg& arg = *it;
+			if (arg.Enable) {
+				if (arg.Name.compare(_T("Qbc>Qac")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("106F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Qac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Qbc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					double param = std::stod(arg.sValue);
+
+					if (Qbc.back()*param > Qac.back()) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Qbs>Qas")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("106F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTQ"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Qas = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTQ"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Qbs = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					double param = std::stod(arg.sValue);
+
+					if (Qbs.back()*param > Qas.back()) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Kbc>Kac")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kbc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					double param = std::stod(arg.sValue);
+
+					if (Kbc.back()*param > Kac.back()) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Uac>Ubc")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("175F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Uac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Ubc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					double param = std::stod(arg.sValue);
+
+					if (Uac.back()*param > Ubc.back()) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+			}
+		}
+	}
+
+	if (argCond.size() == 0)
+		return false;
+
+	// 하나의 조건이라도 거짓이면 신호 없음. 모두가 참이면 매수 반환
+	auto it = std::find(argCond.begin(), argCond.end(), false);
+	if (it != argCond.end())
+		return false;
+	else
+		return true;
+}
+
+bool VtSystem::CheckEntranceForSellForKosdaq()
+{
+	// 밴드에 의한 조건을 먼저 확인한다.
+	if (!CheckEntranceByBandForSell())
+		return false;
+
+	VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();
+	std::vector<bool> argCond;
+	// 매수 진입
+	VtSystemArgGroup* argGrp = GetArgGroup(_T("매도진입"));
+	if (argGrp) {
+		std::vector<VtSystemArg>& argVec = argGrp->GetArgVec();
+		for (auto it = argVec.begin(); it != argVec.end(); ++it) {
+			VtSystemArg& arg = *it;
+			if (arg.Enable) {
+				if (arg.Name.compare(_T("Qac>Qbc")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("106F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Qac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Qbc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					double param = std::stod(arg.sValue);
+
+					if (Qac.back()*param > Qbc.back()) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Qas>Qbs")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("106F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTQ"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Qas = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTQ"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Qbs = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					double param = std::stod(arg.sValue);
+
+					if (Qas.back()*param > Qbs.back()) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Kac>Kbc")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kbc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					double param = std::stod(arg.sValue);
+
+					if (Kac.back()*param - Kbc.back()) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Ubc>Uac")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("175F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Uac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Ubc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					double param = std::stod(arg.sValue);
+
+					if (Ubc.back()*param > Uac.back()) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+			}
+		}
+	}
+
+	if (argCond.size() == 0)
+		return false;
+
+	// 하나의 조건이라도 거짓이면 신호 없음. 모두가 참이면 매수 반환
+	auto it = std::find(argCond.begin(), argCond.end(), false);
+	if (it != argCond.end())
+		return false;
+	else
+		return true;
+}
+
+bool VtSystem::CheckLiqForBuyForKosdaq()
+{
+	VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();
+	std::vector<bool> argCond;
+	// 매수 진입
+	VtSystemArgGroup* argGrp = GetArgGroup(_T("매수청산"));
+	if (argGrp) {
+		std::vector<VtSystemArg>& argVec = argGrp->GetArgVec();
+		for (auto it = argVec.begin(); it != argVec.end(); ++it) {
+			VtSystemArg& arg = *it;
+			if (arg.Enable) {
+				if (arg.Name.compare(_T("Qac>Qbc")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("106F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Qac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Qbc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					double param = std::stod(arg.sValue);
+
+					if (Qac.back()*param > Qbc.back()) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Qas>Qbs")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("106F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTQ"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Qas = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTQ"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Qbs = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					double param = std::stod(arg.sValue);
+
+					if (Qas.back()*param > Qbs.back()) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Kac>Kbc")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kbc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					double param = std::stod(arg.sValue);
+
+					if (Kac.back()*param - Kbc.back()) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Ubc>Uac")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("175F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Uac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Ubc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					double param = std::stod(arg.sValue);
+
+					if (Ubc.back()*param > Uac.back()) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+			}
+		}
+	}
+
+	if (argCond.size() > 0) {
+		bool preCond = true;
+		// 하나의 조건이라도 거짓이면 거짓
+		auto it = std::find(argCond.begin(), argCond.end(), false);
+		if (it != argCond.end())
+			preCond = false;
+		return preCond && CheckAtrLiqForBuy() ? true : false;
+	}
+	else {  // ATR 단독 청산 조건
+		return CheckAtrLiqForBuy();
+	}
+}
+
+bool VtSystem::CheckEntranceForBuyForUsd()
+{
+	// 밴드에 의한 조건을 먼저 확인한다.
+	if (!CheckEntranceByBandForBuy())
+		return false;
+
+	VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();
+	std::vector<bool> argCond;
+	// 매수 진입
+	VtSystemArgGroup* argGrp = GetArgGroup(_T("매수진입"));
+	if (argGrp) {
+		std::vector<VtSystemArg>& argVec = argGrp->GetArgVec();
+		for (auto it = argVec.begin(); it != argVec.end(); ++it) {
+			VtSystemArg& arg = *it;
+			if (arg.Enable) {
+				if (arg.Name.compare(_T("Uac>Ubc")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("175F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Uac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Ubc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					double param = std::stod(arg.sValue);
+
+					if (Uac.back()*param > Ubc.back()) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Uas>Ubs")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("175F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Uas = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Ubs = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					double param = std::stod(arg.sValue);
+
+					if (Uas.back()*param > Ubs.back()) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Kbc>Kac")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kbc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					double param = std::stod(arg.sValue);
+
+					if (Kbc.back()*param > Kac.back()) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Kbs>Kas")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kas = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kbs = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					double param = std::stod(arg.sValue);
+
+					if (Kbs.back()*param > Kas.back()) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+			}
+		}
+	}
+
+	if (argCond.size() == 0)
+		return false;
+
+	// 하나의 조건이라도 거짓이면 신호 없음. 모두가 참이면 매수 반환
+	auto it = std::find(argCond.begin(), argCond.end(), false);
+	if (it != argCond.end())
+		return false;
+	else
+		return true;
+}
+
+bool VtSystem::CheckEntranceForSellForUsd()
+{
+	// 밴드에 의한 조건을 먼저 확인한다.
+	if (!CheckEntranceByBandForSell())
+		return false;
+
+	VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();
+	std::vector<bool> argCond;
+	// 매수 진입
+	VtSystemArgGroup* argGrp = GetArgGroup(_T("매도진입"));
+	if (argGrp) {
+		std::vector<VtSystemArg>& argVec = argGrp->GetArgVec();
+		for (auto it = argVec.begin(); it != argVec.end(); ++it) {
+			VtSystemArg& arg = *it;
+			if (arg.Enable) {
+				if (arg.Name.compare(_T("Ubc>Uac")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("175F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Uac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Ubc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					double param = std::stod(arg.sValue);
+
+					if (Ubc.back()*param > Uac.back()) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Ubs>Uas")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("175F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Uas = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Ubs = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					double param = std::stod(arg.sValue);
+
+					if (Ubs.back()*param > Uas.back()) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Kac>Kbc")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kbc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					double param = std::stod(arg.sValue);
+
+					if (Kac.back()*param - Kbc.back()) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Kas>Kbs")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kas = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kbs = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					double param = std::stod(arg.sValue);
+
+					if (Kas.back()*param - Kbs.back()) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+			}
+		}
+	}
+
+	if (argCond.size() == 0)
+		return false;
+
+	// 하나의 조건이라도 거짓이면 신호 없음. 모두가 참이면 매수 반환
+	auto it = std::find(argCond.begin(), argCond.end(), false);
+	if (it != argCond.end())
+		return false;
+	else
+		return true;
+}
+
+bool VtSystem::CheckLiqForBuyForUsd()
+{
+	VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();
+	std::vector<bool> argCond;
+	// 매수 진입
+	VtSystemArgGroup* argGrp = GetArgGroup(_T("매수청산"));
+	if (argGrp) {
+		std::vector<VtSystemArg>& argVec = argGrp->GetArgVec();
+		for (auto it = argVec.begin(); it != argVec.end(); ++it) {
+			VtSystemArg& arg = *it;
+			if (arg.Enable) {
+				if (arg.Name.compare(_T("Ubc>Uac")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("175F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Uac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Ubc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					double param = std::stod(arg.sValue);
+
+					if (Ubc.back()*param > Uac.back()) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Ubs>Uas")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("175F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Uas = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Ubs = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					double param = std::stod(arg.sValue);
+
+					if (Ubs.back()*param > Uas.back()) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Kac>Kbc")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kbc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					double param = std::stod(arg.sValue);
+
+					if (Kac.back()*param - Kbc.back()) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Kas>Kbs")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kas = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kbs = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					double param = std::stod(arg.sValue);
+
+					if (Kas.back()*param - Kbs.back()) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+			}
+		}
+	}
+
+	if (argCond.size() > 0) {
+		bool preCond = true;
+		// 하나의 조건이라도 거짓이면 거짓
+		auto it = std::find(argCond.begin(), argCond.end(), false);
+		if (it != argCond.end())
+			preCond = false;
+		return preCond && CheckAtrLiqForBuy() ? true : false;
+	}
+	else {  // ATR 단독 청산 조건
+		return CheckAtrLiqForBuy();
+	}
+}
+
+
+bool VtSystem::CheckLiqForSellForUsd()
+{
+	VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();
+	std::vector<bool> argCond;
+	// 매수 진입
+	VtSystemArgGroup* argGrp = GetArgGroup(_T("매도청산"));
+	if (argGrp) {
+		std::vector<VtSystemArg>& argVec = argGrp->GetArgVec();
+		for (auto it = argVec.begin(); it != argVec.end(); ++it) {
+			VtSystemArg& arg = *it;
+			if (arg.Enable) {
+				if (arg.Name.compare(_T("Uac>Ubc")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("175F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Uac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Ubc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					double param = std::stod(arg.sValue);
+
+					if (Uac.back()*param > Ubc.back()) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Uas>Ubs")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("175F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Uas = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Ubs = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					double param = std::stod(arg.sValue);
+
+					if (Uas.back()*param > Ubs.back()) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Kbc>Kac")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kbc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					double param = std::stod(arg.sValue);
+
+					if (Kbc.back()*param > Kac.back()) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Kbs>Kas")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kas = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kbs = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					double param = std::stod(arg.sValue);
+
+					if (Kbs.back()*param > Kas.back()) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+			}
+		}
+	}
+
+	if (argCond.size() > 0) {
+		bool preCond = true;
+		// 하나의 조건이라도 거짓이면 거짓
+		auto it = std::find(argCond.begin(), argCond.end(), false);
+		if (it != argCond.end())
+			preCond = false;
+		return preCond && CheckAtrLiqForSell() ? true : false;
+	}
+	else {  // ATR 단독 청산 조건
+		return CheckAtrLiqForSell();
+	}
+}
+
+
+bool VtSystem::CheckEntranceForBuyForUsd(size_t index)
+{
+	if (index < 0 || index >= ChartDataSize)
+		return false;
+
+	// 밴드에 의한 조건을 먼저 확인한다.
+	if (!CheckEntranceByBandForBuy())
+		return false;
+
+	VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();
+	std::vector<bool> argCond;
+	// 매수 진입
+	VtSystemArgGroup* argGrp = GetArgGroup(_T("매수진입"));
+	if (argGrp) {
+		std::vector<VtSystemArg>& argVec = argGrp->GetArgVec();
+		for (auto it = argVec.begin(); it != argVec.end(); ++it) {
+			VtSystemArg& arg = *it;
+			if (arg.Enable) {
+				if (arg.Name.compare(_T("Uac>Ubc")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("175F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Uac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Uac.size() == 0)
+						continue;;
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Ubc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Ubc.size() == 0)
+						continue;
+
+					if (_ShowRealtime && _UsdCfgDlg) {
+						//_UsdCfgDlg->OnHogaCount(lastUac, lastUbc);
+						double ratio = Uac[index] / Ubc[index];
+						CString value;
+						value.Format(_T("%.2f"), ratio);
+						_UsdCfgDlg->RefreshRealTimeValue(0, arg.Name, value);
+					}
+
+					double param = std::stod(arg.sValue);
+
+					if (Uac[index] * param > Ubc[index]) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Uas>Ubs")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("175F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Uas = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Uas.size() == 0)
+						continue;;
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Ubs = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Ubs.size() == 0)
+						continue;
+
+					if (_ShowRealtime && _UsdCfgDlg) {
+						//_UsdCfgDlg->OnHogaCount(lastUac, lastUbc);
+						double ratio = Uas[index] / Ubs[index];
+						CString value;
+						value.Format(_T("%.2f"), ratio);
+						_UsdCfgDlg->RefreshRealTimeValue(0, arg.Name, value);
+					}
+
+					double param = std::stod(arg.sValue);
+
+					if (Uas[index] * param > Ubs[index]) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Kbc>Kac")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Kac.size() == 0)
+						continue;
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kbc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Kbc.size() == 0)
+						continue;
+
+					if (_ShowRealtime && _UsdCfgDlg) {
+						//_UsdCfgDlg->OnHogaCount(lastUac, lastUbc);
+						double ratio = Kac[index] / Kbc[index];
+						CString value;
+						value.Format(_T("%.2f"), ratio);
+						_UsdCfgDlg->RefreshRealTimeValue(0, arg.Name, value);
+					}
+
+					double param = std::stod(arg.sValue);
+
+					if (Kbc[index] * param > Kac[index]) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Kbs>Kas")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kas = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Kas.size() == 0)
+						continue;
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kbs = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Kbs.size() == 0)
+						continue;
+
+					if (_ShowRealtime && _UsdCfgDlg) {
+						//_UsdCfgDlg->OnHogaCount(lastUac, lastUbc);
+						double ratio = Kas[index] / Kbs[index];
+						CString value;
+						value.Format(_T("%.2f"), ratio);
+						_UsdCfgDlg->RefreshRealTimeValue(0, arg.Name, value);
+					}
+
+					double param = std::stod(arg.sValue);
+
+					if (Kbs[index] * param > Kas[index]) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+			}
+		}
+	}
+
+	if (argCond.size() == 0)
+		return false;
+
+	// 하나의 조건이라도 거짓이면 신호 없음. 모두가 참이면 매수 반환
+	auto it = std::find(argCond.begin(), argCond.end(), false);
+	if (it != argCond.end())
+		return false;
+	else
+		return true;
+}
+
+bool VtSystem::CheckEntranceForSellForUsd(size_t index)
+{
+	if (index < 0 || index >= ChartDataSize)
+		return false;
+
+	// 밴드에 의한 조건을 먼저 확인한다.
+	if (!CheckEntranceByBandForSell())
+		return false;
+
+	VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();
+	std::vector<bool> argCond;
+	// 매수 진입
+	VtSystemArgGroup* argGrp = GetArgGroup(_T("매도진입"));
+	if (argGrp) {
+		std::vector<VtSystemArg>& argVec = argGrp->GetArgVec();
+		for (auto it = argVec.begin(); it != argVec.end(); ++it) {
+			VtSystemArg& arg = *it;
+			if (arg.Enable) {
+				if (arg.Name.compare(_T("Ubc>Uac")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("175F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Uac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Uac.size() == 0)
+						continue;
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Ubc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Ubc.size() == 0)
+						continue;
+
+					if (_ShowRealtime && _UsdCfgDlg) {
+						//_UsdCfgDlg->OnHogaCount(lastUac, lastUbc);
+						double ratio = Uac[index] / Ubc[index];
+						CString value;
+						value.Format(_T("%.2f"), ratio);
+						_UsdCfgDlg->RefreshRealTimeValue(0, arg.Name, value);
+					}
+
+					double param = std::stod(arg.sValue);
+
+					if (Ubc[index] * param > Uac[index]) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Ubs>Uas")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("175F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Uas = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Uas.size() == 0)
+						continue;
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Ubs = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Ubs.size() == 0)
+						continue;
+
+					if (_ShowRealtime && _UsdCfgDlg) {
+						//_UsdCfgDlg->OnHogaCount(lastUac, lastUbc);
+						double ratio = Uas[index] / Ubs[index];
+						CString value;
+						value.Format(_T("%.2f"), ratio);
+						_UsdCfgDlg->RefreshRealTimeValue(0, arg.Name, value);
+					}
+
+					double param = std::stod(arg.sValue);
+
+					if (Ubs[index] * param > Uas[index]) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Kac>Kbc")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Kac.size() == 0)
+						continue;
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kbc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Kbc.size() == 0)
+						continue;
+
+					if (_ShowRealtime && _UsdCfgDlg) {
+						//_UsdCfgDlg->OnHogaCount(lastUac, lastUbc);
+						double ratio = Kbc[index] / Kac[index];
+						CString value;
+						value.Format(_T("%.2f"), ratio);
+						_UsdCfgDlg->RefreshRealTimeValue(0, arg.Name, value);
+					}
+
+					double param = std::stod(arg.sValue);
+
+					if (Kac[index] * param - Kbc[index]) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Kas>Kbs")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kas = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Kas.size() == 0)
+						continue;
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kbs = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Kbs.size() == 0)
+						continue;
+
+					if (_ShowRealtime && _UsdCfgDlg) {
+						//_UsdCfgDlg->OnHogaCount(lastUac, lastUbc);
+						double ratio = Kbs[index] / Kas[index];
+						CString value;
+						value.Format(_T("%.2f"), ratio);
+						_UsdCfgDlg->RefreshRealTimeValue(0, arg.Name, value);
+					}
+
+					double param = std::stod(arg.sValue);
+
+					if (Kas[index] * param - Kbs[index]) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+			}
+		}
+	}
+
+	if (argCond.size() == 0)
+		return false;
+
+	// 하나의 조건이라도 거짓이면 신호 없음. 모두가 참이면 매수 반환
+	auto it = std::find(argCond.begin(), argCond.end(), false);
+	if (it != argCond.end())
+		return false;
+	else
+		return true;
+}
+
+bool VtSystem::CheckLiqForSellForUsd(size_t index)
+{
+	if (index < 0 || index >= ChartDataSize)
+		return false;
+
+	VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();
+	std::vector<bool> argCond;
+	// 매수 진입
+	VtSystemArgGroup* argGrp = GetArgGroup(_T("매도청산"));
+	if (argGrp) {
+		std::vector<VtSystemArg>& argVec = argGrp->GetArgVec();
+		for (auto it = argVec.begin(); it != argVec.end(); ++it) {
+			VtSystemArg& arg = *it;
+			if (arg.Enable) {
+				if (arg.Name.compare(_T("Uac>Ubc")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("175F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Uac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Uac.size() == 0)
+						continue;
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Ubc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Ubc.size() == 0)
+						continue;
+
+					if (_ShowRealtime && _UsdCfgDlg) {
+						//_UsdCfgDlg->OnHogaCount(lastUac, lastUbc);
+						double ratio = Ubc[index] / Uac[index];
+						CString value;
+						value.Format(_T("%.2f"), ratio);
+						_UsdCfgDlg->RefreshRealTimeValue(1, arg.Name, value);
+					}
+
+					double param = std::stod(arg.sValue);
+
+					if (Uac[index] * param > Ubc[index]) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Uas>Ubs")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("175F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Uas = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Uas.size() == 0)
+						continue;
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Ubs = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Ubs.size() == 0)
+						continue;
+
+					if (_ShowRealtime && _UsdCfgDlg) {
+						//_UsdCfgDlg->OnHogaCount(lastUac, lastUbc);
+						double ratio = Ubs[index] / Uas[index];
+						CString value;
+						value.Format(_T("%.2f"), ratio);
+						_UsdCfgDlg->RefreshRealTimeValue(1, arg.Name, value);
+					}
+
+					double param = std::stod(arg.sValue);
+
+					if (Uas[index] * param > Ubs[index]) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Kbc>Kac")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Kac.size() == 0)
+						continue;
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kbc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Kbc.size() == 0)
+						continue;
+
+					if (_ShowRealtime && _UsdCfgDlg) {
+						//_UsdCfgDlg->OnHogaCount(lastUac, lastUbc);
+						double ratio = Kac[index] / Kbc[index];
+						CString value;
+						value.Format(_T("%.2f"), ratio);
+						_UsdCfgDlg->RefreshRealTimeValue(1, arg.Name, value);
+					}
+
+					double param = std::stod(arg.sValue);
+
+					if (Kbc[index] * param > Kac[index]) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Kbs>Kas")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kas = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Kas.size() == 0)
+						continue;
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kbs = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Kbs.size() == 0)
+						continue;
+
+					if (_ShowRealtime && _UsdCfgDlg) {
+						//_UsdCfgDlg->OnHogaCount(lastUac, lastUbc);
+						double ratio = Kas[index] / Kbs[index];
+						CString value;
+						value.Format(_T("%.2f"), ratio);
+						_UsdCfgDlg->RefreshRealTimeValue(1, arg.Name, value);
+					}
+
+					double param = std::stod(arg.sValue);
+
+					if (Kbs[index] * param > Kas[index]) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+			}
+		}
+	}
+
+	if (argCond.size() > 0) {
+		bool preCond = true;
+		// 하나의 조건이라도 거짓이면 거짓
+		auto it = std::find(argCond.begin(), argCond.end(), false);
+		if (it != argCond.end())
+			preCond = false;
+		return preCond && CheckAtrLiqForSell() ? true : false;
+	}
+	else {  // ATR 단독 청산 조건
+		return CheckAtrLiqForSell();
+	}
+}
+
+bool VtSystem::CheckLiqForBuyForUsd(size_t index)
+{
+	if (index < 0 || index >= ChartDataSize)
+		return false;
+
+	VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();
+	std::vector<bool> argCond;
+	// 매수 진입
+	VtSystemArgGroup* argGrp = GetArgGroup(_T("매수청산"));
+	if (argGrp) {
+		std::vector<VtSystemArg>& argVec = argGrp->GetArgVec();
+		for (auto it = argVec.begin(); it != argVec.end(); ++it) {
+			VtSystemArg& arg = *it;
+			if (arg.Enable) {
+				if (arg.Name.compare(_T("Ubc>Uac")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("175F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Uac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Uac.size() == 0)
+						continue;
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Ubc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Ubc.size() == 0)
+						continue;
+
+					if (_ShowRealtime && _UsdCfgDlg) {
+						//_UsdCfgDlg->OnHogaCount(lastUac, lastUbc);
+						double ratio = Uac[index] / Ubc[index];
+						CString value;
+						value.Format(_T("%.2f"), ratio);
+						_UsdCfgDlg->RefreshRealTimeValue(1, arg.Name, value);
+					}
+
+					double param = std::stod(arg.sValue);
+
+					if (Ubc[index] * param > Uac[index]) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Ubs>Uas")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("175F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Uas = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Uas.size() == 0)
+						continue;
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Ubs = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Ubs.size() == 0)
+						continue;
+
+					if (_ShowRealtime && _UsdCfgDlg) {
+						//_UsdCfgDlg->OnHogaCount(lastUac, lastUbc);
+						double ratio = Uas[index] / Ubs[index];
+						CString value;
+						value.Format(_T("%.2f"), ratio);
+						_UsdCfgDlg->RefreshRealTimeValue(1, arg.Name, value);
+					}
+
+					double param = std::stod(arg.sValue);
+
+					if (Ubs[index] * param > Uas[index]) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Kac>Kbc")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Kac.size() == 0)
+						continue;
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kbc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Kbc.size() == 0)
+						continue;
+
+					if (_ShowRealtime && _UsdCfgDlg) {
+						//_UsdCfgDlg->OnHogaCount(lastUac, lastUbc);
+						double ratio = Kbc[index] / Kac[index];
+						CString value;
+						value.Format(_T("%.2f"), ratio);
+						_UsdCfgDlg->RefreshRealTimeValue(1, arg.Name, value);
+					}
+
+					double param = std::stod(arg.sValue);
+
+					if (Kac[index] * param - Kbc[index]) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Kas>Kbs")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kas = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Kas.size() == 0)
+						continue;
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kbs = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Kbs.size() == 0)
+						continue;
+
+					if (_ShowRealtime && _UsdCfgDlg) {
+						//_UsdCfgDlg->OnHogaCount(lastUac, lastUbc);
+						double ratio = Kbs[index] / Kas[index];
+						CString value;
+						value.Format(_T("%.2f"), ratio);
+						_UsdCfgDlg->RefreshRealTimeValue(1, arg.Name, value);
+					}
+
+					double param = std::stod(arg.sValue);
+
+					if (Kas[index] * param - Kbs[index]) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+			}
+		}
+	}
+
+	if (argCond.size() > 0) {
+		bool preCond = true;
+		// 하나의 조건이라도 거짓이면 거짓
+		auto it = std::find(argCond.begin(), argCond.end(), false);
+		if (it != argCond.end())
+			preCond = false;
+		return preCond && CheckAtrLiqForBuy() ? true : false;
+	}
+	else {  // ATR 단독 청산 조건
+		return CheckAtrLiqForBuy();
+	}
+}
+
+
+bool VtSystem::CheckLiqForSellForKosdaq()
+{
+	VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();
+	std::vector<bool> argCond;
+	// 매수 진입
+	VtSystemArgGroup* argGrp = GetArgGroup(_T("매도청산"));
+	if (argGrp) {
+		std::vector<VtSystemArg>& argVec = argGrp->GetArgVec();
+		for (auto it = argVec.begin(); it != argVec.end(); ++it) {
+			VtSystemArg& arg = *it;
+			if (arg.Enable) {
+				if (arg.Name.compare(_T("Qbc>Qac")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("106F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Qac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Qbc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					double param = std::stod(arg.sValue);
+
+					if (Qbc.back()*param > Qac.back()) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Qbs>Qas")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("106F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTQ"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Qas = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTQ"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Qbs = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					double param = std::stod(arg.sValue);
+
+					if (Qbs.back()*param > Qas.back()) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Kbc>Kac")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kbc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					double param = std::stod(arg.sValue);
+
+					if (Kbc.back()*param > Kac.back()) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Uac>Ubc")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("175F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Uac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Ubc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+
+					double param = std::stod(arg.sValue);
+
+					if (Uac.back()*param > Ubc.back()) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+			}
+		}
+	}
+
+	if (argCond.size() > 0) {
+		bool preCond = true;
+		// 하나의 조건이라도 거짓이면 거짓
+		auto it = std::find(argCond.begin(), argCond.end(), false);
+		if (it != argCond.end())
+			preCond = false;
+		return preCond && CheckAtrLiqForSell() ? true : false;
+	}
+	else {  // ATR 단독 청산 조건
+		return CheckAtrLiqForSell();
+	}
+}
+
+
+bool VtSystem::CheckEntranceForBuyForKosdaq(size_t index)
+{
+	if (index < 0 || index >= ChartDataSize)
+		return false;
+
+	// 밴드에 의한 조건을 먼저 확인한다.
+	if (!CheckEntranceByBandForBuy())
+		return false;
+
+	VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();
+	std::vector<bool> argCond;
+	// 매수 진입
+	VtSystemArgGroup* argGrp = GetArgGroup(_T("매수진입"));
+	if (argGrp) {
+		std::vector<VtSystemArg>& argVec = argGrp->GetArgVec();
+		for (auto it = argVec.begin(); it != argVec.end(); ++it) {
+			VtSystemArg& arg = *it;
+			if (arg.Enable) {
+				if (arg.Name.compare(_T("Qbc>Qac")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("106F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Qac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Qac.size() == 0)
+						continue;
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Qbc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Qbc.size() == 0)
+						continue;
+					if (_ShowRealtime && _UsdCfgDlg) {
+						//_UsdCfgDlg->OnHogaCount(lastUac, lastUbc);
+						double ratio = Qac[index] / Qbc[index];
+						CString value;
+						value.Format(_T("%.2f"), ratio);
+						_UsdCfgDlg->RefreshRealTimeValue(0, arg.Name, value);
+					}
+
+					double param = std::stod(arg.sValue);
+
+					if (Qbc[index] * param > Qac[index]) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Qbs>Qas")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("106F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTQ"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Qas = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Qas.size() == 0)
+						continue;
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTQ"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Qbs = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Qbs.size() == 0)
+						continue;
+					if (_ShowRealtime && _UsdCfgDlg) {
+						//_UsdCfgDlg->OnHogaCount(lastUac, lastUbc);
+						double ratio = Qas[index] / Qbs[index];
+						CString value;
+						value.Format(_T("%.2f"), ratio);
+						_UsdCfgDlg->RefreshRealTimeValue(0, arg.Name, value);
+					}
+
+					double param = std::stod(arg.sValue);
+
+					if (Qbs[index] * param > Qas[index]) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Kbc>Kac")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Kac.size() == 0)
+						continue;
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kbc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Kbc.size() == 0)
+						continue;
+
+					if (_ShowRealtime && _UsdCfgDlg) {
+						//_UsdCfgDlg->OnHogaCount(lastUac, lastUbc);
+						double ratio = Kac[index] / Kbc[index];
+						CString value;
+						value.Format(_T("%.2f"), ratio);
+						_UsdCfgDlg->RefreshRealTimeValue(0, arg.Name, value);
+					}
+
+					double param = std::stod(arg.sValue);
+
+					if (Kbc[index] * param > Kac[index]) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Uac>Ubc")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("175F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Uac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Uac.size() == 0)
+						continue;;
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Ubc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Ubc.size() == 0)
+						continue;
+
+					if (_ShowRealtime && _UsdCfgDlg) {
+						//_UsdCfgDlg->OnHogaCount(lastUac, lastUbc);
+						double ratio = Uac[index] / Ubc[index];
+						CString value;
+						value.Format(_T("%.2f"), ratio);
+						_UsdCfgDlg->RefreshRealTimeValue(0, arg.Name, value);
+					}
+
+					double param = std::stod(arg.sValue);
+
+					if (Uac[index] * param > Ubc[index]) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+			}
+		}
+	}
+
+	if (argCond.size() == 0)
+		return false;
+
+	// 하나의 조건이라도 거짓이면 신호 없음. 모두가 참이면 매수 반환
+	auto it = std::find(argCond.begin(), argCond.end(), false);
+	if (it != argCond.end())
+		return false;
+	else
+		return true;
+}
+
+bool VtSystem::CheckEntranceForSellForKosdaq(size_t index)
+{
+	if (index < 0 || index >= ChartDataSize)
+		return false;
+
+	// 밴드에 의한 조건을 먼저 확인한다.
+	if (!CheckEntranceByBandForSell())
+		return false;
+
+	VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();
+	std::vector<bool> argCond;
+	// 매수 진입
+	VtSystemArgGroup* argGrp = GetArgGroup(_T("매도진입"));
+	if (argGrp) {
+		std::vector<VtSystemArg>& argVec = argGrp->GetArgVec();
+		for (auto it = argVec.begin(); it != argVec.end(); ++it) {
+			VtSystemArg& arg = *it;
+			if (arg.Enable) {
+				if (arg.Name.compare(_T("Qac>Qbc")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("106F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Qac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Qac.size() == 0)
+						continue;
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Qbc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Qbc.size() == 0)
+						continue;
+
+					if (_ShowRealtime && _UsdCfgDlg) {
+						//_UsdCfgDlg->OnHogaCount(lastUac, lastUbc);
+						double ratio = Qbc[index] / Qac[index];
+						CString value;
+						value.Format(_T("%.2f"), ratio);
+						_UsdCfgDlg->RefreshRealTimeValue(0, arg.Name, value);
+					}
+
+					double param = std::stod(arg.sValue);
+
+					if (Qac[index] * param > Qbc[index]) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Qas>Qbs")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("106F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTQ"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Qas = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Qas.size() == 0)
+						continue;
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTQ"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Qbs = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Qbs.size() == 0)
+						continue;
+
+					if (_ShowRealtime && _UsdCfgDlg) {
+						//_UsdCfgDlg->OnHogaCount(lastUac, lastUbc);
+						double ratio = Qbs[index] / Qas[index];
+						CString value;
+						value.Format(_T("%.2f"), ratio);
+						_UsdCfgDlg->RefreshRealTimeValue(0, arg.Name, value);
+					}
+
+					double param = std::stod(arg.sValue);
+
+					if (Qas[index] * param > Qbs[index]) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Kac>Kbc")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Kac.size() == 0)
+						continue;
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kbc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Kbc.size() == 0)
+						continue;
+
+					if (_ShowRealtime && _UsdCfgDlg) {
+						//_UsdCfgDlg->OnHogaCount(lastUac, lastUbc);
+						double ratio = Kbc[index] / Kac[index];
+						CString value;
+						value.Format(_T("%.2f"), ratio);
+						_UsdCfgDlg->RefreshRealTimeValue(0, arg.Name, value);
+					}
+
+					double param = std::stod(arg.sValue);
+
+					if (Kac[index] * param - Kbc[index]) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Ubc>Uac")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("175F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Uac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Uac.size() == 0)
+						continue;
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Ubc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Ubc.size() == 0)
+						continue;
+
+					if (_ShowRealtime && _UsdCfgDlg) {
+						//_UsdCfgDlg->OnHogaCount(lastUac, lastUbc);
+						double ratio = Uac[index] / Ubc[index];
+						CString value;
+						value.Format(_T("%.2f"), ratio);
+						_UsdCfgDlg->RefreshRealTimeValue(0, arg.Name, value);
+					}
+
+					double param = std::stod(arg.sValue);
+
+					if (Ubc[index] * param > Uac[index]) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+			}
+		}
+	}
+
+	if (argCond.size() == 0)
+		return false;
+
+	// 하나의 조건이라도 거짓이면 신호 없음. 모두가 참이면 매수 반환
+	auto it = std::find(argCond.begin(), argCond.end(), false);
+	if (it != argCond.end())
+		return false;
+	else
+		return true;
+}
+
+bool VtSystem::CheckLiqForSellForKosdaq(size_t index)
+{
+	if (index < 0 || index >= ChartDataSize)
+		return false;
+
+	VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();
+	std::vector<bool> argCond;
+	// 매수 진입
+	VtSystemArgGroup* argGrp = GetArgGroup(_T("매도청산"));
+	if (argGrp) {
+		std::vector<VtSystemArg>& argVec = argGrp->GetArgVec();
+		for (auto it = argVec.begin(); it != argVec.end(); ++it) {
+			VtSystemArg& arg = *it;
+			if (arg.Enable) {
+				if (arg.Name.compare(_T("Qbc>Qac")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("106F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Qac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Qac.size() == 0)
+						continue;
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Qbc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Qbc.size() == 0)
+						continue;
+
+					if (_ShowRealtime && _UsdCfgDlg) {
+						//_UsdCfgDlg->OnHogaCount(lastUac, lastUbc);
+						double ratio = Qac[index] / Qbc[index];
+						CString value;
+						value.Format(_T("%.2f"), ratio);
+						_UsdCfgDlg->RefreshRealTimeValue(1, arg.Name, value);
+					}
+
+					double param = std::stod(arg.sValue);
+
+					if (Qbc[index] * param > Qac[index]) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Qbs>Qas")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("106F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTQ"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Qas = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Qas.size() == 0)
+						continue;
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTQ"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Qbs = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Qbs.size() == 0)
+						continue;
+
+					if (_ShowRealtime && _UsdCfgDlg) {
+						//_UsdCfgDlg->OnHogaCount(lastUac, lastUbc);
+						double ratio = Qas[index] / Qbs[index];
+						CString value;
+						value.Format(_T("%.2f"), ratio);
+						_UsdCfgDlg->RefreshRealTimeValue(1, arg.Name, value);
+					}
+
+					double param = std::stod(arg.sValue);
+
+					if (Qbs[index] * param > Qas[index]) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Kbc>Kac")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Kac.size() == 0)
+						continue;
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kbc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Kbc.size() == 0)
+						continue;
+
+					if (_ShowRealtime && _UsdCfgDlg) {
+						//_UsdCfgDlg->OnHogaCount(lastUac, lastUbc);
+						double ratio = Kac[index] / Kbc[index];
+						CString value;
+						value.Format(_T("%.2f"), ratio);
+						_UsdCfgDlg->RefreshRealTimeValue(1, arg.Name, value);
+					}
+
+					double param = std::stod(arg.sValue);
+
+					if (Kbc[index] * param > Kac[index]) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Uac>Ubc")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("175F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Uac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Uac.size() == 0)
+						continue;
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Ubc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Ubc.size() == 0)
+						continue;
+
+					if (_ShowRealtime && _UsdCfgDlg) {
+						//_UsdCfgDlg->OnHogaCount(lastUac, lastUbc);
+						double ratio = Ubc[index] / Uac[index];
+						CString value;
+						value.Format(_T("%.2f"), ratio);
+						_UsdCfgDlg->RefreshRealTimeValue(1, arg.Name, value);
+					}
+
+					double param = std::stod(arg.sValue);
+
+					if (Uac[index] * param > Ubc[index]) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+			}
+		}
+	}
+
+	if (argCond.size() > 0) {
+		bool preCond = true;
+		// 하나의 조건이라도 거짓이면 거짓
+		auto it = std::find(argCond.begin(), argCond.end(), false);
+		if (it != argCond.end())
+			preCond = false;
+		return preCond && CheckAtrLiqForSell() ? true : false;
+	}
+	else {  // ATR 단독 청산 조건
+		return CheckAtrLiqForSell();
+	}
+}
+
+bool VtSystem::CheckLiqForBuyForKosdaq(size_t index)
+{
+	if (index < 0 || index >= ChartDataSize)
+		return false;
+
+	VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();
+	std::vector<bool> argCond;
+	// 매수 진입
+	VtSystemArgGroup* argGrp = GetArgGroup(_T("매수청산"));
+	if (argGrp) {
+		std::vector<VtSystemArg>& argVec = argGrp->GetArgVec();
+		for (auto it = argVec.begin(); it != argVec.end(); ++it) {
+			VtSystemArg& arg = *it;
+			if (arg.Enable) {
+				if (arg.Name.compare(_T("Qac>Qbc")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("106F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Qac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Qac.size() == 0)
+						continue;
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Qbc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Qbc.size() == 0)
+						continue;
+
+					if (_ShowRealtime && _UsdCfgDlg) {
+						//_UsdCfgDlg->OnHogaCount(lastUac, lastUbc);
+						double ratio = Qbc[index] / Qac[index];
+						CString value;
+						value.Format(_T("%.2f"), ratio);
+						_UsdCfgDlg->RefreshRealTimeValue(1, arg.Name, value);
+					}
+
+					double param = std::stod(arg.sValue);
+
+					if (Qac[index] * param > Qbc[index]) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Qas>Qbs")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("106F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTQ"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Qas = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Qas.size() == 0)
+						continue;
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTQ"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Qbs = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Qbs.size() == 0)
+						continue;
+
+					if (_ShowRealtime && _UsdCfgDlg) {
+						//_UsdCfgDlg->OnHogaCount(lastUac, lastUbc);
+						double ratio = Qbs[index] / Qas[index];
+						CString value;
+						value.Format(_T("%.2f"), ratio);
+						_UsdCfgDlg->RefreshRealTimeValue(1, arg.Name, value);
+					}
+
+					double param = std::stod(arg.sValue);
+
+					if (Qas[index] * param > Qbs[index]) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Kac>Kbc")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Kac.size() == 0)
+						continue;
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Kbc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Kbc.size() == 0)
+						continue;
+
+					if (_ShowRealtime && _UsdCfgDlg) {
+						//_UsdCfgDlg->OnHogaCount(lastUac, lastUbc);
+						double ratio = Kbc[index] / Kac[index];
+						CString value;
+						value.Format(_T("%.2f"), ratio);
+						_UsdCfgDlg->RefreshRealTimeValue(1, arg.Name, value);
+					}
+
+					double param = std::stod(arg.sValue);
+
+					if (Kac[index] * param - Kbc[index]) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+				else if (arg.Name.compare(_T("Ubc>Uac")) == 0) {
+					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("175F"));
+					// 매도 호가 총수량
+					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Uac = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Uac.size() == 0)
+						continue;
+
+					// 매수 호가 총수량
+					code = sym->ShortCode + (_T("BHTC"));
+					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+					std::vector<double>& Ubc = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+					if (Ubc.size() == 0)
+						continue;
+
+					if (_ShowRealtime && _UsdCfgDlg) {
+						//_UsdCfgDlg->OnHogaCount(lastUac, lastUbc);
+						double ratio = Uac[index] / Ubc[index];
+						CString value;
+						value.Format(_T("%.2f"), ratio);
+						_UsdCfgDlg->RefreshRealTimeValue(1, arg.Name, value);
+					}
+
+					double param = std::stod(arg.sValue);
+
+					if (Ubc[index] * param > Uac[index]) {
+						argCond.push_back(true);
+					}
+					else {
+						argCond.push_back(false);
+					}
+				}
+			}
+		}
+	}
+
+	if (argCond.size() > 0) {
+		bool preCond = true;
+		// 하나의 조건이라도 거짓이면 거짓
+		auto it = std::find(argCond.begin(), argCond.end(), false);
+		if (it != argCond.end())
+			preCond = false;
+		return preCond && CheckAtrLiqForBuy() ? true : false;
+	}
+	else {  // ATR 단독 청산 조건
+		return CheckAtrLiqForBuy();
+	}
 }
 
 int VtSystem::FindDateIndex(double date, std::vector<double>& dateArray)
@@ -1126,7 +4621,80 @@ void VtSystem::SetDataMap(VtChartData* chartData)
 
 void VtSystem::ReadExtraArgs()
 {
-
+	// 매수 청산
+	VtSystemArgGroup* argGrp = GetArgGroup(_T("기타변수"));
+	if (argGrp) {
+		std::vector<VtSystemArg>& argVec = argGrp->GetArgVec();
+		for (auto it = argVec.begin(); it != argVec.end(); ++it) {
+			VtSystemArg& arg = *it;
+			if (arg.Enable) {
+				if (arg.Name.compare(_T("ATRMulti")) == 0) {
+					_ATRMulti = std::stod(arg.sValue);
+					_EnableATRLiq = true;
+				}
+				else if (arg.Name.compare(_T("BandMulti")) == 0) {
+					_EnableByBand = true;
+					_BandMulti = std::stod(arg.sValue);
+				}
+				else if (arg.Name.compare(_T("FilterMulti")) == 0) {
+					_FilterMulti = std::stod(arg.sValue);
+				}
+				else if (arg.Name.compare(_T("ATRTime")) == 0) {
+					std::string src = arg.sValue;
+					std::string hour, min;
+					size_t pos = src.find(':', 0);
+					hour = src.substr(0, pos);
+					min = src.substr(pos + 1, src.length() - pos);
+					_ATRTime.hour = std::stoi(hour);
+					_ATRTime.min = std::stoi(min);
+					_ATRTime.sec = 0;
+					_ATRTime.mil = 0;
+				}
+				else if (arg.Name.compare(_T("ATR")) == 0) {
+					_ATR = std::stoi(arg.sValue);
+				}
+				else if (arg.Name.compare(_T("EntryBarIndex")) == 0) {
+					_EntryBarIndex = std::stoi(arg.sValue);
+				}
+				else if (arg.Name.compare(_T("c>o")) == 0) {
+					_EnableByOpen = true;
+				}
+			} 
+			else {
+				if (arg.Name.compare(_T("ATRMulti")) == 0) {
+					_ATRMulti = std::stod(arg.sValue);
+					_EnableATRLiq = false;
+				}
+				else if (arg.Name.compare(_T("BandMulti")) == 0) {
+					_BandMulti = std::stod(arg.sValue);
+					_EnableByBand = false;
+				}
+				else if (arg.Name.compare(_T("FilterMulti")) == 0) {
+					_FilterMulti = std::stod(arg.sValue);
+				}
+				else if (arg.Name.compare(_T("ATRTime")) == 0) {
+					std::string src = arg.sValue;
+					std::string hour, min;
+					size_t pos = src.find(':', 0);
+					hour = src.substr(0, pos);
+					min = src.substr(pos + 1, src.length() - pos);
+					_ATRTime.hour = std::stoi(hour);
+					_ATRTime.min = std::stoi(min);
+					_ATRTime.sec = 0;
+					_ATRTime.mil = 0;
+				}
+				else if (arg.Name.compare(_T("ATR")) == 0) {
+					_ATR = std::stoi(arg.sValue);
+				}
+				else if (arg.Name.compare(_T("EntryBarIndex")) == 0) {
+					_EntryBarIndex = std::stoi(arg.sValue);
+				}
+				else if (arg.Name.compare(_T("c>o")) == 0) {
+					_EnableByOpen = false;
+				}
+			}
+		}
+	}
 }
 
 void VtSystem::ResetSignal()

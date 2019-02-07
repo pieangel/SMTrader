@@ -80,6 +80,11 @@ InstallDir "$PROGRAMFILES\Signal Master\SMTrader"
 
 !insertmacro MUI_RESERVEFILE_LANGDLL
 
+RequestExecutionLevel admin
+;SilentInstall silent
+
+ShowInstDetails show
+ShowUnInstDetails show
 
 ######################################################################
 
@@ -395,17 +400,6 @@ File "C:\Project\SMTrader\Setup\mst\OPTINFO.cod"
 File "C:\Project\SMTrader\Setup\mst\PMCODE.cod"
 File "C:\Project\SMTrader\Setup\mst\stkcode.cod"
 File "C:\Project\SMTrader\Setup\mst\xfucode.cod"
-SetOutPath "$INSTDIR\log"
-File "C:\Project\SMTrader\Setup\log\HDFlogfile_20190123.log"
-File "C:\Project\SMTrader\Setup\log\HDFlogfile_20190124.log"
-File "C:\Project\SMTrader\Setup\log\HDFlogfile_20190125.log"
-SetOutPath "$INSTDIR\log\037704e1"
-File "C:\Project\SMTrader\Setup\log\037704e1\HDFlogfile_20190123.log"
-File "C:\Project\SMTrader\Setup\log\037704e1\HDFlogfile_20190124.log"
-File "C:\Project\SMTrader\Setup\log\037704e1\HDFlogfile_20190125.log"
-File "C:\Project\SMTrader\Setup\log\037704e1\Order_20190123.log"
-File "C:\Project\SMTrader\Setup\log\037704e1\Order_20190124.log"
-File "C:\Project\SMTrader\Setup\log\037704e1\Order_20190125.log"
 SetOutPath "$INSTDIR\Data"
 File "C:\Project\SMTrader\Setup\Data\hogadec.dat"
 File "C:\Project\SMTrader\Setup\Data\±¹³»_uamsg.dat"

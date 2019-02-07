@@ -91,6 +91,7 @@ public:
 	void GetDeposit(std::vector<std::pair<std::string, HdTaskArg>>& argList);
 	void GetDailyProfitLoss();
 	void GetAccountProfitLoss();
+	void GetAccountProfitLossDirect();
 	void GetApiCustomerProfitLoss();
 	void GetApiCustomerProfitLoss(std::vector<std::pair<std::string, HdTaskArg>>& argList);
 	bool CheckCutLoss(VtSymbol* sym, int size);

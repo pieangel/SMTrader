@@ -764,49 +764,6 @@ bool VtQIn1::CheckEntranceForSell()
 		return true;
 }
 
-void VtQIn1::ReadExtraArgs()
-{
-	VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();
-	std::vector<bool> argCond;
-	// 매수 청산
-	VtSystemArgGroup* argGrp = GetArgGroup(_T("기타변수"));
-	if (argGrp) {
-		std::vector<VtSystemArg>& argVec = argGrp->GetArgVec();
-		for (auto it = argVec.begin(); it != argVec.end(); ++it) {
-			VtSystemArg& arg = *it;
-			if (arg.Enable) {
-				if (arg.Name.compare(_T("ATRMulti")) == 0) {
-					_ATRMulti = std::stod(arg.sValue);
-					_EnableATRLiq = true;
-				}
-				else if (arg.Name.compare(_T("BandMulti")) == 0) {
-					_BandMulti = std::stod(arg.sValue);
-				}
-				else if (arg.Name.compare(_T("FilterMulti")) == 0) {
-					_FilterMulti = std::stod(arg.sValue);
-				}
-				else if (arg.Name.compare(_T("ATRTime")) == 0) {
-					std::string src = arg.sValue;
-					std::string hour, min;
-					size_t pos = src.find(':', 0);
-					hour = src.substr(0, pos);
-					min = src.substr(pos + 1, src.length() - pos);
-					_ATRTime.hour = std::stoi(hour);
-					_ATRTime.min = std::stoi(min);
-					_ATRTime.sec = 0;
-					_ATRTime.mil = 0;
-				}
-				else if (arg.Name.compare(_T("ATR")) == 0) {
-					_ATR = std::stoi(arg.sValue);
-				}
-				else if (arg.Name.compare(_T("EntryBarIndex")) == 0) {
-					_EntryBarIndex = std::stoi(arg.sValue);
-				}
-			}
-		}
-	}
-}
-
 bool VtQIn1::CheckLiqForBuy()
 {
 	VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();
@@ -919,165 +876,6 @@ bool VtQIn1::CheckLiqForBuy()
 	}
 }
 
-bool VtQIn1::CheckEntranceByBandForBuy()
-{
-	if (!_Symbol)
-		return false;
-
-	std::string code = _Symbol->ShortCode;
-	std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::DAY, 1);
-	std::vector<double>& highArray = _RefDataMap[dataKey]->GetDataArray(_T("high"));
-	std::vector<double>& lowArray = _RefDataMap[dataKey]->GetDataArray(_T("low"));
-
-	double preDayHigh = highArray[highArray.size() - 2];
-	double preDayLow = lowArray[lowArray.size() - 2];
-	_PreHL = preDayHigh - preDayLow;
-	// 전날 변동폭이 클때는 진입하지 않는다.
-	if (_FilterMulti > _PreHL)
-		return false;
-	_Band = _PreHL * _BandMulti;
-	if (_Symbol->Quote.close > _Symbol->Quote.open + _Band)
-		return true;
-	else
-		return false;
-}
-
-bool VtQIn1::CheckEntranceByBandForBuy(size_t index)
-{
-	if (!_Symbol || index < 0 || index >= ChartDataSize)
-		return false;
-
-	std::string code = _Symbol->ShortCode;
-	std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::DAY, 1);
-	std::vector<double>& dayDateArray = _RefDataMap[dataKey]->GetDataArray(_T("date"));
-	std::vector<double>& highArray = _RefDataMap[dataKey]->GetDataArray(_T("high"));
-	std::vector<double>& lowArray = _RefDataMap[dataKey]->GetDataArray(_T("low"));
-
-	dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
-	std::vector<double>& maindateArray = _RefDataMap[dataKey]->GetDataArray(_T("date"));
-	int curDayIndex = FindDateIndex(maindateArray[index], dayDateArray);
-	if (curDayIndex == 0)
-		return false;
-
-	double preDayHigh = highArray[curDayIndex - 1];
-	double preDayLow = lowArray[curDayIndex - 1];
-	_PreHL = preDayHigh - preDayLow;
-	// 전날 변동폭이 클때는 진입하지 않는다.
-	if (_FilterMulti > _PreHL)
-		return false;
-	_Band = _PreHL * _BandMulti;
-	if (_Symbol->Quote.close > _Symbol->Quote.open + _Band)
-		return true;
-	else
-		return false;
-}
-
-bool VtQIn1::CheckEntranceByBandForSell()
-{
-	if (!_Symbol)
-		return false;
-
-	std::string code = _Symbol->ShortCode;
-	std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::DAY, 1);
-	std::vector<double>& highArray = _RefDataMap[dataKey]->GetDataArray(_T("high"));
-	std::vector<double>& lowArray = _RefDataMap[dataKey]->GetDataArray(_T("low"));
-
-	double preDayHigh = highArray[highArray.size() - 2];
-	double preDayLow = lowArray[lowArray.size() - 2];
-	_PreHL = preDayHigh - preDayLow;
-	// 전날 변동폭이 클때는 진입하지 않는다.
-	if (_FilterMulti > _PreHL)
-		return false;
-	_Band = _PreHL * _BandMulti;
-	if (_Symbol->Quote.close < _Symbol->Quote.open - _Band)
-		return true;
-	else
-		return false;
-}
-
-bool VtQIn1::CheckEntranceByBandForSell(size_t index)
-{
-	if (!_Symbol || index < 0 || index >= ChartDataSize)
-		return false;
-
-	std::string code = _Symbol->ShortCode;
-	std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::DAY, 1);
-	std::vector<double>& dayDateArray = _RefDataMap[dataKey]->GetDataArray(_T("date"));
-	std::vector<double>& highArray = _RefDataMap[dataKey]->GetDataArray(_T("high"));
-	std::vector<double>& lowArray = _RefDataMap[dataKey]->GetDataArray(_T("low"));
-
-	dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
-	std::vector<double>& maindateArray = _RefDataMap[dataKey]->GetDataArray(_T("date"));
-	int curDayIndex = FindDateIndex(maindateArray[index], dayDateArray);
-	if (curDayIndex == 0)
-		return false;
-
-	double preDayHigh = highArray[curDayIndex - 1];
-	double preDayLow = lowArray[curDayIndex - 1];
-	_PreHL = preDayHigh - preDayLow;
-	// 전날 변동폭이 클때는 진입하지 않는다.
-	if (_FilterMulti > _PreHL)
-		return false;
-	_Band = _PreHL * _BandMulti;
-	if (_Symbol->Quote.close < _Symbol->Quote.open - _Band)
-		return true;
-	else
-		return false;
-}
-
-bool VtQIn1::CheckEntranceByOpenForBuy()
-{
-	if (!_Symbol)
-		return false;
-
-	std::string code = _Symbol->ShortCode;
-	std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
-	std::vector<double>& openArray = _RefDataMap[dataKey]->GetDataArray(_T("open"));
-	std::vector<double>& closeArray = _RefDataMap[dataKey]->GetDataArray(_T("close"));
-	return  closeArray.back() > openArray.back() ? true : false;
-}
-
-bool VtQIn1::CheckEntranceByOpenForBuy(size_t index)
-{
-	if (!_Symbol || index < 0 || index >= ChartDataSize)
-		return false;
-
-	std::string code = _Symbol->ShortCode;
-	std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
-	std::vector<double>& openArray = _RefDataMap[dataKey]->GetDataArray(_T("open"));
-	std::vector<double>& closeArray = _RefDataMap[dataKey]->GetDataArray(_T("close"));
-	if (openArray.size() == 0 || closeArray.size() == 0)
-		return false;
-
-	return  closeArray[index] > openArray[index] ? true : false;
-}
-
-bool VtQIn1::CheckEntranceByOpenForSell()
-{
-	if (!_Symbol)
-		return false;
-
-	std::string code = _Symbol->ShortCode;
-	std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
-	std::vector<double>& openArray = _RefDataMap[dataKey]->GetDataArray(_T("open"));
-	std::vector<double>& closeArray = _RefDataMap[dataKey]->GetDataArray(_T("close"));
-	return  closeArray.back() < openArray.back() ? true : false;
-}
-
-bool VtQIn1::CheckEntranceByOpenForSell(size_t index)
-{
-	if (!_Symbol || index < 0 || index >= ChartDataSize)
-		return false;
-
-	std::string code = _Symbol->ShortCode;
-	std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
-	std::vector<double>& openArray = _RefDataMap[dataKey]->GetDataArray(_T("open"));
-	std::vector<double>& closeArray = _RefDataMap[dataKey]->GetDataArray(_T("close"));
-	if (openArray.size() == 0 || closeArray.size() == 0)
-		return false;
-
-	return  closeArray[index] < openArray[index] ? true : false;
-}
 
 bool VtQIn1::CheckLiqForSell()
 {
@@ -1844,6 +1642,210 @@ bool VtQIn1::CheckLiqForBuy(size_t index)
 	else {  // ATR 단독 청산 조건
 		return CheckAtrLiqForBuy();
 	}
+}
+
+
+void VtQIn1::ReadExtraArgs()
+{
+	VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();
+	std::vector<bool> argCond;
+	// 매수 청산
+	VtSystemArgGroup* argGrp = GetArgGroup(_T("기타변수"));
+	if (argGrp) {
+		std::vector<VtSystemArg>& argVec = argGrp->GetArgVec();
+		for (auto it = argVec.begin(); it != argVec.end(); ++it) {
+			VtSystemArg& arg = *it;
+			if (arg.Enable) {
+				if (arg.Name.compare(_T("ATRMulti")) == 0) {
+					_ATRMulti = std::stod(arg.sValue);
+					_EnableATRLiq = true;
+				}
+				else if (arg.Name.compare(_T("BandMulti")) == 0) {
+					_BandMulti = std::stod(arg.sValue);
+				}
+				else if (arg.Name.compare(_T("FilterMulti")) == 0) {
+					_FilterMulti = std::stod(arg.sValue);
+				}
+				else if (arg.Name.compare(_T("ATRTime")) == 0) {
+					std::string src = arg.sValue;
+					std::string hour, min;
+					size_t pos = src.find(':', 0);
+					hour = src.substr(0, pos);
+					min = src.substr(pos + 1, src.length() - pos);
+					_ATRTime.hour = std::stoi(hour);
+					_ATRTime.min = std::stoi(min);
+					_ATRTime.sec = 0;
+					_ATRTime.mil = 0;
+				}
+				else if (arg.Name.compare(_T("ATR")) == 0) {
+					_ATR = std::stoi(arg.sValue);
+				}
+				else if (arg.Name.compare(_T("EntryBarIndex")) == 0) {
+					_EntryBarIndex = std::stoi(arg.sValue);
+				}
+			}
+		}
+	}
+}
+
+bool VtQIn1::CheckEntranceByBandForBuy()
+{
+	if (!_Symbol)
+		return false;
+
+	std::string code = _Symbol->ShortCode;
+	std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::DAY, 1);
+	std::vector<double>& highArray = _RefDataMap[dataKey]->GetDataArray(_T("high"));
+	std::vector<double>& lowArray = _RefDataMap[dataKey]->GetDataArray(_T("low"));
+
+	double preDayHigh = highArray[highArray.size() - 2];
+	double preDayLow = lowArray[lowArray.size() - 2];
+	_PreHL = preDayHigh - preDayLow;
+	// 전날 변동폭이 클때는 진입하지 않는다.
+	if (_FilterMulti > _PreHL)
+		return false;
+	_Band = _PreHL * _BandMulti;
+	if (_Symbol->Quote.close > _Symbol->Quote.open + _Band)
+		return true;
+	else
+		return false;
+}
+
+bool VtQIn1::CheckEntranceByBandForBuy(size_t index)
+{
+	if (!_Symbol || index < 0 || index >= ChartDataSize)
+		return false;
+
+	std::string code = _Symbol->ShortCode;
+	std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::DAY, 1);
+	std::vector<double>& dayDateArray = _RefDataMap[dataKey]->GetDataArray(_T("date"));
+	std::vector<double>& highArray = _RefDataMap[dataKey]->GetDataArray(_T("high"));
+	std::vector<double>& lowArray = _RefDataMap[dataKey]->GetDataArray(_T("low"));
+
+	dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+	std::vector<double>& maindateArray = _RefDataMap[dataKey]->GetDataArray(_T("date"));
+	int curDayIndex = FindDateIndex(maindateArray[index], dayDateArray);
+	if (curDayIndex == 0)
+		return false;
+
+	double preDayHigh = highArray[curDayIndex - 1];
+	double preDayLow = lowArray[curDayIndex - 1];
+	_PreHL = preDayHigh - preDayLow;
+	// 전날 변동폭이 클때는 진입하지 않는다.
+	if (_FilterMulti > _PreHL)
+		return false;
+	_Band = _PreHL * _BandMulti;
+	if (_Symbol->Quote.close > _Symbol->Quote.open + _Band)
+		return true;
+	else
+		return false;
+}
+
+bool VtQIn1::CheckEntranceByBandForSell()
+{
+	if (!_Symbol)
+		return false;
+
+	std::string code = _Symbol->ShortCode;
+	std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::DAY, 1);
+	std::vector<double>& highArray = _RefDataMap[dataKey]->GetDataArray(_T("high"));
+	std::vector<double>& lowArray = _RefDataMap[dataKey]->GetDataArray(_T("low"));
+
+	double preDayHigh = highArray[highArray.size() - 2];
+	double preDayLow = lowArray[lowArray.size() - 2];
+	_PreHL = preDayHigh - preDayLow;
+	// 전날 변동폭이 클때는 진입하지 않는다.
+	if (_FilterMulti > _PreHL)
+		return false;
+	_Band = _PreHL * _BandMulti;
+	if (_Symbol->Quote.close < _Symbol->Quote.open - _Band)
+		return true;
+	else
+		return false;
+}
+
+bool VtQIn1::CheckEntranceByBandForSell(size_t index)
+{
+	if (!_Symbol || index < 0 || index >= ChartDataSize)
+		return false;
+
+	std::string code = _Symbol->ShortCode;
+	std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::DAY, 1);
+	std::vector<double>& dayDateArray = _RefDataMap[dataKey]->GetDataArray(_T("date"));
+	std::vector<double>& highArray = _RefDataMap[dataKey]->GetDataArray(_T("high"));
+	std::vector<double>& lowArray = _RefDataMap[dataKey]->GetDataArray(_T("low"));
+
+	dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+	std::vector<double>& maindateArray = _RefDataMap[dataKey]->GetDataArray(_T("date"));
+	int curDayIndex = FindDateIndex(maindateArray[index], dayDateArray);
+	if (curDayIndex == 0)
+		return false;
+
+	double preDayHigh = highArray[curDayIndex - 1];
+	double preDayLow = lowArray[curDayIndex - 1];
+	_PreHL = preDayHigh - preDayLow;
+	// 전날 변동폭이 클때는 진입하지 않는다.
+	if (_FilterMulti > _PreHL)
+		return false;
+	_Band = _PreHL * _BandMulti;
+	if (_Symbol->Quote.close < _Symbol->Quote.open - _Band)
+		return true;
+	else
+		return false;
+}
+
+bool VtQIn1::CheckEntranceByOpenForBuy()
+{
+	if (!_Symbol)
+		return false;
+
+	std::string code = _Symbol->ShortCode;
+	std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+	std::vector<double>& openArray = _RefDataMap[dataKey]->GetDataArray(_T("open"));
+	std::vector<double>& closeArray = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+	return  closeArray.back() > openArray.back() ? true : false;
+}
+
+bool VtQIn1::CheckEntranceByOpenForBuy(size_t index)
+{
+	if (!_Symbol || index < 0 || index >= ChartDataSize)
+		return false;
+
+	std::string code = _Symbol->ShortCode;
+	std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+	std::vector<double>& openArray = _RefDataMap[dataKey]->GetDataArray(_T("open"));
+	std::vector<double>& closeArray = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+	if (openArray.size() == 0 || closeArray.size() == 0)
+		return false;
+
+	return  closeArray[index] > openArray[index] ? true : false;
+}
+
+bool VtQIn1::CheckEntranceByOpenForSell()
+{
+	if (!_Symbol)
+		return false;
+
+	std::string code = _Symbol->ShortCode;
+	std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+	std::vector<double>& openArray = _RefDataMap[dataKey]->GetDataArray(_T("open"));
+	std::vector<double>& closeArray = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+	return  closeArray.back() < openArray.back() ? true : false;
+}
+
+bool VtQIn1::CheckEntranceByOpenForSell(size_t index)
+{
+	if (!_Symbol || index < 0 || index >= ChartDataSize)
+		return false;
+
+	std::string code = _Symbol->ShortCode;
+	std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+	std::vector<double>& openArray = _RefDataMap[dataKey]->GetDataArray(_T("open"));
+	std::vector<double>& closeArray = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+	if (openArray.size() == 0 || closeArray.size() == 0)
+		return false;
+
+	return  closeArray[index] < openArray[index] ? true : false;
 }
 
 void VtQIn1::ReloadSystem(int startIndex, int endIndex)

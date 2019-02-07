@@ -28,24 +28,15 @@ public:
 	virtual void UpdateSystem(int index);
 	virtual void ReadExtraArgs();
 
-	bool CheckEntranceForBuy();
-	bool CheckEntranceForSell();
-	bool CheckLiqForSell();
-	bool CheckLiqForBuy();
-	bool CheckEntranceByBandForBuy();
-	bool CheckEntranceByBandForSell();
-	bool CheckEntranceByOpenForBuy();
-	bool CheckEntranceByOpenForSell();
-	
-	bool CheckEntranceForBuy(size_t index);
-	bool CheckEntranceForSell(size_t index);
-	bool CheckLiqForSell(size_t index);
-	bool CheckLiqForBuy(size_t index);
+	virtual bool CheckEntranceForBuyForKospi();
+	virtual bool CheckEntranceForSellForKospi();
+	virtual bool CheckLiqForSellForKospi();
+	virtual bool CheckLiqForBuyForKospi();
 
-	bool CheckEntranceByBandForBuy(size_t index);
-	bool CheckEntranceByBandForSell(size_t index);
-	bool CheckEntranceByOpenForBuy(size_t index);
-	bool CheckEntranceByOpenForSell(size_t index);
+	virtual bool CheckEntranceForBuyForKospi(size_t index);
+	virtual bool CheckEntranceForSellForKospi(size_t index);
+	virtual bool CheckLiqForSellForKospi(size_t index);
+	virtual bool CheckLiqForBuyForKospi(size_t index);
 
 private:
 	double _PreHL = 0.0;

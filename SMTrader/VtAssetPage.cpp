@@ -41,22 +41,6 @@ END_MESSAGE_MAP()
 
 void VtAssetPage::InitAccount()
 {
-	/*
-	VtAccountManager* acntMgr = VtAccountManager::GetInstance();
-	for (auto it = acntMgr->AccountMap.begin(); it != acntMgr->AccountMap.end(); ++it)
-	{
-		VtAccount* acnt = it->second;
-		int index = _ComboAccount.AddString(acnt->AccountNo.c_str());
-		_ComboAccount.SetItemDataPtr(index, acnt);
-	}
-
-	if (_ComboAccount.GetCount() > 2)
-	{
-		_ComboAccount.SetCurSel(2);
-		_Account = (VtAccount*)_ComboAccount.GetItemDataPtr(2);
-	}
-	*/
-
 	VtGlobal* global = VtGlobal::GetInstance();
 	VtAccountManager* acntMgr = VtAccountManager::GetInstance();
 	int selAcnt = 0;
@@ -77,7 +61,7 @@ void VtAssetPage::InitAccount()
 	if (selAcnt != -1) {
 		_ComboAccount.SetCurSel(selAcnt);
 		_Account = (VtAccount*)_ComboAccount.GetItemDataPtr(selAcnt);
-		_Account->GetAccountInfoNFee(1);
+		_Account->GetAccountProfitLossDirect();
 	}
 
 	_ComboAccount.SetDroppedWidth(210);
@@ -99,7 +83,7 @@ void VtAssetPage::OnBnClickedBtnSearch()
 {
 	// TODO: Add your control notification handler code here
 	if (_Account)
-		_Account->GetAccountInfoNFee(1);
+		_Account->GetAccountProfitLossDirect();
 }
 
 
@@ -110,7 +94,7 @@ void VtAssetPage::OnCbnSelchangeComboAccount()
 	if (curSel != -1)
 	{
 		VtAccount* acnt = (VtAccount*)_ComboAccount.GetItemDataPtr(curSel);
-		acnt->GetAccountInfoNFee(1);
+		acnt->GetAccountProfitLossDirect();
 		_Account = acnt;
 	}
 }

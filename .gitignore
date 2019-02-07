@@ -240,3 +240,12 @@ ModelManifest.xml
 
 # FAKE - F# Make
 .fake/
+/Setup - Real
+/Setup - Mock
+/Setup/2019-01-25/smtrader.sav
+/Setup/2019-02-04/smtrader.sav
+/Setup/2019-02-06/smtrader.sav
+/Setup/2019-02-07/smtrader.sav
+
+#Setup Files
+/Setup/*.*

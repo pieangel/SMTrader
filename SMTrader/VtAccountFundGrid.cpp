@@ -6,6 +6,7 @@
 #include "VtFundManager.h"
 #include "VtFund.h"
 #include "VtUsdStrategyConfigDlg.h"
+#include "VtSubAccountManager.h"
 
 VtAccountFundGrid::VtAccountFundGrid()
 {
@@ -108,6 +109,20 @@ void VtAccountFundGrid::InitGrid()
 		VtAccountManager* acntMgr = VtAccountManager::GetInstance();
 		int i = 0;
 		for (auto it = acntMgr->AccountMap.begin(); it != acntMgr->AccountMap.end(); ++it) {
+			VtAccount* acnt = it->second;
+			QuickSetText(0, i, acnt->AccountName.c_str());
+			QuickSetText(1, i, acnt->AccountNo.c_str());
+			QuickSetBackColor(0, i, RGB(250, 250, 255));
+			QuickSetBackColor(1, i, RGB(250, 250, 255));
+			QuickRedrawCell(0, i);
+			QuickRedrawCell(1, i);
+			_HeightVec.push_back(_HeadHeight);
+			_RowToNameMap[i] = std::make_tuple(acnt->AccountLevel() == 0 ? 0 : 1, acnt, nullptr);
+			i++;
+		}
+
+		VtSubAccountManager* subAcntMgr = VtSubAccountManager::GetInstance();
+		for (auto it = subAcntMgr->AccountMap.begin(); it != subAcntMgr->AccountMap.end(); ++it) {
 			VtAccount* acnt = it->second;
 			QuickSetText(0, i, acnt->AccountName.c_str());
 			QuickSetText(1, i, acnt->AccountNo.c_str());

@@ -15,6 +15,7 @@
 #include "VtFund.h"
 #include "VtFundManager.h"
 #include "VtTotalOrderManager.h"
+#include "VtHdClient.h"
 
 VtPosition* VtAccount::FindAdd(std::string symbolCode)
 {
@@ -399,6 +400,12 @@ void VtAccount::GetAccountProfitLoss()
 	arg.AddArg(_T("Password"), Password);
 	scheduler->Available(true);
 	scheduler->AddTask(std::move(arg));
+}
+
+void VtAccount::GetAccountProfitLossDirect()
+{
+	VtHdClient* client = VtHdClient::GetInstance();
+	client->GetApiCustomerProfitLoss(AccountNo, Password);
 }
 
 void VtAccount::GetApiCustomerProfitLoss()
