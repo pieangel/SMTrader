@@ -96,6 +96,7 @@ int VtStrategyGrid::OnCheckbox(long ID, int col, long row, long msg, long param)
 			sys->Enable(false);
 			sys->ShowRealtime(false);
 		}
+		UpdateDialog(sys);
 	}
 	return 1;
 }
@@ -127,6 +128,7 @@ int VtStrategyGrid::OnPushButton(long ID, int col, long row, long msg, long para
 				dlg->SelRow(row);
 				dlg->StGrid(this);
 				dlg->ShowWindow(SW_SHOW);
+				_DlgMap[dlg] = dlg;
 			}
 		}
 	}
@@ -148,6 +150,13 @@ void VtStrategyGrid::QuickRedrawCell(int col, long row)
 		TempDisableFocusRect();
 
 	m_CUGGrid->PaintDrawHintsNow(rect);
+}
+
+void VtStrategyGrid::RemoveDlg(VtUsdStrategyConfigDlg* dlg)
+{
+	auto it = _DlgMap.find(dlg);
+	if (it != _DlgMap.end())
+		_DlgMap.erase(it);
 }
 
 void VtStrategyGrid::InitGrid()
@@ -183,6 +192,7 @@ void VtStrategyGrid::InitGrid()
 			QuickSetCellType(0, i, UGCT_CHECKBOX);
 			QuickSetCellTypeEx(0, i, UGCT_CHECKBOXFLAT | UGCT_CHECKBOXCHECKMARK);
 			_SystemMap[i] = sys;
+			_SystemObjectMap[sys->Name()] = std::make_pair(i, sys);
 			QuickSetCellType(1, i, m_nButtonIndex);
 			QuickSetBitmap(1, i, &_SetBitmap);
 			_HeightMap[i] = _HeadHeight;
@@ -244,5 +254,40 @@ void VtStrategyGrid::UpdateSystem(int row, bool enable)
 		}
 
 		QuickRedrawCell(0, row);
+	}
+}
+
+void VtStrategyGrid::UpdateSystem(VtSystem* sys, bool enable)
+{
+	if (!sys)
+		return;
+	auto it = _SystemObjectMap.find(sys->Name());
+	if (it != _SystemObjectMap.end()) {
+		std::pair<int, VtSystem*> item = it->second;
+		std::get<1>(item)->Enable(enable);
+		CUGCell cell;
+		if (enable) {
+			sys->ShowRealtime(true);
+			GetCell(0, std::get<0>(item), &cell);
+			cell.SetNumber(1.0);
+			SetCell(0, std::get<0>(item), &cell);
+		}
+		else {
+			sys->ShowRealtime(false);
+			GetCell(0, std::get<0>(item), &cell);
+			cell.SetNumber(0.0);
+			SetCell(0, std::get<0>(item), &cell);
+		}
+
+		QuickRedrawCell(0, std::get<0>(item));
+	}
+}
+
+void VtStrategyGrid::UpdateDialog(VtSystem* sys)
+{
+	if (!sys)
+		return;
+	for (auto it = _DlgMap.begin(); it != _DlgMap.end(); ++it) {
+		it->second->UpdateRunCheck(sys);
 	}
 }

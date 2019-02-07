@@ -291,6 +291,13 @@ void VtUsI2::InitArgs()
 	arg.Enable = true;
 	arg.Desc = _T("EntryBarIndex 값을 설정 합니다.");
 	AddSystemArg(_T("기타변수"), arg);
+
+	arg.Name = _T("c>o");
+	arg.Type = VtParamType::STRING;
+	arg.sValue = _T("1");
+	arg.Enable = false;
+	arg.Desc = _T("c>o 값을 설정 합니다.");
+	AddSystemArg(_T("기타변수"), arg);
 }
 
 void VtUsI2::CreateSignal(int startIndex, int endIndex)

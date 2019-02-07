@@ -5,6 +5,7 @@
 #include "UGrid/CellTypes/UGCTbutn.h"
 class VtStrategyToolWnd;
 class VtSystem;
+class VtUsdStrategyConfigDlg;
 class VtStrategyGrid : public VtGrid
 {
 public:
@@ -32,6 +33,12 @@ public:
 	std::map<int, std::pair<bool, std::vector<int>>> _CatMap;
 	std::map<int, int> _HeightMap;
 	std::map<int, VtSystem*> _SystemMap;
+	std::map<VtUsdStrategyConfigDlg*, VtUsdStrategyConfigDlg*> _DlgMap;
+	void RemoveDlg(VtUsdStrategyConfigDlg* dlg);
+	/// <summary>
+	/// Key : System Name : Value (row, system object)).
+	/// </summary>
+	std::map<std::string, std::pair<int, VtSystem*>> _SystemObjectMap;
 	std::vector<int> _ColWidthMap;
 	void InitGrid();
 	void ResizeWindow();
@@ -39,6 +46,8 @@ public:
 	void ToolWnd(VtStrategyToolWnd* val) { _ToolWnd = val; }
 	void DisableAllSystems();
 	void UpdateSystem(int row, bool enable);
+	void UpdateSystem(VtSystem* sys, bool enable);
+	void UpdateDialog(VtSystem* sys);
 private:
 	VtStrategyToolWnd* _ToolWnd;
 };

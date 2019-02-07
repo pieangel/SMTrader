@@ -411,6 +411,9 @@ void VtUsdStrategyConfigDlg::OnBnClickedBtnExtraVar()
 
 void VtUsdStrategyConfigDlg::PostNcDestroy()
 {
+	if (_StGrid) {
+		_StGrid->RemoveDlg(this);
+	}
 	// TODO: Add your specialized code here and/or call the base class
 	delete this;
 	CDialogEx::PostNcDestroy();
@@ -653,11 +656,7 @@ void VtUsdStrategyConfigDlg::OnClose()
 void VtUsdStrategyConfigDlg::OnBnClickedCheckRun()
 {
 	if (_StGrid) {
-		_StGrid->UpdateSystem(_SelRow, _CheckRun.GetCheck() == BST_CHECKED ? true : false);
-		if (_System) {
-			_System->Enable(_CheckRun.GetCheck() == BST_CHECKED ? true : false);
-			_System->ShowRealtime(_CheckRun.GetCheck() == BST_CHECKED ? true : false);
-		}
+		_StGrid->UpdateSystem(_System, _CheckRun.GetCheck() == BST_CHECKED ? true : false);
 	}
 }
 
@@ -705,4 +704,11 @@ void VtUsdStrategyConfigDlg::OnEnChangeEditOrderAmt()
 	// with the ENM_CHANGE flag ORed into the mask.
 
 	// TODO:  Add your control notification handler code here
+}
+
+void VtUsdStrategyConfigDlg::UpdateRunCheck(VtSystem* sys)
+{
+	if (!sys || _System != sys)
+		return;
+	sys->Enable() ? _CheckRun.SetCheck(BST_CHECKED) : _CheckRun.SetCheck(BST_UNCHECKED);
 }

@@ -4612,7 +4612,7 @@ void VtSystem::ReadExtraArgs()
 				else if (arg.Name.compare(_T("FilterMulti")) == 0) {
 					_FilterMulti = std::stod(arg.sValue);
 				}
-				else if (arg.Name.compare(_T("ATRTime")) == 0) {
+				else if (arg.Name.compare(_T("ATR Time")) == 0) {
 					std::string src = arg.sValue;
 					std::string hour, min;
 					size_t pos = src.find(':', 0);

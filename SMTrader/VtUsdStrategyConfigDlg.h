@@ -118,4 +118,5 @@ public:
 	void RefreshRealTimeValue(std::string argName, CString value);
 	void RefreshRealTimeValue(int index, std::string argName, CString value);
 	afx_msg void OnEnChangeEditOrderAmt();
+	void UpdateRunCheck(VtSystem* sys);
 };

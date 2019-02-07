@@ -214,6 +214,7 @@ void VtSysArgGrid::SetArg(VtSystemArgGroup& argGrp)
 				cell.SetNumber(0);
 			}
 			SetCell(0, row, &cell);
+			QuickRedrawCell(0, row);
 		} else {
 			QuickSetText(4, row, arg.Name.c_str());
 			QuickRedrawCell(4, row);
@@ -227,6 +228,7 @@ void VtSysArgGrid::SetArg(VtSystemArgGroup& argGrp)
 				cell.SetNumber(0);
 			}
 			SetCell(3, row, &cell);
+			QuickRedrawCell(3, row);
 		}
 	}
 }
