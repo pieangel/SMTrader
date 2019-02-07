@@ -574,46 +574,109 @@ void VtKp2s::ReadExtraArgs()
 
 bool VtKp2s::CheckEntranceForBuyForKospi()
 {
-	if (_EnableByBand) {
-		// 밴드에 의한 조건을 먼저 확인한다.
-		if (!CheckEntranceByBandForBuy())
-			return false;
+	std::vector<bool> argCond;
+
+	argCond.push_back(VtSystem::CheckEntranceForBuyForKospi());
+
+	if (_EnableByOpen) {
+		argCond.push_back(CheckEntranceByOpenForBuy());
 	}
 
-	return VtSystem::CheckEntranceForBuyForKospi();
+	if (_EnableByBand) {
+		// 밴드에 의한 조건을 먼저 확인한다.
+		argCond.push_back(CheckEntranceByBandForBuy());
+	}
+
+
+	if (argCond.size() == 0)
+		return false;
+
+	// 하나의 조건이라도 거짓이면 신호 없음. 모두가 참이면 매수 반환
+	auto it = std::find(argCond.begin(), argCond.end(), false);
+	if (it != argCond.end())
+		return false;
+	else
+		return true;
 }
 
 bool VtKp2s::CheckEntranceForBuyForKospi(size_t index)
 {
-	if (_EnableByBand) {
-		// 밴드에 의한 조건을 먼저 확인한다.
-		if (!CheckEntranceByBandForBuy(index))
-			return false;
+	std::vector<bool> argCond;
+
+	argCond.push_back(VtSystem::CheckEntranceForBuyForKospi(index));
+
+	if (_EnableByOpen) {
+		argCond.push_back(CheckEntranceByOpenForBuy(index));
 	}
 
-	return VtSystem::CheckEntranceForBuyForKospi(index);
+	if (_EnableByBand) {
+		// 밴드에 의한 조건을 먼저 확인한다.
+		argCond.push_back(CheckEntranceByBandForBuy(index));
+	}
+
+
+	if (argCond.size() == 0)
+		return false;
+
+	// 하나의 조건이라도 거짓이면 신호 없음. 모두가 참이면 매수 반환
+	auto it = std::find(argCond.begin(), argCond.end(), false);
+	if (it != argCond.end())
+		return false;
+	else
+		return true;
 }
 
 bool VtKp2s::CheckEntranceForSellForKospi()
 {
-	if (_EnableByBand) {
-		// 밴드에 의한 조건을 먼저 확인한다.
-		if (!CheckEntranceByBandForSell())
-			return false;
+	std::vector<bool> argCond;
+
+	argCond.push_back(VtSystem::CheckEntranceForSellForKospi());
+
+	if (_EnableByOpen) {
+		argCond.push_back(CheckEntranceByOpenForSell());
 	}
 
-	return VtSystem::CheckEntranceForSellForKospi();
+	if (_EnableByBand) {
+		// 밴드에 의한 조건을 먼저 확인한다.
+		argCond.push_back(CheckEntranceByBandForSell());
+	}
+
+
+	if (argCond.size() == 0)
+		return false;
+
+	// 하나의 조건이라도 거짓이면 신호 없음. 모두가 참이면 매수 반환
+	auto it = std::find(argCond.begin(), argCond.end(), false);
+	if (it != argCond.end())
+		return false;
+	else
+		return true;
 }
 
 bool VtKp2s::CheckEntranceForSellForKospi(size_t index)
 {
-	if (_EnableByBand) {
-		// 밴드에 의한 조건을 먼저 확인한다.
-		if (!CheckEntranceByBandForSell(index))
-			return false;
+	std::vector<bool> argCond;
+
+	argCond.push_back(VtSystem::CheckEntranceForSellForKospi(index));
+
+	if (_EnableByOpen) {
+		argCond.push_back(CheckEntranceByOpenForSell(index));
 	}
 
-	return VtSystem::CheckEntranceForSellForKospi(index);
+	if (_EnableByBand) {
+		// 밴드에 의한 조건을 먼저 확인한다.
+		argCond.push_back(CheckEntranceByBandForBuy(index));
+	}
+
+	if (argCond.size() == 0)
+		return false;
+
+	// 하나의 조건이라도 거짓이면 신호 없음. 모두가 참이면 매수 반환
+	auto it = std::find(argCond.begin(), argCond.end(), false);
+	if (it != argCond.end())
+		return false;
+	else
+		return true;
 }
 
 bool VtKp2s::CheckLiqForSellForKospi()

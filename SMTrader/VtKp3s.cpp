@@ -566,46 +566,73 @@ void VtKp3s::ReadExtraArgs()
 
 bool VtKp3s::CheckEntranceForBuyForKospi()
 {
-	if (_EnableByBand) {
-		// 밴드에 의한 조건을 먼저 확인한다.
-		if (!CheckEntranceByBandForBuy())
-			return false;
-	}
+	std::vector<bool> argCond;
 
-	return VtSystem::CheckEntranceForBuyForKospi();
+	argCond.push_back(VtSystem::CheckEntranceForBuyForKospi());
+
+
+	if (argCond.size() == 0)
+		return false;
+
+	// 하나의 조건이라도 거짓이면 신호 없음. 모두가 참이면 매수 반환
+	auto it = std::find(argCond.begin(), argCond.end(), false);
+	if (it != argCond.end())
+		return false;
+	else
+		return true;
 }
 
 bool VtKp3s::CheckEntranceForBuyForKospi(size_t index)
 {
-	if (_EnableByBand) {
-		// 밴드에 의한 조건을 먼저 확인한다.
-		if (!CheckEntranceByBandForBuy(index))
-			return false;
-	}
+	std::vector<bool> argCond;
 
-	return VtSystem::CheckEntranceForBuyForKospi(index);
+	argCond.push_back(VtSystem::CheckEntranceForBuyForKospi(index));
+
+
+	if (argCond.size() == 0)
+		return false;
+
+	// 하나의 조건이라도 거짓이면 신호 없음. 모두가 참이면 매수 반환
+	auto it = std::find(argCond.begin(), argCond.end(), false);
+	if (it != argCond.end())
+		return false;
+	else
+		return true;
 }
 
 bool VtKp3s::CheckEntranceForSellForKospi()
 {
-	if (_EnableByBand) {
-		// 밴드에 의한 조건을 먼저 확인한다.
-		if (!CheckEntranceByBandForSell())
-			return false;
-	}
+	std::vector<bool> argCond;
 
-	return VtSystem::CheckEntranceForSellForKospi();
+	argCond.push_back(VtSystem::CheckEntranceForSellForKospi());
+
+	if (argCond.size() == 0)
+		return false;
+
+	// 하나의 조건이라도 거짓이면 신호 없음. 모두가 참이면 매수 반환
+	auto it = std::find(argCond.begin(), argCond.end(), false);
+	if (it != argCond.end())
+		return false;
+	else
+		return true;
 }
 
 bool VtKp3s::CheckEntranceForSellForKospi(size_t index)
 {
-	if (_EnableByBand) {
-		// 밴드에 의한 조건을 먼저 확인한다.
-		if (!CheckEntranceByBandForSell(index))
-			return false;
-	}
+	std::vector<bool> argCond;
 
-	return VtSystem::CheckEntranceForSellForKospi(index);
+	argCond.push_back(VtSystem::CheckEntranceForSellForKospi(index));
+
+
+	if (argCond.size() == 0)
+		return false;
+
+	// 하나의 조건이라도 거짓이면 신호 없음. 모두가 참이면 매수 반환
+	auto it = std::find(argCond.begin(), argCond.end(), false);
+	if (it != argCond.end())
+		return false;
+	else
+		return true;
 }
 
 bool VtKp3s::CheckLiqForSellForKospi()

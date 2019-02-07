@@ -439,11 +439,6 @@ bool VtSystem::CheckEntranceForBuyForKospi(size_t index)
 {
 	if (index < 0 || index >= ChartDataSize)
 		return false;
-
-	// 밴드에 의한 조건을 먼저 확인한다.
-	if (!CheckEntranceByBandForBuy())
-		return false;
-
 	VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();
 	std::vector<bool> argCond;
 	// 매수 진입
@@ -601,10 +596,6 @@ bool VtSystem::CheckEntranceForBuyForKospi(size_t index)
 
 bool VtSystem::CheckEntranceForSellForKospi()
 {
-	// 밴드에 의한 조건을 먼저 확인한다.
-	if (!CheckEntranceByBandForSell())
-		return false;
-
 	VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();
 	std::vector<bool> argCond;
 	// 매수 진입
@@ -717,10 +708,6 @@ bool VtSystem::CheckEntranceForSellForKospi()
 bool VtSystem::CheckEntranceForSellForKospi(size_t index)
 {
 	if (index < 0 || index >= ChartDataSize)
-		return false;
-
-	// 밴드에 의한 조건을 먼저 확인한다.
-	if (!CheckEntranceByBandForSell())
 		return false;
 
 	VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();
@@ -1434,10 +1421,6 @@ bool VtSystem::CheckLiqForBuyForKospi(size_t index)
 
 bool VtSystem::CheckEntranceForBuyForKosdaq()
 {
-	// 밴드에 의한 조건을 먼저 확인한다.
-	if (!CheckEntranceByBandForBuy())
-		return false;
-
 	VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();
 	std::vector<bool> argCond;
 	// 매수 진입
@@ -1548,10 +1531,6 @@ bool VtSystem::CheckEntranceForBuyForKosdaq()
 
 bool VtSystem::CheckEntranceForSellForKosdaq()
 {
-	// 밴드에 의한 조건을 먼저 확인한다.
-	if (!CheckEntranceByBandForSell())
-		return false;
-
 	VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();
 	std::vector<bool> argCond;
 	// 매수 진입
@@ -1774,10 +1753,6 @@ bool VtSystem::CheckLiqForBuyForKosdaq()
 
 bool VtSystem::CheckEntranceForBuyForUsd()
 {
-	// 밴드에 의한 조건을 먼저 확인한다.
-	if (!CheckEntranceByBandForBuy())
-		return false;
-
 	VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();
 	std::vector<bool> argCond;
 	// 매수 진입
@@ -2113,6 +2088,21 @@ bool VtSystem::CheckLiqForBuyForUsd()
 }
 
 
+void VtSystem::ShowInfoForKospi(size_t index)
+{
+	
+}
+
+void VtSystem::ShowInfoForKosdaq(size_t index)
+{
+
+}
+
+void VtSystem::ShowInfoForUsd(size_t index)
+{
+
+}
+
 bool VtSystem::CheckLiqForSellForUsd()
 {
 	VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();
@@ -2229,10 +2219,6 @@ bool VtSystem::CheckLiqForSellForUsd()
 bool VtSystem::CheckEntranceForBuyForUsd(size_t index)
 {
 	if (index < 0 || index >= ChartDataSize)
-		return false;
-
-	// 밴드에 의한 조건을 먼저 확인한다.
-	if (!CheckEntranceByBandForBuy())
 		return false;
 
 	VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();
@@ -2999,10 +2985,6 @@ bool VtSystem::CheckLiqForSellForKosdaq()
 bool VtSystem::CheckEntranceForBuyForKosdaq(size_t index)
 {
 	if (index < 0 || index >= ChartDataSize)
-		return false;
-
-	// 밴드에 의한 조건을 먼저 확인한다.
-	if (!CheckEntranceByBandForBuy())
 		return false;
 
 	VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();

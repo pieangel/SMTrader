@@ -198,6 +198,10 @@ public:
 	virtual bool CheckLiqForSellForUsd(size_t index);
 	virtual bool CheckLiqForBuyForUsd(size_t index);
 
+	void ShowInfoForKospi(size_t index);
+	void ShowInfoForKosdaq(size_t index);
+	void ShowInfoForUsd(size_t index);
+
 	int EntryToday() const { return _EntryToday; }
 	void EntryToday(int val) { _EntryToday = val; }
 	VtSymbol* Symbol() const { return _Symbol; }
