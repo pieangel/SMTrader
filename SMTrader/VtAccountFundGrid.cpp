@@ -7,6 +7,7 @@
 #include "VtFund.h"
 #include "VtUsdStrategyConfigDlg.h"
 #include "VtSubAccountManager.h"
+#include "VtAccountFundSelector.h"
 
 VtAccountFundGrid::VtAccountFundGrid()
 {
@@ -54,17 +55,73 @@ void VtAccountFundGrid::OnDClicked(int col, long row, RECT *rect, POINT *point, 
 		if (_ConfigDlg) {
 			_ConfigDlg->SetTargetAcntOrFund(selItem->second);
 		}
+		if (_ParendDlg)
+			_ParendDlg->SendMessage(WM_CLOSE, 0, 0);
 	}
 }
 
 void VtAccountFundGrid::OnLClicked(int col, long row, int updn, RECT *rect, POINT *point, int processed)
 {
-	
+	if (_ClickedRow == row)
+		return;
+
+	if (_ClickedRow >= 0) {
+		for (int i = 0; i < _ColCount; ++i) {
+			QuickSetBackColor(i, _ClickedRow, RGB(255, 255, 255));
+			QuickRedrawCell(i, _ClickedRow);
+		}
+	}
+	for (int i = 0; i < _ColCount; ++i) {
+		QuickSetBackColor(i, row, _ClickedColor);
+		QuickRedrawCell(i, row);
+	}
+	_ClickedRow = row;
 }
 
 void VtAccountFundGrid::OnRClicked(int col, long row, int updn, RECT *rect, POINT *point, int processed)
 {
 	
+}
+
+void VtAccountFundGrid::OnMouseMove(int col, long row, POINT *point, UINT nFlags, BOOL processed /*= 0*/)
+{
+	if (_OldSelRow == row )
+		return;
+
+	if (_OldSelRow != _ClickedRow && _OldSelRow >= 0) {
+		for (int i = 0; i < _ColCount; ++i) {
+			QuickSetBackColor(i, _OldSelRow, RGB(255, 255, 255));
+			QuickRedrawCell(i, _OldSelRow);
+		}
+	}
+
+	if (row != _ClickedRow) {
+		for (int i = 0; i < _ColCount; ++i) {
+			QuickSetBackColor(i, row, _SelColor);
+			QuickRedrawCell(i, row);
+		}
+	}
+	else {
+		for (int i = 0; i < _ColCount; ++i) {
+			QuickSetBackColor(i, row, _ClickedColor);
+			QuickRedrawCell(i, row);
+		}
+	}
+
+	_OldSelRow = row;
+}
+
+void VtAccountFundGrid::OnMouseLeaveFromMainGrid()
+{
+	if (_OldSelRow == _ClickedRow)
+		return;
+
+	for (int i = 0; i < _ColCount; ++i) {
+		QuickSetBackColor(i, _OldSelRow, RGB(255, 255, 255));
+		QuickRedrawCell(i, _OldSelRow);
+	}
+
+	_OldSelRow = -2;
 }
 
 void VtAccountFundGrid::SetColTitle()
@@ -206,10 +263,9 @@ void VtAccountFundGrid::ResizeWindow()
 	GetClientRect(rcClient);
 
 	int totalHeight = _HeadHeight;
-	for (size_t i = 0; i < _HeightVec.size(); ++i) {
-		totalHeight += _HeightVec[i];
+	for (size_t i = 0; i < 19; ++i) {
+		totalHeight += _HeadHeight;
 	}
-	totalHeight += 14;
 	int totalWidth = 0;
 	for (size_t i = 0; i < _ColWidthVec.size(); ++i) {
 		totalWidth += _ColWidthVec[i];

@@ -7,7 +7,7 @@
 class VtUsdStrategyConfigDlg;
 class VtFund;
 class VtAccount;
-
+class VtAccountFundSelector;
 class VtAccountFundGrid : public VtGrid
 {
 public:
@@ -18,7 +18,8 @@ public:
 	virtual void OnDClicked(int col, long row, RECT *rect, POINT *point, BOOL processed);
 	virtual void OnLClicked(int col, long row, int updn, RECT *rect, POINT *point, int processed);
 	virtual void OnRClicked(int col, long row, int updn, RECT *rect, POINT *point, int processed);
-
+	virtual void OnMouseMove(int col, long row, POINT *point, UINT nFlags, BOOL processed = 0);
+	virtual void OnMouseLeaveFromMainGrid();
 	void SetColTitle();
 	int _ColCount = 2;
 	int _RowCount = 60;
@@ -31,7 +32,14 @@ public:
 	int Mode() const { return _Mode; }
 	void Mode(int val) { _Mode = val; }
 	void SetConfigDlg(VtUsdStrategyConfigDlg* ConfigDlg);
+	VtAccountFundSelector* ParendDlg() const { return _ParendDlg; }
+	void ParendDlg(VtAccountFundSelector* val) { _ParendDlg = val; }
 private:
+	int _SelRow = -2;
+	int _OldSelRow = -2;
+	int _ClickedRow = -2;
+	COLORREF _SelColor = RGB(255, 227, 132);
+	COLORREF _ClickedColor = RGB(216, 234, 253);
 	VtUsdStrategyConfigDlg* _ConfigDlg;
 	std::vector<int> _ColWidthVec;
 	// 0 : ÀüÃ¼, 1 : °èÁÂ¸¸, 2 : ÆÝµå¸¸
@@ -40,5 +48,6 @@ private:
 	std::map<int, std::tuple<int, VtAccount*, VtFund*>> _RowToNameMap;
 	std::vector<int> _HeightVec;
 	void ResizeWindow();
+	VtAccountFundSelector* _ParendDlg = nullptr;
 };
 

@@ -41,6 +41,7 @@ BOOL VtAccountFundSelector::OnInitDialog()
 	((CButton*)GetDlgItem(IDC_RADIO_ENTIRE))->SetCheck(BST_CHECKED);
 	// TODO:  Add extra initialization here
 	_Grid.AttachGrid(this, IDC_STATIC_GRID);
+	_Grid.ParendDlg(this);
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // EXCEPTION: OCX Property Pages should return FALSE
 }
