@@ -382,6 +382,9 @@ void VtUsdStrategyConfigDlg::SetTargetAcntOrFund(std::tuple<int, VtAccount*, VtF
 
 void VtUsdStrategyConfigDlg::OnCbnSelchangeComboStrategy()
 {
+	if (_System) {
+		_System->UsdCfgDlg(nullptr);
+	}
 	_SelSysIndex = _ComboStrategy.GetCurSel();
 	auto it = _SystemMap.find(_SelSysIndex);
 	if (it != _SystemMap.end()) {
@@ -651,6 +654,10 @@ void VtUsdStrategyConfigDlg::OnBnClickedCheckRun()
 {
 	if (_StGrid) {
 		_StGrid->UpdateSystem(_SelRow, _CheckRun.GetCheck() == BST_CHECKED ? true : false);
+		if (_System) {
+			_System->Enable(_CheckRun.GetCheck() == BST_CHECKED ? true : false);
+			_System->ShowRealtime(_CheckRun.GetCheck() == BST_CHECKED ? true : false);
+		}
 	}
 }
 

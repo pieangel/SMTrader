@@ -376,6 +376,9 @@ VtPositionType VtQF2::UpdateSignal(int index)
 		_CurPosition = VtPositionType::None;
 	}
 
+	CheckLiqForBuyForKosdaq(index);
+	CheckLiqForSellForKosdaq(index);
+
 	// 예상 매수 진입 포지션을 알아본다.
 	if (CheckEntranceForBuyForKosdaq(index)) {
 		_ExpPosition = VtPositionType::Buy;

@@ -468,7 +468,7 @@ bool VtSystem::CheckEntranceForBuyForKospi(size_t index)
 						//_UsdCfgDlg->OnHogaCount(lastUac, lastUbc);
 						double ratio = Kbs[index] - Kas[index];
 						CString value;
-						value.Format(_T("%.2f"), ratio);
+						value.Format(_T("%.0f"), ratio);
 						_UsdCfgDlg->RefreshRealTimeValue(0, arg.Name, value);
 					}
 
@@ -739,7 +739,7 @@ bool VtSystem::CheckEntranceForSellForKospi(size_t index)
 						//_UsdCfgDlg->OnHogaCount(lastUac, lastUbc);
 						double ratio = Kas[index] - Kbs[index];
 						CString value;
-						value.Format(_T("%.2f"), ratio);
+						value.Format(_T("%.0f"), ratio);
 						_UsdCfgDlg->RefreshRealTimeValue(0, arg.Name, value);
 					}
 
@@ -1013,7 +1013,7 @@ bool VtSystem::CheckLiqForSellForKospi(size_t index)
 						//_UsdCfgDlg->OnHogaCount(lastUac, lastUbc);
 						double ratio = Kbs[index] - Kas[index];
 						CString value;
-						value.Format(_T("%.2f"), ratio);
+						value.Format(_T("%.0f"), ratio);
 						_UsdCfgDlg->RefreshRealTimeValue(1, arg.Name, value);
 					}
 
@@ -1289,7 +1289,7 @@ bool VtSystem::CheckLiqForBuyForKospi(size_t index)
 						//_UsdCfgDlg->OnHogaCount(lastUac, lastUbc);
 						double ratio = Kas[index] - Kbs[index];
 						CString value;
-						value.Format(_T("%.2f"), ratio);
+						value.Format(_T("%.0f"), ratio);
 						_UsdCfgDlg->RefreshRealTimeValue(1, arg.Name, value);
 					}
 
@@ -2248,7 +2248,7 @@ bool VtSystem::CheckEntranceForBuyForUsd(size_t index)
 
 					if (_ShowRealtime && _UsdCfgDlg) {
 						//_UsdCfgDlg->OnHogaCount(lastUac, lastUbc);
-						double ratio = Uac[index] / Ubc[index];
+						double ratio = Ubc[index] / Uac[index];
 						CString value;
 						value.Format(_T("%.2f"), ratio);
 						_UsdCfgDlg->RefreshRealTimeValue(0, arg.Name, value);
@@ -2281,7 +2281,7 @@ bool VtSystem::CheckEntranceForBuyForUsd(size_t index)
 
 					if (_ShowRealtime && _UsdCfgDlg) {
 						//_UsdCfgDlg->OnHogaCount(lastUac, lastUbc);
-						double ratio = Uas[index] / Ubs[index];
+						double ratio = Ubs[index] / Uas[index];
 						CString value;
 						value.Format(_T("%.2f"), ratio);
 						_UsdCfgDlg->RefreshRealTimeValue(0, arg.Name, value);
@@ -2380,10 +2380,6 @@ bool VtSystem::CheckEntranceForBuyForUsd(size_t index)
 bool VtSystem::CheckEntranceForSellForUsd(size_t index)
 {
 	if (index < 0 || index >= ChartDataSize)
-		return false;
-
-	// 밴드에 의한 조건을 먼저 확인한다.
-	if (!CheckEntranceByBandForSell())
 		return false;
 
 	VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();
@@ -3111,7 +3107,7 @@ bool VtSystem::CheckEntranceForBuyForKosdaq(size_t index)
 
 					if (_ShowRealtime && _UsdCfgDlg) {
 						//_UsdCfgDlg->OnHogaCount(lastUac, lastUbc);
-						double ratio = Uac[index] / Ubc[index];
+						double ratio = Ubc[index] / Uac[index];
 						CString value;
 						value.Format(_T("%.2f"), ratio);
 						_UsdCfgDlg->RefreshRealTimeValue(0, arg.Name, value);
@@ -3145,11 +3141,6 @@ bool VtSystem::CheckEntranceForSellForKosdaq(size_t index)
 {
 	if (index < 0 || index >= ChartDataSize)
 		return false;
-
-	// 밴드에 의한 조건을 먼저 확인한다.
-	if (!CheckEntranceByBandForSell())
-		return false;
-
 	VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();
 	std::vector<bool> argCond;
 	// 매수 진입

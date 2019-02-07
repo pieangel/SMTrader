@@ -465,9 +465,12 @@ VtPositionType VtKp4b::UpdateSignal(int index)
 		_CurPosition = VtPositionType::None;
 	}
 
+	CheckLiqForBuyForKospi(index);
+	CheckLiqForSellForKospi(index);
+
 	// 바인덱스에 의한 통제
 	if (GetDailyIndex(index) <= 0)
-		return _ExpPosition;
+		_ExpPosition = VtPositionType::None;
 
 	// 예상 매수 진입 포지션을 알아본다.
 	if (CheckEntranceForBuyForKospi(index)) {
