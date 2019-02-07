@@ -422,7 +422,7 @@ void VtUsdStrategyConfigDlg::PostNcDestroy()
 
 void VtUsdStrategyConfigDlg::OnBnClickedBtnApply()
 {
-	if (!_System || !_SelSymbol)
+	if (!_System)
 		return;
 	if (_Type == 0 || _Type == 1) {
 		_System->Account(_Account);
@@ -436,8 +436,11 @@ void VtUsdStrategyConfigDlg::OnBnClickedBtnApply()
 		_System->SysTargetName(_Fund->Name);
 		_System->Account(nullptr);
 	}
-	_System->Symbol(_SelSymbol);
-	_System->SymbolCode(_SelSymbol->ShortCode);
+
+	if (_SelSymbol) {
+		_System->Symbol(_SelSymbol);
+		_System->SymbolCode(_SelSymbol->ShortCode);
+	}
 	
 	CTime esTime;
 	_DpEntBegin.GetTime(esTime);
