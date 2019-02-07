@@ -29,27 +29,14 @@ public:
 	virtual void UpdateSystem(int index);
 	virtual void ReadExtraArgs();
 
-	bool CheckEntranceForBuy();
-	bool CheckEntranceForSell();
-	bool CheckLiqForSell();
-	bool CheckLiqForBuy();
-	bool CheckEntranceByBandForBuy();
-	bool CheckEntranceByBandForSell();
-	bool CheckEntranceByOpenForBuy();
-	bool CheckEntranceByOpenForSell();
+	virtual bool CheckEntranceForBuyForKosdaq();
+	virtual bool CheckEntranceForSellForKosdaq();
+	virtual bool CheckLiqForSellForKosdaq();
+	virtual bool CheckLiqForBuyForKosdaq();
 
-	bool CheckEntranceForBuy(size_t index);
-	bool CheckEntranceForSell(size_t index);
-	bool CheckLiqForSell(size_t index);
-	bool CheckLiqForBuy(size_t index);
-
-	bool CheckEntranceByBandForBuy(size_t index);
-	bool CheckEntranceByBandForSell(size_t index);
-	bool CheckEntranceByOpenForBuy(size_t index);
-	bool CheckEntranceByOpenForSell(size_t index);
-
-private:
-	double _PreHL = 0.0;
-	double _Band = 0.0;
+	virtual bool CheckEntranceForBuyForKosdaq(size_t index);
+	virtual bool CheckEntranceForSellForKosdaq(size_t index);
+	virtual bool CheckLiqForSellForKosdaq(size_t index);
+	virtual bool CheckLiqForBuyForKosdaq(size_t index);
 };
 
