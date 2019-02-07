@@ -37,10 +37,6 @@ public:
 	virtual bool CheckEntranceForSellForKospi(size_t index);
 	virtual bool CheckLiqForSellForKospi(size_t index);
 	virtual bool CheckLiqForBuyForKospi(size_t index);
-
-private:
-	double _PreHL = 0.0;
-	double _Band = 0.0;
 };
 
 
