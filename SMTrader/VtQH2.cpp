@@ -549,24 +549,97 @@ void VtQH2::ReloadSystem(int startIndex, int endIndex)
 }
 
 
+
 bool VtQH2::CheckEntranceForBuyForKosdaq()
 {
-	return VtSystem::CheckEntranceForBuyForKosdaq();
+	std::vector<bool> argCond;
+
+	argCond.push_back(VtSystem::CheckEntranceForBuyForKosdaq());
+
+	if (_EnableByBand) {
+		// 밴드에 의한 조건을 먼저 확인한다.
+		argCond.push_back(CheckEntranceByBandForBuy());
+	}
+
+
+	if (argCond.size() == 0)
+		return false;
+
+	// 하나의 조건이라도 거짓이면 신호 없음. 모두가 참이면 매수 반환
+	auto it = std::find(argCond.begin(), argCond.end(), false);
+	if (it != argCond.end())
+		return false;
+	else
+		return true;
 }
 
 bool VtQH2::CheckEntranceForBuyForKosdaq(size_t index)
 {
-	return VtSystem::CheckEntranceForBuyForKosdaq(index);
+	std::vector<bool> argCond;
+
+	argCond.push_back(VtSystem::CheckEntranceForBuyForKosdaq(index));
+
+	if (_EnableByBand) {
+		// 밴드에 의한 조건을 먼저 확인한다.
+		argCond.push_back(CheckEntranceByBandForBuy(index));
+	}
+
+
+	if (argCond.size() == 0)
+		return false;
+
+	// 하나의 조건이라도 거짓이면 신호 없음. 모두가 참이면 매수 반환
+	auto it = std::find(argCond.begin(), argCond.end(), false);
+	if (it != argCond.end())
+		return false;
+	else
+		return true;
 }
 
 bool VtQH2::CheckEntranceForSellForKosdaq()
 {
-	return VtSystem::CheckEntranceForSellForKosdaq();
+	std::vector<bool> argCond;
+
+	argCond.push_back(VtSystem::CheckEntranceForSellForKosdaq());
+
+	if (_EnableByBand) {
+		// 밴드에 의한 조건을 먼저 확인한다.
+		argCond.push_back(CheckEntranceByBandForSell());
+	}
+
+
+	if (argCond.size() == 0)
+		return false;
+
+	// 하나의 조건이라도 거짓이면 신호 없음. 모두가 참이면 매수 반환
+	auto it = std::find(argCond.begin(), argCond.end(), false);
+	if (it != argCond.end())
+		return false;
+	else
+		return true;
 }
 
 bool VtQH2::CheckEntranceForSellForKosdaq(size_t index)
 {
-	return VtSystem::CheckEntranceForSellForKosdaq(index);
+	std::vector<bool> argCond;
+
+	argCond.push_back(VtSystem::CheckEntranceForSellForKosdaq(index));
+
+	if (_EnableByBand) {
+		// 밴드에 의한 조건을 먼저 확인한다.
+		argCond.push_back(CheckEntranceByBandForBuy(index));
+	}
+
+
+	if (argCond.size() == 0)
+		return false;
+
+	// 하나의 조건이라도 거짓이면 신호 없음. 모두가 참이면 매수 반환
+	auto it = std::find(argCond.begin(), argCond.end(), false);
+	if (it != argCond.end())
+		return false;
+	else
+		return true;
 }
 
 bool VtQH2::CheckLiqForSellForKosdaq()

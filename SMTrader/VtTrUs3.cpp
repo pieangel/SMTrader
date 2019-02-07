@@ -525,26 +525,98 @@ void VtTrUs3::ReadExtraArgs()
 	VtSystem::ReadExtraArgs();
 }
 
+
 bool VtTrUs3::CheckEntranceForBuyForUsd()
 {
-	return VtSystem::CheckEntranceForBuyForUsd();
+	std::vector<bool> argCond;
+
+	argCond.push_back(VtSystem::CheckEntranceForBuyForUsd());
+
+	if (_EnableByBand) {
+		// 밴드에 의한 조건을 먼저 확인한다.
+		argCond.push_back(CheckEntranceByBandForBuy());
+	}
+
+
+	if (argCond.size() == 0)
+		return false;
+
+	// 하나의 조건이라도 거짓이면 신호 없음. 모두가 참이면 매수 반환
+	auto it = std::find(argCond.begin(), argCond.end(), false);
+	if (it != argCond.end())
+		return false;
+	else
+		return true;
 }
 
 bool VtTrUs3::CheckEntranceForBuyForUsd(size_t index)
 {
-	return VtSystem::CheckEntranceForBuyForUsd(index);
+	std::vector<bool> argCond;
+
+	argCond.push_back(VtSystem::CheckEntranceForBuyForUsd(index));
+
+	if (_EnableByBand) {
+		// 밴드에 의한 조건을 먼저 확인한다.
+		argCond.push_back(CheckEntranceByBandForBuy(index));
+	}
+
+
+	if (argCond.size() == 0)
+		return false;
+
+	// 하나의 조건이라도 거짓이면 신호 없음. 모두가 참이면 매수 반환
+	auto it = std::find(argCond.begin(), argCond.end(), false);
+	if (it != argCond.end())
+		return false;
+	else
+		return true;
 }
 
 bool VtTrUs3::CheckEntranceForSellForUsd()
 {
-	return VtSystem::CheckEntranceForSellForUsd();
+	std::vector<bool> argCond;
+
+	argCond.push_back(VtSystem::CheckEntranceForSellForUsd());
+
+	if (_EnableByBand) {
+		// 밴드에 의한 조건을 먼저 확인한다.
+		argCond.push_back(CheckEntranceByBandForSell());
+	}
+
+
+	if (argCond.size() == 0)
+		return false;
+
+	// 하나의 조건이라도 거짓이면 신호 없음. 모두가 참이면 매수 반환
+	auto it = std::find(argCond.begin(), argCond.end(), false);
+	if (it != argCond.end())
+		return false;
+	else
+		return true;
 }
 
 bool VtTrUs3::CheckEntranceForSellForUsd(size_t index)
 {
-	return VtSystem::CheckEntranceForSellForUsd(index);
-}
+	std::vector<bool> argCond;
 
+	argCond.push_back(VtSystem::CheckEntranceForSellForUsd(index));
+
+	if (_EnableByBand) {
+		// 밴드에 의한 조건을 먼저 확인한다.
+		argCond.push_back(CheckEntranceByBandForBuy(index));
+	}
+
+
+	if (argCond.size() == 0)
+		return false;
+
+	// 하나의 조건이라도 거짓이면 신호 없음. 모두가 참이면 매수 반환
+	auto it = std::find(argCond.begin(), argCond.end(), false);
+	if (it != argCond.end())
+		return false;
+	else
+		return true;
+}
 bool VtTrUs3::CheckLiqForSellForUsd()
 {
 	return VtSystem::CheckLiqForSellForUsd();
