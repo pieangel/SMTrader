@@ -955,9 +955,6 @@
     <ClInclude Include="System\VtStochasticSystem.h">
       <Filter>System\Regular</Filter>
     </ClInclude>
-    <ClInclude Include="System\VtSystemManager.h">
-      <Filter>System\Regular</Filter>
-    </ClInclude>
     <ClInclude Include="VtQIn1.h">
       <Filter>System\Kosdaq</Filter>
     </ClInclude>
@@ -1350,6 +1347,9 @@
     </ClInclude>
     <ClInclude Include="VtQH2.h">
       <Filter>System\Kosdaq</Filter>
+    </ClInclude>
+    <ClInclude Include="System\VtSystemManager.h">
+      <Filter>System</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2082,9 +2082,6 @@
     <ClCompile Include="System\VtStochasticSystem.cpp">
       <Filter>System\Regular</Filter>
     </ClCompile>
-    <ClCompile Include="System\VtSystemManager.cpp">
-      <Filter>System\Regular</Filter>
-    </ClCompile>
     <ClCompile Include="VtQIn1.cpp">
       <Filter>System\Kosdaq</Filter>
     </ClCompile>
@@ -2441,6 +2438,9 @@
     </ClCompile>
     <ClCompile Include="VtQH2.cpp">
       <Filter>System\Kosdaq</Filter>
+    </ClCompile>
+    <ClCompile Include="System\VtSystemManager.cpp">
+      <Filter>System</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

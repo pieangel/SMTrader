@@ -48,8 +48,9 @@ BOOL HdOptionPage::OnInitDialog()
 	_OptionGrid.OptionPage(this);
 	// TODO:  Add extra initialization here
 	_OptionGrid.AttachGrid(this, IDC_STATIC_OPT_GRID);
-	if (_SymSelecter && _SymSelecter->SelTab == 1)
-		_OptionGrid.GetSymbolMasterLately();
+	_OptionGrid.SymSelecter(_SymSelecter);
+	//if (_SymSelecter && _SymSelecter->SelTab == 1)
+	//	_OptionGrid.GetSymbolMasterLately();
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // EXCEPTION: OCX Property Pages should return FALSE
 }

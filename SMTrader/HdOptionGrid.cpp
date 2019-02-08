@@ -15,6 +15,8 @@
 #include "VtOrderConfigManager.h"
 #include "VtOrderCenterWndHd.h"
 #include "VtGlobal.h"
+#include "HdSymbolSelecter.h"
+#include "VtUsdStrategyConfigDlg.h"
 using Poco::NumberFormatter;
 
 HdOptionGrid::HdOptionGrid()
@@ -24,6 +26,8 @@ HdOptionGrid::HdOptionGrid()
 	_EqualCol = -2;
 	_EqualRow = -2;
 	_UsdConfigDlg = nullptr;
+	_OldSelCell = std::make_pair(-2, -2);
+	_ClickedCell = std::make_pair(-2, -2);
 }
 
 
@@ -82,6 +86,13 @@ void HdOptionGrid::OnDClicked(int col, long row, RECT *rect, POINT *point, BOOL 
 	VtSymbol* sym = (VtSymbol*)cell.Tag();
 	if (sym)
 	{
+		if (_UsdConfigDlg) {
+			_UsdConfigDlg->SetSymbol(sym);
+			if (_SymSelecter)
+				_SymSelecter->SendMessage(WM_CLOSE, 0, 0);
+			return;
+		}
+
 		if (_OrderConfigMgr)
 		{
 			_OrderConfigMgr->Symbol(sym);
@@ -467,4 +478,59 @@ int HdOptionGrid::GetMaxRow()
 	int count = (rect.bottom - rect.top) / rowHeight;
 
 	return count - 2;
+}
+
+
+void HdOptionGrid::OnLClicked(int col, long row, int updn, RECT *rect, POINT *point, int processed)
+{
+	if (updn == TRUE) {
+		if (_ClickedCell.first == 0) {
+			QuickSetBackColor(_ClickedCell.first, _ClickedCell.second, _CallColor);
+		}
+		else if (_ClickedCell.first == 2) {
+			QuickSetBackColor(_ClickedCell.first, _ClickedCell.second, _PutColor);
+		}
+		QuickRedrawCell(_ClickedCell.first, _ClickedCell.second);
+
+		if (col == 1)
+			return;
+
+		std::pair<int, int> curSel = std::make_pair(col, row);
+		QuickSetBackColor(curSel.first, curSel.second, _ClickedColor);
+		QuickRedrawCell(curSel.first, curSel.second);
+		_ClickedCell = curSel;
+	}
+}
+
+void HdOptionGrid::OnMouseMove(int col, long row, POINT *point, UINT nFlags, BOOL processed /*= 0*/)
+{
+	std::pair<int, int> curSel = std::make_pair(col, row);
+	if (_OldSelCell == curSel)
+		return;
+	if (_OldSelCell != _ClickedCell) {
+		if (_OldSelCell.first == 0) {
+			QuickSetBackColor(_OldSelCell.first, _OldSelCell.second, _CallColor);
+		}
+		else if (_OldSelCell.first == 2) {
+			QuickSetBackColor(_OldSelCell.first, _OldSelCell.second, _PutColor);
+		}
+		QuickRedrawCell(_OldSelCell.first, _OldSelCell.second);
+	}
+
+	if (col != 1) {
+		if (curSel != _ClickedCell) {
+			QuickSetBackColor(curSel.first, curSel.second, _SelColor);
+			QuickRedrawCell(curSel.first, curSel.second);
+		}
+		else {
+			QuickSetBackColor(curSel.first, curSel.second, _ClickedColor);
+			QuickRedrawCell(curSel.first, curSel.second);
+		}
+	}
+	_OldSelCell = curSel;
+}
+
+void HdOptionGrid::OnMouseLeaveFromMainGrid()
+{
+	
 }

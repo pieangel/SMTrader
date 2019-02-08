@@ -195,7 +195,7 @@ bool VtSystem::CheckEntranceByBandForBuy(size_t index)
 	dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
 	std::vector<double>& maindateArray = _RefDataMap[dataKey]->GetDataArray(_T("date"));
 	int curDayIndex = FindDateIndex(maindateArray[index], dayDateArray);
-	if (curDayIndex == 0)
+	if (curDayIndex <= 0)
 		return false;
 
 	double preDayHigh = highArray[curDayIndex - 1];
@@ -248,7 +248,7 @@ bool VtSystem::CheckEntranceByBandForSell(size_t index)
 	dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
 	std::vector<double>& maindateArray = _RefDataMap[dataKey]->GetDataArray(_T("date"));
 	int curDayIndex = FindDateIndex(maindateArray[index], dayDateArray);
-	if (curDayIndex == 0)
+	if (curDayIndex <= 0)
 		return false;
 
 	double preDayHigh = highArray[curDayIndex - 1];
@@ -286,7 +286,8 @@ bool VtSystem::CheckEntranceByOpenForBuy(size_t index)
 	dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
 	std::vector<double>& maindateArray = _RefDataMap[dataKey]->GetDataArray(_T("date"));
 	int curDayIndex = FindDateIndex(maindateArray[index], dayDateArray);
-
+	if (curDayIndex <= 0)
+		return false;
 	dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::DAY, 1);
 	if (openArray.size() == 0 || closeArray.size() == 0)
 		return false;
@@ -316,6 +317,8 @@ bool VtSystem::CheckEntranceByOpenForSell(size_t index)
 	dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
 	std::vector<double>& maindateArray = _RefDataMap[dataKey]->GetDataArray(_T("date"));
 	int curDayIndex = FindDateIndex(maindateArray[index], dayDateArray);
+	if (curDayIndex <= 0)
+		return false;
 
 	dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::DAY, 1);
 	if (openArray.size() == 0 || closeArray.size() == 0)
@@ -2266,14 +2269,14 @@ bool VtSystem::CheckEntranceForBuyForUsd(size_t index)
 				else if (arg.Name.compare(_T("Uas>Ubs")) == 0) {
 					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("175F"));
 					// 매도 호가 총수량
-					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string code = sym->ShortCode + (_T("SHTQ"));
 					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
 					std::vector<double>& Uas = _RefDataMap[dataKey]->GetDataArray(_T("close"));
 					if (Uas.size() == 0)
 						continue;;
 
 					// 매수 호가 총수량
-					code = sym->ShortCode + (_T("BHTC"));
+					code = sym->ShortCode + (_T("BHTQ"));
 					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
 					std::vector<double>& Ubs = _RefDataMap[dataKey]->GetDataArray(_T("close"));
 					if (Ubs.size() == 0)
@@ -2427,14 +2430,14 @@ bool VtSystem::CheckEntranceForSellForUsd(size_t index)
 				else if (arg.Name.compare(_T("Ubs>Uas")) == 0) {
 					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("175F"));
 					// 매도 호가 총수량
-					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string code = sym->ShortCode + (_T("SHTQ"));
 					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
 					std::vector<double>& Uas = _RefDataMap[dataKey]->GetDataArray(_T("close"));
 					if (Uas.size() == 0)
 						continue;
 
 					// 매수 호가 총수량
-					code = sym->ShortCode + (_T("BHTC"));
+					code = sym->ShortCode + (_T("BHTQ"));
 					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
 					std::vector<double>& Ubs = _RefDataMap[dataKey]->GetDataArray(_T("close"));
 					if (Ubs.size() == 0)
@@ -2588,14 +2591,14 @@ bool VtSystem::CheckLiqForSellForUsd(size_t index)
 				else if (arg.Name.compare(_T("Uas>Ubs")) == 0) {
 					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("175F"));
 					// 매도 호가 총수량
-					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string code = sym->ShortCode + (_T("SHTQ"));
 					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
 					std::vector<double>& Uas = _RefDataMap[dataKey]->GetDataArray(_T("close"));
 					if (Uas.size() == 0)
 						continue;
 
 					// 매수 호가 총수량
-					code = sym->ShortCode + (_T("BHTC"));
+					code = sym->ShortCode + (_T("BHTQ"));
 					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
 					std::vector<double>& Ubs = _RefDataMap[dataKey]->GetDataArray(_T("close"));
 					if (Ubs.size() == 0)
@@ -2751,14 +2754,14 @@ bool VtSystem::CheckLiqForBuyForUsd(size_t index)
 				else if (arg.Name.compare(_T("Ubs>Uas")) == 0) {
 					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("175F"));
 					// 매도 호가 총수량
-					std::string code = sym->ShortCode + (_T("SHTC"));
+					std::string code = sym->ShortCode + (_T("SHTQ"));
 					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
 					std::vector<double>& Uas = _RefDataMap[dataKey]->GetDataArray(_T("close"));
 					if (Uas.size() == 0)
 						continue;
 
 					// 매수 호가 총수량
-					code = sym->ShortCode + (_T("BHTC"));
+					code = sym->ShortCode + (_T("BHTQ"));
 					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
 					std::vector<double>& Ubs = _RefDataMap[dataKey]->GetDataArray(_T("close"));
 					if (Ubs.size() == 0)
@@ -3836,6 +3839,8 @@ void VtSystem::Symbol(VtSymbol* val)
 	_Symbol = val;
 	// 일별 데이터 추가
 	VtChartData* data = AddDataSource(_Symbol->ShortCode, VtChartType::DAY, 1);
+	data->RequestChartData();
+	data = AddDataSource(_Symbol->ShortCode, VtChartType::MIN, _Cycle);
 	data->RequestChartData();
 }
 

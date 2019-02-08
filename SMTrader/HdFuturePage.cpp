@@ -45,8 +45,9 @@ BOOL HdFuturePage::OnInitDialog()
 	// TODO:  Add extra initialization here
 	_FutureGrid.FuturePage(this);
 	_FutureGrid.AttachGrid(this, IDC_STATIC_FUT_GRID);
-	if (_SymSelecter && _SymSelecter->SelTab == 0)
-		_FutureGrid.GetSymbolMaster();
+	_FutureGrid.SymSelecter(_SymSelecter);
+	//if (_SymSelecter && _SymSelecter->SelTab == 0)
+	//	_FutureGrid.GetSymbolMaster();
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // EXCEPTION: OCX Property Pages should return FALSE
 }

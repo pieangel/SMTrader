@@ -424,17 +424,22 @@ void VtUsdStrategyConfigDlg::OnBnClickedBtnApply()
 {
 	if (!_System)
 		return;
+
 	if (_Type == 0 || _Type == 1) {
-		_System->Account(_Account);
-		_Type == 0 ? _System->SysTargetType(TargetType::RealAccount) : _System->SysTargetType(TargetType::SubAccount);
-		_System->SysTargetName(_Account->AccountNo);
-		_System->Fund(nullptr);
+		if (_Account) {
+			_System->Account(_Account);
+			_Type == 0 ? _System->SysTargetType(TargetType::RealAccount) : _System->SysTargetType(TargetType::SubAccount);
+			_System->SysTargetName(_Account->AccountNo);
+			_System->Fund(nullptr);
+		}
 	}
 	else {
-		_System->Fund(_Fund);
-		_System->SysTargetType(TargetType::Fund);
-		_System->SysTargetName(_Fund->Name);
-		_System->Account(nullptr);
+		if (_Fund) {
+			_System->Fund(_Fund);
+			_System->SysTargetType(TargetType::Fund);
+			_System->SysTargetName(_Fund->Name);
+			_System->Account(nullptr);
+		}
 	}
 
 	if (_SelSymbol) {

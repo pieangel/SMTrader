@@ -383,6 +383,7 @@ VtPositionType VtQIn1::UpdateSignal(int index)
 		_CurPosition = VtPositionType::None;
 	}
 
+	/*
 	CheckLiqForBuyForKosdaq(index);
 	CheckLiqForSellForKosdaq(index);
 
@@ -395,7 +396,7 @@ VtPositionType VtQIn1::UpdateSignal(int index)
 	if (CheckEntranceForSellForKosdaq(index)) {
 		_ExpPosition = VtPositionType::Sell;
 	}
-
+	*/
 	return _ExpPosition;
 }
 

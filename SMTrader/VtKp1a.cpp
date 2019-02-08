@@ -463,7 +463,8 @@ VtPositionType VtKp1a::UpdateSignal(int index)
 		LOG_F(INFO, _T("트레일스탑성공"));
 		_CurPosition = VtPositionType::None;
 	}
-
+	
+	/*
 	CheckLiqForBuyForKospi(index);
 	CheckLiqForSellForKospi(index);
 
@@ -476,7 +477,7 @@ VtPositionType VtKp1a::UpdateSignal(int index)
 	if (CheckEntranceForSellForKospi(index)) {
 		_ExpPosition = VtPositionType::Sell;
 	}
-
+	*/
 	return _ExpPosition;
 }
 

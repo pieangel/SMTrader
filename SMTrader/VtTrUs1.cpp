@@ -361,6 +361,7 @@ VtPositionType VtTrUs1::UpdateSignal(int index)
 		_CurPosition = VtPositionType::None;
 	}
 
+	/*
 	CheckLiqForBuyForUsd(index);
 	CheckLiqForSellForUsd(index);
 
@@ -373,7 +374,7 @@ VtPositionType VtTrUs1::UpdateSignal(int index)
 	if (CheckEntranceForSellForUsd(index)) {
 		_ExpPosition = VtPositionType::Sell;
 	}
-
+	*/
 	return _ExpPosition;
 }
 

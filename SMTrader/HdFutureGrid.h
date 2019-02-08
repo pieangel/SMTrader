@@ -6,6 +6,7 @@ class VtProductSection;
 class VtSymbol;
 class VtOrderConfigManager;
 class VtUsdStrategyConfigDlg;
+class HdSymbolSelecter;
 class HdFutureGrid :
 	public VtGrid
 {
@@ -15,6 +16,9 @@ public:
 
 	virtual void OnSetup();
 	virtual void OnDClicked(int col, long row, RECT *rect, POINT *point, BOOL processed);
+	virtual void OnLClicked(int col, long row, int updn, RECT *rect, POINT *point, int processed);
+	virtual void OnMouseMove(int col, long row, POINT *point, UINT nFlags, BOOL processed = 0);
+	virtual void OnMouseLeaveFromMainGrid();
 
 	void SetColTitle();
 	int _ColCount = 3;
@@ -33,7 +37,15 @@ public:
 	VtOrderConfigManager* OrderConfigMgr() const { return _OrderConfigMgr; }
 	void OrderConfigMgr(VtOrderConfigManager* val) { _OrderConfigMgr = val; }
 	void SetConfigDlg(VtUsdStrategyConfigDlg* ConfigDlg);
+	HdSymbolSelecter* SymSelecter() const { return _SymSelecter; }
+	void SymSelecter(HdSymbolSelecter* val) { _SymSelecter = val; }
 private:
+	HdSymbolSelecter* _SymSelecter;
+	int _OldSelRow = -2;
+	int _ClickedRow = -2;
+	COLORREF _SelColor = RGB(255, 227, 132);
+	COLORREF _ClickedColor = RGB(216, 234, 253);
+
 	HdFuturePage* _FuturePage = nullptr;
 	VtProductSection* _PrdtSec = nullptr;
 	VtOrderConfigManager* _OrderConfigMgr = nullptr;
