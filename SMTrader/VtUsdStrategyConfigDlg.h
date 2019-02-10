@@ -13,6 +13,7 @@ class VtSymbol;
 class VtAccount;
 class VtFund;
 class VtStrategyGrid;
+const int ArgTimer = 0x00000008;
 class VtUsdStrategyConfigDlg : public CDialogEx
 {
 	DECLARE_DYNAMIC(VtUsdStrategyConfigDlg)
@@ -115,8 +116,10 @@ public:
 	CButton _CheckRun;
 	CStatic _StaticLastEntPrice;
 	void OnRealTimeEvent();
+	void RefreshRealTimeValue(std::string argName, double value);
 	void RefreshRealTimeValue(std::string argName, CString value);
 	void RefreshRealTimeValue(int index, std::string argName, CString value);
 	afx_msg void OnEnChangeEditOrderAmt();
 	void UpdateRunCheck(VtSystem* sys);
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
 };

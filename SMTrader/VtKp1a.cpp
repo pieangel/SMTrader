@@ -495,7 +495,7 @@ void VtKp1a::OnTimer()
 	// 포지션에 따른 청산
 	// 매수일 때 청산 조건 확인
 	if (_CurPosition == VtPositionType::Buy) {
-		if (CheckLiqForBuyForKospi() && LiqudAll()) {
+		if (CheckCondition(_T("매수청산")) && LiqudAll()) {
 			LOG_F(INFO, _T("매수청산성공"));
 			_CurPosition = VtPositionType::None;
 		}
@@ -503,7 +503,7 @@ void VtKp1a::OnTimer()
 
 	// 매도일 때 청산 조건 확인
 	if (_CurPosition == VtPositionType::Sell) {
-		if (CheckLiqForSellForKospi() && LiqudAll()) {
+		if (CheckCondition(_T("매도청산")) && LiqudAll()) {
 			LOG_F(INFO, _T("매도청산성공"));
 			_CurPosition = VtPositionType::None;
 		}
@@ -529,7 +529,7 @@ void VtKp1a::OnTimer()
 
 	if (_CurPosition == VtPositionType::None) {
 
-		if (CheckEntranceForBuyForKospi()) {
+		if (CheckCondition(_T("매수진입"))) {
 			LOG_F(INFO, _T("매수진입성공"));
 			// 포지션 설정
 			_CurPosition = VtPositionType::Buy;
@@ -545,7 +545,7 @@ void VtKp1a::OnTimer()
 		}
 
 		// 매도 진입 조건 확인
-		if (CheckEntranceForSellForKospi()) {
+		if (CheckCondition(_T("매도진입"))) {
 			LOG_F(INFO, _T("매도진입성공"));
 			// 포지션 설정
 			_CurPosition = VtPositionType::Sell;
@@ -575,11 +575,11 @@ void VtKp1a::ReadExtraArgs()
 	VtSystem::ReadExtraArgs();
 }
 
-bool VtKp1a::CheckEntranceForBuyForKospi()
+bool VtKp1a::CheckEntranceForBuy()
 {
 	std::vector<bool> argCond;
 
-	argCond.push_back(VtSystem::CheckEntranceForBuyForKospi());
+	argCond.push_back(CheckCondition(_T("매수진입")));
 
 	if (_EnableByBand) {
 		// 밴드에 의한 조건을 먼저 확인한다.
@@ -598,11 +598,11 @@ bool VtKp1a::CheckEntranceForBuyForKospi()
 		return true;
 }
 
-bool VtKp1a::CheckEntranceForBuyForKospi(size_t index)
+bool VtKp1a::CheckEntranceForBuy(size_t index)
 {
 	std::vector<bool> argCond;
 
-	argCond.push_back(VtSystem::CheckEntranceForBuyForKospi(index));
+	argCond.push_back(CheckCondition(_T("매수진입"), index));
 
 	if (_EnableByBand) {
 		// 밴드에 의한 조건을 먼저 확인한다.
@@ -621,11 +621,11 @@ bool VtKp1a::CheckEntranceForBuyForKospi(size_t index)
 		return true;
 }
 
-bool VtKp1a::CheckEntranceForSellForKospi()
+bool VtKp1a::CheckEntranceForSell()
 {
 	std::vector<bool> argCond;
 
-	argCond.push_back(VtSystem::CheckEntranceForSellForKospi());
+	argCond.push_back(CheckCondition(_T("매도진입")));
 
 	if (_EnableByBand) {
 		// 밴드에 의한 조건을 먼저 확인한다.
@@ -644,11 +644,11 @@ bool VtKp1a::CheckEntranceForSellForKospi()
 		return true;
 }
 
-bool VtKp1a::CheckEntranceForSellForKospi(size_t index)
+bool VtKp1a::CheckEntranceForSell(size_t index)
 {
 	std::vector<bool> argCond;
 
-	argCond.push_back(VtSystem::CheckEntranceForSellForKospi(index));
+	argCond.push_back(CheckCondition(_T("매도진입"), index));
 
 	if (_EnableByBand) {
 		// 밴드에 의한 조건을 먼저 확인한다.
@@ -667,24 +667,24 @@ bool VtKp1a::CheckEntranceForSellForKospi(size_t index)
 		return true;
 }
 
-bool VtKp1a::CheckLiqForSellForKospi()
+bool VtKp1a::CheckLiqForSell()
 {
-	return VtSystem::CheckLiqForSellForKospi();
+	return CheckCondition(_T("매도청산"));
 }
 
-bool VtKp1a::CheckLiqForSellForKospi(size_t index)
+bool VtKp1a::CheckLiqForSell(size_t index)
 {
-	return VtSystem::CheckLiqForSellForKospi(index);
+	return CheckCondition(_T("매도청산"));
 }
 
-bool VtKp1a::CheckLiqForBuyForKospi()
+bool VtKp1a::CheckLiqForBuy()
 {
-	return VtSystem::CheckLiqForBuyForKospi();
+	return CheckCondition(_T("매수청산"));
 }
 
-bool VtKp1a::CheckLiqForBuyForKospi(size_t index)
+bool VtKp1a::CheckLiqForBuy(size_t index)
 {
-	return VtSystem::CheckLiqForBuyForKospi(index);
+	return CheckCondition(_T("매수청산"), index);
 }
 
 void VtKp1a::ReloadSystem(int startIndex, int endIndex)

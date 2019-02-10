@@ -18,6 +18,7 @@
 #include "VtStrategyGrid.h"
 #include "Poco/NumberFormatter.h"
 #include "XFormatNumber.h"
+#include "System/VtSystemManager.h"
 
 using Poco::NumberFormatter;
 
@@ -89,6 +90,7 @@ BEGIN_MESSAGE_MAP(VtUsdStrategyConfigDlg, CDialogEx)
 	ON_WM_CLOSE()
 	ON_BN_CLICKED(IDC_CHECK_RUN, &VtUsdStrategyConfigDlg::OnBnClickedCheckRun)
 	ON_EN_CHANGE(IDC_EDIT_ORDER_AMT, &VtUsdStrategyConfigDlg::OnEnChangeEditOrderAmt)
+	ON_WM_TIMER()
 END_MESSAGE_MAP()
 
 
@@ -152,6 +154,10 @@ BOOL VtUsdStrategyConfigDlg::OnInitDialog()
 	_WndHeight = rcWnd.Height();
 	ResizeWindow();
 
+	VtSystemManager* sysMgr = VtSystemManager::GetInstance();
+	sysMgr->AddSystemDialog(this);
+
+	SetTimer(ArgTimer, 100, NULL);
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // EXCEPTION: OCX Property Pages should return FALSE
 }
@@ -656,6 +662,9 @@ void VtUsdStrategyConfigDlg::OnClose()
 		VtSystem* sys = std::get<1>(item);
 		//sys->ShowRealtime(false);
 	}
+	KillTimer(ArgTimer);
+	VtSystemManager* sysMgr = VtSystemManager::GetInstance();
+	sysMgr->RemoveSystemDialog(this);
 
 	CDialogEx::OnClose();
 }
@@ -704,6 +713,13 @@ void VtUsdStrategyConfigDlg::RefreshRealTimeValue(int index, std::string argName
 }
 
 
+void VtUsdStrategyConfigDlg::RefreshRealTimeValue(std::string argName, double val)
+{
+	CString value;
+	value.Format(_T("%.0f"), val);
+	RefreshRealTimeValue(argName, value);
+}
+
 void VtUsdStrategyConfigDlg::OnEnChangeEditOrderAmt()
 {
 	// TODO:  If this is a RICHEDIT control, the control will not
@@ -719,4 +735,39 @@ void VtUsdStrategyConfigDlg::UpdateRunCheck(VtSystem* sys)
 	if (!sys || _System != sys)
 		return;
 	sys->Enable() ? _CheckRun.SetCheck(BST_CHECKED) : _CheckRun.SetCheck(BST_UNCHECKED);
+}
+
+
+void VtUsdStrategyConfigDlg::OnTimer(UINT_PTR nIDEvent)
+{
+	if (nIDEvent == ArgTimer) {
+		VtSystemManager* sysMgr = VtSystemManager::GetInstance();
+		double _KbsMiKas = sysMgr->Kbs - sysMgr->Kas;
+		RefreshRealTimeValue(_T("Kbs-Kas"), _KbsMiKas);
+		double _KasMiKbs = sysMgr->Kas - sysMgr->Kbs;
+		RefreshRealTimeValue(_T("Kas-Kbs"), _KasMiKbs);
+		double _KbcGtKac = sysMgr->Kbc == 0 ? 0 : sysMgr->Kac / sysMgr->Kbc;
+		RefreshRealTimeValue(_T("Kbc>Kac"), _KbcGtKac);
+		double _KacGtKbc = sysMgr->Kac == 0 ? 0 : sysMgr->Kbc / sysMgr->Kac;
+		RefreshRealTimeValue(_T("Kac>Kbc"), _KacGtKbc);
+		double _QbsGtQas = sysMgr->Qbs == 0 ? 0 : sysMgr->Qas / sysMgr->Qbs;
+		RefreshRealTimeValue(_T("Qbs>Qas"), _QbsGtQas);
+		double _QasGtQbs = sysMgr->Qas == 0 ? 0 : sysMgr->Qbs / sysMgr->Qas;
+		RefreshRealTimeValue(_T("Qas>Qbs"), _QasGtQbs);
+		double _QbcGtQac = sysMgr->Qbc == 0 ? 0 : sysMgr->Qac / sysMgr->Qbc;
+		RefreshRealTimeValue(_T("Qbc>Qac"), _QbcGtQac);
+		double _QacGtQbc = sysMgr->Qac == 0 ? 0 : sysMgr->Qbc / sysMgr->Qac;
+		RefreshRealTimeValue(_T("Qac>Qbc"), _QacGtQbc);
+		
+		double _UbsGtUas = sysMgr->Ubs == 0 ? 0 : sysMgr->Uas / sysMgr->Ubs;
+		RefreshRealTimeValue(_T("Ubs>Uas"), _UbsGtUas);
+		double _UasGtUbs = sysMgr->Uas == 0 ? 0 : sysMgr->Ubs / sysMgr->Uas;
+		RefreshRealTimeValue(_T("Uas>Ubs"), _UasGtUbs);
+		double _UbcGtUac = sysMgr->Ubc == 0 ? 0 : sysMgr->Uac / sysMgr->Ubc;
+		RefreshRealTimeValue(_T("Ubc>Uac"), _UbcGtUac);
+		double _UacGtUbc = sysMgr->Uac == 0 ? 0 : sysMgr->Ubc / sysMgr->Uac;
+		RefreshRealTimeValue(_T("Uac>Ubc"), _UacGtUbc);
+	}
+
+	CDialogEx::OnTimer(nIDEvent);
 }

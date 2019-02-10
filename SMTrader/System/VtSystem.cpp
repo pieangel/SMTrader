@@ -23,6 +23,7 @@
 #include "../VtSymbolManager.h"
 #include "../VtProductCategoryManager.h"
 #include "../VtUsdStrategyConfigDlg.h"
+#include "../VtSystemDef.h"
 
 
 VtSystem::VtSystem()
@@ -142,11 +143,15 @@ bool VtSystem::LiqByEndTime(int index)
 		return false;
 
 	std::string dataKey = VtChartDataManager::MakeChartDataKey(_Symbol->ShortCode, VtChartType::MIN, _Cycle);
-	std::vector<double>& timeArray = _RefDataMap[dataKey]->GetDataArray(_T("time"));
+	VtChartData* chartData = _RefDataMap[dataKey];
+	if (!chartData)
+		return false;
+
+	std::vector<double>& timeArray = chartData->GetDataArray(_T("time"));
 	if (timeArray.size() == 0 || index < 0 || index >= timeArray.size())
 		return false;
 
-	VtTime time = VtGlobal::GetTime(timeArray[index]);
+	VtTime time = VtGlobal::GetTime(int(timeArray[index]));
 	if (time.hour >= _LiqTime.hour && time.min >= _LiqTime.min && time.sec >= _LiqTime.sec) {
 		// 여기서 청산을 진행한다.
 		if (LiqudAll())
@@ -165,8 +170,11 @@ bool VtSystem::CheckEntranceByBandForBuy()
 
 	std::string code = _Symbol->ShortCode;
 	std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::DAY, 1);
-	std::vector<double>& highArray = _RefDataMap[dataKey]->GetDataArray(_T("high"));
-	std::vector<double>& lowArray = _RefDataMap[dataKey]->GetDataArray(_T("low"));
+	VtChartData* chartData = _RefDataMap[dataKey];
+	if (!chartData)
+		return false;
+	std::vector<double>& highArray = chartData->GetDataArray(_T("high"));
+	std::vector<double>& lowArray = chartData->GetDataArray(_T("low"));
 
 	double preDayHigh = highArray[highArray.size() - 2];
 	double preDayLow = lowArray[lowArray.size() - 2];
@@ -188,12 +196,19 @@ bool VtSystem::CheckEntranceByBandForBuy(size_t index)
 
 	std::string code = _Symbol->ShortCode;
 	std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::DAY, 1);
-	std::vector<double>& dayDateArray = _RefDataMap[dataKey]->GetDataArray(_T("date"));
-	std::vector<double>& highArray = _RefDataMap[dataKey]->GetDataArray(_T("high"));
-	std::vector<double>& lowArray = _RefDataMap[dataKey]->GetDataArray(_T("low"));
+	VtChartData* chartData = _RefDataMap[dataKey];
+	if (!chartData)
+		return false;
+
+	std::vector<double>& dayDateArray = chartData->GetDataArray(_T("date"));
+	std::vector<double>& highArray = chartData->GetDataArray(_T("high"));
+	std::vector<double>& lowArray = chartData->GetDataArray(_T("low"));
 
 	dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
-	std::vector<double>& maindateArray = _RefDataMap[dataKey]->GetDataArray(_T("date"));
+	chartData = _RefDataMap[dataKey];
+	if (!chartData)
+		return false;
+	std::vector<double>& maindateArray = chartData->GetDataArray(_T("date"));
 	int curDayIndex = FindDateIndex(maindateArray[index], dayDateArray);
 	if (curDayIndex <= 0)
 		return false;
@@ -218,8 +233,11 @@ bool VtSystem::CheckEntranceByBandForSell()
 
 	std::string code = _Symbol->ShortCode;
 	std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::DAY, 1);
-	std::vector<double>& highArray = _RefDataMap[dataKey]->GetDataArray(_T("high"));
-	std::vector<double>& lowArray = _RefDataMap[dataKey]->GetDataArray(_T("low"));
+	VtChartData* chartData = _RefDataMap[dataKey];
+	if (!chartData)
+		return false;
+	std::vector<double>& highArray = chartData->GetDataArray(_T("high"));
+	std::vector<double>& lowArray = chartData->GetDataArray(_T("low"));
 
 	double preDayHigh = highArray[highArray.size() - 2];
 	double preDayLow = lowArray[lowArray.size() - 2];
@@ -241,12 +259,18 @@ bool VtSystem::CheckEntranceByBandForSell(size_t index)
 
 	std::string code = _Symbol->ShortCode;
 	std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::DAY, 1);
-	std::vector<double>& dayDateArray = _RefDataMap[dataKey]->GetDataArray(_T("date"));
-	std::vector<double>& highArray = _RefDataMap[dataKey]->GetDataArray(_T("high"));
-	std::vector<double>& lowArray = _RefDataMap[dataKey]->GetDataArray(_T("low"));
+	VtChartData* chartData = _RefDataMap[dataKey];
+	if (!chartData)
+		return false;
+	std::vector<double>& dayDateArray = chartData->GetDataArray(_T("date"));
+	std::vector<double>& highArray = chartData->GetDataArray(_T("high"));
+	std::vector<double>& lowArray = chartData->GetDataArray(_T("low"));
 
 	dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
-	std::vector<double>& maindateArray = _RefDataMap[dataKey]->GetDataArray(_T("date"));
+	chartData = _RefDataMap[dataKey];
+	if (!chartData)
+		return false;
+	std::vector<double>& maindateArray = chartData->GetDataArray(_T("date"));
 	int curDayIndex = FindDateIndex(maindateArray[index], dayDateArray);
 	if (curDayIndex <= 0)
 		return false;
@@ -279,16 +303,21 @@ bool VtSystem::CheckEntranceByOpenForBuy(size_t index)
 
 	std::string code = _Symbol->ShortCode;
 	std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::DAY, 1);
-	std::vector<double>& dayDateArray = _RefDataMap[dataKey]->GetDataArray(_T("date"));
-	std::vector<double>& openArray = _RefDataMap[dataKey]->GetDataArray(_T("open"));
-	std::vector<double>& closeArray = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+	VtChartData* chartData = _RefDataMap[dataKey];
+	if (!chartData)
+		return false;
+	std::vector<double>& dayDateArray = chartData->GetDataArray(_T("date"));
+	std::vector<double>& openArray = chartData->GetDataArray(_T("open"));
+	std::vector<double>& closeArray = chartData->GetDataArray(_T("close"));
 
 	dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
-	std::vector<double>& maindateArray = _RefDataMap[dataKey]->GetDataArray(_T("date"));
+	chartData = _RefDataMap[dataKey];
+	if (!chartData)
+		return false;
+	std::vector<double>& maindateArray = chartData->GetDataArray(_T("date"));
 	int curDayIndex = FindDateIndex(maindateArray[index], dayDateArray);
 	if (curDayIndex <= 0)
 		return false;
-	dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::DAY, 1);
 	if (openArray.size() == 0 || closeArray.size() == 0)
 		return false;
 
@@ -310,21 +339,610 @@ bool VtSystem::CheckEntranceByOpenForSell(size_t index)
 
 	std::string code = _Symbol->ShortCode;
 	std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::DAY, 1);
-	std::vector<double>& dayDateArray = _RefDataMap[dataKey]->GetDataArray(_T("date"));
-	std::vector<double>& openArray = _RefDataMap[dataKey]->GetDataArray(_T("open"));
-	std::vector<double>& closeArray = _RefDataMap[dataKey]->GetDataArray(_T("close"));
+	VtChartData* chartData = _RefDataMap[dataKey];
+	if (!chartData)
+		return false;
+	std::vector<double>& dayDateArray = chartData->GetDataArray(_T("date"));
+	std::vector<double>& openArray = chartData->GetDataArray(_T("open"));
+	std::vector<double>& closeArray = chartData->GetDataArray(_T("close"));
 
 	dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
-	std::vector<double>& maindateArray = _RefDataMap[dataKey]->GetDataArray(_T("date"));
+	chartData = _RefDataMap[dataKey];
+	if (!chartData)
+		return false;
+	std::vector<double>& maindateArray = chartData->GetDataArray(_T("date"));
 	int curDayIndex = FindDateIndex(maindateArray[index], dayDateArray);
 	if (curDayIndex <= 0)
 		return false;
 
-	dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::DAY, 1);
 	if (openArray.size() == 0 || closeArray.size() == 0)
 		return false;
 
 	return  closeArray[curDayIndex] < openArray[curDayIndex] ? true : false;
+}
+
+bool VtSystem::CheckByArg(ArgNameType argName, VtSymbol* sym, double param)
+{
+	if (!sym)
+		return false;
+
+	switch (argName)
+	{
+	case ArgNameType::KbsMiKas:
+		if (sym->Hoga.TotBuyQty - sym->Hoga.TotSellQty > param) {
+			return true;
+		}
+		else {
+			return false;
+		}
+		break;
+	case ArgNameType::KbcGtKac:
+		if (sym->Hoga.TotBuyNo*param > sym->Hoga.TotSellQty) {
+			return true;
+		}
+		else {
+			return false;
+		}
+		break;
+	case ArgNameType::QbcGtQac:
+		if (sym->Hoga.TotBuyNo*param > sym->Hoga.TotSellNo) {
+			return true;
+		}
+		else {
+			return false;
+		}
+		break;
+	case ArgNameType::UacGtUbc:
+		if (sym->Hoga.TotBuyNo > sym->Hoga.TotSellNo) {
+			return true;
+		}
+		else {
+			return false;
+		}
+		break;
+	case ArgNameType::KasMiKbs:
+		if (sym->Hoga.TotSellQty - sym->Hoga.TotBuyQty > param) {
+			return true;
+		}
+		else {
+			return false;
+		}
+		break;
+	case ArgNameType::KacGtKbc:
+		if (sym->Hoga.TotSellNo*param > sym->Hoga.TotBuyNo) {
+			return true;
+		}
+		else {
+			return false;
+		}
+		break;
+	case ArgNameType::QacGtQbc:
+		if (sym->Hoga.TotSellNo*param > sym->Hoga.TotBuyNo) {
+			return true;
+		}
+		else {
+			return false;
+		}
+		break;
+	case ArgNameType::UbcGtUac:
+		if (sym->Hoga.TotBuyNo*param > sym->Hoga.TotSellNo) {
+			return true;
+		}
+		else {
+			return false;
+		}
+		break;
+	case ArgNameType::QbsGtQas:
+		if (sym->Hoga.TotBuyQty*param > sym->Hoga.TotSellQty) {
+			return true;
+		}
+		else {
+			return false;
+		}
+		break;
+	case ArgNameType::QasGtQbs:
+		if (sym->Hoga.TotSellQty*param > sym->Hoga.TotBuyQty) {
+			return true;
+		}
+		else {
+			return false;
+		}
+		break;
+	case ArgNameType::UbsGtUas:
+		if (sym->Hoga.TotBuyQty*param > sym->Hoga.TotSellQty) {
+			return true;
+		}
+		else {
+			return false;
+		}
+		break;
+	case ArgNameType::UasGtUbs:
+		if (sym->Hoga.TotSellQty*param > sym->Hoga.TotBuyQty) {
+			return true;
+		}
+		else {
+			return false;
+		}
+		break;
+	default:
+		break;
+	}
+
+	return false;
+}
+
+bool VtSystem::CheckByArg(ArgNameType argName, VtSymbol* sym, double param, int index)
+{
+	if (!sym || index < 0)
+		return false;
+
+	switch (argName)
+	{
+	case ArgNameType::KbsMiKas: {
+		std::string code = sym->ShortCode + (_T("SHTQ"));
+		std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+		VtChartData* chartData = _RefDataMap[dataKey];
+		if (!chartData)
+			return false;
+		std::vector<double>& sellVec= chartData->GetDataArray(_T("close"));
+		if (sellVec.size() == 0 || index <= sellVec.size())
+			return false;
+
+		code = sym->ShortCode + (_T("BHTQ"));
+		dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+		chartData = _RefDataMap[dataKey];
+		if (!chartData)
+			return false;
+		std::vector<double>& buyVec = chartData->GetDataArray(_T("close"));
+		if (buyVec.size() == 0 || index <= buyVec.size())
+			return false;
+
+		if (buyVec[index] - sellVec[index] > param) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+		break;
+	case ArgNameType::KbcGtKac: {
+		std::string code = sym->ShortCode + (_T("SHTC"));
+		std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+		VtChartData* chartData = _RefDataMap[dataKey];
+		if (!chartData)
+			return false;
+		std::vector<double>& sellVec = chartData->GetDataArray(_T("close"));
+		if (sellVec.size() == 0 || index <= sellVec.size())
+			return false;
+
+		code = sym->ShortCode + (_T("BHTC"));
+		dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+		chartData = _RefDataMap[dataKey];
+		if (!chartData)
+			return false;
+		std::vector<double>& buyVec = chartData->GetDataArray(_T("close"));
+		if (buyVec.size() == 0 || index <= buyVec.size())
+			return false;
+
+		if (sym->Hoga.TotBuyNo*param > sym->Hoga.TotSellQty) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+		break;
+	case ArgNameType::QbcGtQac: {
+		std::string code = sym->ShortCode + (_T("SHTC"));
+		std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+		VtChartData* chartData = _RefDataMap[dataKey];
+		if (!chartData)
+			return false;
+		std::vector<double>& sellVec = chartData->GetDataArray(_T("close"));
+		if (sellVec.size() == 0 || index <= sellVec.size())
+			return false;
+
+		code = sym->ShortCode + (_T("BHTC"));
+		dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+		chartData = _RefDataMap[dataKey];
+		if (!chartData)
+			return false;
+		std::vector<double>& buyVec = chartData->GetDataArray(_T("close"));
+		if (buyVec.size() == 0 || index <= buyVec.size())
+			return false;
+
+		if (sym->Hoga.TotBuyNo*param > sym->Hoga.TotSellNo) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+		break;
+	case ArgNameType::UacGtUbc: {
+		std::string code = sym->ShortCode + (_T("SHTC"));
+		std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+		VtChartData* chartData = _RefDataMap[dataKey];
+		if (!chartData)
+			return false;
+		std::vector<double>& sellVec = chartData->GetDataArray(_T("close"));
+		if (sellVec.size() == 0 || index <= sellVec.size())
+			return false;
+
+		code = sym->ShortCode + (_T("BHTC"));
+		dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+		chartData = _RefDataMap[dataKey];
+		if (!chartData)
+			return false;
+		std::vector<double>& buyVec = chartData->GetDataArray(_T("close"));
+		if (buyVec.size() == 0 || index <= buyVec.size())
+			return false;
+
+		if (sym->Hoga.TotBuyNo > sym->Hoga.TotSellNo) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+		break;
+	case ArgNameType::KasMiKbs: {
+		std::string code = sym->ShortCode + (_T("SHTQ"));
+		std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+		VtChartData* chartData = _RefDataMap[dataKey];
+		if (!chartData)
+			return false;
+		std::vector<double>& sellVec = chartData->GetDataArray(_T("close"));
+		if (sellVec.size() == 0 || index <= sellVec.size())
+			return false;
+
+		code = sym->ShortCode + (_T("BHTQ"));
+		dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+		chartData = _RefDataMap[dataKey];
+		if (!chartData)
+			return false;
+		std::vector<double>& buyVec = chartData->GetDataArray(_T("close"));
+		if (buyVec.size() == 0 || index <= buyVec.size())
+			return false;
+
+		if (sym->Hoga.TotSellQty - sym->Hoga.TotBuyQty > param) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+		break;
+	case ArgNameType::KacGtKbc: {
+		std::string code = sym->ShortCode + (_T("SHTC"));
+		std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+		VtChartData* chartData = _RefDataMap[dataKey];
+		if (!chartData)
+			return false;
+		std::vector<double>& sellVec = chartData->GetDataArray(_T("close"));
+		if (sellVec.size() == 0 || index <= sellVec.size())
+			return false;
+
+		code = sym->ShortCode + (_T("BHTC"));
+		dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+		chartData = _RefDataMap[dataKey];
+		if (!chartData)
+			return false;
+		std::vector<double>& buyVec = chartData->GetDataArray(_T("close"));
+		if (buyVec.size() == 0 || index <= buyVec.size())
+			return false;
+
+		if (sym->Hoga.TotSellNo*param > sym->Hoga.TotBuyNo) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+		break;
+	case ArgNameType::QacGtQbc: {
+		std::string code = sym->ShortCode + (_T("SHTC"));
+		std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+		VtChartData* chartData = _RefDataMap[dataKey];
+		if (!chartData)
+			return false;
+		std::vector<double>& sellVec = chartData->GetDataArray(_T("close"));
+		if (sellVec.size() == 0 || index <= sellVec.size())
+			return false;
+
+		code = sym->ShortCode + (_T("BHTC"));
+		dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+		chartData = _RefDataMap[dataKey];
+		if (!chartData)
+			return false;
+		std::vector<double>& buyVec = chartData->GetDataArray(_T("close"));
+		if (buyVec.size() == 0 || index <= buyVec.size())
+			return false;
+
+		if (sym->Hoga.TotSellNo*param > sym->Hoga.TotBuyNo) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+		break;
+	case ArgNameType::UbcGtUac: {
+		std::string code = sym->ShortCode + (_T("SHTC"));
+		std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+		VtChartData* chartData = _RefDataMap[dataKey];
+		if (!chartData)
+			return false;
+		std::vector<double>& sellVec = chartData->GetDataArray(_T("close"));
+		if (sellVec.size() == 0 || index <= sellVec.size())
+			return false;
+
+		code = sym->ShortCode + (_T("BHTC"));
+		dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+		chartData = _RefDataMap[dataKey];
+		if (!chartData)
+			return false;
+		std::vector<double>& buyVec = chartData->GetDataArray(_T("close"));
+		if (buyVec.size() == 0 || index <= buyVec.size())
+			return false;
+
+		if (sym->Hoga.TotBuyNo*param > sym->Hoga.TotSellNo) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+		break;
+	case ArgNameType::QbsGtQas: {
+		std::string code = sym->ShortCode + (_T("SHTC"));
+		std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+		VtChartData* chartData = _RefDataMap[dataKey];
+		if (!chartData)
+			return false;
+		std::vector<double>& sellVec = chartData->GetDataArray(_T("close"));
+		if (sellVec.size() == 0 || index <= sellVec.size())
+			return false;
+
+		code = sym->ShortCode + (_T("BHTC"));
+		dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+		chartData = _RefDataMap[dataKey];
+		if (!chartData)
+			return false;
+		std::vector<double>& buyVec = chartData->GetDataArray(_T("close"));
+		if (buyVec.size() == 0 || index <= buyVec.size())
+			return false;
+
+		if (sym->Hoga.TotBuyQty*param > sym->Hoga.TotSellQty) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+		break;
+	case ArgNameType::QasGtQbs: {
+		std::string code = sym->ShortCode + (_T("SHTC"));
+		std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+		VtChartData* chartData = _RefDataMap[dataKey];
+		if (!chartData)
+			return false;
+		std::vector<double>& sellVec = chartData->GetDataArray(_T("close"));
+		if (sellVec.size() == 0 || index <= sellVec.size())
+			return false;
+
+		code = sym->ShortCode + (_T("BHTC"));
+		dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+		chartData = _RefDataMap[dataKey];
+		if (!chartData)
+			return false;
+		std::vector<double>& buyVec = chartData->GetDataArray(_T("close"));
+		if (buyVec.size() == 0 || index <= buyVec.size())
+			return false;
+
+		if (sym->Hoga.TotSellQty*param > sym->Hoga.TotBuyQty) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+		break;
+	case ArgNameType::UbsGtUas: {
+		std::string code = sym->ShortCode + (_T("SHTC"));
+		std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+		VtChartData* chartData = _RefDataMap[dataKey];
+		if (!chartData)
+			return false;
+		std::vector<double>& sellVec = chartData->GetDataArray(_T("close"));
+		if (sellVec.size() == 0 || index <= sellVec.size())
+			return false;
+
+		code = sym->ShortCode + (_T("BHTC"));
+		dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+		chartData = _RefDataMap[dataKey];
+		if (!chartData)
+			return false;
+		std::vector<double>& buyVec = chartData->GetDataArray(_T("close"));
+		if (buyVec.size() == 0 || index <= buyVec.size())
+			return false;
+
+		if (sym->Hoga.TotBuyQty*param > sym->Hoga.TotSellQty) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+		break;
+	case ArgNameType::UasGtUbs: {
+		std::string code = sym->ShortCode + (_T("SHTC"));
+		std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+		VtChartData* chartData = _RefDataMap[dataKey];
+		if (!chartData)
+			return false;
+		std::vector<double>& sellVec = chartData->GetDataArray(_T("close"));
+		if (sellVec.size() == 0 || index <= sellVec.size())
+			return false;
+
+		code = sym->ShortCode + (_T("BHTC"));
+		dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+		chartData = _RefDataMap[dataKey];
+		if (!chartData)
+			return false;
+		std::vector<double>& buyVec = chartData->GetDataArray(_T("close"));
+		if (buyVec.size() == 0 || index <= buyVec.size())
+			return false;
+
+		if (sym->Hoga.TotSellQty*param > sym->Hoga.TotBuyQty) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+		break;
+	default:
+		break;
+	}
+
+	return false;
+}
+
+bool VtSystem::CheckCondition(std::string argGrpName)
+{
+	VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();
+	std::vector<bool> argCond;
+	VtSystemArgGroup* argGrp = GetArgGroup(argGrpName);
+	auto conds = _CondGroupMap[argGrpName];
+
+	if (argGrp && conds) {
+		std::vector<VtSystemArg>& argVec = argGrp->GetArgVec();
+		for (auto it = argVec.begin(); it != argVec.end(); ++it) {
+			VtSystemArg& arg = *it;
+			if (arg.Enable) {
+				ArgDataSource dataSrc = (*conds)[arg.Name];
+				VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(dataSrc.SymbolCode);
+				if (!sym)
+					continue;
+				double param = std::stod(arg.sValue);
+				ArgNameType argName = _ArgTypeMap[arg.Name];
+				argCond.push_back(CheckByArg(argName, sym, param));
+			}
+		}
+	}
+
+	if (argCond.size() == 0)
+		return false;
+
+	// 하나의 조건이라도 거짓이면 신호 없음. 모두가 참이면 매수 반환
+	auto it = std::find(argCond.begin(), argCond.end(), false);
+	if (it != argCond.end())
+		return false;
+	else
+		return true;
+}
+
+bool VtSystem::CheckCondition(std::string argGrpName, int index)
+{
+	VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();
+	std::vector<bool> argCond;
+	VtSystemArgGroup* argGrp = GetArgGroup(argGrpName);
+	auto conds = _CondGroupMap[argGrpName];
+
+	if (argGrp && conds) {
+		std::vector<VtSystemArg>& argVec = argGrp->GetArgVec();
+		for (auto it = argVec.begin(); it != argVec.end(); ++it) {
+			VtSystemArg& arg = *it;
+			if (arg.Enable) {
+				ArgDataSource dataSrc = (*conds)[arg.Name];
+				VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(dataSrc.SymbolCode);
+				if (!sym)
+					continue;
+				double param = std::stod(arg.sValue);
+				ArgNameType argName = _ArgTypeMap[arg.Name];
+				argCond.push_back(CheckByArg(argName, sym, param, index));
+			}
+		}
+	}
+
+	if (argCond.size() == 0)
+		return false;
+
+	// 하나의 조건이라도 거짓이면 신호 없음. 모두가 참이면 매수 반환
+	auto it = std::find(argCond.begin(), argCond.end(), false);
+	if (it != argCond.end())
+		return false;
+	else
+		return true;
+}
+
+bool VtSystem::CheckEntranceForBuy()
+{
+	VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();
+	std::vector<bool> argCond;
+	// 매수 진입
+	VtSystemArgGroup* argGrp = GetArgGroup(_T("매수진입"));
+	if (argGrp) {
+		std::vector<VtSystemArg>& argVec = argGrp->GetArgVec();
+		for (auto it = argVec.begin(); it != argVec.end(); ++it) {
+			VtSystemArg& arg = *it;
+			if (arg.Enable) {
+				ArgDataSource dataSrc = _BuyEntArg[arg.Name];
+				VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(dataSrc.SymbolCode);
+				if (!sym)
+					continue;
+				double param = std::stod(arg.sValue);
+				ArgNameType argName = _ArgTypeMap[arg.Name];
+				argCond.push_back(CheckByArg(argName, sym, param));
+			}
+		}
+	}
+
+	if (argCond.size() == 0)
+		return false;
+
+	// 하나의 조건이라도 거짓이면 신호 없음. 모두가 참이면 매수 반환
+	auto it = std::find(argCond.begin(), argCond.end(), false);
+	if (it != argCond.end())
+		return false;
+	else
+		return true;
+}
+
+bool VtSystem::CheckEntranceForBuy(size_t index)
+{
+	return false;
+}
+
+bool VtSystem::CheckEntranceForSell()
+{
+	return false;
+}
+
+bool VtSystem::CheckEntranceForSell(size_t index)
+{
+	return false;
+}
+
+bool VtSystem::CheckLiqForSell()
+{
+	return false;
+}
+
+bool VtSystem::CheckLiqForSell(size_t index)
+{
+	return false;
+}
+
+bool VtSystem::CheckLiqForBuy()
+{
+	return false;
+}
+
+bool VtSystem::CheckLiqForBuy(size_t index)
+{
+	return false;
 }
 
 bool VtSystem::CheckEntranceForBuyForKospi()
@@ -1158,19 +1776,10 @@ bool VtSystem::CheckLiqForBuyForKospi()
 			if (arg.Enable) {
 				if (arg.Name.compare(_T("Kas-Kbs")) == 0) {
 					VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
-					// 매도 호가 총수량
-					std::string code = sym->ShortCode + (_T("SHTQ"));
-					std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
-					std::vector<double>& Kas = _RefDataMap[dataKey]->GetDataArray(_T("close"));
-
-					// 매수 호가 총수량
-					code = sym->ShortCode + (_T("BHTQ"));
-					dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
-					std::vector<double>& Kbs = _RefDataMap[dataKey]->GetDataArray(_T("close"));
-
+					
 					double param = std::stod(arg.sValue);
 
-					if (Kas.back() - Kbs.back() > param) {
+					if (sym->Hoga.TotSellQty - sym->Hoga.TotBuyQty > param) {
 						argCond.push_back(true);
 					}
 					else {
@@ -3842,6 +4451,9 @@ void VtSystem::Symbol(VtSymbol* val)
 	data->RequestChartData();
 	data = AddDataSource(_Symbol->ShortCode, VtChartType::MIN, _Cycle);
 	data->RequestChartData();
+	_DataSrcSymbolVec.push_back(_Symbol->ShortCode);
+	VtRealtimeRegisterManager* realRegiMgr = VtRealtimeRegisterManager::GetInstance();
+	realRegiMgr->RegisterProduct(_Symbol->ShortCode);
 }
 
 void VtSystem::SetDataSrc()
@@ -4023,10 +4635,14 @@ bool VtSystem::CheckAtrLiqForBuy()
 
 		// 현재 종목의 시고저종을 가져온다.
 		std::string dataKey = VtChartDataManager::MakeChartDataKey(_Symbol->ShortCode, VtChartType::MIN, _Cycle);
-		std::vector<double>& timeArray = _RefDataMap[dataKey]->GetDataArray(_T("time"));
-		std::vector<double>& closeArray = _RefDataMap[dataKey]->GetDataArray(_T("close"));
-		std::vector<double>& highArray = _RefDataMap[dataKey]->GetDataArray(_T("high"));
-		std::vector<double>& lowArray = _RefDataMap[dataKey]->GetDataArray(_T("low"));
+		VtChartData* chartData = _RefDataMap[dataKey];
+		if (!chartData)
+			return false;
+
+		std::vector<double>& timeArray = chartData->GetDataArray(_T("time"));
+		std::vector<double>& closeArray = chartData->GetDataArray(_T("close"));
+		std::vector<double>& highArray = chartData->GetDataArray(_T("high"));
+		std::vector<double>& lowArray = chartData->GetDataArray(_T("low"));
 
 		std::vector<double>::iterator itt = std::find(timeArray.begin(), timeArray.end(), _LastEntryTime);
 		// 가장 최근에 진입한 봉의 다음 봉의 인덱스를 찾음
@@ -4053,10 +4669,13 @@ bool VtSystem::CheckAtrLiqForSell()
 
 		// 현재 종목의 시고저종을 가져온다.
 		std::string dataKey = VtChartDataManager::MakeChartDataKey(_Symbol->ShortCode, VtChartType::MIN, _Cycle);
-		std::vector<double>& timeArray = _RefDataMap[dataKey]->GetDataArray(_T("time"));
-		std::vector<double>& closeArray = _RefDataMap[dataKey]->GetDataArray(_T("close"));
-		std::vector<double>& highArray = _RefDataMap[dataKey]->GetDataArray(_T("high"));
-		std::vector<double>& lowArray = _RefDataMap[dataKey]->GetDataArray(_T("low"));
+		VtChartData* chartData = _RefDataMap[dataKey];
+		if (!chartData)
+			return false;
+		std::vector<double>& timeArray = chartData->GetDataArray(_T("time"));
+		std::vector<double>& closeArray = chartData->GetDataArray(_T("close"));
+		std::vector<double>& highArray = chartData->GetDataArray(_T("high"));
+		std::vector<double>& lowArray = chartData->GetDataArray(_T("low"));
 
 		std::vector<double>::iterator itt = std::find(timeArray.begin(), timeArray.end(), _LastEntryTime);
 		// 가장 최근에 진입한 봉의 다음 봉의 인덱스를 찾음
@@ -4085,10 +4704,14 @@ bool VtSystem::CheckAtrLiq()
 
 			// 현재 종목의 시고저종을 가져온다.
 			std::string dataKey = VtChartDataManager::MakeChartDataKey(_Symbol->ShortCode, VtChartType::MIN, _Cycle);
-			std::vector<double>& timeArray = _RefDataMap[dataKey]->GetDataArray(_T("time"));
-			std::vector<double>& closeArray = _RefDataMap[dataKey]->GetDataArray(_T("close"));
-			std::vector<double>& highArray = _RefDataMap[dataKey]->GetDataArray(_T("high"));
-			std::vector<double>& lowArray = _RefDataMap[dataKey]->GetDataArray(_T("low"));
+			VtChartData* chartData = _RefDataMap[dataKey];
+			if (!chartData)
+				return false;
+
+			std::vector<double>& timeArray = chartData->GetDataArray(_T("time"));
+			std::vector<double>& closeArray = chartData->GetDataArray(_T("close"));
+			std::vector<double>& highArray = chartData->GetDataArray(_T("high"));
+			std::vector<double>& lowArray = chartData->GetDataArray(_T("low"));
 
 			std::vector<double>::iterator itt = std::find(timeArray.begin(), timeArray.end(), _LastEntryTime);
 			// 가장 최근에 진입한 봉의 다음 봉의 인덱스를 찾음
@@ -4133,10 +4756,14 @@ bool VtSystem::CheckAtrLiq(int index)
 
 			// 현재 종목의 시고저종을 가져온다.
 			std::string dataKey = VtChartDataManager::MakeChartDataKey(_Symbol->ShortCode, VtChartType::MIN, _Cycle);
-			std::vector<double>& timeArray = _RefDataMap[dataKey]->GetDataArray(_T("time"));
-			std::vector<double>& closeArray = _RefDataMap[dataKey]->GetDataArray(_T("close"));
-			std::vector<double>& highArray = _RefDataMap[dataKey]->GetDataArray(_T("high"));
-			std::vector<double>& lowArray = _RefDataMap[dataKey]->GetDataArray(_T("low"));
+			VtChartData* chartData = _RefDataMap[dataKey];
+			if (!chartData)
+				return false;
+
+			std::vector<double>& timeArray = chartData->GetDataArray(_T("time"));
+			std::vector<double>& closeArray = chartData->GetDataArray(_T("close"));
+			std::vector<double>& highArray = chartData->GetDataArray(_T("high"));
+			std::vector<double>& lowArray = chartData->GetDataArray(_T("low"));
 
 			std::vector<double>::iterator itt = std::find(timeArray.begin(), timeArray.end(), _LastEntryTime);
 			// 찾지 못하면 거짓을 반환한다.
@@ -4182,7 +4809,11 @@ int VtSystem::GetDailyIndex(int index)
 		return -1;
 
 	std::string dataKey = VtChartDataManager::MakeChartDataKey(_Symbol->ShortCode, VtChartType::MIN, _Cycle);
-	std::vector<double>& dateArray = _RefDataMap[dataKey]->GetDataArray(_T("date"));
+	VtChartData* chartData = _RefDataMap[dataKey];
+	if (!chartData)
+		return -1;
+
+	std::vector<double>& dateArray = chartData->GetDataArray(_T("date"));
 	if (dateArray.size() == 0 || index < 0 || index >= dateArray.size())
 		return -1;
 	if (dateArray.size() == 1 || index == 0)
@@ -4205,7 +4836,10 @@ int VtSystem::GetDailyIndex()
 		return -1;
 
 	std::string dataKey = VtChartDataManager::MakeChartDataKey(_Symbol->ShortCode, VtChartType::MIN, _Cycle);
-	std::vector<double>& dateArray = _RefDataMap[dataKey]->GetDataArray(_T("date"));
+	VtChartData* chartData = _RefDataMap[dataKey];
+	if (!chartData)
+		return -1;
+	std::vector<double>& dateArray = chartData->GetDataArray(_T("date"));
 	if (dateArray.size() == 0)
 		return -1;
 	if (dateArray.size() == 1)
@@ -4241,6 +4875,22 @@ void VtSystem::AddSystemArgGroup(std::string groupName, VtSystemArgGroup grp)
 	if (!argGrp) {
 		_ArgGroupMap.push_back(grp);
 	}
+}
+
+void VtSystem::InitArgType()
+{
+	_ArgTypeMap[_T("Kbs-Kas")] = ArgNameType::KbsMiKas;
+	_ArgTypeMap[_T("Kbc>Kac")] = ArgNameType::KbcGtKac;
+	_ArgTypeMap[_T("Qbc>Qac")] = ArgNameType::QbcGtQac;
+	_ArgTypeMap[_T("Uac>Ubc")] = ArgNameType::UacGtUbc;
+	_ArgTypeMap[_T("Kas-Kbs")] = ArgNameType::KasMiKbs;
+	_ArgTypeMap[_T("Kac>Kbc")] = ArgNameType::KacGtKbc;
+	_ArgTypeMap[_T("Qac>Qbc")] = ArgNameType::QacGtQbc;
+	_ArgTypeMap[_T("Ubc>Uac")] = ArgNameType::UbcGtUac;
+	_ArgTypeMap[_T("Qbs>Qas")] = ArgNameType::QbsGtQas;
+	_ArgTypeMap[_T("Qas>Qbs")] = ArgNameType::QasGtQbs;
+	_ArgTypeMap[_T("Ubs>Uas")] = ArgNameType::UbsGtUas;
+	_ArgTypeMap[_T("Uas>Ubs")] = ArgNameType::UasGtUbs;
 }
 
 bool VtSystem::CheckLossCut(int index)
@@ -4587,7 +5237,75 @@ void VtSystem::ReloadSystem(int startIndex, int endIndex)
 
 void VtSystem::InitArgs()
 {
-	
+	InitArgType();
+	if (_SystemGroup == VtSystemGroupType::KOSPI200F) {
+		_BuyEntArg[_T("Kbs-Kas")] = ArgDataSource{ _T("101F"), _T("SHTQ"), _T("close"), _T("BHTQ"), _T("close") };
+		_BuyEntArg[_T("Kbc>Kac")] = ArgDataSource{ _T("101F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
+		_BuyEntArg[_T("Qbc>Qac")] = ArgDataSource{ _T("106F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
+		_BuyEntArg[_T("Uac>Ubc")] = ArgDataSource{ _T("175F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
+
+		_SellEntArg[_T("Kas-Kbs")] = ArgDataSource{ _T("101F"), _T("SHTQ"), _T("close"), _T("BHTQ"), _T("close") };
+		_SellEntArg[_T("Kac>Kbc")] = ArgDataSource{ _T("101F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
+		_SellEntArg[_T("Qac>Qbc")] = ArgDataSource{ _T("106F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
+		_SellEntArg[_T("Ubc>Uac")] = ArgDataSource{ _T("175F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
+
+		_BuyLiqArg[_T("Kas-Kbs")] = ArgDataSource{ _T("101F"), _T("SHTQ"), _T("close"), _T("BHTQ"), _T("close") };
+		_BuyLiqArg[_T("Kac>Kbc")] = ArgDataSource{ _T("101F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
+		_BuyLiqArg[_T("Qac>Qbc")] = ArgDataSource{ _T("106F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
+		_BuyLiqArg[_T("Ubc>Uac")] = ArgDataSource{ _T("175F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
+
+		_SellLiqArg[_T("Kbs-Kas")] = ArgDataSource{ _T("101F"), _T("SHTQ"), _T("close"), _T("BHTQ"), _T("close") };
+		_SellLiqArg[_T("Kbc>Kac")] = ArgDataSource{ _T("101F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
+		_SellLiqArg[_T("Qbc>Qac")] = ArgDataSource{ _T("106F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
+		_SellLiqArg[_T("Uac>Ubc")] = ArgDataSource{ _T("175F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
+	}
+	else if (_SystemGroup == VtSystemGroupType::KOSDAQ150F) {
+		_BuyEntArg[_T("Qbc>Qac")] = ArgDataSource{ _T("106F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
+		_BuyEntArg[_T("Qbs>Qas")] = ArgDataSource{ _T("106F"), _T("SHTQ"), _T("close"), _T("BHTQ"), _T("close") };
+		_BuyEntArg[_T("Kbc>Kac")] = ArgDataSource{ _T("101F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
+		_BuyEntArg[_T("Uac>Ubc")] = ArgDataSource{ _T("175F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
+
+		_SellEntArg[_T("Qac>Qbc")] = ArgDataSource{ _T("106F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
+		_SellEntArg[_T("Qas>Qbs")] = ArgDataSource{ _T("106F"), _T("SHTQ"), _T("close"), _T("BHTQ"), _T("close") };
+		_SellEntArg[_T("Kac>Kbc")] = ArgDataSource{ _T("101F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
+		_SellEntArg[_T("Ubc>Uac")] = ArgDataSource{ _T("175F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
+
+		_BuyLiqArg[_T("Qac>Qbc")] = ArgDataSource{ _T("106F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
+		_BuyLiqArg[_T("Qas>Qbs")] = ArgDataSource{ _T("106F"), _T("SHTQ"), _T("close"), _T("BHTQ"), _T("close") };
+		_BuyLiqArg[_T("Kac>Kbc")] = ArgDataSource{ _T("101F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
+		_BuyLiqArg[_T("Ubc>Uac")] = ArgDataSource{ _T("175F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
+
+		_SellLiqArg[_T("Qbc>Qac")] = ArgDataSource{ _T("106F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
+		_SellLiqArg[_T("Qbs>Qas")] = ArgDataSource{ _T("106F"), _T("SHTQ"), _T("close"), _T("BHTQ"), _T("close") };
+		_SellLiqArg[_T("Kbc>Kac")] = ArgDataSource{ _T("101F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
+		_SellLiqArg[_T("Uac>Ubc")] = ArgDataSource{ _T("175F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
+	}
+	else if (_SystemGroup == VtSystemGroupType::USDF) {
+		_BuyEntArg[_T("Uac>Ubc")] = ArgDataSource{ _T("175F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
+		_BuyEntArg[_T("Uas>Ubs")] = ArgDataSource{ _T("175F"), _T("SHTQ"), _T("close"), _T("BHTQ"), _T("close") };
+		_BuyEntArg[_T("Kbc>Kac")] = ArgDataSource{ _T("101F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
+		_BuyEntArg[_T("Kbs>Kas")] = ArgDataSource{ _T("101F"), _T("SHTQ"), _T("close"), _T("BHTQ"), _T("close") };
+
+		_SellEntArg[_T("Ubc>Uac")] = ArgDataSource{ _T("175F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
+		_SellEntArg[_T("Ubs>Uas")] = ArgDataSource{ _T("175F"), _T("SHTQ"), _T("close"), _T("BHTQ"), _T("close") };
+		_SellEntArg[_T("Kac>Kbc")] = ArgDataSource{ _T("101F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
+		_SellEntArg[_T("Kas>Kbs")] = ArgDataSource{ _T("101F"), _T("SHTQ"), _T("close"), _T("BHTQ"), _T("close") };
+
+		_BuyLiqArg[_T("Ubc>Uac")] = ArgDataSource{ _T("175F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
+		_BuyLiqArg[_T("Ubs>Uas")] = ArgDataSource{ _T("175F"), _T("SHTQ"), _T("close"), _T("BHTQ"), _T("close") };
+		_BuyLiqArg[_T("Kac>Kbc")] = ArgDataSource{ _T("101F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
+		_BuyLiqArg[_T("Kas>Kbs")] = ArgDataSource{ _T("101F"), _T("SHTQ"), _T("close"), _T("BHTQ"), _T("close") };
+
+		_SellLiqArg[_T("Uac>Ubc")] = ArgDataSource{ _T("175F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
+		_SellLiqArg[_T("Uas>Ubs")] = ArgDataSource{ _T("175F"), _T("SHTQ"), _T("close"), _T("BHTQ"), _T("close") };
+		_SellLiqArg[_T("Kbc>Kac")] = ArgDataSource{ _T("101F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
+		_SellLiqArg[_T("Kbs>Kas")] = ArgDataSource{ _T("101F"), _T("SHTQ"), _T("close"), _T("BHTQ"), _T("close") };
+	}
+
+	_CondGroupMap[_T("매수진입")] = &_BuyEntArg;
+	_CondGroupMap[_T("매도진입")] = &_SellEntArg;
+	_CondGroupMap[_T("매수청산")] = &_BuyLiqArg;
+	_CondGroupMap[_T("매도청산")] = &_SellLiqArg;
 }
 
 void VtSystem::SetDataMap(VtChartData* chartData)

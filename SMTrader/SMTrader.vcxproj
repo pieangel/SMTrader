@@ -403,13 +403,11 @@
     <ClInclude Include="VtAccountPasswordDlg.h" />
     <ClInclude Include="VtAccountPasswordGrid.h" />
     <ClInclude Include="VtAccountRemainGrid.h" />
-    <ClInclude Include="VtAlpha.h" />
     <ClInclude Include="VtAssetPage.h" />
     <ClInclude Include="VtAtrIndex.h" />
     <ClInclude Include="VtBaseBand.h" />
     <ClInclude Include="VtBaseIndex.h" />
     <ClInclude Include="VtBaseStress.h" />
-    <ClInclude Include="VtBeta.h" />
     <ClInclude Include="VtBollingerBandIndex.h" />
     <ClInclude Include="VtChartContainer.h" />
     <ClInclude Include="VtChartContainerManager.h" />
@@ -798,13 +796,11 @@
     <ClCompile Include="VtAccountPasswordDlg.cpp" />
     <ClCompile Include="VtAccountPasswordGrid.cpp" />
     <ClCompile Include="VtAccountRemainGrid.cpp" />
-    <ClCompile Include="VtAlpha.cpp" />
     <ClCompile Include="VtAssetPage.cpp" />
     <ClCompile Include="VtAtrIndex.cpp" />
     <ClCompile Include="VtBaseBand.cpp" />
     <ClCompile Include="VtBaseIndex.cpp" />
     <ClCompile Include="VtBaseStress.cpp" />
-    <ClCompile Include="VtBeta.cpp" />
     <ClCompile Include="VtBollingerBandIndex.cpp" />
     <ClCompile Include="VtChartContainer.cpp" />
     <ClCompile Include="VtChartContainerManager.cpp" />

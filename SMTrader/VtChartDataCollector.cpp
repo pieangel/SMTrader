@@ -220,6 +220,7 @@ void VtChartDataCollector::SetChartData(VtChartData* chartData, int time, double
 	}
 
 	VtSystemManager* sysMgr = VtSystemManager::GetInstance();
+	sysMgr->UpdateRealtimeArgs(chartData);
 	sysMgr->UpdateSystem(lastIndex);
 }
 

@@ -17,3 +17,45 @@ enum class VtSystemGroupType {
 	/// </summary>
 	USDF
 };
+
+enum class TargetType {
+	RealAccount,
+	SubAccount,
+	Fund
+};
+
+struct TrailingStop {
+	// 최소 이익
+	double MinProfit = 50000;
+	// 트레일링 퍼센트
+	double TrailingPercent = 10;
+};
+
+struct ArgDataSource {
+	std::string SymbolCode;
+	std::string SellSource;
+	std::string SellData;
+	std::string BuySource;
+	std::string BuyData;
+};
+
+enum class ArgNameType {
+	None, // None
+	KbsMiKas, // Kbs - Kas
+	KbcGtKac, // Kbc > Kac
+	QbcGtQac, // Qbc > Qac
+	UacGtUbc, // Uac > Ubc
+	KasMiKbs, // Kas - Kbs
+	KacGtKbc, // Kac > Kbc
+	QacGtQbc, // Qac > Qbc
+	UbcGtUac, // Ubc > Uac
+	QbsGtQas, // Qbs > Qas
+	QasGtQbs, // Qas > Qbs
+	UbsGtUas, // Ubs > Uas
+	UasGtUbs  // Uas > Ubs
+};
+
+enum class ValueType {
+	Tick,
+	Percent
+};

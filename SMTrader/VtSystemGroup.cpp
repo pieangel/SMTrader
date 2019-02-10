@@ -15,6 +15,7 @@ VtSystem* VtSystemGroup::AddSystem(VtSystemType sysType)
 {
 	VtSystemManager* sysMgr = VtSystemManager::GetInstance();
 	VtSystem* sys = sysMgr->CreateSystem(sysType);
+	sys->SystemGroup(_Type);
 	_SystemMap[sys->Name()] = sys;
 	_SystemList.push_back(sys);
 

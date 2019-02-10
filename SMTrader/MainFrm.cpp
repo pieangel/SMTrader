@@ -594,6 +594,9 @@ void CMainFrame::OnReceiveComplete()
 		_MainToolbar.ShowWindow(SW_SHOW);
 		_OrderWndCreated = true;
 
+		VtSystemManager* sysMgr = VtSystemManager::GetInstance();
+		sysMgr->InitDataSources();
+
 		VtSaveManager* saveMgr = VtSaveManager::GetInstance();
 		saveMgr->LoadSystems(_T("systemlist.dat"));
 		saveMgr->LoadOrderWndList(_T("orderwndlist.dat"), this);

@@ -967,12 +967,6 @@
     <ClInclude Include="VtQIn4.h">
       <Filter>System\Kosdaq</Filter>
     </ClInclude>
-    <ClInclude Include="VtAlpha.h">
-      <Filter>System\Kospi</Filter>
-    </ClInclude>
-    <ClInclude Include="VtBeta.h">
-      <Filter>System\Kospi</Filter>
-    </ClInclude>
     <ClInclude Include="VtTrUs1.h">
       <Filter>System\Usd</Filter>
     </ClInclude>
@@ -2093,12 +2087,6 @@
     </ClCompile>
     <ClCompile Include="VtQIn4.cpp">
       <Filter>System\Kosdaq</Filter>
-    </ClCompile>
-    <ClCompile Include="VtAlpha.cpp">
-      <Filter>System\Kospi</Filter>
-    </ClCompile>
-    <ClCompile Include="VtBeta.cpp">
-      <Filter>System\Kospi</Filter>
     </ClCompile>
     <ClCompile Include="VtTrUs1.cpp">
       <Filter>System\Usd</Filter>

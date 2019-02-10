@@ -9,6 +9,7 @@
 #include "../VtSystemArgGroup.h"
 #include "../Drawing/VtUniqueID.h"
 #include "../SimpleBinStream.h"
+#include "../VtSystemDef.h"
 using same_endian_type = std::is_same<simple::LittleEndian, simple::LittleEndian>;
 class VtSignal;
 class VtChartData;
@@ -16,23 +17,6 @@ class VtFund;
 class VtAccount;
 class VtSymbol;
 struct VtPosition;
-enum class TargetType {
-	RealAccount,
-	SubAccount,
-	Fund
-};
-
-struct TrailingStop {
-	// 최소 이익
-	double MinProfit = 50000;
-	// 트레일링 퍼센트
-	double TrailingPercent = 10;
-};
-
-enum class ValueType {
-	Tick,
-	Percent
-};
 
 class VtUsdStrategyConfigDlg;
 class VtSystem : public VtUniqueID
@@ -168,6 +152,20 @@ public:
 	bool CheckEntranceByOpenForBuy(size_t index);
 	bool CheckEntranceByOpenForSell(size_t index);
 
+	bool CheckByArg(ArgNameType argName, VtSymbol* sym, double param);
+	bool CheckByArg(ArgNameType argName, VtSymbol* sym, double param, int index);
+	bool CheckCondition(std::string argGrpName);
+	bool CheckCondition(std::string argGrpName, int index);
+	virtual bool CheckEntranceForBuy();
+	virtual bool CheckEntranceForSell();
+	virtual bool CheckLiqForSell();
+	virtual bool CheckLiqForBuy();
+
+	virtual bool CheckEntranceForBuy(size_t index);
+	virtual bool CheckEntranceForSell(size_t index);
+	virtual bool CheckLiqForSell(size_t index);
+	virtual bool CheckLiqForBuy(size_t index);
+	
 	virtual bool CheckEntranceForBuyForKospi();
 	virtual bool CheckEntranceForSellForKospi();
 	virtual bool CheckLiqForSellForKospi();
@@ -248,6 +246,8 @@ public:
 	void EnableByOpen(bool val) { _EnableByOpen = val; }
 	bool EnableByBand() const { return _EnableByBand; }
 	void EnableByBand(bool val) { _EnableByBand = val; }
+	VtSystemGroupType SystemGroup() const { return _SystemGroup; }
+	void SystemGroup(VtSystemGroupType val) { _SystemGroup = val; }
 protected:
 	int FindDateIndex(double date, std::vector<double>& dateArray);
 	void PutOrder(int price, VtPositionType position, VtPriceType priceType = VtPriceType::Price);
@@ -443,5 +443,28 @@ protected:
 	bool _ArgsLoaded = false;
 	bool _EnableByOpen = false;
 	bool _EnableByBand = false;
+	/// <summary>
+	/// 매수 진입 조건 매개변수 데이터 소스
+	/// </summary>
+	std::map<std::string, ArgDataSource> _BuyEntArg;
+	/// <summary>
+	/// 매도 진입 조건 매개변수 데이터 소스
+	/// </summary>
+	std::map<std::string, ArgDataSource> _SellEntArg;
+	/// <summary>
+	/// 매수 청산 조건 매개변수 데이터 소스
+	/// </summary>
+	std::map<std::string, ArgDataSource> _BuyLiqArg;
+	/// <summary>
+	/// 매도 청산 조건 매개변수 데이터 소스
+	/// </summary>
+	std::map<std::string, ArgDataSource> _SellLiqArg;
+	/// <summary>
+	/// 시스템 그룹 타입
+	/// </summary>
+	VtSystemGroupType _SystemGroup;
+	std::map<std::string, ArgNameType> _ArgTypeMap;
+	void InitArgType();
+	std::map<std::string, std::map<std::string, ArgDataSource>*> _CondGroupMap;
 };
 

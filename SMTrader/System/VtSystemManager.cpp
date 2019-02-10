@@ -19,9 +19,7 @@
 #include "../VtUsI2.h"
 #include "../VtUsComp.h"
 #include "../VtUsH2.h"
-#include "../VtBeta.h"
 #include <chrono>
-#include "../VtAlpha.h"
 #include "../VtQIn1.h"
 #include "../VtQIn2.h"
 #include "../VtQIn3.h"
@@ -34,6 +32,14 @@
 #include "../VtKp6In2.h"
 #include "../VtQH2.h"
 #include "../VtQF2.h"
+#include "../VtProductCategoryManager.h"
+#include "../VtRealtimeRegisterManager.h"
+#include "../VtSymbol.h"
+#include "../VtChartData.h"
+#include "../VtChartDataManager.h"
+#include "../VtProductCategoryManager.h"
+#include "../VtRealtimeRegisterManager.h"
+#include "../VtChartDataCollector.h"
 
 using namespace std::chrono;
 VtSystemManager::VtSystemManager()
@@ -77,12 +83,6 @@ VtSystem* VtSystemManager::CreateSystem(VtSystemType systemType)
 		break;
 	case VtSystemType::DailyHeight:
 		system = new VtDailyHeightSystem(VtSystemType::DailyHeight, _T("DailyHeight"));
-		break;
-	case VtSystemType::Alpha:
-		system = new VtAlpha(VtSystemType::Alpha, _T("Alpha"));
-		break;
-	case VtSystemType::Beta:
-		system = new VtBeta(VtSystemType::Beta, _T("Beta"));
 		break;
 	case VtSystemType::KP_1A:
 		system = new VtKp1a(VtSystemType::KP_1A, _T("KP_1A"));
@@ -311,6 +311,20 @@ void VtSystemManager::OnTimer()
 	}
 }
 
+
+VtChartData* VtSystemManager::AddDataSource(std::string symCode, VtChartType type, int cycle)
+{
+	// 여기서 실시간 차트 데이터 수집을 등록해 준다.
+	VtChartDataCollector* chartDataCollector = VtChartDataCollector::GetInstance();
+	VtChartDataManager* chartDataMgr = VtChartDataManager::GetInstance();
+	VtChartData* chartData = chartDataMgr->FindNAdd(symCode, type, cycle);
+	if (chartData) {
+		chartDataCollector->RegisterChartData(chartData);
+	}
+
+	return chartData;
+}
+
 void VtSystemManager::RemoveTimer(VtSystem* sys)
 {
 	if (!sys)
@@ -319,5 +333,128 @@ void VtSystemManager::RemoveTimer(VtSystem* sys)
 	if (it != _TimerMap.end()) {
 		auto id = it->second;
 		_Timer.remove(id);
+	}
+}
+
+void VtSystemManager::InitDataSources()
+{
+	InitDataSource(1);
+	InitDataSource(5);
+}
+
+void VtSystemManager::UpdateRealtimeArgs(VtChartData* chartData)
+{
+	if (!chartData)
+		return;
+	std::string symCode = chartData->SymbolCode().substr(0, 3);
+	VtSymbol* sym = _ArgMap[symCode];
+	if (!sym)
+		return;
+
+	if (symCode.compare(_T("101")) == 0) {
+		Kbs = sym->Hoga.TotBuyQty;
+		Kas = sym->Hoga.TotSellQty;
+		Kbc = sym->Hoga.TotBuyNo;
+		Kac = sym->Hoga.TotSellNo;
+	} 
+	else if (symCode.compare(_T("106")) == 0) {
+		Qbs = sym->Hoga.TotBuyQty;
+		Qas = sym->Hoga.TotSellQty;
+		Qbc = sym->Hoga.TotBuyNo;
+		Qac = sym->Hoga.TotSellNo;
+	}
+	else if (symCode.compare(_T("175")) == 0) {
+		Ubs = sym->Hoga.TotBuyQty;
+		Uas = sym->Hoga.TotSellQty;
+		Ubc = sym->Hoga.TotBuyNo;
+		Uac = sym->Hoga.TotSellNo;
+	}
+}
+
+void VtSystemManager::AddSystemDialog(VtUsdStrategyConfigDlg* dlg)
+{
+	_SysDlgMap[dlg] = dlg;
+}
+
+void VtSystemManager::RemoveSystemDialog(VtUsdStrategyConfigDlg* dlg)
+{
+	auto it = _SysDlgMap.find(dlg);
+	if (it != _SysDlgMap.end()) {
+		_SysDlgMap.erase(it);
+	}
+}
+
+void VtSystemManager::InitDataSource(int cycle)
+{
+	VtRealtimeRegisterManager* realRegiMgr = VtRealtimeRegisterManager::GetInstance();
+	VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();
+	// Kospi200 총호가 수량과 건수
+	VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
+	if (sym) {
+		std::string symCode = sym->ShortCode;
+		realRegiMgr->RegisterProduct(symCode);
+		// 5분봉 데이터 추가
+		VtChartData* data = AddDataSource(symCode, VtChartType::MIN, cycle);
+		data->RequestChartData();
+		// 매도호가총수량
+		std::string code = symCode + (_T("SHTQ"));
+		AddDataSource(code, VtChartType::MIN, cycle);
+		// 매수호가총수량
+		code = symCode + (_T("BHTQ"));
+		AddDataSource(code, VtChartType::MIN, cycle);
+		// 매도호가총건수
+		code = symCode + (_T("SHTC"));
+		AddDataSource(code, VtChartType::MIN, cycle);
+		// 매수호가총건수
+		code = symCode + (_T("BHTC"));
+		AddDataSource(code, VtChartType::MIN, cycle);
+		_ArgMap[_T("101")] = sym;
+	}
+	// 코스닥 150 선눌지수와 건수
+	sym = prdtCatMgr->GetRecentFutureSymbol(_T("106F"));
+	if (sym) {
+		std::string symCode = sym->ShortCode;
+		// 실시간 데이터 등록
+		realRegiMgr->RegisterProduct(symCode);
+		// 주기 데이터 추가
+		VtChartData* data = AddDataSource(symCode, VtChartType::MIN, cycle);
+		data->RequestChartData();
+		// 매도호가총수량
+		std::string code = symCode + (_T("SHTQ"));
+		AddDataSource(code, VtChartType::MIN, cycle);
+		// 매수호가총수량
+		code = symCode + (_T("BHTQ"));
+		AddDataSource(code, VtChartType::MIN, cycle);
+		// 매도호가총건수
+		code = symCode + (_T("SHTC"));
+		AddDataSource(code, VtChartType::MIN, cycle);
+		// 매수호가총건수
+		code = symCode + (_T("BHTC"));
+		AddDataSource(code, VtChartType::MIN, cycle);
+		_ArgMap[_T("106")] = sym;
+	}
+
+	// 원달러 선물지수와 건수
+	sym = prdtCatMgr->GetRecentFutureSymbol(_T("175F"));
+	if (sym) {
+		std::string symCode = sym->ShortCode;
+		// 실시간 데이터 등록
+		realRegiMgr->RegisterProduct(symCode);
+		// 주기 데이터 추가
+		VtChartData* data = AddDataSource(symCode, VtChartType::MIN, cycle);
+		data->RequestChartData();
+		// 매도호가총수량
+		std::string code = symCode + (_T("SHTQ"));
+		AddDataSource(code, VtChartType::MIN, cycle);
+		// 매수호가총수량
+		code = symCode + (_T("BHTQ"));
+		AddDataSource(code, VtChartType::MIN, cycle);
+		// 매도호가총건수
+		code = symCode + (_T("SHTC"));
+		AddDataSource(code, VtChartType::MIN, cycle);
+		// 매수호가총건수
+		code = symCode + (_T("BHTC"));
+		AddDataSource(code, VtChartType::MIN, cycle);
+		_ArgMap[_T("175")] = sym;
 	}
 }
