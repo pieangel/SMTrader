@@ -393,19 +393,6 @@ VtPositionType VtKp2s::UpdateSignal(int index)
 		_CurPosition = VtPositionType::None;
 	}
 
-	CheckLiqForBuyForKospi(index);
-	CheckLiqForSellForKospi(index);
-
-	// 예상 매수 진입 포지션을 알아본다.
-	if (CheckEntranceForBuyForKospi(index)) {
-		_ExpPosition = VtPositionType::Buy;
-	}
-
-	// 예상 매도 진입 포지션을 알아본다.
-	if (CheckEntranceForSellForKospi(index)) {
-		_ExpPosition = VtPositionType::Sell;
-	}
-
 	return _ExpPosition;
 }
 
@@ -423,7 +410,7 @@ void VtKp2s::OnTimer()
 	// 포지션에 따른 청산
 	// 매수일 때 청산 조건 확인
 	if (_CurPosition == VtPositionType::Buy) {
-		if (CheckLiqForBuyForKospi() && LiqudAll()) {
+		if (CheckLiqForBuy() && LiqudAll()) {
 			LOG_F(INFO, _T("매수청산성공"));
 			_CurPosition = VtPositionType::None;
 		}
@@ -431,7 +418,7 @@ void VtKp2s::OnTimer()
 
 	// 매도일 때 청산 조건 확인
 	if (_CurPosition == VtPositionType::Sell) {
-		if (CheckLiqForSellForKospi() && LiqudAll()) {
+		if (CheckLiqForSell() && LiqudAll()) {
 			LOG_F(INFO, _T("매도청산성공"));
 			_CurPosition = VtPositionType::None;
 		}
@@ -453,11 +440,9 @@ void VtKp2s::OnTimer()
 	// 시스템 변수를 읽어 온다.
 	ReadExtraArgs();
 
-	int curTime = VtChartDataCollector::GetLocalTime();
-
 	if (_CurPosition == VtPositionType::None) {
-
-		if (CheckEntranceForBuyForKospi()) {
+		int curTime = VtChartDataCollector::GetLocalTime();
+		if (CheckCondition(_T("매수진입"))) {
 			LOG_F(INFO, _T("매수진입성공"));
 			// 포지션 설정
 			_CurPosition = VtPositionType::Buy;
@@ -473,7 +458,7 @@ void VtKp2s::OnTimer()
 		}
 
 		// 매도 진입 조건 확인
-		if (CheckEntranceForSellForKospi()) {
+		if (CheckCondition(_T("매도진입"))) {
 			LOG_F(INFO, _T("매도진입성공"));
 			// 포지션 설정
 			_CurPosition = VtPositionType::Sell;
@@ -493,9 +478,6 @@ void VtKp2s::OnTimer()
 void VtKp2s::UpdateSystem(int index)
 {
 	VtSystem::UpdateSystem(index);
-	if (_ShowRealtime && _UsdCfgDlg) {
-		_UsdCfgDlg->OnRealTimeEvent();
-	}
 }
 
 void VtKp2s::ReadExtraArgs()
@@ -615,21 +597,84 @@ bool VtKp2s::CheckEntranceForSell(size_t index)
 
 bool VtKp2s::CheckLiqForSell()
 {
-	return CheckCondition(_T("매도청산"));
+	std::vector<bool> argCond;
+
+	argCond.push_back(CheckCondition(_T("매도청산")));
+
+	if (_EnableATRLiq) {
+		argCond.push_back(CheckAtrLiqForSell());
+	}
+
+
+	if (argCond.size() == 0)
+		return false;
+
+	auto it = std::find(argCond.begin(), argCond.end(), false);
+	if (it != argCond.end())
+		return false;
+	else
+		return true;
 }
 
 bool VtKp2s::CheckLiqForSell(size_t index)
 {
-	return CheckCondition(_T("매도청산"));
+	std::vector<bool> argCond;
+
+	argCond.push_back(CheckCondition(_T("매도청산"), index));
+
+	if (_EnableATRLiq) {
+		argCond.push_back(CheckAtrLiqForSell(index));
+	}
+
+
+	if (argCond.size() == 0)
+		return false;
+
+	auto it = std::find(argCond.begin(), argCond.end(), false);
+	if (it != argCond.end())
+		return false;
+	else
+		return true;
 }
 
 bool VtKp2s::CheckLiqForBuy()
 {
-	return CheckCondition(_T("매수청산"));
+	std::vector<bool> argCond;
+
+	argCond.push_back(CheckCondition(_T("매수청산")));
+
+	if (_EnableATRLiq) {
+		argCond.push_back(CheckAtrLiqForBuy());
+	}
+
+
+	if (argCond.size() == 0)
+		return false;
+
+	auto it = std::find(argCond.begin(), argCond.end(), false);
+	if (it != argCond.end())
+		return false;
+	else
+		return true;
 }
 
 bool VtKp2s::CheckLiqForBuy(size_t index)
 {
-	return CheckCondition(_T("매수청산"), index);
-}
+	std::vector<bool> argCond;
 
+	argCond.push_back(CheckCondition(_T("매수청산"), index));
+
+	if (_EnableATRLiq) {
+		argCond.push_back(CheckAtrLiqForBuy(index));
+	}
+
+
+	if (argCond.size() == 0)
+		return false;
+
+	auto it = std::find(argCond.begin(), argCond.end(), false);
+	if (it != argCond.end())
+		return false;
+	else
+		return true;
+}

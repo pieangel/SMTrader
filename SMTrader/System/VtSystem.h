@@ -232,6 +232,8 @@ public:
 	bool CheckAtrLiqForSell();
 	bool CheckAtrLiq();
 	bool CheckAtrLiq(int index);
+	bool CheckAtrLiqForBuy(int index);
+	bool CheckAtrLiqForSell(int index);
 	int GetDailyIndex(int index);
 	int GetDailyIndex();
 	double ATRMulti() const { return _ATRMulti; }
@@ -466,5 +468,9 @@ protected:
 	std::map<std::string, ArgNameType> _ArgTypeMap;
 	void InitArgType();
 	std::map<std::string, std::map<std::string, ArgDataSource>*> _CondGroupMap;
+	/// <summary>
+	/// 마지막으로 진입한 데일리 인덱스
+	/// </summary>
+	int _LastEntryIndex = -1;
 };
 

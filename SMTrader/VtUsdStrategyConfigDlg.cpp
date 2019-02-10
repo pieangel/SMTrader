@@ -767,6 +767,8 @@ void VtUsdStrategyConfigDlg::OnTimer(UINT_PTR nIDEvent)
 		RefreshRealTimeValue(_T("Ubc>Uac"), _UbcGtUac);
 		double _UacGtUbc = sysMgr->Uac == 0 ? 0 : sysMgr->Ubc / sysMgr->Uac;
 		RefreshRealTimeValue(_T("Uac>Ubc"), _UacGtUbc);
+
+		OnRealTimeEvent();
 	}
 
 	CDialogEx::OnTimer(nIDEvent);
