@@ -24,14 +24,14 @@ public:
 	virtual void UpdateSystem(int index);
 	virtual void ReadExtraArgs();
 
-	virtual bool CheckEntranceForBuyForUsd();
-	virtual bool CheckEntranceForSellForUsd();
-	virtual bool CheckLiqForSellForUsd();
-	virtual bool CheckLiqForBuyForUsd();
+	virtual bool CheckEntranceForBuy();
+	virtual bool CheckEntranceForSell();
+	virtual bool CheckLiqForSell();
+	virtual bool CheckLiqForBuy();
 
-	virtual bool CheckEntranceForBuyForUsd(size_t index);
-	virtual bool CheckEntranceForSellForUsd(size_t index);
-	virtual bool CheckLiqForSellForUsd(size_t index);
-	virtual bool CheckLiqForBuyForUsd(size_t index);
+	virtual bool CheckEntranceForBuy(size_t index);
+	virtual bool CheckEntranceForSell(size_t index);
+	virtual bool CheckLiqForSell(size_t index);
+	virtual bool CheckLiqForBuy(size_t index);
 };
 

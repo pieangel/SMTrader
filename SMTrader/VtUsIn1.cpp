@@ -48,56 +48,7 @@ VtUsIn1::~VtUsIn1()
 /// </summary>
 void VtUsIn1::SetDataSrc()
 {
-	VtRealtimeRegisterManager* realRegiMgr = VtRealtimeRegisterManager::GetInstance();
-	VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();
-	// Kospi200 총호가 수량과 건수
-	VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
-	if (sym) {
-		std::string symCode = sym->ShortCode;
-		_DataSrcSymbolVec.push_back(symCode);
-		realRegiMgr->RegisterProduct(symCode);
-		// 일별 데이터 추가
-		VtChartData* data = AddDataSource(symCode, VtChartType::DAY, 1);
-		data->RequestChartData();
-		// 5분봉 데이터 추가
-		data = AddDataSource(symCode, VtChartType::MIN, _Cycle);
-		data->RequestChartData();
-		// 매도호가총수량
-		std::string code = symCode + (_T("SHTQ"));
-		AddDataSource(code, VtChartType::MIN, _Cycle);
-		// 매수호가총수량
-		code = symCode + (_T("BHTQ"));
-		AddDataSource(code, VtChartType::MIN, _Cycle);
-		// 매도호가총건수
-		code = symCode + (_T("SHTC"));
-		AddDataSource(code, VtChartType::MIN, _Cycle);
-		// 매수호가총건수
-		code = symCode + (_T("BHTC"));
-		AddDataSource(code, VtChartType::MIN, _Cycle);
-	}
-
-	sym = prdtCatMgr->GetRecentFutureSymbol(_T("175F"));
-	if (sym) {
-		std::string symCode = sym->ShortCode;
-		_DataSrcSymbolVec.push_back(symCode);
-		// 실시간 데이터 등록
-		realRegiMgr->RegisterProduct(symCode);
-		// 주기 데이터 추가
-		VtChartData* data = AddDataSource(symCode, VtChartType::MIN, _Cycle);
-		data->RequestChartData();
-		// 매도호가총수량
-		std::string code = symCode + (_T("SHTQ"));
-		AddDataSource(code, VtChartType::MIN, _Cycle);
-		// 매수호가총수량
-		code = symCode + (_T("BHTQ"));
-		AddDataSource(code, VtChartType::MIN, _Cycle);
-		// 매도호가총건수
-		code = symCode + (_T("SHTC"));
-		AddDataSource(code, VtChartType::MIN, _Cycle);
-		// 매수호가총건수
-		code = symCode + (_T("BHTC"));
-		AddDataSource(code, VtChartType::MIN, _Cycle);
-	}
+	
 }
 
 void VtUsIn1::InitArgs()
@@ -326,57 +277,6 @@ void VtUsIn1::CreateSignal(int startIndex, int endIndex)
 	}
 }
 
-/// <summary>
-/// 실시간 체크 함수
-/// 여기서 손절, 익절, 트레일링
-/// </summary>
-/// <param name="index"></param>
-/// <returns></returns>
-VtPositionType VtUsIn1::UpdateSignal(int index)
-{
-	// 시스템 업데이트
-	UpdateSystem(index);
-
-	_ExpPosition = VtPositionType::None;
-
-	// 청산 시간에 의한 청산 확인
-	if (LiqByEndTime(index)) {
-		_CurPosition = VtPositionType::None;
-		return _ExpPosition;
-	}
-
-	// 손절 확인
-	if (CheckLossCut(index)) {
-		LOG_F(INFO, _T("손절성공"));
-		_CurPosition = VtPositionType::None;
-	}
-	// 목표이익 확인
-	if (CheckProfitCut(index)) {
-		LOG_F(INFO, _T("익절성공"));
-		_CurPosition = VtPositionType::None;
-	}
-	// 트레일링 스탑 확인
-	if (CheckTrailStop(index)) {
-		LOG_F(INFO, _T("트레일스탑성공"));
-		_CurPosition = VtPositionType::None;
-	}
-
-	CheckLiqForBuyForUsd(index);
-	CheckLiqForSellForUsd(index);
-
-	// 예상 매수 진입 포지션을 알아본다.
-	if (CheckEntranceForBuyForUsd(index)) {
-		_ExpPosition = VtPositionType::Buy;
-	}
-
-	// 예상 매도 진입 포지션을 알아본다.
-	if (CheckEntranceForSellForUsd(index)) {
-		_ExpPosition = VtPositionType::Sell;
-	}
-
-	return _ExpPosition;
-}
-
 VtPositionType VtUsIn1::UpdateSignal(int start, int end)
 {
 	VtPositionType sigType = VtPositionType::None;
@@ -435,6 +335,44 @@ void VtUsIn1::LoadFromXml(pugi::xml_node& node)
 
 }
 
+/// <summary>
+/// 실시간 체크 함수
+/// 여기서 손절, 익절, 트레일링
+/// </summary>
+/// <param name="index"></param>
+/// <returns></returns>
+VtPositionType VtUsIn1::UpdateSignal(int index)
+{
+	// 시스템 업데이트
+	UpdateSystem(index);
+
+	_ExpPosition = VtPositionType::None;
+
+	// 청산 시간에 의한 청산 확인
+	if (LiqByEndTime(index)) {
+		_CurPosition = VtPositionType::None;
+		return _ExpPosition;
+	}
+
+	// 손절 확인
+	if (CheckLossCut(index)) {
+		LOG_F(INFO, _T("손절성공"));
+		_CurPosition = VtPositionType::None;
+	}
+	// 목표이익 확인
+	if (CheckProfitCut(index)) {
+		LOG_F(INFO, _T("익절성공"));
+		_CurPosition = VtPositionType::None;
+	}
+	// 트레일링 스탑 확인
+	if (CheckTrailStop(index)) {
+		LOG_F(INFO, _T("트레일스탑성공"));
+		_CurPosition = VtPositionType::None;
+	}
+
+	return _ExpPosition;
+}
+
 void VtUsIn1::OnTimer()
 {
 	if (!_Enable)
@@ -449,7 +387,7 @@ void VtUsIn1::OnTimer()
 	// 포지션에 따른 청산
 	// 매수일 때 청산 조건 확인
 	if (_CurPosition == VtPositionType::Buy) {
-		if (CheckLiqForBuyForUsd() && LiqudAll()) {
+		if (CheckLiqForBuy() && LiqudAll()) {
 			LOG_F(INFO, _T("매수청산성공"));
 			_CurPosition = VtPositionType::None;
 		}
@@ -457,7 +395,7 @@ void VtUsIn1::OnTimer()
 
 	// 매도일 때 청산 조건 확인
 	if (_CurPosition == VtPositionType::Sell) {
-		if (CheckLiqForSellForUsd() && LiqudAll()) {
+		if (CheckLiqForSell() && LiqudAll()) {
 			LOG_F(INFO, _T("매도청산성공"));
 			_CurPosition = VtPositionType::None;
 		}
@@ -479,11 +417,9 @@ void VtUsIn1::OnTimer()
 	// 시스템 변수를 읽어 온다.
 	ReadExtraArgs();
 
-	int curTime = VtChartDataCollector::GetLocalTime();
-
 	if (_CurPosition == VtPositionType::None) {
-
-		if (CheckEntranceForBuyForUsd()) {
+		int curTime = VtChartDataCollector::GetLocalTime();
+		if (CheckCondition(_T("매수진입"))) {
 			LOG_F(INFO, _T("매수진입성공"));
 			// 포지션 설정
 			_CurPosition = VtPositionType::Buy;
@@ -499,7 +435,7 @@ void VtUsIn1::OnTimer()
 		}
 
 		// 매도 진입 조건 확인
-		if (CheckEntranceForSellForUsd()) {
+		if (CheckCondition(_T("매도진입"))) {
 			LOG_F(INFO, _T("매도진입성공"));
 			// 포지션 설정
 			_CurPosition = VtPositionType::Sell;
@@ -519,9 +455,11 @@ void VtUsIn1::OnTimer()
 void VtUsIn1::UpdateSystem(int index)
 {
 	VtSystem::UpdateSystem(index);
-	if (_ShowRealtime && _UsdCfgDlg) {
-		_UsdCfgDlg->OnRealTimeEvent();
-	}
+}
+
+void VtUsIn1::ReadExtraArgs()
+{
+	VtSystem::ReadExtraArgs();
 }
 
 void VtUsIn1::ReloadSystem(int startIndex, int endIndex)
@@ -530,17 +468,11 @@ void VtUsIn1::ReloadSystem(int startIndex, int endIndex)
 	CreateSignal(startIndex, endIndex);
 }
 
-void VtUsIn1::ReadExtraArgs()
-{
-	VtSystem::ReadExtraArgs();
-}
-
-
-bool VtUsIn1::CheckEntranceForBuyForUsd()
+bool VtUsIn1::CheckEntranceForBuy()
 {
 	std::vector<bool> argCond;
 
-	argCond.push_back(VtSystem::CheckEntranceForBuyForUsd());
+	argCond.push_back(CheckCondition(_T("매수진입")));
 
 	if (_EnableByBand) {
 		// 밴드에 의한 조건을 먼저 확인한다.
@@ -559,11 +491,11 @@ bool VtUsIn1::CheckEntranceForBuyForUsd()
 		return true;
 }
 
-bool VtUsIn1::CheckEntranceForBuyForUsd(size_t index)
+bool VtUsIn1::CheckEntranceForBuy(size_t index)
 {
 	std::vector<bool> argCond;
 
-	argCond.push_back(VtSystem::CheckEntranceForBuyForUsd(index));
+	argCond.push_back(CheckCondition(_T("매수진입"), index));
 
 	if (_EnableByBand) {
 		// 밴드에 의한 조건을 먼저 확인한다.
@@ -582,11 +514,11 @@ bool VtUsIn1::CheckEntranceForBuyForUsd(size_t index)
 		return true;
 }
 
-bool VtUsIn1::CheckEntranceForSellForUsd()
+bool VtUsIn1::CheckEntranceForSell()
 {
 	std::vector<bool> argCond;
 
-	argCond.push_back(VtSystem::CheckEntranceForSellForUsd());
+	argCond.push_back(CheckCondition(_T("매도진입")));
 
 	if (_EnableByBand) {
 		// 밴드에 의한 조건을 먼저 확인한다.
@@ -605,11 +537,11 @@ bool VtUsIn1::CheckEntranceForSellForUsd()
 		return true;
 }
 
-bool VtUsIn1::CheckEntranceForSellForUsd(size_t index)
+bool VtUsIn1::CheckEntranceForSell(size_t index)
 {
 	std::vector<bool> argCond;
 
-	argCond.push_back(VtSystem::CheckEntranceForSellForUsd(index));
+	argCond.push_back(CheckCondition(_T("매도진입"), index));
 
 	if (_EnableByBand) {
 		// 밴드에 의한 조건을 먼저 확인한다.
@@ -627,24 +559,87 @@ bool VtUsIn1::CheckEntranceForSellForUsd(size_t index)
 	else
 		return true;
 }
-bool VtUsIn1::CheckLiqForSellForUsd()
+
+bool VtUsIn1::CheckLiqForSell()
 {
-	return VtSystem::CheckLiqForSellForUsd();
+	std::vector<bool> argCond;
+
+	argCond.push_back(CheckCondition(_T("매도청산")));
+
+	if (_EnableATRLiq) {
+		argCond.push_back(CheckAtrLiqForSell());
+	}
+
+
+	if (argCond.size() == 0)
+		return false;
+
+	auto it = std::find(argCond.begin(), argCond.end(), false);
+	if (it != argCond.end())
+		return false;
+	else
+		return true;
 }
 
-bool VtUsIn1::CheckLiqForSellForUsd(size_t index)
+bool VtUsIn1::CheckLiqForSell(size_t index)
 {
-	return VtSystem::CheckLiqForSellForUsd(index);
+	std::vector<bool> argCond;
+
+	argCond.push_back(CheckCondition(_T("매도청산"), index));
+
+	if (_EnableATRLiq) {
+		argCond.push_back(CheckAtrLiqForSell(index));
+	}
+
+
+	if (argCond.size() == 0)
+		return false;
+
+	auto it = std::find(argCond.begin(), argCond.end(), false);
+	if (it != argCond.end())
+		return false;
+	else
+		return true;
 }
 
-bool VtUsIn1::CheckLiqForBuyForUsd()
+bool VtUsIn1::CheckLiqForBuy()
 {
-	return VtSystem::CheckLiqForBuyForUsd();
+	std::vector<bool> argCond;
+
+	argCond.push_back(CheckCondition(_T("매수청산")));
+
+	if (_EnableATRLiq) {
+		argCond.push_back(CheckAtrLiqForBuy());
+	}
+
+
+	if (argCond.size() == 0)
+		return false;
+
+	auto it = std::find(argCond.begin(), argCond.end(), false);
+	if (it != argCond.end())
+		return false;
+	else
+		return true;
 }
 
-bool VtUsIn1::CheckLiqForBuyForUsd(size_t index)
+bool VtUsIn1::CheckLiqForBuy(size_t index)
 {
-	return VtSystem::CheckLiqForBuyForUsd(index);
+	std::vector<bool> argCond;
+
+	argCond.push_back(CheckCondition(_T("매수청산"), index));
+
+	if (_EnableATRLiq) {
+		argCond.push_back(CheckAtrLiqForBuy(index));
+	}
+
+
+	if (argCond.size() == 0)
+		return false;
+
+	auto it = std::find(argCond.begin(), argCond.end(), false);
+	if (it != argCond.end())
+		return false;
+	else
+		return true;
 }
-
-
