@@ -89,7 +89,7 @@ void VtUsComp::InitArgs()
 
 	arg.Name = _T("Uac>Ubc");
 	arg.Type = VtParamType::STRING;
-	arg.sValue = _T("0.7");
+	arg.sValue = _T("1");
 	arg.Enable = false;
 	arg.Desc = _T("Uac-Ubc 값을 설정 합니다.");
 	AddSystemArg(_T("매수진입"), arg);
@@ -117,7 +117,7 @@ void VtUsComp::InitArgs()
 
 	arg.Name = _T("Ubc>Uac");
 	arg.Type = VtParamType::STRING;
-	arg.sValue = _T("0.7");
+	arg.sValue = _T("1");
 	arg.Enable = false;
 	arg.Desc = _T("Ubc>Uac 값을 설정 합니다.");
 	AddSystemArg(_T("매도진입"), arg);
@@ -146,15 +146,15 @@ void VtUsComp::InitArgs()
 
 	arg.Name = _T("Ubc>Uac");
 	arg.Type = VtParamType::STRING;
-	arg.sValue = _T("0.6");
-	arg.Enable = true;
+	arg.sValue = _T("1");
+	arg.Enable = false;
 	arg.Desc = _T("Ubc>Uac 값을 설정 합니다.");
 	AddSystemArg(_T("매수청산"), arg);
 
 	arg.Name = _T("Ubs>Uas");
 	arg.Type = VtParamType::STRING;
-	arg.sValue = _T("0.6");
-	arg.Enable = true;
+	arg.sValue = _T("1");
+	arg.Enable = false;
 	arg.Desc = _T("Ubs>Uas 값을 설정 합니다.");
 	AddSystemArg(_T("매수청산"), arg);
 
@@ -174,15 +174,15 @@ void VtUsComp::InitArgs()
 
 	arg.Name = _T("Uac>Ubc");
 	arg.Type = VtParamType::STRING;
-	arg.sValue = _T("0.6");
-	arg.Enable = true;
+	arg.sValue = _T("1");
+	arg.Enable = false;
 	arg.Desc = _T("Uac-Ubc 값을 설정 합니다.");
 	AddSystemArg(_T("매도청산"), arg);
 
 	arg.Name = _T("Uas>Ubs");
 	arg.Type = VtParamType::STRING;
-	arg.sValue = _T("0.6");
-	arg.Enable = true;
+	arg.sValue = _T("1");
+	arg.Enable = false;
 	arg.Desc = _T("Uas-Ubs 값을 설정 합니다.");
 	AddSystemArg(_T("매도청산"), arg);
 

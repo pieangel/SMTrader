@@ -240,14 +240,14 @@ void VtKp4b::InitArgs()
 	arg.Name = _T("ATRMulti");
 	arg.Type = VtParamType::STRING;
 	arg.sValue = _T("2");
-	arg.Enable = true;
+	arg.Enable = false;
 	arg.Desc = _T("ATRMulti 값을 설정 합니다.");
 	AddSystemArg(_T("기타변수"), arg);
 
 	arg.Name = _T("BandMulti");
 	arg.Type = VtParamType::STRING;
 	arg.sValue = _T("0.25");
-	arg.Enable = true;
+	arg.Enable = false;
 	arg.Desc = _T("BandMulti 값을 설정 합니다.");
 	AddSystemArg(_T("기타변수"), arg);
 

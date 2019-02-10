@@ -169,7 +169,7 @@ void VtKp2s::InitArgs()
 
 	arg.Name = _T("Kas-Kbs");
 	arg.Type = VtParamType::STRING;
-	arg.sValue = _T("1500");
+	arg.sValue = _T("2000");
 	arg.Enable = true;
 	arg.Desc = _T("Kas-Kbs 값을 설정 합니다.");
 	AddSystemArg(_T("매수청산"), arg);
@@ -197,7 +197,7 @@ void VtKp2s::InitArgs()
 
 	arg.Name = _T("Kbs-Kas");
 	arg.Type = VtParamType::STRING;
-	arg.sValue = _T("1500");
+	arg.sValue = _T("2000");
 	arg.Enable = true;
 	arg.Desc = _T("Kbs-Kas 값을 설정 합니다.");
 	AddSystemArg(_T("매도청산"), arg);
@@ -240,7 +240,7 @@ void VtKp2s::InitArgs()
 	arg.Name = _T("ATRMulti");
 	arg.Type = VtParamType::STRING;
 	arg.sValue = _T("2");
-	arg.Enable = true;
+	arg.Enable = false;
 	arg.Desc = _T("ATRMulti 값을 설정 합니다.");
 	AddSystemArg(_T("기타변수"), arg);
 
@@ -261,7 +261,7 @@ void VtKp2s::InitArgs()
 	arg.Name = _T("EntryBarIndex");
 	arg.Type = VtParamType::STRING;
 	arg.sValue = _T("1");
-	arg.Enable = true;
+	arg.Enable = false;
 	arg.Desc = _T("EntryBarIndex 값을 설정 합니다.");
 	AddSystemArg(_T("기타변수"), arg);
 

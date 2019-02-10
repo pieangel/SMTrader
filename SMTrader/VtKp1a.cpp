@@ -260,7 +260,7 @@ void VtKp1a::InitArgs()
 	arg.Name = _T("EntryBarIndex");
 	arg.Type = VtParamType::STRING;
 	arg.sValue = _T("1");
-	arg.Enable = true;
+	arg.Enable = false;
 	arg.Desc = _T("EntryBarIndex 값을 설정 합니다.");
 	AddSystemArg(_T("기타변수"), arg);
 

@@ -49,79 +49,7 @@ VtQIn1::~VtQIn1()
 /// </summary>
 void VtQIn1::SetDataSrc()
 {
-	VtRealtimeRegisterManager* realRegiMgr = VtRealtimeRegisterManager::GetInstance();
-	VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();
-	// Kospi200 총호가 수량과 건수
-	VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
-	if (sym) {
-		std::string symCode = sym->ShortCode;
-		_DataSrcSymbolVec.push_back(symCode);
-		realRegiMgr->RegisterProduct(symCode);
-		// 일별 데이터 추가
-		VtChartData* data = AddDataSource(symCode, VtChartType::DAY, 1);
-		data->RequestChartData();
-		// 5분봉 데이터 추가
-		data = AddDataSource(symCode, VtChartType::MIN, _Cycle);
-		data->RequestChartData();
-		// 매도호가총수량
-		std::string code = symCode + (_T("SHTQ"));
-		AddDataSource(code, VtChartType::MIN, _Cycle);
-		// 매수호가총수량
-		code = symCode + (_T("BHTQ"));
-		AddDataSource(code, VtChartType::MIN, _Cycle);
-		// 매도호가총건수
-		code = symCode + (_T("SHTC"));
-		AddDataSource(code, VtChartType::MIN, _Cycle);
-		// 매수호가총건수
-		code = symCode + (_T("BHTC"));
-		AddDataSource(code, VtChartType::MIN, _Cycle);
-	}
-
-	sym = prdtCatMgr->GetRecentFutureSymbol(_T("106F"));
-	if (sym) {
-		std::string symCode = sym->ShortCode;
-		_DataSrcSymbolVec.push_back(symCode);
-		// 실시간 데이터 등록
-		realRegiMgr->RegisterProduct(symCode);
-		// 주기 데이터 추가
-		VtChartData* data = AddDataSource(symCode, VtChartType::MIN, _Cycle);
-		data->RequestChartData();
-		// 매도호가총수량
-		std::string code = symCode + (_T("SHTQ"));
-		AddDataSource(code, VtChartType::MIN, _Cycle);
-		// 매수호가총수량
-		code = symCode + (_T("BHTQ"));
-		AddDataSource(code, VtChartType::MIN, _Cycle);
-		// 매도호가총건수
-		code = symCode + (_T("SHTC"));
-		AddDataSource(code, VtChartType::MIN, _Cycle);
-		// 매수호가총건수
-		code = symCode + (_T("BHTC"));
-		AddDataSource(code, VtChartType::MIN, _Cycle);
-	}
-
-	sym = prdtCatMgr->GetRecentFutureSymbol(_T("175F"));
-	if (sym) {
-		std::string symCode = sym->ShortCode;
-		_DataSrcSymbolVec.push_back(symCode);
-		// 실시간 데이터 등록
-		realRegiMgr->RegisterProduct(symCode);
-		// 주기 데이터 추가
-		VtChartData* data = AddDataSource(symCode, VtChartType::MIN, _Cycle);
-		data->RequestChartData();
-		// 매도호가총수량
-		std::string code = symCode + (_T("SHTQ"));
-		AddDataSource(code, VtChartType::MIN, _Cycle);
-		// 매수호가총수량
-		code = symCode + (_T("BHTQ"));
-		AddDataSource(code, VtChartType::MIN, _Cycle);
-		// 매도호가총건수
-		code = symCode + (_T("SHTC"));
-		AddDataSource(code, VtChartType::MIN, _Cycle);
-		// 매수호가총건수
-		code = symCode + (_T("BHTC"));
-		AddDataSource(code, VtChartType::MIN, _Cycle);
-	}
+	
 }
 
 void VtQIn1::InitArgs()
@@ -310,7 +238,7 @@ void VtQIn1::InitArgs()
 	arg.Name = _T("EntryBarIndex");
 	arg.Type = VtParamType::STRING;
 	arg.sValue = _T("1");
-	arg.Enable = true;
+	arg.Enable = false;
 	arg.Desc = _T("EntryBarIndex 값을 설정 합니다.");
 	AddSystemArg(_T("기타변수"), arg);
 

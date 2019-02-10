@@ -96,7 +96,7 @@ void VtKp6In2::InitArgs()
 	_LiqTime.min = 19;
 	_LiqTime.sec = 30;
 
-	_MaxEntrance = 1;
+	_MaxEntrance = 2;
 
 	_EntryBarIndex = 0;
 	_ATRTime.hour = 9;
@@ -113,14 +113,14 @@ void VtKp6In2::InitArgs()
 	arg.Name = _T("Kbs-Kas");
 	arg.Type = VtParamType::STRING;
 	arg.sValue = _T("1");
-	arg.Enable = true;
+	arg.Enable = false;
 	arg.Desc = _T("Kbs-Kas 값을 설정 합니다.");
 	AddSystemArg(_T("매수진입"), arg);
 
 	arg.Name = _T("Kbc>Kac");
 	arg.Type = VtParamType::STRING;
 	arg.sValue = _T("0.6");
-	arg.Enable = false;
+	arg.Enable = true;
 	arg.Desc = _T("Kbc>Kac 값을 설정 합니다.");
 	AddSystemArg(_T("매수진입"), arg);
 
@@ -141,14 +141,14 @@ void VtKp6In2::InitArgs()
 	arg.Name = _T("Kas-Kbs");
 	arg.Type = VtParamType::STRING;
 	arg.sValue = _T("1");
-	arg.Enable = true;
+	arg.Enable = false;
 	arg.Desc = _T("Kas-Kbs 값을 설정 합니다.");
 	AddSystemArg(_T("매도진입"), arg);
 
 	arg.Name = _T("Kac>Kbc");
 	arg.Type = VtParamType::STRING;
 	arg.sValue = _T("0.6");
-	arg.Enable = false;
+	arg.Enable = true;
 	arg.Desc = _T("Kbc>Kac 값을 설정 합니다.");
 	AddSystemArg(_T("매도진입"), arg);
 
@@ -169,14 +169,14 @@ void VtKp6In2::InitArgs()
 	arg.Name = _T("Kas-Kbs");
 	arg.Type = VtParamType::STRING;
 	arg.sValue = _T("1");
-	arg.Enable = true;
+	arg.Enable = false;
 	arg.Desc = _T("Kas-Kbs 값을 설정 합니다.");
 	AddSystemArg(_T("매수청산"), arg);
 
 	arg.Name = _T("Kac>Kbc");
 	arg.Type = VtParamType::STRING;
 	arg.sValue = _T("0.8");
-	arg.Enable = false;
+	arg.Enable = true;
 	arg.Desc = _T("Kbc>Kac 값을 설정 합니다.");
 	AddSystemArg(_T("매수청산"), arg);
 
@@ -197,14 +197,14 @@ void VtKp6In2::InitArgs()
 	arg.Name = _T("Kbs-Kas");
 	arg.Type = VtParamType::STRING;
 	arg.sValue = _T("1");
-	arg.Enable = true;
+	arg.Enable = false;
 	arg.Desc = _T("Kbs-Kas 값을 설정 합니다.");
 	AddSystemArg(_T("매도청산"), arg);
 
 	arg.Name = _T("Kbc>Kac");
 	arg.Type = VtParamType::STRING;
 	arg.sValue = _T("0.8");
-	arg.Enable = false;
+	arg.Enable = true;
 	arg.Desc = _T("Kbc>Kac 값을 설정 합니다.");
 	AddSystemArg(_T("매도청산"), arg);
 
@@ -239,14 +239,14 @@ void VtKp6In2::InitArgs()
 	arg.Name = _T("ATRMulti");
 	arg.Type = VtParamType::STRING;
 	arg.sValue = _T("2");
-	arg.Enable = true;
+	arg.Enable = false;
 	arg.Desc = _T("ATRMulti 값을 설정 합니다.");
 	AddSystemArg(_T("기타변수"), arg);
 
 	arg.Name = _T("BandMulti");
 	arg.Type = VtParamType::STRING;
 	arg.sValue = _T("0.25");
-	arg.Enable = true;
+	arg.Enable = false;
 	arg.Desc = _T("BandMulti 값을 설정 합니다.");
 	AddSystemArg(_T("기타변수"), arg);
 
@@ -260,7 +260,7 @@ void VtKp6In2::InitArgs()
 	arg.Name = _T("EntryBarIndex");
 	arg.Type = VtParamType::STRING;
 	arg.sValue = _T("1");
-	arg.Enable = true;
+	arg.Enable = false;
 	arg.Desc = _T("EntryBarIndex 값을 설정 합니다.");
 	AddSystemArg(_T("기타변수"), arg);
 

@@ -89,7 +89,7 @@ void VtQIn3::InitArgs()
 
 	arg.Name = _T("Qbc>Qac");
 	arg.Type = VtParamType::STRING;
-	arg.sValue = _T("0.7");
+	arg.sValue = _T("0.6");
 	arg.Enable = true;
 	arg.Desc = _T("Qbc>Qac 값을 설정 합니다.");
 	AddSystemArg(_T("매수진입"), arg);
@@ -117,7 +117,7 @@ void VtQIn3::InitArgs()
 
 	arg.Name = _T("Qac>Qbc");
 	arg.Type = VtParamType::STRING;
-	arg.sValue = _T("0.7");
+	arg.sValue = _T("0.6");
 	arg.Enable = true;
 	arg.Desc = _T("Qac>Qbc 값을 설정 합니다.");
 	AddSystemArg(_T("매도진입"), arg);
@@ -152,7 +152,7 @@ void VtQIn3::InitArgs()
 
 	arg.Name = _T("Qas>Qbs");
 	arg.Type = VtParamType::STRING;
-	arg.sValue = _T("0.9");
+	arg.sValue = _T("0.7");
 	arg.Enable = true;
 	arg.Desc = _T("Qas>Qbs 값을 설정 합니다.");
 	AddSystemArg(_T("매수청산"), arg);
@@ -180,7 +180,7 @@ void VtQIn3::InitArgs()
 
 	arg.Name = _T("Qbs>Qas");
 	arg.Type = VtParamType::STRING;
-	arg.sValue = _T("0.9");
+	arg.sValue = _T("0.7");
 	arg.Enable = true;
 	arg.Desc = _T("Qbs>Qas 값을 설정 합니다.");
 	AddSystemArg(_T("매도청산"), arg);
@@ -237,7 +237,7 @@ void VtQIn3::InitArgs()
 	arg.Name = _T("EntryBarIndex");
 	arg.Type = VtParamType::STRING;
 	arg.sValue = _T("1");
-	arg.Enable = true;
+	arg.Enable = false;
 	arg.Desc = _T("EntryBarIndex 값을 설정 합니다.");
 	AddSystemArg(_T("기타변수"), arg);
 

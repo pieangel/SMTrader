@@ -153,8 +153,8 @@ void VtTrUs3::InitArgs()
 
 	arg.Name = _T("Ubs>Uas");
 	arg.Type = VtParamType::STRING;
-	arg.sValue = _T("0.9");
-	arg.Enable = true;
+	arg.sValue = _T("1");
+	arg.Enable = false;
 	arg.Desc = _T("Ubs>Uas 값을 설정 합니다.");
 	AddSystemArg(_T("매수청산"), arg);
 
@@ -181,8 +181,8 @@ void VtTrUs3::InitArgs()
 
 	arg.Name = _T("Uas>Ubs");
 	arg.Type = VtParamType::STRING;
-	arg.sValue = _T("0.9");
-	arg.Enable = true;
+	arg.sValue = _T("1");
+	arg.Enable = false;
 	arg.Desc = _T("Uas-Ubs 값을 설정 합니다.");
 	AddSystemArg(_T("매도청산"), arg);
 
@@ -239,7 +239,7 @@ void VtTrUs3::InitArgs()
 	arg.Name = _T("EntryBarIndex");
 	arg.Type = VtParamType::STRING;
 	arg.sValue = _T("1");
-	arg.Enable = true;
+	arg.Enable = false;
 	arg.Desc = _T("EntryBarIndex 값을 설정 합니다.");
 	AddSystemArg(_T("기타변수"), arg);
 

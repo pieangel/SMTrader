@@ -118,7 +118,7 @@ VtSystem* VtSystemManager::CreateSystem(VtSystemType systemType)
 		system = new VtQH2(VtSystemType::Q_H2, _T("Q_H2"));
 		break;
 	case VtSystemType::Q_F2:
-		system = new VtQIn4(VtSystemType::Q_F2, _T("Q_F2"));
+		system = new VtQF2(VtSystemType::Q_F2, _T("Q_F2"));
 		break;
 	case VtSystemType::TR_US1:
 		system = new VtTrUs1(VtSystemType::TR_US1, _T("TR_US1"));
