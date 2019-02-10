@@ -72,79 +72,7 @@ VtKp2s::~VtKp2s()
 /// </summary>
 void VtKp2s::SetDataSrc()
 {
-	VtRealtimeRegisterManager* realRegiMgr = VtRealtimeRegisterManager::GetInstance();
-	VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();
-	// Kospi200 총호가 수량과 건수
-	VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
-	if (sym) {
-		std::string symCode = sym->ShortCode;
-		_DataSrcSymbolVec.push_back(symCode);
-		realRegiMgr->RegisterProduct(symCode);
-		// 일별 데이터 추가
-		VtChartData* data = AddDataSource(symCode, VtChartType::DAY, 1);
-		data->RequestChartData();
-		// 5분봉 데이터 추가
-		data = AddDataSource(symCode, VtChartType::MIN, _Cycle);
-		data->RequestChartData();
-		// 매도호가총수량
-		std::string code = symCode + (_T("SHTQ"));
-		AddDataSource(code, VtChartType::MIN, _Cycle);
-		// 매수호가총수량
-		code = symCode + (_T("BHTQ"));
-		AddDataSource(code, VtChartType::MIN, _Cycle);
-		// 매도호가총건수
-		code = symCode + (_T("SHTC"));
-		AddDataSource(code, VtChartType::MIN, _Cycle);
-		// 매수호가총건수
-		code = symCode + (_T("BHTC"));
-		AddDataSource(code, VtChartType::MIN, _Cycle);
-	}
-
-	sym = prdtCatMgr->GetRecentFutureSymbol(_T("106F"));
-	if (sym) {
-		std::string symCode = sym->ShortCode;
-		_DataSrcSymbolVec.push_back(symCode);
-		// 실시간 데이터 등록
-		realRegiMgr->RegisterProduct(symCode);
-		// 주기 데이터 추가
-		VtChartData* data = AddDataSource(symCode, VtChartType::MIN, _Cycle);
-		data->RequestChartData();
-		// 매도호가총수량
-		std::string code = symCode + (_T("SHTQ"));
-		AddDataSource(code, VtChartType::MIN, _Cycle);
-		// 매수호가총수량
-		code = symCode + (_T("BHTQ"));
-		AddDataSource(code, VtChartType::MIN, _Cycle);
-		// 매도호가총건수
-		code = symCode + (_T("SHTC"));
-		AddDataSource(code, VtChartType::MIN, _Cycle);
-		// 매수호가총건수
-		code = symCode + (_T("BHTC"));
-		AddDataSource(code, VtChartType::MIN, _Cycle);
-	}
-
-	sym = prdtCatMgr->GetRecentFutureSymbol(_T("175F"));
-	if (sym) {
-		std::string symCode = sym->ShortCode;
-		_DataSrcSymbolVec.push_back(symCode);
-		// 실시간 데이터 등록
-		realRegiMgr->RegisterProduct(symCode);
-		// 주기 데이터 추가
-		VtChartData* data = AddDataSource(symCode, VtChartType::MIN, _Cycle);
-		data->RequestChartData();
-		// 매도호가총수량
-		std::string code = symCode + (_T("SHTQ"));
-		AddDataSource(code, VtChartType::MIN, _Cycle);
-		// 매수호가총수량
-		code = symCode + (_T("BHTQ"));
-		AddDataSource(code, VtChartType::MIN, _Cycle);
-		// 매도호가총건수
-		code = symCode + (_T("SHTC"));
-		AddDataSource(code, VtChartType::MIN, _Cycle);
-		// 매수호가총건수
-		code = symCode + (_T("BHTC"));
-		AddDataSource(code, VtChartType::MIN, _Cycle);
-	}
+	
 }
 
 void VtKp2s::InitArgs()
@@ -575,21 +503,26 @@ void VtKp2s::ReadExtraArgs()
 	VtSystem::ReadExtraArgs();
 }
 
-bool VtKp2s::CheckEntranceForBuyForKospi()
+void VtKp2s::ReloadSystem(int startIndex, int endIndex)
+{
+	ClearSignal();
+	CreateSignal(startIndex, endIndex);
+}
+
+bool VtKp2s::CheckEntranceForBuy()
 {
 	std::vector<bool> argCond;
 
-	argCond.push_back(VtSystem::CheckEntranceForBuyForKospi());
-
-	if (_EnableByOpen) {
-		argCond.push_back(CheckEntranceByOpenForBuy());
-	}
+	argCond.push_back(CheckCondition(_T("매수진입")));
 
 	if (_EnableByBand) {
 		// 밴드에 의한 조건을 먼저 확인한다.
 		argCond.push_back(CheckEntranceByBandForBuy());
 	}
 
+	if (_EnableByOpen) {
+		argCond.push_back(CheckEntranceByOpenForBuy());
+	}
 
 	if (argCond.size() == 0)
 		return false;
@@ -602,21 +535,20 @@ bool VtKp2s::CheckEntranceForBuyForKospi()
 		return true;
 }
 
-bool VtKp2s::CheckEntranceForBuyForKospi(size_t index)
+bool VtKp2s::CheckEntranceForBuy(size_t index)
 {
 	std::vector<bool> argCond;
 
-	argCond.push_back(VtSystem::CheckEntranceForBuyForKospi(index));
-
-	if (_EnableByOpen) {
-		argCond.push_back(CheckEntranceByOpenForBuy(index));
-	}
+	argCond.push_back(CheckCondition(_T("매수진입"), index));
 
 	if (_EnableByBand) {
 		// 밴드에 의한 조건을 먼저 확인한다.
 		argCond.push_back(CheckEntranceByBandForBuy(index));
 	}
 
+	if (_EnableByOpen) {
+		argCond.push_back(CheckEntranceByOpenForBuy(index));
+	}
 
 	if (argCond.size() == 0)
 		return false;
@@ -629,21 +561,20 @@ bool VtKp2s::CheckEntranceForBuyForKospi(size_t index)
 		return true;
 }
 
-bool VtKp2s::CheckEntranceForSellForKospi()
+bool VtKp2s::CheckEntranceForSell()
 {
 	std::vector<bool> argCond;
 
-	argCond.push_back(VtSystem::CheckEntranceForSellForKospi());
-
-	if (_EnableByOpen) {
-		argCond.push_back(CheckEntranceByOpenForSell());
-	}
+	argCond.push_back(CheckCondition(_T("매도진입")));
 
 	if (_EnableByBand) {
 		// 밴드에 의한 조건을 먼저 확인한다.
 		argCond.push_back(CheckEntranceByBandForSell());
 	}
 
+	if (_EnableByOpen) {
+		argCond.push_back(CheckEntranceByOpenForSell());
+	}
 
 	if (argCond.size() == 0)
 		return false;
@@ -656,21 +587,21 @@ bool VtKp2s::CheckEntranceForSellForKospi()
 		return true;
 }
 
-bool VtKp2s::CheckEntranceForSellForKospi(size_t index)
+bool VtKp2s::CheckEntranceForSell(size_t index)
 {
 	std::vector<bool> argCond;
 
-	argCond.push_back(VtSystem::CheckEntranceForSellForKospi(index));
-
-	if (_EnableByOpen) {
-		argCond.push_back(CheckEntranceByOpenForSell(index));
-	}
+	argCond.push_back(CheckCondition(_T("매도진입"), index));
 
 	if (_EnableByBand) {
 		// 밴드에 의한 조건을 먼저 확인한다.
 		argCond.push_back(CheckEntranceByBandForBuy(index));
 	}
 
+	if (_EnableByOpen) {
+		argCond.push_back(CheckEntranceByOpenForSell(index));
+	}
+
 	if (argCond.size() == 0)
 		return false;
 
@@ -682,29 +613,23 @@ bool VtKp2s::CheckEntranceForSellForKospi(size_t index)
 		return true;
 }
 
-bool VtKp2s::CheckLiqForSellForKospi()
+bool VtKp2s::CheckLiqForSell()
 {
-	return VtSystem::CheckLiqForSellForKospi();
+	return CheckCondition(_T("매도청산"));
 }
 
-bool VtKp2s::CheckLiqForSellForKospi(size_t index)
+bool VtKp2s::CheckLiqForSell(size_t index)
 {
-	return VtSystem::CheckLiqForSellForKospi(index);
+	return CheckCondition(_T("매도청산"));
 }
 
-bool VtKp2s::CheckLiqForBuyForKospi()
+bool VtKp2s::CheckLiqForBuy()
 {
-	return VtSystem::CheckLiqForBuyForKospi();
+	return CheckCondition(_T("매수청산"));
 }
 
-bool VtKp2s::CheckLiqForBuyForKospi(size_t index)
+bool VtKp2s::CheckLiqForBuy(size_t index)
 {
-	return VtSystem::CheckLiqForBuyForKospi(index);
-}
-
-void VtKp2s::ReloadSystem(int startIndex, int endIndex)
-{
-	ClearSignal();
-	CreateSignal(startIndex, endIndex);
+	return CheckCondition(_T("매수청산"), index);
 }
 

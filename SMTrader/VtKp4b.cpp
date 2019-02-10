@@ -581,16 +581,16 @@ void VtKp4b::ReadExtraArgs()
 	VtSystem::ReadExtraArgs();
 }
 
-bool VtKp4b::CheckEntranceForBuyForKospi()
+
+bool VtKp4b::CheckEntranceForBuy()
 {
 	std::vector<bool> argCond;
 
-	argCond.push_back(VtSystem::CheckEntranceForBuyForKospi());
+	argCond.push_back(CheckCondition(_T("매수진입")));
 
-	argCond.push_back(GetDailyIndex() >= 1);
-
-	if (_EnableByOpen) {
-		argCond.push_back(CheckEntranceByOpenForBuy());
+	if (_EnableByBand) {
+		// 밴드에 의한 조건을 먼저 확인한다.
+		argCond.push_back(CheckEntranceByBandForBuy());
 	}
 
 
@@ -605,16 +605,15 @@ bool VtKp4b::CheckEntranceForBuyForKospi()
 		return true;
 }
 
-bool VtKp4b::CheckEntranceForBuyForKospi(size_t index)
+bool VtKp4b::CheckEntranceForBuy(size_t index)
 {
 	std::vector<bool> argCond;
 
-	argCond.push_back(VtSystem::CheckEntranceForBuyForKospi(index));
+	argCond.push_back(CheckCondition(_T("매수진입"), index));
 
-	argCond.push_back(GetDailyIndex() >= 1);
-
-	if (_EnableByOpen) {
-		argCond.push_back(CheckEntranceByOpenForBuy(index));
+	if (_EnableByBand) {
+		// 밴드에 의한 조건을 먼저 확인한다.
+		argCond.push_back(CheckEntranceByBandForBuy(index));
 	}
 
 
@@ -629,16 +628,15 @@ bool VtKp4b::CheckEntranceForBuyForKospi(size_t index)
 		return true;
 }
 
-bool VtKp4b::CheckEntranceForSellForKospi()
+bool VtKp4b::CheckEntranceForSell()
 {
 	std::vector<bool> argCond;
 
-	argCond.push_back(VtSystem::CheckEntranceForSellForKospi());
+	argCond.push_back(CheckCondition(_T("매도진입")));
 
-	argCond.push_back(GetDailyIndex() >= 1);
-
-	if (_EnableByOpen) {
-		argCond.push_back(CheckEntranceByOpenForSell());
+	if (_EnableByBand) {
+		// 밴드에 의한 조건을 먼저 확인한다.
+		argCond.push_back(CheckEntranceByBandForSell());
 	}
 
 
@@ -653,17 +651,17 @@ bool VtKp4b::CheckEntranceForSellForKospi()
 		return true;
 }
 
-bool VtKp4b::CheckEntranceForSellForKospi(size_t index)
+bool VtKp4b::CheckEntranceForSell(size_t index)
 {
 	std::vector<bool> argCond;
 
-	argCond.push_back(VtSystem::CheckEntranceForSellForKospi(index));
+	argCond.push_back(CheckCondition(_T("매도진입"), index));
 
-	argCond.push_back(GetDailyIndex() >= 1);
-
-	if (_EnableByOpen) {
-		argCond.push_back(CheckEntranceByOpenForSell(index));
+	if (_EnableByBand) {
+		// 밴드에 의한 조건을 먼저 확인한다.
+		argCond.push_back(CheckEntranceByBandForBuy(index));
 	}
+
 
 	if (argCond.size() == 0)
 		return false;
@@ -676,25 +674,26 @@ bool VtKp4b::CheckEntranceForSellForKospi(size_t index)
 		return true;
 }
 
-bool VtKp4b::CheckLiqForSellForKospi()
+bool VtKp4b::CheckLiqForSell()
 {
-	return VtSystem::CheckLiqForSellForKospi();
+	return CheckCondition(_T("매도청산"));
 }
 
-bool VtKp4b::CheckLiqForSellForKospi(size_t index)
+bool VtKp4b::CheckLiqForSell(size_t index)
 {
-	return VtSystem::CheckLiqForSellForKospi(index);
+	return CheckCondition(_T("매도청산"));
 }
 
-bool VtKp4b::CheckLiqForBuyForKospi()
+bool VtKp4b::CheckLiqForBuy()
 {
-	return VtSystem::CheckLiqForBuyForKospi();
+	return CheckCondition(_T("매수청산"));
 }
 
-bool VtKp4b::CheckLiqForBuyForKospi(size_t index)
+bool VtKp4b::CheckLiqForBuy(size_t index)
 {
-	return VtSystem::CheckLiqForBuyForKospi(index);
+	return CheckCondition(_T("매수청산"), index);
 }
+
 
 void VtKp4b::ReloadSystem(int startIndex, int endIndex)
 {
