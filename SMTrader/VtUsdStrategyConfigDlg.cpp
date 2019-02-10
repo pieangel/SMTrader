@@ -746,6 +746,12 @@ void VtUsdStrategyConfigDlg::OnTimer(UINT_PTR nIDEvent)
 		RefreshRealTimeValue(_T("Kbs-Kas"), _KbsMiKas);
 		double _KasMiKbs = sysMgr->Kas - sysMgr->Kbs;
 		RefreshRealTimeValue(_T("Kas-Kbs"), _KasMiKbs);
+
+		double _KbsGtKas = sysMgr->Kas == 0 ? 0 : sysMgr->Kbs / sysMgr->Kas;
+		RefreshRealTimeValue(_T("Kbs>Kas"), _KbsGtKas);
+		double _KasGtKbs = sysMgr->Kbs == 0 ? 0 : sysMgr->Kas / sysMgr->Kbs;
+		RefreshRealTimeValue(_T("Kas>Kbs"), _KasGtKbs);
+
 		double _KbcGtKac = sysMgr->Kbc == 0 ? 0 : sysMgr->Kac / sysMgr->Kbc;
 		RefreshRealTimeValue(_T("Kbc>Kac"), _KbcGtKac);
 		double _KacGtKbc = sysMgr->Kac == 0 ? 0 : sysMgr->Kbc / sysMgr->Kac;

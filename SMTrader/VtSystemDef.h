@@ -52,7 +52,9 @@ enum class ArgNameType {
 	QbsGtQas, // Qbs > Qas
 	QasGtQbs, // Qas > Qbs
 	UbsGtUas, // Ubs > Uas
-	UasGtUbs  // Uas > Ubs
+	UasGtUbs,  // Uas > Ubs
+	KasGtKbs, // Kas > Kbs
+	KbsGtKas // Kbs > Kas
 };
 
 enum class ValueType {

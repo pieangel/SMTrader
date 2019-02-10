@@ -464,6 +464,22 @@ bool VtSystem::CheckByArg(ArgNameType argName, VtSymbol* sym, double param)
 			return false;
 		}
 		break;
+	case ArgNameType::KasGtKbs:
+		if (sym->Hoga.TotSellQty*param > sym->Hoga.TotBuyQty) {
+			return true;
+		}
+		else {
+			return false;
+		}
+		break;
+	case ArgNameType::KbsGtKas:
+		if (sym->Hoga.TotBuyQty*param > sym->Hoga.TotSellQty) {
+			return true;
+		}
+		else {
+			return false;
+		}
+		break;
 	default:
 		break;
 	}
@@ -524,7 +540,7 @@ bool VtSystem::CheckByArg(ArgNameType argName, VtSymbol* sym, double param, int 
 		if (buyVec.size() == 0 || index <= buyVec.size())
 			return false;
 
-		if (sym->Hoga.TotBuyNo*param > sym->Hoga.TotSellQty) {
+		if (buyVec[index]*param > sellVec[index]) {
 			return true;
 		}
 		else {
@@ -551,7 +567,7 @@ bool VtSystem::CheckByArg(ArgNameType argName, VtSymbol* sym, double param, int 
 		if (buyVec.size() == 0 || index <= buyVec.size())
 			return false;
 
-		if (sym->Hoga.TotBuyNo*param > sym->Hoga.TotSellNo) {
+		if (buyVec[index] *param > sellVec[index]) {
 			return true;
 		}
 		else {
@@ -578,7 +594,7 @@ bool VtSystem::CheckByArg(ArgNameType argName, VtSymbol* sym, double param, int 
 		if (buyVec.size() == 0 || index <= buyVec.size())
 			return false;
 
-		if (sym->Hoga.TotBuyNo > sym->Hoga.TotSellNo) {
+		if (buyVec[index]*param > sellVec[index]) {
 			return true;
 		}
 		else {
@@ -605,7 +621,7 @@ bool VtSystem::CheckByArg(ArgNameType argName, VtSymbol* sym, double param, int 
 		if (buyVec.size() == 0 || index <= buyVec.size())
 			return false;
 
-		if (sym->Hoga.TotSellQty - sym->Hoga.TotBuyQty > param) {
+		if (sellVec[index] - buyVec[index] > param) {
 			return true;
 		}
 		else {
@@ -632,7 +648,7 @@ bool VtSystem::CheckByArg(ArgNameType argName, VtSymbol* sym, double param, int 
 		if (buyVec.size() == 0 || index <= buyVec.size())
 			return false;
 
-		if (sym->Hoga.TotSellNo*param > sym->Hoga.TotBuyNo) {
+		if (sellVec[index] *param > buyVec[index]) {
 			return true;
 		}
 		else {
@@ -659,7 +675,7 @@ bool VtSystem::CheckByArg(ArgNameType argName, VtSymbol* sym, double param, int 
 		if (buyVec.size() == 0 || index <= buyVec.size())
 			return false;
 
-		if (sym->Hoga.TotSellNo*param > sym->Hoga.TotBuyNo) {
+		if (sellVec[index]*param > buyVec[index]) {
 			return true;
 		}
 		else {
@@ -686,7 +702,7 @@ bool VtSystem::CheckByArg(ArgNameType argName, VtSymbol* sym, double param, int 
 		if (buyVec.size() == 0 || index <= buyVec.size())
 			return false;
 
-		if (sym->Hoga.TotBuyNo*param > sym->Hoga.TotSellNo) {
+		if (buyVec[index]*param > sellVec[index]) {
 			return true;
 		}
 		else {
@@ -713,7 +729,7 @@ bool VtSystem::CheckByArg(ArgNameType argName, VtSymbol* sym, double param, int 
 		if (buyVec.size() == 0 || index <= buyVec.size())
 			return false;
 
-		if (sym->Hoga.TotBuyQty*param > sym->Hoga.TotSellQty) {
+		if (buyVec[index]*param > sellVec[index]) {
 			return true;
 		}
 		else {
@@ -740,7 +756,7 @@ bool VtSystem::CheckByArg(ArgNameType argName, VtSymbol* sym, double param, int 
 		if (buyVec.size() == 0 || index <= buyVec.size())
 			return false;
 
-		if (sym->Hoga.TotSellQty*param > sym->Hoga.TotBuyQty) {
+		if (sellVec[index]*param > buyVec[index]) {
 			return true;
 		}
 		else {
@@ -767,7 +783,7 @@ bool VtSystem::CheckByArg(ArgNameType argName, VtSymbol* sym, double param, int 
 		if (buyVec.size() == 0 || index <= buyVec.size())
 			return false;
 
-		if (sym->Hoga.TotBuyQty*param > sym->Hoga.TotSellQty) {
+		if (buyVec[index] *param > sellVec[index]) {
 			return true;
 		}
 		else {
@@ -794,7 +810,61 @@ bool VtSystem::CheckByArg(ArgNameType argName, VtSymbol* sym, double param, int 
 		if (buyVec.size() == 0 || index <= buyVec.size())
 			return false;
 
-		if (sym->Hoga.TotSellQty*param > sym->Hoga.TotBuyQty) {
+		if (sellVec[index]*param > buyVec[index]) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+		break;
+	case ArgNameType::KbsGtKas: {
+		std::string code = sym->ShortCode + (_T("SHTQ"));
+		std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+		VtChartData* chartData = _RefDataMap[dataKey];
+		if (!chartData)
+			return false;
+		std::vector<double>& sellVec = chartData->GetDataArray(_T("close"));
+		if (sellVec.size() == 0 || index <= sellVec.size())
+			return false;
+
+		code = sym->ShortCode + (_T("BHTQ"));
+		dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+		chartData = _RefDataMap[dataKey];
+		if (!chartData)
+			return false;
+		std::vector<double>& buyVec = chartData->GetDataArray(_T("close"));
+		if (buyVec.size() == 0 || index <= buyVec.size())
+			return false;
+
+		if (buyVec[index]*param > sellVec[index]) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+		break;
+	case ArgNameType::KasGtKbs: {
+		std::string code = sym->ShortCode + (_T("SHTQ"));
+		std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+		VtChartData* chartData = _RefDataMap[dataKey];
+		if (!chartData)
+			return false;
+		std::vector<double>& sellVec = chartData->GetDataArray(_T("close"));
+		if (sellVec.size() == 0 || index <= sellVec.size())
+			return false;
+
+		code = sym->ShortCode + (_T("BHTQ"));
+		dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+		chartData = _RefDataMap[dataKey];
+		if (!chartData)
+			return false;
+		std::vector<double>& buyVec = chartData->GetDataArray(_T("close"));
+		if (buyVec.size() == 0 || index <= buyVec.size())
+			return false;
+
+		if (sellVec[index]*param > buyVec[index]) {
 			return true;
 		}
 		else {
@@ -4984,6 +5054,8 @@ void VtSystem::InitArgType()
 	_ArgTypeMap[_T("Qas>Qbs")] = ArgNameType::QasGtQbs;
 	_ArgTypeMap[_T("Ubs>Uas")] = ArgNameType::UbsGtUas;
 	_ArgTypeMap[_T("Uas>Ubs")] = ArgNameType::UasGtUbs;
+	_ArgTypeMap[_T("Kas>Kbs")] = ArgNameType::KasGtKbs;
+	_ArgTypeMap[_T("Kbs>Kas")] = ArgNameType::KbsGtKas;
 }
 
 bool VtSystem::CheckLossCut(int index)
