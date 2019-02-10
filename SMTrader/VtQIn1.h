@@ -28,15 +28,15 @@ public:
 	virtual void UpdateSystem(int index);
 	virtual void ReadExtraArgs();
 
-	virtual bool CheckEntranceForBuyForKosdaq();
-	virtual bool CheckEntranceForSellForKosdaq();
-	virtual bool CheckLiqForSellForKosdaq();
-	virtual bool CheckLiqForBuyForKosdaq();
+	virtual bool CheckEntranceForBuy();
+	virtual bool CheckEntranceForSell();
+	virtual bool CheckLiqForSell();
+	virtual bool CheckLiqForBuy();
 
-	virtual bool CheckEntranceForBuyForKosdaq(size_t index);
-	virtual bool CheckEntranceForSellForKosdaq(size_t index);
-	virtual bool CheckLiqForSellForKosdaq(size_t index);
-	virtual bool CheckLiqForBuyForKosdaq(size_t index);
+	virtual bool CheckEntranceForBuy(size_t index);
+	virtual bool CheckEntranceForSell(size_t index);
+	virtual bool CheckLiqForSell(size_t index);
+	virtual bool CheckLiqForBuy(size_t index);
 
 };
 
