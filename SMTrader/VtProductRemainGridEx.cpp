@@ -207,7 +207,7 @@ void VtProductRemainGridEx::SetRemainList()
 	for (auto it = acnt->PositionMap.begin(); it != acnt->PositionMap.end(); ++it)
 	{
 		VtPosition* posi = it->second;
-		VtSymbol* sym = symMgr->FindSymbolByFullCode(posi->FullCode);
+		VtSymbol* sym = symMgr->FindSymbol(posi->ShortCode);
 		if (!sym) continue;
 		if (posi->OpenQty == 0) continue;
 

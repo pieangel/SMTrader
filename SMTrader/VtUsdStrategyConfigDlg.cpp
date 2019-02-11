@@ -699,6 +699,10 @@ void VtUsdStrategyConfigDlg::OnRealTimeEvent()
 		profitLoss.Format(_T("%d"), _System->LatestEntPrice());
 	}
 	_StaticLastEntPrice.SetWindowText(profitLoss);
+
+	CString title;
+	title.Format(_T("전략설정창 - %s %s"), _System->Name().c_str(), _System->PositionState);
+	SetWindowText(title);
 }
 
 void VtUsdStrategyConfigDlg::RefreshRealTimeValue(std::string argName, CString value)
@@ -717,6 +721,16 @@ void VtUsdStrategyConfigDlg::RefreshRealTimeValue(std::string argName, double va
 {
 	CString value;
 	value.Format(_T("%.0f"), val);
+	RefreshRealTimeValue(argName, value);
+}
+
+void VtUsdStrategyConfigDlg::RefreshRealTimeValue(std::string argName, double val, int decimal)
+{
+	CString value, format;
+	if (decimal == 0)
+		value.Format(_T("%.0f"), val);
+	else
+		value.Format(_T("%.2f"), val);
 	RefreshRealTimeValue(argName, value);
 }
 
@@ -743,36 +757,36 @@ void VtUsdStrategyConfigDlg::OnTimer(UINT_PTR nIDEvent)
 	if (nIDEvent == ArgTimer) {
 		VtSystemManager* sysMgr = VtSystemManager::GetInstance();
 		double _KbsMiKas = sysMgr->Kbs - sysMgr->Kas;
-		RefreshRealTimeValue(_T("Kbs-Kas"), _KbsMiKas);
+		RefreshRealTimeValue(_T("Kbs-Kas"), _KbsMiKas, 0);
 		double _KasMiKbs = sysMgr->Kas - sysMgr->Kbs;
-		RefreshRealTimeValue(_T("Kas-Kbs"), _KasMiKbs);
+		RefreshRealTimeValue(_T("Kas-Kbs"), _KasMiKbs, 0);
 
 		double _KbsGtKas = sysMgr->Kas == 0 ? 0 : sysMgr->Kbs / sysMgr->Kas;
-		RefreshRealTimeValue(_T("Kbs>Kas"), _KbsGtKas);
+		RefreshRealTimeValue(_T("Kbs>Kas"), _KbsGtKas, 2);
 		double _KasGtKbs = sysMgr->Kbs == 0 ? 0 : sysMgr->Kas / sysMgr->Kbs;
-		RefreshRealTimeValue(_T("Kas>Kbs"), _KasGtKbs);
+		RefreshRealTimeValue(_T("Kas>Kbs"), _KasGtKbs, 2);
 
 		double _KbcGtKac = sysMgr->Kbc == 0 ? 0 : sysMgr->Kac / sysMgr->Kbc;
-		RefreshRealTimeValue(_T("Kbc>Kac"), _KbcGtKac);
+		RefreshRealTimeValue(_T("Kbc>Kac"), _KbcGtKac, 2);
 		double _KacGtKbc = sysMgr->Kac == 0 ? 0 : sysMgr->Kbc / sysMgr->Kac;
-		RefreshRealTimeValue(_T("Kac>Kbc"), _KacGtKbc);
+		RefreshRealTimeValue(_T("Kac>Kbc"), _KacGtKbc, 2);
 		double _QbsGtQas = sysMgr->Qbs == 0 ? 0 : sysMgr->Qas / sysMgr->Qbs;
-		RefreshRealTimeValue(_T("Qbs>Qas"), _QbsGtQas);
+		RefreshRealTimeValue(_T("Qbs>Qas"), _QbsGtQas, 2);
 		double _QasGtQbs = sysMgr->Qas == 0 ? 0 : sysMgr->Qbs / sysMgr->Qas;
-		RefreshRealTimeValue(_T("Qas>Qbs"), _QasGtQbs);
+		RefreshRealTimeValue(_T("Qas>Qbs"), _QasGtQbs, 2);
 		double _QbcGtQac = sysMgr->Qbc == 0 ? 0 : sysMgr->Qac / sysMgr->Qbc;
-		RefreshRealTimeValue(_T("Qbc>Qac"), _QbcGtQac);
+		RefreshRealTimeValue(_T("Qbc>Qac"), _QbcGtQac, 2);
 		double _QacGtQbc = sysMgr->Qac == 0 ? 0 : sysMgr->Qbc / sysMgr->Qac;
-		RefreshRealTimeValue(_T("Qac>Qbc"), _QacGtQbc);
+		RefreshRealTimeValue(_T("Qac>Qbc"), _QacGtQbc, 2);
 		
 		double _UbsGtUas = sysMgr->Ubs == 0 ? 0 : sysMgr->Uas / sysMgr->Ubs;
-		RefreshRealTimeValue(_T("Ubs>Uas"), _UbsGtUas);
+		RefreshRealTimeValue(_T("Ubs>Uas"), _UbsGtUas, 2);
 		double _UasGtUbs = sysMgr->Uas == 0 ? 0 : sysMgr->Ubs / sysMgr->Uas;
-		RefreshRealTimeValue(_T("Uas>Ubs"), _UasGtUbs);
+		RefreshRealTimeValue(_T("Uas>Ubs"), _UasGtUbs, 2);
 		double _UbcGtUac = sysMgr->Ubc == 0 ? 0 : sysMgr->Uac / sysMgr->Ubc;
-		RefreshRealTimeValue(_T("Ubc>Uac"), _UbcGtUac);
+		RefreshRealTimeValue(_T("Ubc>Uac"), _UbcGtUac, 2);
 		double _UacGtUbc = sysMgr->Uac == 0 ? 0 : sysMgr->Ubc / sysMgr->Uac;
-		RefreshRealTimeValue(_T("Uac>Ubc"), _UacGtUbc);
+		RefreshRealTimeValue(_T("Uac>Ubc"), _UacGtUbc, 2);
 
 		OnRealTimeEvent();
 	}

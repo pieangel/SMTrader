@@ -79,12 +79,16 @@ int VtGlobal::GetVerHeightByScaleFactor(int height)
 
 VtTime VtGlobal::GetTime(int time)
 {
+	VtTime result;
+
+	if (time == 0) {
+		return result;
+	}
 	int hourMin = time / 100;
 	int sec = time % (hourMin * 100);
 	int hour = hourMin / 100;
 	int min = hourMin % (hour * 100);
 
-	VtTime result;
 	result.hour = hour;
 	result.min = min;
 	result.sec = sec;

@@ -4477,7 +4477,8 @@ bool VtSystem::LiqudAll()
 		if (!_Account)
 			return false;
 		VtPosition* posi = _Account->FindPosition(_Symbol->ShortCode);
-		if (posi->Position == VtPositionType::None)
+
+		if (!posi || posi->Position == VtPositionType::None)
 			return false;
 		if (_LiqPriceType == VtPriceType::Market) // 시장가
 			PutOrder(posi, 0, true);
@@ -4489,6 +4490,8 @@ bool VtSystem::LiqudAll()
 
 		posi->Position = VtPositionType::None;
 		_CurPosition = VtPositionType::None;
+		_LastEntryIndex = -1;
+		_LatestEntPrice = 0;
 		return true;
 	} else {
 		if (!_Fund)
@@ -4497,7 +4500,8 @@ bool VtSystem::LiqudAll()
 		for (auto it = fundAcntList.begin(); it != fundAcntList.end(); ++it) { // 서브 계좌 목록을 돌면서 각 서브계좌의 잔고를 청산해 준다.
 			VtAccount* subAcnt = *it;
 			VtPosition* posi = subAcnt->FindPosition(_Symbol->ShortCode);
-			if (posi->Position == VtPositionType::None)
+
+			if (!posi || posi->Position == VtPositionType::None)
 				continue;
 			if (_LiqPriceType == VtPriceType::Market) // 시장가
 				PutOrder(posi, 0, true);
@@ -4509,6 +4513,8 @@ bool VtSystem::LiqudAll()
 		_ProfitLoss = 0.0;
 		_MaxProfit = 0.0;
 		_CurPosition = VtPositionType::None;
+		_LastEntryIndex = -1;
+		_LatestEntPrice = 0;
 		return true;
 	}
 }
@@ -5019,6 +5025,18 @@ int VtSystem::GetDailyIndex()
 	return dateIndex;
 }
 
+void VtSystem::SetPositionState(VtPosition* posi)
+{
+	if (!posi)
+		return;
+	CString str;
+	if (posi->OpenQty < 0)
+		str.Format(_T("매도 : %d"), std::abs(posi->OpenQty));
+	else if (posi->OpenQty > 0)
+		str.Format(_T("매수 : %d"), std::abs(posi->OpenQty));
+	PositionState = str;
+}
+
 void VtSystem::AddSystemArg(std::string groupName, VtSystemArg arg)
 {
 	VtSystemArgGroup* argGrp = FindArgGroup(groupName);
@@ -5180,8 +5198,10 @@ void VtSystem::UpdateSystem(int index)
 			return;
 
 		VtPosition* posi = _Account->FindPosition(_Symbol->ShortCode);
-		if (posi)
+		if (posi) {
 			_ProfitLoss = posi->OpenProfitLoss;
+			SetPositionState(posi);
+		}
 	}
 	else {
 		if (!_Fund)
@@ -5193,6 +5213,7 @@ void VtSystem::UpdateSystem(int index)
 			return;
 		}
 		_ProfitLoss = posi.OpenProfitLoss;
+		SetPositionState(&posi);
 	}
 
 	// 최대 이익을 갱신한다.

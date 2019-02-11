@@ -250,6 +250,8 @@ public:
 	void EnableByBand(bool val) { _EnableByBand = val; }
 	VtSystemGroupType SystemGroup() const { return _SystemGroup; }
 	void SystemGroup(VtSystemGroupType val) { _SystemGroup = val; }
+	CString PositionState;
+	void SetPositionState(VtPosition* posi);
 protected:
 	int FindDateIndex(double date, std::vector<double>& dateArray);
 	void PutOrder(int price, VtPositionType position, VtPriceType priceType = VtPriceType::Price);

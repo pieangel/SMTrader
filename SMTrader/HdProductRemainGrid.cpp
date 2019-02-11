@@ -189,11 +189,11 @@ void HdProductRemainGrid::ShowPosition(VtPosition* posi, VtAccount* acnt, int in
 	}
 
 	VtSymbolManager* symMgr = VtSymbolManager::GetInstance();
-	VtSymbol* sym = symMgr->FindHdSymbol(posi->FullCode);
+	VtSymbol* sym = symMgr->FindHdSymbol(posi->ShortCode);
 	if (!sym)
 		return;
 
-	QuickSetText(0, index, posi->FullCode.c_str());
+	QuickSetText(0, index, posi->ShortCode.c_str());
 	
 	if (posi->Position == VtPositionType::Buy) {
 		QuickSetTextColor(1, index, RGB(255, 0, 0));

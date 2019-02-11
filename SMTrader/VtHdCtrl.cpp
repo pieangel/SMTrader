@@ -1855,7 +1855,7 @@ void VtHdCtrl::OnOutstanding(CString& sTrCode, LONG& nRqID)
 		VtAccount* acnt = acntMgr->FindAccount((LPCTSTR)strAcnt.TrimRight());
 		if (acnt) {
 			VtPosition* posi = acnt->FindAdd((LPCTSTR)strSymbol.TrimRight());
-			realRegMgr->RegisterProduct(posi->FullCode);
+			realRegMgr->RegisterProduct(posi->ShortCode);
 			if (strPosition.Compare(_T("1")) == 0) {
 				posi->Position = VtPositionType::Buy;
 				posi->OpenQty = _ttoi(strOpenQty);

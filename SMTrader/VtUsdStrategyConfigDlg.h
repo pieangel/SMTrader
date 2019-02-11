@@ -116,6 +116,7 @@ public:
 	CButton _CheckRun;
 	CStatic _StaticLastEntPrice;
 	void OnRealTimeEvent();
+	void RefreshRealTimeValue(std::string argName, double value, int decimal = 2);
 	void RefreshRealTimeValue(std::string argName, double value);
 	void RefreshRealTimeValue(std::string argName, CString value);
 	void RefreshRealTimeValue(int index, std::string argName, CString value);
