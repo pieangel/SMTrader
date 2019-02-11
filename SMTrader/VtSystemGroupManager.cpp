@@ -76,6 +76,8 @@ void VtSystemGroupManager::InitSystemGroup()
 	sysGrp.ClearSystems();
 	sysGrp.Type(VtSystemGroupType::KOSPI200O);
 	sysGrp.Name(_T("주가지수옵션"));
+	sysGrp.AddSystem(VtSystemType::KO_3S);
+	sysGrp.AddSystem(VtSystemType::KO_4B);
 	_SystemGroupVec.push_back(sysGrp);
 
 	sysGrp.ClearSystems();

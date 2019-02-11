@@ -114,8 +114,8 @@ ReadRegStr $1 HKLM "Software\Microsoft\DevDiv\vc\Servicing\14.0\RuntimeMinimum" 
     ;ExecWait '"$INSTDIR\vc_redist.x86.exe" /v" /qn"'
     !insertmacro _VCRedist11_MessageBoxIfError "Failed to install 32-bit Visual C++ Redistributable."
 InstallVCRedist11_32bitFinish:
-
 File "C:\Project\SMTrader\Setup\accountlist.dat"
+File "C:\Project\SMTrader\Setup\systemlist.dat"
 File "C:\Project\SMTrader\Setup\AxInterop.HDFCommAgentLib.dll"
 File "C:\Project\SMTrader\Setup\chartdir.lic"
 File "C:\Project\SMTrader\Setup\chartdir60.dll"
@@ -156,7 +156,6 @@ File "C:\Project\SMTrader\Setup\SmTrader.cfg"
 File "C:\Project\SMTrader\Setup\SMTrader.exe"
 File "C:\Project\SMTrader\Setup\SMTrader.ini"
 File "C:\Project\SMTrader\Setup\SrShare.dll"
-File "C:\Project\SMTrader\Setup\systemlist.dat"
 File "C:\Project\SMTrader\Setup\xcon30.dll"
 File "C:\Project\SMTrader\Setup\XecureASN_v20.dll"
 File "C:\Project\SMTrader\Setup\XecureCMP_v20.dll"

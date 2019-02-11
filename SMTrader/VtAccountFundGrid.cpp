@@ -111,6 +111,11 @@ void VtAccountFundGrid::OnMouseMove(int col, long row, POINT *point, UINT nFlags
 	_OldSelRow = row;
 }
 
+int VtAccountFundGrid::OnCanViewMove(int oldcol, long oldrow, int newcol, long newrow)
+{
+	return 0;
+}
+
 void VtAccountFundGrid::OnMouseLeaveFromMainGrid()
 {
 	if (_OldSelRow == _ClickedRow)

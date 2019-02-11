@@ -72,6 +72,8 @@ void VtUsdStrategyConfigDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_STATIC_ENT_CNT_TODAY, _EntCntToday);
 	DDX_Control(pDX, IDC_CHECK_RUN, _CheckRun);
 	DDX_Control(pDX, IDC_STATIC_LAST_ENT_PRICE, _StaticLastEntPrice);
+	//  DDX_Control(pDX, IDC_STATIC_POSITION, _);
+	DDX_Control(pDX, IDC_STATIC_POSITION, _StaticPosition);
 }
 
 
@@ -250,6 +252,9 @@ void VtUsdStrategyConfigDlg::InitControls()
 
 	std::string title = _T("전략설정창 - ");
 	title.append(_System->Name());
+	title.append(_T(" - "));
+	title.append(std::to_string(_System->Cycle()));
+	title.append(_T("M"));
 	SetWindowText(title.c_str());
 
 	
@@ -699,10 +704,22 @@ void VtUsdStrategyConfigDlg::OnRealTimeEvent()
 		profitLoss.Format(_T("%d"), _System->LatestEntPrice());
 	}
 	_StaticLastEntPrice.SetWindowText(profitLoss);
-
-	CString title;
-	title.Format(_T("전략설정창 - %s %s"), _System->Name().c_str(), _System->PositionState);
-	SetWindowText(title);
+	if (_System->PositionState.Find(_T("매수")) >= 0) {
+		_StaticPosition.SetTextColor(RGB(255, 255, 255));
+		_StaticPosition.SetColor(RGB(240, 51, 58));
+		_StaticPosition.SetGradientColor(RGB(240, 51, 58));
+	} 
+	else if (_System->PositionState.Find(_T("매도")) >= 0) {
+		_StaticPosition.SetTextColor(RGB(255, 255, 255));
+		_StaticPosition.SetColor(RGB(19, 137, 255));
+		_StaticPosition.SetGradientColor(RGB(19, 137, 255));
+	}
+	else {
+		_StaticPosition.SetTextColor(GetSysColor(COLOR_3DFACE));
+		_StaticPosition.SetColor(GetSysColor(COLOR_3DFACE));
+		_StaticPosition.SetGradientColor(GetSysColor(COLOR_3DFACE));
+	}
+	_StaticPosition.SetWindowText(_System->PositionState);
 }
 
 void VtUsdStrategyConfigDlg::RefreshRealTimeValue(std::string argName, CString value)

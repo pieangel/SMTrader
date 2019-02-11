@@ -19,6 +19,7 @@ public:
 	virtual void OnLClicked(int col, long row, int updn, RECT *rect, POINT *point, int processed);
 	virtual void OnRClicked(int col, long row, int updn, RECT *rect, POINT *point, int processed);
 	virtual void OnMouseMove(int col, long row, POINT *point, UINT nFlags, BOOL processed = 0);
+	virtual int  OnCanViewMove(int oldcol, long oldrow, int newcol, long newrow);
 	virtual void OnMouseLeaveFromMainGrid();
 	void SetColTitle();
 	int _ColCount = 2;

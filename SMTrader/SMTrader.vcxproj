@@ -464,6 +464,8 @@
     <ClInclude Include="VtIndexDefine.h" />
     <ClInclude Include="VtIndexFactory.h" />
     <ClInclude Include="VtIndexManager.h" />
+    <ClInclude Include="VtKo3s.h" />
+    <ClInclude Include="VtKo4b.h" />
     <ClInclude Include="VtKp1a.h" />
     <ClInclude Include="VtKp2s.h" />
     <ClInclude Include="VtKp3s.h" />
@@ -852,6 +854,8 @@
     <ClCompile Include="VtIndex.cpp" />
     <ClCompile Include="VtIndexFactory.cpp" />
     <ClCompile Include="VtIndexManager.cpp" />
+    <ClCompile Include="VtKo3s.cpp" />
+    <ClCompile Include="VtKo4b.cpp" />
     <ClCompile Include="VtKp1a.cpp" />
     <ClCompile Include="VtKp2s.cpp" />
     <ClCompile Include="VtKp3s.cpp" />

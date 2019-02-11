@@ -203,14 +203,14 @@ void VtQIn1::InitArgs()
 	arg.Name = _T("ATR");
 	arg.Type = VtParamType::STRING;
 	arg.sValue = _T("20");
-	arg.Enable = true;
+	arg.Enable = false;
 	arg.Desc = _T("ATR 값을 설정 합니다.");
 	AddSystemArg(_T("기타변수"), arg);
 
 	arg.Name = _T("ATR Time");
 	arg.Type = VtParamType::STRING;
 	arg.sValue = _T("9:00");
-	arg.Enable = true;
+	arg.Enable = false;
 	arg.Desc = _T("ATR Time값을 설정 합니다.");
 	AddSystemArg(_T("기타변수"), arg);
 
@@ -231,7 +231,7 @@ void VtQIn1::InitArgs()
 	arg.Name = _T("FilterMulti");
 	arg.Type = VtParamType::STRING;
 	arg.sValue = _T("3");
-	arg.Enable = true;
+	arg.Enable = false;
 	arg.Desc = _T("FilterMulti 값을 설정 합니다.");
 	AddSystemArg(_T("기타변수"), arg);
 

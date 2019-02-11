@@ -7,6 +7,8 @@
 #include "System/VtSystem.h"
 #include "ShadeButtonST.h"
 #include "VtUsdEntConfigGrid.h"
+#include "afxwin.h"
+#include "GradientStatic.h"
 // VtUsdStrategyConfigDlg dialog
 class VtSystem;
 class VtSymbol;
@@ -123,4 +125,5 @@ public:
 	afx_msg void OnEnChangeEditOrderAmt();
 	void UpdateRunCheck(VtSystem* sys);
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
+	CGradientStatic _StaticPosition;
 };

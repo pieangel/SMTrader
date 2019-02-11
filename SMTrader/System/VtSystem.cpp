@@ -5031,9 +5031,11 @@ void VtSystem::SetPositionState(VtPosition* posi)
 		return;
 	CString str;
 	if (posi->OpenQty < 0)
-		str.Format(_T("매도 : %d"), std::abs(posi->OpenQty));
+		str.Format(_T("매도:%d"), std::abs(posi->OpenQty));
 	else if (posi->OpenQty > 0)
-		str.Format(_T("매수 : %d"), std::abs(posi->OpenQty));
+		str.Format(_T("매수:%d"), std::abs(posi->OpenQty));
+	else
+		str.Format(_T("없음"), 0);
 	PositionState = str;
 }
 

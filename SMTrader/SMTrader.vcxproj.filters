@@ -122,6 +122,9 @@
     <Filter Include="VtGrid">
       <UniqueIdentifier>{7630d727-e3f4-47cf-be30-330862b27bc1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="System\Option">
+      <UniqueIdentifier>{511492fb-c55f-47e6-bec9-5c1c23250ad8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -1345,6 +1348,12 @@
     <ClInclude Include="System\VtSystemManager.h">
       <Filter>System</Filter>
     </ClInclude>
+    <ClInclude Include="VtKo3s.h">
+      <Filter>System\Option</Filter>
+    </ClInclude>
+    <ClInclude Include="VtKo4b.h">
+      <Filter>System\Option</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ChildFrm.cpp">
@@ -2429,6 +2438,12 @@
     </ClCompile>
     <ClCompile Include="System\VtSystemManager.cpp">
       <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="VtKo3s.cpp">
+      <Filter>System\Option</Filter>
+    </ClCompile>
+    <ClCompile Include="VtKo4b.cpp">
+      <Filter>System\Option</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -325,6 +325,7 @@
 #define IDC_BTN_CAN                     1004
 #define IDC_PointerPB                   1005
 #define IDC_PROFIT_LOSS                 1005
+#define IDC_STATIC_POSITION             1005
 #define IDC_ZoomInPB                    1006
 #define IDC_COMBO_PRODUCT               1006
 #define IDC_EDIT_ACNT_PWD               1006
@@ -629,7 +630,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        310
 #define _APS_NEXT_COMMAND_VALUE         32793
-#define _APS_NEXT_CONTROL_VALUE         1005
+#define _APS_NEXT_CONTROL_VALUE         1006
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif

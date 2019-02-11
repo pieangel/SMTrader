@@ -40,7 +40,8 @@
 #include "../VtProductCategoryManager.h"
 #include "../VtRealtimeRegisterManager.h"
 #include "../VtChartDataCollector.h"
-
+#include "../VtKo3s.h"
+#include "../VtKo4b.h"
 using namespace std::chrono;
 VtSystemManager::VtSystemManager()
 {
@@ -101,6 +102,12 @@ VtSystem* VtSystemManager::CreateSystem(VtSystemType systemType)
 		break;
 	case VtSystemType::KP_6IN2:
 		system = new VtKp6In2(VtSystemType::KP_6IN2, _T("KP_6IN2"));
+		break;
+	case VtSystemType::KO_3S:
+		system = new VtKo3s(VtSystemType::KO_3S, _T("KO_3S"));
+		break;
+	case VtSystemType::KO_4B:
+		system = new VtKo4b(VtSystemType::KO_4B, _T("KO_4B"));
 		break;
 	case VtSystemType::Q_IN1:
 		system = new VtQIn1(VtSystemType::Q_IN1, _T("Q_IN1"));

@@ -246,6 +246,8 @@ enum class VtSystemType
 	KP_4B,
 	KP_5IN1,
 	KP_6IN2,
+	KO_3S,
+	KO_4B,
 	Q_IN1,
 	Q_IN2,
 	Q_IN3,
