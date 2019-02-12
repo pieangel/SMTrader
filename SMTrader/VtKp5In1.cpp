@@ -97,7 +97,7 @@ void VtKp5In1::InitArgs()
 	_LiqTime.min = 24;
 	_LiqTime.sec = 30;
 
-	_MaxEntrance = 2;
+	_MaxEntrance = 3;
 
 	_EntryBarIndex = 0;
 	_ATRTime.hour = 9;
@@ -265,11 +265,11 @@ void VtKp5In1::InitArgs()
 	arg.Desc = _T("EntryBarIndex 값을 설정 합니다.");
 	AddSystemArg(_T("기타변수"), arg);
 
-	arg.Name = _T("c>o");
+	arg.Name = _T("c>o,c<o");
 	arg.Type = VtParamType::STRING;
 	arg.sValue = _T("1");
 	arg.Enable = false;
-	arg.Desc = _T("c>o 값을 설정 합니다.");
+	arg.Desc = _T("c>o,c<o 값을 설정 합니다.");
 	AddSystemArg(_T("기타변수"), arg);
 }
 
