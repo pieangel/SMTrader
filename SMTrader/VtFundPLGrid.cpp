@@ -79,7 +79,7 @@ void VtFundPLGrid::SetRowTitle()
 	CRect rcWnd;
 	GetWindowRect(&rcWnd);
 
-	SetColWidth(0, rcWnd.Width() - 66);
+	SetColWidth(0, rcWnd.Width() - 82);
 	for (int i = 0; i < _RowCount; i++) {
 		QuickSetText(-1, i, title[i]);
 		GetCell(-1, i, &cell);
