@@ -445,7 +445,7 @@ void VtKp4b::OnTimer()
 
 	if (_CurPosition == VtPositionType::None) {
 		int curTime = VtChartDataCollector::GetLocalTime();
-		if (CheckCondition(_T("매수진입"))) {
+		if (CheckEntranceForBuy()) {
 			LOG_F(INFO, _T("매수진입성공"));
 			// 포지션 설정
 			_CurPosition = VtPositionType::Buy;
@@ -461,7 +461,7 @@ void VtKp4b::OnTimer()
 		}
 
 		// 매도 진입 조건 확인
-		if (CheckCondition(_T("매도진입"))) {
+		if (CheckEntranceForSell()) {
 			LOG_F(INFO, _T("매도진입성공"));
 			// 포지션 설정
 			_CurPosition = VtPositionType::Sell;

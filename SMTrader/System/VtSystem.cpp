@@ -103,7 +103,7 @@ VtChartData* VtSystem::AddDataSource(std::string symCode, VtChartType type, int 
 
 void VtSystem::OnTimer()
 {
-
+	
 }
 
 bool VtSystem::IsEnterableByTime()
