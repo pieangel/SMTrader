@@ -377,7 +377,7 @@ bool VtSystem::CheckByArg(ArgNameType argName, VtSymbol* sym, double param)
 		}
 		break;
 	case ArgNameType::KbcGtKac:
-		if (sym->Hoga.TotBuyNo*param > sym->Hoga.TotSellQty) {
+		if (sym->Hoga.TotBuyNo*param > sym->Hoga.TotSellNo) {
 			return true;
 		}
 		else {
