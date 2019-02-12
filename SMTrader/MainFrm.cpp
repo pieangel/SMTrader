@@ -706,7 +706,6 @@ bool CMainFrame::ClearAllResources()
 	VtAccountManager::DestroyInstance();
 	VtOrderManagerSelector* orderMgr = VtOrderManagerSelector::GetInstance();
 
-
 	VtTotalOrderManager::DestroyInstance();
 
 	VtOrderManagerSelector::DestroyInstance();

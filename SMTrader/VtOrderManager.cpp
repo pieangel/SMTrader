@@ -1286,8 +1286,14 @@ void VtOrderManager::OnOrderAcceptedHd(VtOrder* order)
 	if (!order)
 		return;
 	VtOrder* exOrder = FindOrder(order->orderNo);
-	if (!exOrder)
+	VtTotalOrderManager* totalOrderMgr = VtTotalOrderManager::GetInstance();
+	if (!exOrder) {
 		AddOrder(order);
+		totalOrderMgr->AddOrder(order);
+	}
+	else {
+		totalOrderMgr->AddOrder(exOrder);
+	}
 	
 	VtProductOrderManager* prdtOrderMgr = _ProductOrderManagerSelector->FindAdd(order->shortCode);
 	// 한번이라도 주문이 나왔다는 것을 표시해 준다.

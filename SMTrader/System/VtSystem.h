@@ -166,40 +166,6 @@ public:
 	virtual bool CheckLiqForSell(size_t index);
 	virtual bool CheckLiqForBuy(size_t index);
 	
-	virtual bool CheckEntranceForBuyForKospi();
-	virtual bool CheckEntranceForSellForKospi();
-	virtual bool CheckLiqForSellForKospi();
-	virtual bool CheckLiqForBuyForKospi();
-
-	virtual bool CheckEntranceForBuyForKospi(size_t index);
-	virtual bool CheckEntranceForSellForKospi(size_t index);
-	virtual bool CheckLiqForSellForKospi(size_t index);
-	virtual bool CheckLiqForBuyForKospi(size_t index);
-
-	virtual bool CheckEntranceForBuyForKosdaq();
-	virtual bool CheckEntranceForSellForKosdaq();
-	virtual bool CheckLiqForSellForKosdaq();
-	virtual bool CheckLiqForBuyForKosdaq();
-
-	virtual bool CheckEntranceForBuyForKosdaq(size_t index);
-	virtual bool CheckEntranceForSellForKosdaq(size_t index);
-	virtual bool CheckLiqForSellForKosdaq(size_t index);
-	virtual bool CheckLiqForBuyForKosdaq(size_t index);
-
-	virtual bool CheckEntranceForBuyForUsd();
-	virtual bool CheckEntranceForSellForUsd();
-	virtual bool CheckLiqForSellForUsd();
-	virtual bool CheckLiqForBuyForUsd();
-
-	virtual bool CheckEntranceForBuyForUsd(size_t index);
-	virtual bool CheckEntranceForSellForUsd(size_t index);
-	virtual bool CheckLiqForSellForUsd(size_t index);
-	virtual bool CheckLiqForBuyForUsd(size_t index);
-
-	void ShowInfoForKospi(size_t index);
-	void ShowInfoForKosdaq(size_t index);
-	void ShowInfoForUsd(size_t index);
-
 	int EntryToday() const { return _EntryToday; }
 	void EntryToday(int val) { _EntryToday = val; }
 	VtSymbol* Symbol() const { return _Symbol; }
