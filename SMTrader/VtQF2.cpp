@@ -409,6 +409,9 @@ void VtQF2::OnTimer()
 	if (!IsEnterableByTime())
 		return;
 
+	// 데일리 인덱스에 의한 통제
+	if (_EnableBarIndex && (GetDailyIndex() + 1 <= _EntryBarIndex))
+		return;
 
 	if (!_Symbol)
 		return;

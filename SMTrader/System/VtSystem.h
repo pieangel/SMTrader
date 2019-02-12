@@ -252,6 +252,8 @@ public:
 	void SystemGroup(VtSystemGroupType val) { _SystemGroup = val; }
 	CString PositionState;
 	void SetPositionState(VtPosition* posi);
+	bool EnableBarIndex() const { return _EnableBarIndex; }
+	void EnableBarIndex(bool val) { _EnableBarIndex = val; }
 protected:
 	int FindDateIndex(double date, std::vector<double>& dateArray);
 	void PutOrder(int price, VtPositionType position, VtPriceType priceType = VtPriceType::Price);
@@ -474,5 +476,6 @@ protected:
 	/// 마지막으로 진입한 데일리 인덱스
 	/// </summary>
 	int _LastEntryIndex = -1;
+	bool _EnableBarIndex = false;
 };
 

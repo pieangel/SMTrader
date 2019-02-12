@@ -5539,6 +5539,7 @@ void VtSystem::ReadExtraArgs()
 				}
 				else if (arg.Name.compare(_T("EntryBarIndex")) == 0) {
 					_EntryBarIndex = std::stoi(arg.sValue);
+					_EnableBarIndex = true;
 				}
 				else if (arg.Name.compare(_T("c>o")) == 0) {
 					_EnableByOpen = true;
@@ -5572,6 +5573,7 @@ void VtSystem::ReadExtraArgs()
 				}
 				else if (arg.Name.compare(_T("EntryBarIndex")) == 0) {
 					_EntryBarIndex = std::stoi(arg.sValue);
+					_EnableBarIndex = false;
 				}
 				else if (arg.Name.compare(_T("c>o")) == 0) {
 					_EnableByOpen = false;

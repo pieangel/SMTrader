@@ -435,6 +435,10 @@ void VtKo4b::OnTimer()
 		return;
 
 	// 데일리 인덱스에 의한 통제
+	if (_EnableBarIndex && (GetDailyIndex() + 1 <= _EntryBarIndex))
+		return;
+
+	// 데일리 인덱스에 의한 통제
 	if (GetDailyIndex() + 1 <= _EntryBarIndex)
 		return;
 
