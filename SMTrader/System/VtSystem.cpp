@@ -1725,7 +1725,11 @@ int VtSystem::GetDailyIndex()
 	if (dateArray.size() == 0)
 		return -1;
 	if (dateArray.size() == 1)
-		return 0;
+		return -1;
+	int localDate = VtChartDataCollector::GetLocalDate();
+	if (dateArray[dateArray.size() - 1] < localDate)
+		return -1;
+
 	int dateIndex = 0;
 	for (size_t i = dateArray.size() - 1; i >= 0; --i) {
 		double pre = dateArray[i - 1];
@@ -2218,7 +2222,7 @@ void VtSystem::ReloadSystem(int startIndex, int endIndex)
 
 void VtSystem::InitArgs()
 {
-	
+	ReadExtraArgs();
 }
 
 void VtSystem::SetDataMap(VtChartData* chartData)

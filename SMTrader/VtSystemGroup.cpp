@@ -66,5 +66,6 @@ void VtSystemGroup::Load(simple::file_istream<same_endian_type>& ss)
 	for (auto it = systypeVec.begin(); it != systypeVec.end(); ++it) {
 		VtSystem* sys = AddSystem(*it);
 		sys->Load(ss);
+		sys->ReadExtraArgs();
 	}
 }

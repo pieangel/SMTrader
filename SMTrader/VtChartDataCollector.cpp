@@ -112,6 +112,9 @@ void VtChartDataCollector::OnTimerEvent(VtChartData* chartData)
 	int lastIndex = ChartDataSize - 1;
 	std::vector<double>& timeData = chartData->GetDataArray(_T("time"));
 	int curTime = GetLocalTime();
+	// 영업시간에 따른 통제
+	if (curTime < 90000)
+		return;
 	int oldTime = (int)timeData.back();
 	int curHourMin = VtChartDataCollector::GetHourMin(curTime, chartData->Cycle());
 	int oldHourMin = VtChartDataCollector::GetHourMin(oldTime, chartData->Cycle());

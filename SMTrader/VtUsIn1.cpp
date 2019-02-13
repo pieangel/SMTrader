@@ -57,7 +57,6 @@ void VtUsIn1::InitArgs()
 	if (_ArgsLoaded)
 		return;
 
-	VtSystem::InitArgs();
 
 	_Cycle = 1;
 
@@ -250,6 +249,7 @@ void VtUsIn1::InitArgs()
 	arg.Enable = false;
 	arg.Desc = _T("c>o,c<o 값을 설정 합니다.");
 	AddSystemArg(_T("기타변수"), arg);
+	VtSystem::InitArgs();
 }
 
 void VtUsIn1::CreateSignal(int startIndex, int endIndex)
@@ -347,29 +347,31 @@ VtPositionType VtUsIn1::UpdateSignal(int index)
 	// 시스템 업데이트
 	UpdateSystem(index);
 
-	_ExpPosition = VtPositionType::None;
-
 	// 청산 시간에 의한 청산 확인
-	if (LiqByEndTime(index)) {
+	if (_CurPosition != VtPositionType::None && LiqByEndTime(index)) {
+		LOG_F(INFO, _T("청산시간에 따른 청산성공"));
 		_CurPosition = VtPositionType::None;
-		return _ExpPosition;
 	}
 
 	// 손절 확인
-	if (CheckLossCut(index)) {
+	if (_CurPosition != VtPositionType::None && CheckLossCut(index)) {
 		LOG_F(INFO, _T("손절성공"));
 		_CurPosition = VtPositionType::None;
 	}
 	// 목표이익 확인
-	if (CheckProfitCut(index)) {
+	if (_CurPosition != VtPositionType::None && CheckProfitCut(index)) {
 		LOG_F(INFO, _T("익절성공"));
 		_CurPosition = VtPositionType::None;
 	}
 	// 트레일링 스탑 확인
-	if (CheckTrailStop(index)) {
+	if (_CurPosition != VtPositionType::None && CheckTrailStop(index)) {
 		LOG_F(INFO, _T("트레일스탑성공"));
 		_CurPosition = VtPositionType::None;
 	}
+	_ExpPosition = VtPositionType::None;
+
+	// 여기서 예상신호를 알아본다.
+
 
 	return _ExpPosition;
 }
