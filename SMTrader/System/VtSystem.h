@@ -141,7 +141,10 @@ public:
 	/// </summary>
 	bool LiqByEndTime();
 	bool LiqByEndTime(int index);
-
+	bool CheckFilterMulti();
+	bool CheckFilterMulti(int index);
+	bool CheckBarIndex();
+	bool CheckBarIndex(int index);
 	bool CheckEntranceByBandForBuy();
 	bool CheckEntranceByBandForSell();
 	bool CheckEntranceByOpenForBuy();
@@ -215,11 +218,12 @@ public:
 	bool EnableByBand() const { return _EnableByBand; }
 	void EnableByBand(bool val) { _EnableByBand = val; }
 	VtSystemGroupType SystemGroup() const { return _SystemGroup; }
-	void SystemGroup(VtSystemGroupType val) { _SystemGroup = val; }
+	void SystemGroup(VtSystemGroupType val);
 	CString PositionState;
 	void SetPositionState(VtPosition* posi);
 	bool EnableBarIndex() const { return _EnableBarIndex; }
 	void EnableBarIndex(bool val) { _EnableBarIndex = val; }
+	void InitArgsGroups();
 protected:
 	int FindDateIndex(double date, std::vector<double>& dateArray);
 	void PutOrder(int price, VtPositionType position, VtPriceType priceType = VtPriceType::Price);
@@ -443,5 +447,6 @@ protected:
 	/// </summary>
 	int _LastEntryIndex = -1;
 	bool _EnableBarIndex = false;
+	bool _EnableFilterMulti = false;
 };
 

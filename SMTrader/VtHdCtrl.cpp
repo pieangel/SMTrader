@@ -2640,6 +2640,11 @@ void VtHdCtrl::OnRealFutureQuote(CString& strKey, LONG& nRealType)
 	sym->Quote.intHigh = _ttoi(strData053);
 	sym->Quote.intLow = _ttoi(strData054);
 
+	sym->Quote.close = sym->Quote.intClose / std::pow(10, sym->IntDecimal);
+	sym->Quote.open = sym->Quote.intOpen / std::pow(10, sym->IntDecimal);
+	sym->Quote.high = sym->Quote.intHigh / std::pow(10, sym->IntDecimal);
+	sym->Quote.low = sym->Quote.intLow / std::pow(10, sym->IntDecimal);
+
 	OnReceiveSise(_ttoi(strTime), sym);
 
 	VtQuoteItem quoteItem;
@@ -2723,6 +2728,11 @@ void VtHdCtrl::OnRealOptionQuote(CString& strKey, LONG& nRealType)
 	sym->Quote.intOpen = _ttoi(strData052);
 	sym->Quote.intHigh = _ttoi(strData053);
 	sym->Quote.intLow = _ttoi(strData054);
+
+	sym->Quote.close = sym->Quote.intClose / std::pow(10, sym->IntDecimal);
+	sym->Quote.open = sym->Quote.intOpen / std::pow(10, sym->IntDecimal);
+	sym->Quote.high = sym->Quote.intHigh / std::pow(10, sym->IntDecimal);
+	sym->Quote.low = sym->Quote.intLow / std::pow(10, sym->IntDecimal);
 
 	OnReceiveSise(_ttoi(strTime), sym);
 
@@ -2808,6 +2818,11 @@ void VtHdCtrl::OnRealProductQuote(CString& strKey, LONG& nRealType)
 	sym->Quote.intOpen = _ttoi(strData052);
 	sym->Quote.intHigh = _ttoi(strData053);
 	sym->Quote.intLow = _ttoi(strData054);
+
+	sym->Quote.close = sym->Quote.intClose / std::pow(10, sym->IntDecimal);
+	sym->Quote.open = sym->Quote.intOpen / std::pow(10, sym->IntDecimal);
+	sym->Quote.high = sym->Quote.intHigh / std::pow(10, sym->IntDecimal);
+	sym->Quote.low = sym->Quote.intLow / std::pow(10, sym->IntDecimal);
 
 	OnReceiveSise(_ttoi(strTime), sym);
 

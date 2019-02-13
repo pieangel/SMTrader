@@ -373,7 +373,7 @@ VtPositionType VtQIn4::UpdateSignal(int index)
 
 void VtQIn4::OnTimer()
 {
-	if (!_Enable)
+	if (!_Enable || !_Symbol)
 		return;
 	// 청산 시간에 따른 청산 - 조건없이 무조건 청산한다.
 	if (_CurPosition != VtPositionType::None) {
@@ -399,26 +399,27 @@ void VtQIn4::OnTimer()
 		}
 	}
 
-	// 일일 최대 거래회수에 의한 통제
-	if (_EntryToday >= _MaxEntrance) { // 일일 최대 거래 회수에 도달했다면 진입하지 않는다.
-		return;
-	}
-
-	// 시간에 따른 진입 통제
-	if (!IsEnterableByTime())
-		return;
-
-	// 데일리 인덱스에 의한 통제
-	if (_EnableBarIndex && (GetDailyIndex() + 1 <= _EntryBarIndex))
-		return;
-
-	if (!_Symbol)
-		return;
-
-	// 시스템 변수를 읽어 온다.
-	ReadExtraArgs();
-
 	if (_CurPosition == VtPositionType::None) {
+		// 일일 최대 거래회수에 의한 통제
+		if (_EntryToday >= _MaxEntrance) { // 일일 최대 거래 회수에 도달했다면 진입하지 않는다.
+			return;
+		}
+
+		// 시간에 따른 진입 통제
+		if (!IsEnterableByTime())
+			return;
+
+		// 데일리 인덱스에 의한 통제
+		if (_EnableBarIndex) {
+			if (!CheckBarIndex())
+				return;
+		}
+		// 진폭에 의한 통제
+		if (_EnableFilterMulti) {
+			if (!CheckFilterMulti())
+				return;
+		}
+
 		int curTime = VtChartDataCollector::GetLocalTime();
 		if (CheckEntranceForBuy()) {
 			LOG_F(INFO, _T("매수진입성공"));
@@ -480,6 +481,9 @@ bool VtQIn4::CheckEntranceForBuy()
 		argCond.push_back(CheckEntranceByBandForBuy());
 	}
 
+	if (_EnableByOpen) {
+		argCond.push_back(CheckEntranceByOpenForBuy());
+	}
 
 	if (argCond.size() == 0)
 		return false;
@@ -503,6 +507,9 @@ bool VtQIn4::CheckEntranceForBuy(size_t index)
 		argCond.push_back(CheckEntranceByBandForBuy(index));
 	}
 
+	if (_EnableByOpen) {
+		argCond.push_back(CheckEntranceByOpenForBuy(index));
+	}
 
 	if (argCond.size() == 0)
 		return false;
@@ -526,6 +533,9 @@ bool VtQIn4::CheckEntranceForSell()
 		argCond.push_back(CheckEntranceByBandForSell());
 	}
 
+	if (_EnableByOpen) {
+		argCond.push_back(CheckEntranceByOpenForSell());
+	}
 
 	if (argCond.size() == 0)
 		return false;
@@ -549,6 +559,9 @@ bool VtQIn4::CheckEntranceForSell(size_t index)
 		argCond.push_back(CheckEntranceByBandForBuy(index));
 	}
 
+	if (_EnableByOpen) {
+		argCond.push_back(CheckEntranceByOpenForSell(index));
+	}
 
 	if (argCond.size() == 0)
 		return false;

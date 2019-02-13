@@ -111,10 +111,10 @@ void VtAccountFundGrid::OnMouseMove(int col, long row, POINT *point, UINT nFlags
 	_OldSelRow = row;
 }
 
-int VtAccountFundGrid::OnCanViewMove(int oldcol, long oldrow, int newcol, long newrow)
-{
-	return 0;
-}
+// int VtAccountFundGrid::OnCanViewMove(int oldcol, long oldrow, int newcol, long newrow)
+// {
+// 	return 0;
+// }
 
 void VtAccountFundGrid::OnMouseLeaveFromMainGrid()
 {
@@ -134,7 +134,7 @@ void VtAccountFundGrid::SetColTitle()
 	CUGCell cell;
 	LPCTSTR title[2] = { "계좌명", "코드" };
 	
-	_ColWidthVec.push_back(120);
+	_ColWidthVec.push_back(116);
 	_ColWidthVec.push_back(100);
 
 	for (int i = 0; i < _ColCount; i++) {
@@ -275,5 +275,5 @@ void VtAccountFundGrid::ResizeWindow()
 	for (size_t i = 0; i < _ColWidthVec.size(); ++i) {
 		totalWidth += _ColWidthVec[i];
 	}
-	SetWindowPos(nullptr, 0, 0, totalWidth, totalHeight, SWP_NOMOVE | SWP_NOZORDER);
+	SetWindowPos(nullptr, 0, 0, totalWidth + 10, totalHeight, SWP_NOMOVE | SWP_NOZORDER);
 }

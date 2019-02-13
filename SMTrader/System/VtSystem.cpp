@@ -163,7 +163,7 @@ bool VtSystem::LiqByEndTime(int index)
 	return false;
 }
 
-bool VtSystem::CheckEntranceByBandForBuy()
+bool VtSystem::CheckFilterMulti()
 {
 	if (!_Symbol)
 		return false;
@@ -180,8 +180,78 @@ bool VtSystem::CheckEntranceByBandForBuy()
 	double preDayLow = lowArray[lowArray.size() - 2];
 	double _PreHL = preDayHigh - preDayLow;
 	// 전날 변동폭이 클때는 진입하지 않는다.
-	if (_FilterMulti > _PreHL)
+	if (_FilterMulti < _PreHL)
 		return false;
+	else
+		return true;
+}
+
+bool VtSystem::CheckFilterMulti(int index)
+{
+	if (!_Symbol || index < 0 || index >= ChartDataSize)
+		return false;
+
+	std::string code = _Symbol->ShortCode;
+	std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::DAY, 1);
+	VtChartData* chartData = _RefDataMap[dataKey];
+	if (!chartData)
+		return false;
+
+	std::vector<double>& dayDateArray = chartData->GetDataArray(_T("date"));
+	std::vector<double>& highArray = chartData->GetDataArray(_T("high"));
+	std::vector<double>& lowArray = chartData->GetDataArray(_T("low"));
+
+	dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
+	chartData = _RefDataMap[dataKey];
+	if (!chartData)
+		return false;
+	std::vector<double>& maindateArray = chartData->GetDataArray(_T("date"));
+	int curDayIndex = FindDateIndex(maindateArray[index], dayDateArray);
+	if (curDayIndex <= 0)
+		return false;
+
+	double preDayHigh = highArray[curDayIndex - 1];
+	double preDayLow = lowArray[curDayIndex - 1];
+	double _PreHL = preDayHigh - preDayLow;
+	// 전날 변동폭이 클때는 진입하지 않는다.
+	if (_FilterMulti < _PreHL)
+		return false;
+	else
+		return true;
+}
+
+bool VtSystem::CheckBarIndex()
+{
+	if (GetDailyIndex() + 1 <= _EntryBarIndex)
+		return false;
+	else
+		return true;
+}
+
+bool VtSystem::CheckBarIndex(int index)
+{
+	if (GetDailyIndex(index) + 1 <= _EntryBarIndex)
+		return false;
+	else
+		return true;
+}
+
+bool VtSystem::CheckEntranceByBandForBuy()
+{
+	if (!_Symbol)
+		return false;
+
+	std::string code = _Symbol->ShortCode;
+	std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::DAY, 1);
+	VtChartData* chartData = _RefDataMap[dataKey];
+	if (!chartData)
+		return false;
+	std::vector<double>& highArray = chartData->GetDataArray(_T("high"));
+	std::vector<double>& lowArray = chartData->GetDataArray(_T("low"));
+
+	double preDayHigh = highArray[highArray.size() - 2];
+	double preDayLow = lowArray[lowArray.size() - 2];
+	double _PreHL = preDayHigh - preDayLow;
 	double _Band = _PreHL * _BandMulti;
 	if (_Symbol->Quote.close > _Symbol->Quote.open + _Band)
 		return true;
@@ -216,9 +286,6 @@ bool VtSystem::CheckEntranceByBandForBuy(size_t index)
 	double preDayHigh = highArray[curDayIndex - 1];
 	double preDayLow = lowArray[curDayIndex - 1];
 	double _PreHL = preDayHigh - preDayLow;
-	// 전날 변동폭이 클때는 진입하지 않는다.
-	if (_FilterMulti > _PreHL)
-		return false;
 	double _Band = _PreHL * _BandMulti;
 	if (_Symbol->Quote.close > _Symbol->Quote.open + _Band)
 		return true;
@@ -242,9 +309,6 @@ bool VtSystem::CheckEntranceByBandForSell()
 	double preDayHigh = highArray[highArray.size() - 2];
 	double preDayLow = lowArray[lowArray.size() - 2];
 	double _PreHL = preDayHigh - preDayLow;
-	// 전날 변동폭이 클때는 진입하지 않는다.
-	if (_FilterMulti > _PreHL)
-		return false;
 	double _Band = _PreHL * _BandMulti;
 	if (_Symbol->Quote.close < _Symbol->Quote.open - _Band)
 		return true;
@@ -278,9 +342,6 @@ bool VtSystem::CheckEntranceByBandForSell(size_t index)
 	double preDayHigh = highArray[curDayIndex - 1];
 	double preDayLow = lowArray[curDayIndex - 1];
 	double _PreHL = preDayHigh - preDayLow;
-	// 전날 변동폭이 클때는 진입하지 않는다.
-	if (_FilterMulti > _PreHL)
-		return false;
 	double _Band = _PreHL * _BandMulti;
 	if (_Symbol->Quote.close < _Symbol->Quote.open - _Band)
 		return true;
@@ -1677,6 +1738,12 @@ int VtSystem::GetDailyIndex()
 	return dateIndex;
 }
 
+void VtSystem::SystemGroup(VtSystemGroupType val)
+{
+	_SystemGroup = val;
+	InitArgsGroups();
+}
+
 void VtSystem::SetPositionState(VtPosition* posi)
 {
 	if (!posi)
@@ -1689,6 +1756,80 @@ void VtSystem::SetPositionState(VtPosition* posi)
 	else
 		str.Format(_T("없음"), 0);
 	PositionState = str;
+}
+
+void VtSystem::InitArgsGroups()
+{
+	InitArgType();
+	if (_SystemGroup == VtSystemGroupType::KOSPI200F) {
+		_BuyEntArg[_T("Kbs-Kas")] = ArgDataSource{ _T("101F"), _T("SHTQ"), _T("close"), _T("BHTQ"), _T("close") };
+		_BuyEntArg[_T("Kbc>Kac")] = ArgDataSource{ _T("101F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
+		_BuyEntArg[_T("Qbc>Qac")] = ArgDataSource{ _T("106F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
+		_BuyEntArg[_T("Uac>Ubc")] = ArgDataSource{ _T("175F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
+
+		_SellEntArg[_T("Kas-Kbs")] = ArgDataSource{ _T("101F"), _T("SHTQ"), _T("close"), _T("BHTQ"), _T("close") };
+		_SellEntArg[_T("Kac>Kbc")] = ArgDataSource{ _T("101F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
+		_SellEntArg[_T("Qac>Qbc")] = ArgDataSource{ _T("106F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
+		_SellEntArg[_T("Ubc>Uac")] = ArgDataSource{ _T("175F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
+
+		_BuyLiqArg[_T("Kas-Kbs")] = ArgDataSource{ _T("101F"), _T("SHTQ"), _T("close"), _T("BHTQ"), _T("close") };
+		_BuyLiqArg[_T("Kac>Kbc")] = ArgDataSource{ _T("101F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
+		_BuyLiqArg[_T("Qac>Qbc")] = ArgDataSource{ _T("106F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
+		_BuyLiqArg[_T("Ubc>Uac")] = ArgDataSource{ _T("175F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
+
+		_SellLiqArg[_T("Kbs-Kas")] = ArgDataSource{ _T("101F"), _T("SHTQ"), _T("close"), _T("BHTQ"), _T("close") };
+		_SellLiqArg[_T("Kbc>Kac")] = ArgDataSource{ _T("101F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
+		_SellLiqArg[_T("Qbc>Qac")] = ArgDataSource{ _T("106F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
+		_SellLiqArg[_T("Uac>Ubc")] = ArgDataSource{ _T("175F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
+	}
+	else if (_SystemGroup == VtSystemGroupType::KOSDAQ150F) {
+		_BuyEntArg[_T("Qbc>Qac")] = ArgDataSource{ _T("106F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
+		_BuyEntArg[_T("Qbs>Qas")] = ArgDataSource{ _T("106F"), _T("SHTQ"), _T("close"), _T("BHTQ"), _T("close") };
+		_BuyEntArg[_T("Kbc>Kac")] = ArgDataSource{ _T("101F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
+		_BuyEntArg[_T("Uac>Ubc")] = ArgDataSource{ _T("175F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
+
+		_SellEntArg[_T("Qac>Qbc")] = ArgDataSource{ _T("106F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
+		_SellEntArg[_T("Qas>Qbs")] = ArgDataSource{ _T("106F"), _T("SHTQ"), _T("close"), _T("BHTQ"), _T("close") };
+		_SellEntArg[_T("Kac>Kbc")] = ArgDataSource{ _T("101F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
+		_SellEntArg[_T("Ubc>Uac")] = ArgDataSource{ _T("175F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
+
+		_BuyLiqArg[_T("Qac>Qbc")] = ArgDataSource{ _T("106F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
+		_BuyLiqArg[_T("Qas>Qbs")] = ArgDataSource{ _T("106F"), _T("SHTQ"), _T("close"), _T("BHTQ"), _T("close") };
+		_BuyLiqArg[_T("Kac>Kbc")] = ArgDataSource{ _T("101F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
+		_BuyLiqArg[_T("Ubc>Uac")] = ArgDataSource{ _T("175F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
+
+		_SellLiqArg[_T("Qbc>Qac")] = ArgDataSource{ _T("106F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
+		_SellLiqArg[_T("Qbs>Qas")] = ArgDataSource{ _T("106F"), _T("SHTQ"), _T("close"), _T("BHTQ"), _T("close") };
+		_SellLiqArg[_T("Kbc>Kac")] = ArgDataSource{ _T("101F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
+		_SellLiqArg[_T("Uac>Ubc")] = ArgDataSource{ _T("175F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
+	}
+	else if (_SystemGroup == VtSystemGroupType::USDF) {
+
+		_BuyEntArg[_T("Ubc>Uac")] = ArgDataSource{ _T("175F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
+		_BuyEntArg[_T("Ubs>Uas")] = ArgDataSource{ _T("175F"), _T("SHTQ"), _T("close"), _T("BHTQ"), _T("close") };
+		_BuyEntArg[_T("Kac>Kbc")] = ArgDataSource{ _T("101F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
+		_BuyEntArg[_T("Kas>Kbs")] = ArgDataSource{ _T("101F"), _T("SHTQ"), _T("close"), _T("BHTQ"), _T("close") };
+
+		_SellEntArg[_T("Uac>Ubc")] = ArgDataSource{ _T("175F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
+		_SellEntArg[_T("Uas>Ubs")] = ArgDataSource{ _T("175F"), _T("SHTQ"), _T("close"), _T("BHTQ"), _T("close") };
+		_SellEntArg[_T("Kbc>Kac")] = ArgDataSource{ _T("101F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
+		_SellEntArg[_T("Kbs>Kas")] = ArgDataSource{ _T("101F"), _T("SHTQ"), _T("close"), _T("BHTQ"), _T("close") };
+
+		_BuyLiqArg[_T("Uac>Ubc")] = ArgDataSource{ _T("175F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
+		_BuyLiqArg[_T("Uas>Ubs")] = ArgDataSource{ _T("175F"), _T("SHTQ"), _T("close"), _T("BHTQ"), _T("close") };
+		_BuyLiqArg[_T("Kbc>Kac")] = ArgDataSource{ _T("101F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
+		_BuyLiqArg[_T("Kbs>Kas")] = ArgDataSource{ _T("101F"), _T("SHTQ"), _T("close"), _T("BHTQ"), _T("close") };
+
+		_SellLiqArg[_T("Ubc>Uac")] = ArgDataSource{ _T("175F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
+		_SellLiqArg[_T("Ubs>Uas")] = ArgDataSource{ _T("175F"), _T("SHTQ"), _T("close"), _T("BHTQ"), _T("close") };
+		_SellLiqArg[_T("Kac>Kbc")] = ArgDataSource{ _T("101F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
+		_SellLiqArg[_T("Kas>Kbs")] = ArgDataSource{ _T("101F"), _T("SHTQ"), _T("close"), _T("BHTQ"), _T("close") };
+	}
+
+	_CondGroupMap[_T("매수진입")] = &_BuyEntArg;
+	_CondGroupMap[_T("매도진입")] = &_SellEntArg;
+	_CondGroupMap[_T("매수청산")] = &_BuyLiqArg;
+	_CondGroupMap[_T("매도청산")] = &_SellLiqArg;
 }
 
 void VtSystem::AddSystemArg(std::string groupName, VtSystemArg arg)
@@ -2077,75 +2218,7 @@ void VtSystem::ReloadSystem(int startIndex, int endIndex)
 
 void VtSystem::InitArgs()
 {
-	InitArgType();
-	if (_SystemGroup == VtSystemGroupType::KOSPI200F) {
-		_BuyEntArg[_T("Kbs-Kas")] = ArgDataSource{ _T("101F"), _T("SHTQ"), _T("close"), _T("BHTQ"), _T("close") };
-		_BuyEntArg[_T("Kbc>Kac")] = ArgDataSource{ _T("101F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
-		_BuyEntArg[_T("Qbc>Qac")] = ArgDataSource{ _T("106F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
-		_BuyEntArg[_T("Uac>Ubc")] = ArgDataSource{ _T("175F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
-
-		_SellEntArg[_T("Kas-Kbs")] = ArgDataSource{ _T("101F"), _T("SHTQ"), _T("close"), _T("BHTQ"), _T("close") };
-		_SellEntArg[_T("Kac>Kbc")] = ArgDataSource{ _T("101F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
-		_SellEntArg[_T("Qac>Qbc")] = ArgDataSource{ _T("106F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
-		_SellEntArg[_T("Ubc>Uac")] = ArgDataSource{ _T("175F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
-
-		_BuyLiqArg[_T("Kas-Kbs")] = ArgDataSource{ _T("101F"), _T("SHTQ"), _T("close"), _T("BHTQ"), _T("close") };
-		_BuyLiqArg[_T("Kac>Kbc")] = ArgDataSource{ _T("101F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
-		_BuyLiqArg[_T("Qac>Qbc")] = ArgDataSource{ _T("106F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
-		_BuyLiqArg[_T("Ubc>Uac")] = ArgDataSource{ _T("175F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
-
-		_SellLiqArg[_T("Kbs-Kas")] = ArgDataSource{ _T("101F"), _T("SHTQ"), _T("close"), _T("BHTQ"), _T("close") };
-		_SellLiqArg[_T("Kbc>Kac")] = ArgDataSource{ _T("101F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
-		_SellLiqArg[_T("Qbc>Qac")] = ArgDataSource{ _T("106F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
-		_SellLiqArg[_T("Uac>Ubc")] = ArgDataSource{ _T("175F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
-	}
-	else if (_SystemGroup == VtSystemGroupType::KOSDAQ150F) {
-		_BuyEntArg[_T("Qbc>Qac")] = ArgDataSource{ _T("106F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
-		_BuyEntArg[_T("Qbs>Qas")] = ArgDataSource{ _T("106F"), _T("SHTQ"), _T("close"), _T("BHTQ"), _T("close") };
-		_BuyEntArg[_T("Kbc>Kac")] = ArgDataSource{ _T("101F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
-		_BuyEntArg[_T("Uac>Ubc")] = ArgDataSource{ _T("175F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
-
-		_SellEntArg[_T("Qac>Qbc")] = ArgDataSource{ _T("106F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
-		_SellEntArg[_T("Qas>Qbs")] = ArgDataSource{ _T("106F"), _T("SHTQ"), _T("close"), _T("BHTQ"), _T("close") };
-		_SellEntArg[_T("Kac>Kbc")] = ArgDataSource{ _T("101F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
-		_SellEntArg[_T("Ubc>Uac")] = ArgDataSource{ _T("175F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
-
-		_BuyLiqArg[_T("Qac>Qbc")] = ArgDataSource{ _T("106F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
-		_BuyLiqArg[_T("Qas>Qbs")] = ArgDataSource{ _T("106F"), _T("SHTQ"), _T("close"), _T("BHTQ"), _T("close") };
-		_BuyLiqArg[_T("Kac>Kbc")] = ArgDataSource{ _T("101F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
-		_BuyLiqArg[_T("Ubc>Uac")] = ArgDataSource{ _T("175F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
-
-		_SellLiqArg[_T("Qbc>Qac")] = ArgDataSource{ _T("106F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
-		_SellLiqArg[_T("Qbs>Qas")] = ArgDataSource{ _T("106F"), _T("SHTQ"), _T("close"), _T("BHTQ"), _T("close") };
-		_SellLiqArg[_T("Kbc>Kac")] = ArgDataSource{ _T("101F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
-		_SellLiqArg[_T("Uac>Ubc")] = ArgDataSource{ _T("175F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
-	}
-	else if (_SystemGroup == VtSystemGroupType::USDF) {
-		_BuyEntArg[_T("Uac>Ubc")] = ArgDataSource{ _T("175F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
-		_BuyEntArg[_T("Uas>Ubs")] = ArgDataSource{ _T("175F"), _T("SHTQ"), _T("close"), _T("BHTQ"), _T("close") };
-		_BuyEntArg[_T("Kbc>Kac")] = ArgDataSource{ _T("101F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
-		_BuyEntArg[_T("Kbs>Kas")] = ArgDataSource{ _T("101F"), _T("SHTQ"), _T("close"), _T("BHTQ"), _T("close") };
-
-		_SellEntArg[_T("Ubc>Uac")] = ArgDataSource{ _T("175F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
-		_SellEntArg[_T("Ubs>Uas")] = ArgDataSource{ _T("175F"), _T("SHTQ"), _T("close"), _T("BHTQ"), _T("close") };
-		_SellEntArg[_T("Kac>Kbc")] = ArgDataSource{ _T("101F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
-		_SellEntArg[_T("Kas>Kbs")] = ArgDataSource{ _T("101F"), _T("SHTQ"), _T("close"), _T("BHTQ"), _T("close") };
-
-		_BuyLiqArg[_T("Ubc>Uac")] = ArgDataSource{ _T("175F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
-		_BuyLiqArg[_T("Ubs>Uas")] = ArgDataSource{ _T("175F"), _T("SHTQ"), _T("close"), _T("BHTQ"), _T("close") };
-		_BuyLiqArg[_T("Kac>Kbc")] = ArgDataSource{ _T("101F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
-		_BuyLiqArg[_T("Kas>Kbs")] = ArgDataSource{ _T("101F"), _T("SHTQ"), _T("close"), _T("BHTQ"), _T("close") };
-
-		_SellLiqArg[_T("Uac>Ubc")] = ArgDataSource{ _T("175F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
-		_SellLiqArg[_T("Uas>Ubs")] = ArgDataSource{ _T("175F"), _T("SHTQ"), _T("close"), _T("BHTQ"), _T("close") };
-		_SellLiqArg[_T("Kbc>Kac")] = ArgDataSource{ _T("101F"), _T("SHTC"), _T("close"), _T("BHTC"), _T("close") };
-		_SellLiqArg[_T("Kbs>Kas")] = ArgDataSource{ _T("101F"), _T("SHTQ"), _T("close"), _T("BHTQ"), _T("close") };
-	}
-
-	_CondGroupMap[_T("매수진입")] = &_BuyEntArg;
-	_CondGroupMap[_T("매도진입")] = &_SellEntArg;
-	_CondGroupMap[_T("매수청산")] = &_BuyLiqArg;
-	_CondGroupMap[_T("매도청산")] = &_SellLiqArg;
+	
 }
 
 void VtSystem::SetDataMap(VtChartData* chartData)
@@ -2157,6 +2230,7 @@ void VtSystem::SetDataMap(VtChartData* chartData)
 
 void VtSystem::ReadExtraArgs()
 {
+	//InitArgsGroups();
 	// 매수 청산
 	VtSystemArgGroup* argGrp = GetArgGroup(_T("기타변수"));
 	if (argGrp) {
@@ -2173,6 +2247,7 @@ void VtSystem::ReadExtraArgs()
 					_BandMulti = std::stod(arg.sValue);
 				}
 				else if (arg.Name.compare(_T("FilterMulti")) == 0) {
+					_EnableFilterMulti = true;
 					_FilterMulti = std::stod(arg.sValue);
 				}
 				else if (arg.Name.compare(_T("ATR Time")) == 0) {
@@ -2207,6 +2282,7 @@ void VtSystem::ReadExtraArgs()
 					_EnableByBand = false;
 				}
 				else if (arg.Name.compare(_T("FilterMulti")) == 0) {
+					_FilterMulti = false;
 					_FilterMulti = std::stod(arg.sValue);
 				}
 				else if (arg.Name.compare(_T("ATRTime")) == 0) {
