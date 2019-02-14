@@ -224,6 +224,7 @@ public:
 	bool EnableBarIndex() const { return _EnableBarIndex; }
 	void EnableBarIndex(bool val) { _EnableBarIndex = val; }
 	void InitArgsGroups();
+	void CheckLiqByStop();
 protected:
 	int FindDateIndex(double date, std::vector<double>& dateArray);
 	void PutOrder(int price, VtPositionType position, VtPriceType priceType = VtPriceType::Price);

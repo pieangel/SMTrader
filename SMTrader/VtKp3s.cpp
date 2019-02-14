@@ -81,7 +81,7 @@ void VtKp3s::InitArgs()
 		return;
 
 
-	_Cycle = 1;
+	_Cycle = 5;
 
 	_EntranceStartTime.hour = 9;
 	_EntranceStartTime.min = 0;

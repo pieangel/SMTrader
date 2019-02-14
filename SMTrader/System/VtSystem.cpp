@@ -1836,6 +1836,40 @@ void VtSystem::InitArgsGroups()
 	_CondGroupMap[_T("매도청산")] = &_SellLiqArg;
 }
 
+void VtSystem::CheckLiqByStop()
+{
+	if (!_Enable && _LiqByStop) { // 시스템 비활성화시 잔고 청산 여부 확인
+		if (_SysTargetType == TargetType::RealAccount || _SysTargetType == TargetType::SubAccount) {
+			if (!_Account)
+				return;
+
+			VtPosition* posi = _Account->FindPosition(_Symbol->ShortCode);
+			if (!posi)
+				return;
+			if (posi && std::abs(posi->OpenQty) > 0) {
+				int res = AfxMessageBox(_T("잔고가 남아있습니다! 청산하시겠습니까?"), MB_YESNO);
+				if (res == IDYES)
+					LiqudAll();
+			}
+		}
+		else {
+			if (!_Fund)
+				return;
+
+			int count = 0;
+			VtPosition posi = _Fund->GetPosition(_Symbol->ShortCode, count);
+			if (count == 0) {
+				return;
+			}
+			if (std::abs(posi.OpenQty) > 0) {
+				int res = AfxMessageBox(_T("잔고가 남아있습니다! 청산하시겠습니까?"), MB_YESNO);
+				if (res == IDYES)
+					LiqudAll();
+			}
+		}
+	}
+}
+
 void VtSystem::AddSystemArg(std::string groupName, VtSystemArg arg)
 {
 	VtSystemArgGroup* argGrp = FindArgGroup(groupName);
@@ -1992,6 +2026,9 @@ bool VtSystem::CheckTrailStop(int index)
 
 void VtSystem::UpdateSystem(int index)
 {
+	if (!_Symbol)
+		return;
+
 	if (_SysTargetType == TargetType::RealAccount || _SysTargetType == TargetType::SubAccount) {
 		if (!_Account)
 			return;
@@ -2286,7 +2323,7 @@ void VtSystem::ReadExtraArgs()
 					_EnableByBand = false;
 				}
 				else if (arg.Name.compare(_T("FilterMulti")) == 0) {
-					_FilterMulti = false;
+					_EnableFilterMulti = false;
 					_FilterMulti = std::stod(arg.sValue);
 				}
 				else if (arg.Name.compare(_T("ATRTime")) == 0) {
@@ -2330,34 +2367,7 @@ void VtSystem::SetExtraTargetSymbol(std::string symCode)
 void VtSystem::Enable(bool val)
 {
 	_Enable = val;
-	if (!_Enable && _LiqByStop) { // 시스템 비활성화시 잔고 청산 여부 확인
-		if (_SysTargetType == TargetType::RealAccount || _SysTargetType == TargetType::SubAccount) {
-			if (!_Account)
-				return;
-
-			VtPosition* posi = _Account->FindPosition(_Symbol->ShortCode);
-			if (posi && std::abs(posi->OpenQty) > 0) {
-				int res = AfxMessageBox(_T("잔고가 남아있습니다! 청산하시겠습니까?"), MB_YESNO);
-				if (res == IDYES)
-					LiqudAll();
-			}
-		}
-		else {
-			if (!_Fund)
-				return;
-
-			int count = 0;
-			VtPosition posi = _Fund->GetPosition(_Symbol->ShortCode, count);
-			if (count == 0) {
-				return;
-			}
-			if (std::abs(posi.OpenQty) > 0) {
-				int res = AfxMessageBox(_T("잔고가 남아있습니다! 청산하시겠습니까?"), MB_YESNO);
-				if (res == IDYES)
-					LiqudAll();
-			}
-		}
-	}
+	CheckLiqByStop();
 }
 
 double VtSystem::GetDailyHigh(int index, double* datetime, double* high, int backLen)

@@ -179,6 +179,8 @@ void VtFund::ResetPosition(std::string symCode)
 	for (auto it = subAcntVector.begin(); it != subAcntVector.end(); ++it) {
 		VtAccount* subAcnt = *it;
 		VtPosition* posi = subAcnt->FindPosition(symCode);
+		if (!posi)
+			continue;
 		posi->SubAccountNo = subAcnt->AccountNo;
 		// 포지션에서 잔고가 있는 것들만 가져온다.
 		if (posi && std::abs(posi->OpenQty) > 0) {

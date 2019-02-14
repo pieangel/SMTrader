@@ -588,6 +588,8 @@ void HdSymbolOptionGrid::SetRemain(VtOrder* order)
 		if (!orderMgr)
 			return;
 		VtProductOrderManager* prdtOrderMgr = orderMgr->GetProductOrderManager(order->shortCode);
+		if (!prdtOrderMgr)
+			return;
 		VtPosition* posi = acnt->FindPosition(order->shortCode);
 		ShowPosition(prdtOrderMgr->Init(), prdtOrderMgr->GetAcceptedOrderCount(), posi, order->shortCode);
 	} else {

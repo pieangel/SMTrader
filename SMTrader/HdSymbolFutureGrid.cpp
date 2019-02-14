@@ -326,6 +326,8 @@ void HdSymbolFutureGrid::ShowRemain(VtSymbol* sym)
 		if (!orderMgr)
 			return;
 		VtProductOrderManager* prdtOrderMgr = orderMgr->GetProductOrderManager(sym->ShortCode);
+		if (!prdtOrderMgr)
+			return;
 		VtPosition* posi = acnt->FindPosition(sym->ShortCode);
 		if (prdtOrderMgr)
 			ShowPosition(prdtOrderMgr->Init(), prdtOrderMgr->GetAcceptedOrderCount(), posi, sym->ShortCode);

@@ -985,7 +985,7 @@ void VtHdCtrl::OnOrderAcceptedHd(CString& strKey, LONG& nRealType)
 	strMsg.Format("OnOrderAcceptedHd 계좌번호[%s]주문번호[%s]\n", strAcctNo, strOrdNo);
 	//WriteLog(strMsg);
 	//strMsg.Format(_T("%s\n"), strCustom);
-	//TRACE(strMsg);
+	TRACE(strMsg);
 
 	strAcctNo.TrimRight();
 	strOrdNo.TrimLeft('0');
@@ -1036,9 +1036,10 @@ void VtHdCtrl::OnOrderAcceptedHd(CString& strKey, LONG& nRealType)
 	else {
 		order->intOrderPrice = _ttoi(strPrice);
 		order->amount = _ttoi(strAmount);
-		// 이 때는 주문의 상태가 체결인 경우는 펀드 주문이나 서브 계좌 주문인 경우 초기 과정부터 다시 진행 시켜 준다.
-		if (order->state == VtOrderState::Filled)
+		if (order->state == VtOrderState::Filled) {
+			LOG_F(INFO, _T("OnAccepted :: // 이 때는 주문의 상태가 체결인 경우는 펀드 주문이나 서브 계좌 주문인 경우 초기 과정부터 다시 진행 시켜 준다."));
 			return;
+		}
 	}
 
 	if (strMan.Compare(_T("1")) == 0) {
