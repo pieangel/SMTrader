@@ -290,12 +290,13 @@ void HdSymbolFutureGrid::SetRemain(VtOrder* order)
 			return;
 
 		VtOrderManagerSelector* orderMgrSeledter = VtOrderManagerSelector::GetInstance();
-		VtOrderManager* orderMgr = orderMgrSeledter->FindOrderManager(acnt->AccountNo);
-		if (!orderMgr)
-			return;
+		VtOrderManager* orderMgr = orderMgrSeledter->FindAddOrderManager(acnt->AccountNo);
 		VtProductOrderManager* prdtOrderMgr = orderMgr->GetProductOrderManager(order->shortCode);
 		VtPosition* posi = acnt->FindPosition(order->shortCode);
-		ShowPosition(prdtOrderMgr->Init(), prdtOrderMgr->GetAcceptedOrderCount(), posi, order->shortCode);
+		if (prdtOrderMgr)
+			ShowPosition(prdtOrderMgr->Init(), prdtOrderMgr->GetAcceptedOrderCount(), posi, order->shortCode);
+		else
+			ShowPosition(false, 0, nullptr, order->shortCode);
 	} else {
 		VtFund* fund = _OrderConfigMgr->Fund();
 		if (!fund)
@@ -326,8 +327,6 @@ void HdSymbolFutureGrid::ShowRemain(VtSymbol* sym)
 		if (!orderMgr)
 			return;
 		VtProductOrderManager* prdtOrderMgr = orderMgr->GetProductOrderManager(sym->ShortCode);
-		if (!prdtOrderMgr)
-			return;
 		VtPosition* posi = acnt->FindPosition(sym->ShortCode);
 		if (prdtOrderMgr)
 			ShowPosition(prdtOrderMgr->Init(), prdtOrderMgr->GetAcceptedOrderCount(), posi, sym->ShortCode);

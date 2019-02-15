@@ -1344,8 +1344,11 @@ void VtOrderManager::OnOrderFilledHd(VtOrder* order)
 		return;
 	VtOrder* exOrder = FindOrder(order->orderNo);
 	// 주문 목록에서 찾아서 없을 때는 외부 주문으로 간주하고 주문목록에 추가해 준다.
-	if (!exOrder)
+	if (!exOrder) {
+		VtTotalOrderManager* totalOrderMgr = VtTotalOrderManager::GetInstance();
 		AddOrder(order);
+		totalOrderMgr->AddOrder(order);
+	}
 
 	// 개별 종목 평가손익을 계산해 준다.
 	VtProductOrderManager* prdtOrderMgr = _ProductOrderManagerSelector->FindAdd(order->shortCode);

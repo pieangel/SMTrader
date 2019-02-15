@@ -19,6 +19,7 @@
 #include "Poco/NumberFormatter.h"
 #include "XFormatNumber.h"
 #include "System/VtSystemManager.h"
+#include "VtRealtimeRegisterManager.h"
 
 using Poco::NumberFormatter;
 
@@ -435,13 +436,23 @@ void VtUsdStrategyConfigDlg::OnBnClickedBtnApply()
 {
 	if (!_System)
 		return;
-
+	VtRealtimeRegisterManager* realtimeRegiMgr = VtRealtimeRegisterManager::GetInstance();
+	//realtimeRegiMgr->RegisterProduct(_Symbol->ShortCode);
 	if (_Type == 0 || _Type == 1) {
 		if (_Account) {
 			_System->Account(_Account);
 			_Type == 0 ? _System->SysTargetType(TargetType::RealAccount) : _System->SysTargetType(TargetType::SubAccount);
 			_System->SysTargetName(_Account->AccountNo);
 			_System->Fund(nullptr);
+			if (_Account->AccountLevel() == 0) {
+				realtimeRegiMgr->RegisterAccount(_Account->AccountNo);
+			} 
+			else {
+				VtAccount* parentAcnt = _Account->ParentAccount();
+				if (parentAcnt) {
+					realtimeRegiMgr->RegisterAccount(parentAcnt->AccountNo);
+				}
+			}
 		}
 	}
 	else {
@@ -450,12 +461,18 @@ void VtUsdStrategyConfigDlg::OnBnClickedBtnApply()
 			_System->SysTargetType(TargetType::Fund);
 			_System->SysTargetName(_Fund->Name);
 			_System->Account(nullptr);
+			std::set<VtAccount*> parendAcntSet = _Fund->GetParentAccountSet();
+			for (auto it = parendAcntSet.begin(); it != parendAcntSet.end(); ++it) {
+				VtAccount* parentAcnt = *it;
+				realtimeRegiMgr->RegisterAccount(parentAcnt->AccountNo);
+			}
 		}
 	}
 
 	if (_SelSymbol) {
 		_System->Symbol(_SelSymbol);
 		_System->SymbolCode(_SelSymbol->ShortCode);
+		realtimeRegiMgr->RegisterProduct(_SelSymbol->ShortCode);
 	}
 	
 	CTime esTime;

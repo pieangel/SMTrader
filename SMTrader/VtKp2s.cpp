@@ -400,6 +400,7 @@ VtPositionType VtKp2s::UpdateSignal(int index)
 
 void VtKp2s::OnTimer()
 {
+	LOG_F(INFO, _T("VtKp2s::OnTimer()"));
 	if (!_Enable || !_Symbol)
 		return;
 	// 청산 시간에 따른 청산 - 조건없이 무조건 청산한다.

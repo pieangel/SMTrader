@@ -1232,6 +1232,8 @@ bool VtSystem::LiqudAll()
 		_MaxProfit = 0.0;
 
 		posi->Position = VtPositionType::None;
+		posi->OpenQty = 0;
+		SetPositionState(posi);
 		_CurPosition = VtPositionType::None;
 		_LastEntryIndex = -1;
 		_LatestEntPrice = 0;
@@ -1251,6 +1253,7 @@ bool VtSystem::LiqudAll()
 			else // 지정가
 				PutOrder(posi, static_cast<int>(posi->AvgPrice), false);
 			posi->Position = VtPositionType::None;
+			posi->OpenQty = 0;
 		}
 
 		_ProfitLoss = 0.0;
@@ -1258,6 +1261,10 @@ bool VtSystem::LiqudAll()
 		_CurPosition = VtPositionType::None;
 		_LastEntryIndex = -1;
 		_LatestEntPrice = 0;
+		VtPosition posi;
+		posi.Position = VtPositionType::None;
+		posi.OpenQty = 0;
+		SetPositionState(&posi);
 		return true;
 	}
 }
@@ -1838,7 +1845,7 @@ void VtSystem::InitArgsGroups()
 
 void VtSystem::CheckLiqByStop()
 {
-	if (!_Enable && _LiqByStop) { // 시스템 비활성화시 잔고 청산 여부 확인
+	if (_LiqByStop) { // 시스템 비활성화시 잔고 청산 여부 확인
 		if (_SysTargetType == TargetType::RealAccount || _SysTargetType == TargetType::SubAccount) {
 			if (!_Account)
 				return;
@@ -2366,8 +2373,9 @@ void VtSystem::SetExtraTargetSymbol(std::string symCode)
 
 void VtSystem::Enable(bool val)
 {
+	if (!val)
+		CheckLiqByStop();
 	_Enable = val;
-	CheckLiqByStop();
 }
 
 double VtSystem::GetDailyHigh(int index, double* datetime, double* high, int backLen)

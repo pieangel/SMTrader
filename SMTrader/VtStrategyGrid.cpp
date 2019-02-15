@@ -273,7 +273,6 @@ void VtStrategyGrid::UpdateSystem(VtSystem* sys, bool enable)
 			SetCell(0, std::get<0>(item), &cell);
 		}
 		else {
-			sys->CheckLiqByStop();
 			sys->ShowRealtime(false);
 			GetCell(0, std::get<0>(item), &cell);
 			cell.SetNumber(0.0);

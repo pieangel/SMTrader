@@ -399,6 +399,7 @@ VtPositionType VtKp1a::UpdateSignal(int index)
 
 void VtKp1a::OnTimer()
 {
+	LOG_F(INFO, _T("VtKp1a::OnTimer()"));
 	if (!_Enable || !_Symbol)
 		return;
 	// 청산 시간에 따른 청산 - 조건없이 무조건 청산한다.

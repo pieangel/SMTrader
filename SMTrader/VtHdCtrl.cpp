@@ -1037,8 +1037,7 @@ void VtHdCtrl::OnOrderAcceptedHd(CString& strKey, LONG& nRealType)
 		order->intOrderPrice = _ttoi(strPrice);
 		order->amount = _ttoi(strAmount);
 		if (order->state == VtOrderState::Filled) {
-			LOG_F(INFO, _T("OnAccepted :: // 이 때는 주문의 상태가 체결인 경우는 펀드 주문이나 서브 계좌 주문인 경우 초기 과정부터 다시 진행 시켜 준다."));
-			return;
+			LOG_F(INFO, _T("OnAccepted :: // 주문역전 : 이 때는 주문의 상태가 체결인 경우는 펀드 주문이나 서브 계좌 주문인 경우 초기 과정부터 다시 진행 시켜 준다."));
 		}
 	}
 
