@@ -1258,7 +1258,7 @@ void VtHdCtrl::OnOrderFilledHd(CString& strKey, LONG& nRealType)
 	strOrdNo.TrimLeft('0');
 	strSeries.TrimRight();
 	strFillPrice.TrimRight();
-	strFillAmount.TrimRight();
+	strFillAmount.TrimLeft();
 	strFillTime.TrimRight();
 
 	CString strMsg;

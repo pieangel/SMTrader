@@ -563,11 +563,32 @@ void CMainFrame::OnShowWindow(BOOL bShow, UINT nStatus)
 			name = _T("savepwd");
 			value = configMgr->getString(section, name);
 			if (!saveMgr->IsAccountFileExist() || value.compare(_T("false")) == 0) {
-				VtGlobal* global = VtGlobal::GetInstance();
 				VtAccountPasswordDlg dlg;
 				dlg.FromServer(true);
 				int Ret = dlg.DoModal();
 			}
+
+			section = _T("RUN_INFO");
+			VtGlobal* global = VtGlobal::GetInstance();
+			name = _T("open_hour");
+			std::string hour = configMgr->getString(section, name);
+			name = _T("open_min");
+			std::string min = configMgr->getString(section, name);
+			name = _T("open_sec");
+			std::string sec = configMgr->getString(section, name);
+			global->OpenTime.hour = std::stoi(hour);
+			global->OpenTime.min = std::stoi(min);
+			global->OpenTime.sec = std::stoi(sec);
+
+			name = _T("close_hour");
+			hour = configMgr->getString(section, name);
+			name = _T("close_min");
+			min = configMgr->getString(section, name);
+			name = _T("close_sec");
+			sec = configMgr->getString(section, name);
+			global->CloseTime.hour = std::stoi(hour);
+			global->CloseTime.min = std::stoi(min);
+			global->CloseTime.sec = std::stoi(sec);
 
 			VtRealtimeRegisterManager* regMgr = VtRealtimeRegisterManager::GetInstance();
 			regMgr->RegisterCurrent();

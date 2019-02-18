@@ -24,6 +24,7 @@
 #include "../VtProductCategoryManager.h"
 #include "../VtUsdStrategyConfigDlg.h"
 #include "../VtSystemDef.h"
+#include "../VtTotalOrderManager.h"
 
 
 VtSystem::VtSystem()
@@ -1216,6 +1217,8 @@ bool VtSystem::LiqudAll()
 	if (!_Symbol)
 		return false;
 
+	VtTotalOrderManager* totalOrderMgr = VtTotalOrderManager::GetInstance();
+
 	if (_SysTargetType == TargetType::RealAccount || _SysTargetType == TargetType::SubAccount) { // 계좌 주문일 때
 		if (!_Account)
 			return false;
@@ -1231,12 +1234,6 @@ bool VtSystem::LiqudAll()
 		_ProfitLoss = 0.0;
 		_MaxProfit = 0.0;
 
-		posi->Position = VtPositionType::None;
-		posi->OpenQty = 0;
-		SetPositionState(posi);
-		_CurPosition = VtPositionType::None;
-		_LastEntryIndex = -1;
-		_LatestEntPrice = 0;
 		return true;
 	} else {
 		if (!_Fund)
@@ -1252,19 +1249,10 @@ bool VtSystem::LiqudAll()
 				PutOrder(posi, 0, true);
 			else // 지정가
 				PutOrder(posi, static_cast<int>(posi->AvgPrice), false);
-			posi->Position = VtPositionType::None;
-			posi->OpenQty = 0;
 		}
 
 		_ProfitLoss = 0.0;
 		_MaxProfit = 0.0;
-		_CurPosition = VtPositionType::None;
-		_LastEntryIndex = -1;
-		_LatestEntPrice = 0;
-		VtPosition posi;
-		posi.Position = VtPositionType::None;
-		posi.OpenQty = 0;
-		SetPositionState(&posi);
 		return true;
 	}
 }
@@ -1875,6 +1863,15 @@ void VtSystem::CheckLiqByStop()
 			}
 		}
 	}
+}
+
+bool VtSystem::CheckEntranceBar()
+{
+	VtTime time = VtGlobal::GetLocalTime();
+	if (time.hour == _EntranceStartTime.hour && time.min == 0)
+		return false;
+	else
+		return true;
 }
 
 void VtSystem::AddSystemArg(std::string groupName, VtSystemArg arg)

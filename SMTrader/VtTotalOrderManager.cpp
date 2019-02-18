@@ -59,6 +59,15 @@ void VtTotalOrderManager::AddPosition(int type, std::string acntNo, std::string 
 	_PositionMap[std::make_tuple(type, acntNo, symCode)] = posi;
 }
 
+void VtTotalOrderManager::RemovePosition(int type, std::string acntNo, std::string symCode)
+{
+	auto key = std::make_tuple(type, acntNo, symCode);
+	auto it = _PositionMap.find(key);
+	if (it != _PositionMap.end()) {
+		_PositionMap.erase(it);
+	}
+}
+
 std::vector<std::string> VtTotalOrderManager::GetUnsettledList()
 {
 	std::vector<std::string> msgList;

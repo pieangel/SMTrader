@@ -18,6 +18,7 @@ public:
 	void RemoveAcceptedOrder(int orderNo);
 	void AddFilledOrder(VtOrder* order);
 	void AddPosition(int type, std::string acntNo, std::string symCode, VtPosition* posi);
+	void RemovePosition(int type, std::string acntNo, std::string symCode);
 	std::vector<std::string> GetUnsettledList();
 	size_t GetUnsettledCount();
 private:

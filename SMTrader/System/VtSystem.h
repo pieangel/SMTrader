@@ -225,6 +225,12 @@ public:
 	void EnableBarIndex(bool val) { _EnableBarIndex = val; }
 	void InitArgsGroups();
 	void CheckLiqByStop();
+	/// <summary>
+	/// 시작봉이 이루어졌음을 확인한다.
+	/// 시작봉이 이루어졌으면 참을 아니면 거짓을 반환한다.
+	/// </summary>
+	/// <returns></returns>
+	bool CheckEntranceBar();
 protected:
 	int FindDateIndex(double date, std::vector<double>& dateArray);
 	void PutOrder(int price, VtPositionType position, VtPriceType priceType = VtPriceType::Price);

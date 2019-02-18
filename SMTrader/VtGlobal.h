@@ -89,6 +89,14 @@ public:
 	static int GetDate(VtDate date);
 	static int GetTime(VtTime time);
 	std::map<std::string, VtAccount*> AcntList;
+	/// <summary>
+	/// 영업 시작시간
+	/// </summary>
+	VtTime OpenTime;
+	/// <summary>
+	/// 영업 종료 시간
+	/// </summary>
+	VtTime CloseTime;
 private:
 
 	VtExchangeName _SeLExcIndex;

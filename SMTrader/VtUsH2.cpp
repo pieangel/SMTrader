@@ -379,6 +379,9 @@ void VtUsH2::OnTimer()
 {
 	if (!_Enable || !_Symbol)
 		return;
+	// 진입 시작시간 0분에 나오는 신호는 무시한다.
+	if (!CheckEntranceBar())
+		return;
 	// 청산 시간에 따른 청산 - 조건없이 무조건 청산한다.
 	if (_CurPosition != VtPositionType::None) {
 		if (LiqByEndTime()) {
