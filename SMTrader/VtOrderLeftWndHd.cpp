@@ -262,6 +262,17 @@ void VtOrderLeftWndHd::RefreshAsset()
 	_AssetGrid.InitGrid();
 }
 
+void VtOrderLeftWndHd::OnResizeWnd()
+{
+	CRect rcWnd;
+	if (GetSafeHwnd()) {
+		GetWindowRect(rcWnd);
+		CRect rcGrid;
+		_SymbolOptionGrid.GetWindowRect(rcGrid);
+		_SymbolOptionGrid.SetWindowPos(nullptr, 0, 0, rcGrid.Width(), rcWnd.Height() - (rcGrid.top - rcWnd.top), SWP_NOMOVE);
+	}
+}
+
 void VtOrderLeftWndHd::OnOrderEvent(VtOrder* order)
 {
 	if (!order || !_OrderConfigMgr)

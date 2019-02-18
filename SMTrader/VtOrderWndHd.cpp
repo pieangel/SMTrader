@@ -1132,6 +1132,7 @@ void VtOrderWndHd::OnSize(UINT nType, int cx, int cy)
 		_WindowHeight = rcWnd.Height();
 		RefreshLayout(false, true);
 	}
+	_LeftWnd.OnResizeWnd();
 }
 
 

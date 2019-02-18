@@ -71,6 +71,7 @@ public:
 	void OnReceiveAccountInfo();
 	void RefreshProfitLoss();
 	void RefreshAsset();
+	void OnResizeWnd();
 private:
 	int _EventSeq = 0;
 	void OnOrderEvent(VtOrder* order);
