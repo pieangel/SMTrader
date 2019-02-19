@@ -21,6 +21,10 @@ public:
 	void RemovePosition(int type, std::string acntNo, std::string symCode);
 	std::vector<std::string> GetUnsettledList();
 	size_t GetUnsettledCount();
+	std::map<int, VtOrder*>& GetOrderMap()
+	{
+		return _OrderMap;
+	}
 private:
 	// key : order no, value : order object
 	std::map<int, VtOrder*> _OrderMap;

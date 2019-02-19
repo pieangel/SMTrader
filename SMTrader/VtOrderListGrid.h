@@ -12,7 +12,7 @@ public:
 	virtual int  OnCanViewMove(int oldcol, long oldrow, int newcol, long newrow);
 	void SetColTitle();
 	int _ColCount = 12;
-	int _RowCount = 60;
+	int _RowCount = 400;
 	int _HeadHeight = 18;
 	CFont _defFont;
 	CFont _titleFont;
@@ -24,6 +24,7 @@ public:
 
 
 	void QuickRedrawCell(int col, long row);
+	void InitGrid();
 private:
 	std::vector<int> _GridColVec;
 

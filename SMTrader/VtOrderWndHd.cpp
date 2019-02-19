@@ -268,8 +268,10 @@ BOOL VtOrderWndHd::OnInitDialog()
 	_EnableOnSizeEvent = true;
 	_XPos = 0;
 	_YPos = 0;
+
+	_LeftWnd.OnResizeWnd();
+
 	return TRUE;  // return TRUE unless you set the focus to a control
-				  // EXCEPTION: OCX Property Pages should return FALSE
 }
 
 void VtOrderWndHd::SetWindows()

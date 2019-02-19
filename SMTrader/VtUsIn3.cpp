@@ -387,6 +387,7 @@ void VtUsIn3::OnTimer()
 	if (_CurPosition != VtPositionType::None) {
 		if (LiqByEndTime()) {
 			_CurPosition = VtPositionType::None;
+			_LastEntryDailyIndex = -1;
 			return;
 		}
 	}
@@ -396,6 +397,7 @@ void VtUsIn3::OnTimer()
 		if (CheckLiqForBuy() && LiqudAll()) {
 			LOG_F(INFO, _T("매수청산성공"));
 			_CurPosition = VtPositionType::None;
+			_LastEntryDailyIndex = -1;
 		}
 	}
 
@@ -404,6 +406,7 @@ void VtUsIn3::OnTimer()
 		if (CheckLiqForSell() && LiqudAll()) {
 			LOG_F(INFO, _T("매도청산성공"));
 			_CurPosition = VtPositionType::None;
+			_LastEntryDailyIndex = -1;
 		}
 	}
 
@@ -427,6 +430,7 @@ void VtUsIn3::OnTimer()
 			if (!CheckFilterMulti())
 				return;
 		}
+
 		int curTime = VtChartDataCollector::GetLocalTime();
 		if (CheckEntranceForBuy()) {
 			LOG_F(INFO, _T("매수진입성공"));
@@ -439,6 +443,7 @@ void VtUsIn3::OnTimer()
 			int curHourMin = VtChartDataCollector::GetHourMin(curTime, _Cycle);
 			// 가장 최근 신호가 발생한 시간을 저장해 둔다.
 			_LastEntryTime = curHourMin * 100;
+			_LastEntryDailyIndex = GetDailyIndex();
 			// 진입회수를 올려준다.
 			_EntryToday++;
 		}
@@ -455,6 +460,7 @@ void VtUsIn3::OnTimer()
 			int curHourMin = VtChartDataCollector::GetHourMin(curTime, _Cycle);
 			// 가장 최근 신호가 발생한 시간을 저장해 둔다.
 			_LastEntryTime = curHourMin * 100;
+			_LastEntryDailyIndex = GetDailyIndex();
 			// 진입회수를 올려준다.
 			_EntryToday++;
 		}

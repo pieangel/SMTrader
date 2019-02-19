@@ -112,8 +112,10 @@ void VtChartDataCollector::OnTimerEvent(VtChartData* chartData)
 	int lastIndex = ChartDataSize - 1;
 	std::vector<double>& timeData = chartData->GetDataArray(_T("time"));
 	int curTime = GetLocalTime();
+	int openTime = VtChartDataCollector::GetLocalTime(VtGlobal::OpenTime, chartData->Cycle());
+	int closeTime = VtChartDataCollector::GetLocalTime(VtGlobal::CloseTime, chartData->Cycle());
 	// 영업시간에 따른 통제
-	if (curTime < 90000)
+	if (curTime < openTime || curTime > closeTime)
 		return;
 	int oldTime = (int)timeData.back();
 	int curHourMin = VtChartDataCollector::GetHourMin(curTime, chartData->Cycle());
@@ -122,19 +124,25 @@ void VtChartDataCollector::OnTimerEvent(VtChartData* chartData)
 		return;
 	} 
 
-	if (curHourMin != oldHourMin) {
-		std::vector<double>& dateData = chartData->GetDataArray(_T("date"));
+	if (curHourMin > oldHourMin) {
+		std::vector<double>& timeData = chartData->GetDataArray(_T("time"));
 		std::vector<double>& openData = chartData->GetDataArray(_T("open"));
 		std::vector<double>& highData = chartData->GetDataArray(_T("high"));
 		std::vector<double>& lowData = chartData->GetDataArray(_T("low"));
 		std::vector<double>& closeData = chartData->GetDataArray(_T("close"));
+		std::vector<double>& dateData = chartData->GetDataArray(_T("date"));
+		std::vector<double>& datetimeData = chartData->GetDataArray(_T("datetime"));
+		std::vector<double>& volume = chartData->GetDataArray(_T("volume"));
 
 		VtChartData::ShiftLeft(dateData, 1);
+		VtChartData::ShiftLeft(datetimeData, 1);
+		VtChartData::ShiftLeft(volume, 1);
 		VtChartData::ShiftLeft(timeData, 1);
 		VtChartData::ShiftLeft(openData, 1);
 		VtChartData::ShiftLeft(highData, 1);
 		VtChartData::ShiftLeft(lowData, 1);
 		VtChartData::ShiftLeft(closeData, 1);
+		chartData->ShiftIdLeft(1);
 
 		dateData[lastIndex] = GetLocalDate();
 		timeData[lastIndex] = curHourMin * 100.0;
@@ -165,49 +173,79 @@ void VtChartDataCollector::SetChartData(VtChartData* chartData, int time, double
 	std::vector<double>& highData = chartData->GetDataArray(_T("high"));
 	std::vector<double>& lowData = chartData->GetDataArray(_T("low"));
 	std::vector<double>& closeData = chartData->GetDataArray(_T("close"));
+	std::vector<double>& dateData = chartData->GetDataArray(_T("date"));
+	std::vector<double>& datetimeData = chartData->GetDataArray(_T("datetime"));
+	std::vector<double>& volume = chartData->GetDataArray(_T("volume"));
 
 	int curTime = time;
 	int oldTime = (int)timeData[lastIndex];
 	int curHourMin = VtChartDataCollector::GetHourMin(curTime, chartData->Cycle());
 	int oldHourMin = VtChartDataCollector::GetHourMin(oldTime, chartData->Cycle());
+	int oldDate = (int)dateData[lastIndex];
+	int curDate = VtChartDataCollector::GetLocalDate();
 	//int temp = curHourMin * 100;
 
 	if (chartData->ChartType() == VtChartType::MIN) {
-		if (oldTime == 0) {
+		if (oldTime == 0) { // 이전 시간이 비어 있는 경우
 			// 최신데이터를 대입해 준다.
+			dateData[lastIndex] = curDate;
 			timeData[lastIndex] = curHourMin * 100.0;
 			openData[lastIndex] = value;
 			highData[lastIndex] = value;
 			lowData[lastIndex] = value;
 			closeData[lastIndex] = value;
 		}
-		else {
-			if (curHourMin != oldHourMin) { // 분시간이 바뀐 경우
-			// 모든 데이터를 한칸 왼쪽으로 밀어 준다.
+		else { // 이전 시간이 비어 있지 않은 경우
+			// 날짜가 다를 경우
+			if (oldDate != curDate) {
+				// 모든 데이터를 한칸 왼쪽으로 밀어 준다.
+				VtChartData::ShiftLeft(dateData, 1);
+				VtChartData::ShiftLeft(datetimeData, 1);
+				VtChartData::ShiftLeft(volume, 1);
 				VtChartData::ShiftLeft(timeData, 1);
 				VtChartData::ShiftLeft(openData, 1);
 				VtChartData::ShiftLeft(highData, 1);
 				VtChartData::ShiftLeft(lowData, 1);
 				VtChartData::ShiftLeft(closeData, 1);
+				chartData->ShiftIdLeft(1);
 
 				// 최신데이터를 대입해 준다.
+				dateData[lastIndex] = curDate;
 				timeData[lastIndex] = curHourMin * 100.0;
 				openData[lastIndex] = value;
 				highData[lastIndex] = value;
 				lowData[lastIndex] = value;
 				closeData[lastIndex] = value;
-				//LOG_F(INFO, _T("ChartData : symcode : %s, time = %d, o = %d, h = %d, l = %d, c = %d"), chartData->SymbolCode().c_str(), (int)timeData[lastIndex], (int)openData[lastIndex], (int)highData[lastIndex], (int)lowData[lastIndex], (int)closeData[lastIndex]);
-			}
-			else { // 시간이 바뀌지 않은 경우
-				// 고가가 바뀌었다면 갱신
-				if (value > highData[lastIndex])
+			} 
+			else {
+				if (curHourMin > oldHourMin) { // 분이 바뀐경우
+					VtChartData::ShiftLeft(dateData, 1);
+					VtChartData::ShiftLeft(datetimeData, 1);
+					VtChartData::ShiftLeft(volume, 1);
+					VtChartData::ShiftLeft(timeData, 1);
+					VtChartData::ShiftLeft(openData, 1);
+					VtChartData::ShiftLeft(highData, 1);
+					VtChartData::ShiftLeft(lowData, 1);
+					VtChartData::ShiftLeft(closeData, 1);
+					chartData->ShiftIdLeft(1);
+
+					// 최신데이터를 대입해 준다.
+					dateData[lastIndex] = curDate;
+					timeData[lastIndex] = curHourMin * 100.0;
+					openData[lastIndex] = value;
 					highData[lastIndex] = value;
-				// 저가가 바뀌었다면 갱신
-				if (value < lowData[lastIndex])
-					lowData[lastIndex] = (double)value;
-				// 현재가(종가) 갱신
-				closeData[lastIndex] = (double)value;
-				//LOG_F(INFO, _T("ChartData : symcode : %s, time = %d, o = %d, h = %d, l = %d, c = %d"), chartData->SymbolCode().c_str(), (int)timeData[lastIndex], (int)openData[lastIndex], (int)highData[lastIndex], (int)lowData[lastIndex], (int)closeData[lastIndex]);
+					lowData[lastIndex] = value;
+					closeData[lastIndex] = value;
+				}
+				else { // 분이 바뀌지 않은 경우
+					if (value > highData[lastIndex])
+						highData[lastIndex] = value;
+					// 저가가 바뀌었다면 갱신
+					if (value < lowData[lastIndex])
+						lowData[lastIndex] = (double)value;
+					// 현재가(종가) 갱신
+					closeData[lastIndex] = (double)value;
+				}
 			}
 		}
 	}
@@ -309,6 +347,15 @@ int VtChartDataCollector::GetLocalTime(int cycle)
 	int timeNo = timeinfo.tm_hour * 10000;
 	timeNo += (timeinfo.tm_min - (timeinfo.tm_min % cycle)) * 100;
 	timeNo += timeinfo.tm_sec;
+
+	return timeNo;
+}
+
+int VtChartDataCollector::GetLocalTime(VtTime givenTime, int cycle)
+{
+	int timeNo = givenTime.hour * 10000;
+	timeNo += (givenTime.min - (givenTime.min % cycle)) * 100;
+	timeNo += givenTime.sec;
 
 	return timeNo;
 }

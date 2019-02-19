@@ -2,6 +2,15 @@
 #include "VtOrderListGrid.h"
 #include "VtGlobal.h"
 #include <string>
+#include "VtTotalOrderManager.h"
+#include "VtOrder.h"
+#include "XFormatNumber.h"
+#include "VtGlobal.h"
+#include "Poco/NumberFormatter.h"
+#include "VtSymbolManager.h"
+#include "VtSymbol.h"
+
+using Poco::NumberFormatter;
 
 VtOrderListGrid::VtOrderListGrid()
 {
@@ -47,6 +56,8 @@ void VtOrderListGrid::OnSetup()
 	SetHS_Height(0);
 
 	EnableMenu(TRUE);
+
+	InitGrid();
 }
 
 int VtOrderListGrid::OnCanViewMove(int oldcol, long oldrow, int newcol, long newrow)
@@ -101,8 +112,8 @@ void VtOrderListGrid::SetColTitle()
 	for (auto it = cellPosVec.begin(); it != cellPosVec.end(); ++it) {
 		std::pair<int, int> pos = *it;
 		GetCell(std::get<0>(pos), std::get<1>(pos), &cell);
-		cell.SetBackColor(VtGlobal::GridTitleBackColor);
-		cell.SetTextColor(VtGlobal::GridTitleTextColor);
+		cell.SetBackColor(RGB(25, 25, 25));
+		cell.SetTextColor(RGB(255, 255, 255));
 		cell.SetAlignment(UG_ALIGNCENTER | UG_ALIGNVCENTER);
 		cell.SetFont(&_defFont);
 		SetCell(std::get<0>(pos), std::get<1>(pos), &cell);
@@ -120,4 +131,40 @@ void VtOrderListGrid::QuickRedrawCell(int col, long row)
 		TempDisableFocusRect();
 
 	m_CUGGrid->PaintDrawHintsNow(rect);
+}
+
+void VtOrderListGrid::InitGrid()
+{
+	VtSymbolManager* symMgr = VtSymbolManager::GetInstance();
+	VtTotalOrderManager* totalOrderMgr = VtTotalOrderManager::GetInstance();
+	std::map<int, VtOrder*>& orderMap = totalOrderMgr->GetOrderMap();
+	int i = 0;
+	for (auto it = orderMap.begin(); it != orderMap.end(); ++it) {
+		VtOrder* order = it->second;
+		QuickSetText(0, i, order->shortCode.c_str());
+		QuickRedrawCell(0, i);
+		if (order->orderType == VtOrderType::New) {
+			QuickSetText(1, i, _T("신규"));
+		}
+		else if (order->orderType == VtOrderType::Change) {
+			QuickSetText(1, i, _T("정정"));
+		}
+		else if (order->orderType == VtOrderType::Cancel) {
+			QuickSetText(1, i, _T("취소"));
+		}
+		QuickRedrawCell(1, i);
+
+		VtSymbol* sym = symMgr->FindSymbol(order->shortCode);
+		CUGCell cell;
+		GetCell(2, i, &cell);
+		std::string temp = NumberFormatter::format(order->orderPrice, sym->IntDecimal);
+		CString thVal = XFormatNumber(temp.c_str(), sym->IntDecimal);
+		cell.SetText(thVal);
+		SetCell(2, i, &cell);
+		QuickRedrawCell(2, i);
+
+		QuickSetNumber(3, i, order->amount);
+		QuickRedrawCell(3, i);
+		i++;
+	}
 }

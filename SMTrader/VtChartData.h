@@ -65,6 +65,7 @@ public:
 
 	void Reset();
 	void ShiftLeft(int count);
+	void ShiftIdLeft(int count);
 	static void ShiftLeft(std::vector<double>& src, int count);
 	int FindIndex(VtDate date, VtTime time);
 

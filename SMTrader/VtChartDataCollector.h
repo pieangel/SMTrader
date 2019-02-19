@@ -4,6 +4,7 @@
 #include "cpptime.h"
 #include <vector>
 #include <map>
+#include "Global/VtDefine.h"
 class VtChartData;
 class VtSymbol;
 class VtChartDataCollector : public TemplateSingleton<VtChartDataCollector>
@@ -20,6 +21,7 @@ public:
 	void OnTimer();
 	static int GetLocalDate();
 	static int GetLocalTime();
+	static int GetLocalTime(VtTime givenTime, int cycle);
 	static int GetLocalTime(int cycle);
 	static int GetHourMin(int curTime);
 	static int GetHourMin(int curTime, int cycle);

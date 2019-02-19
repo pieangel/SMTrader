@@ -576,9 +576,9 @@ void CMainFrame::OnShowWindow(BOOL bShow, UINT nStatus)
 			std::string min = configMgr->getString(section, name);
 			name = _T("open_sec");
 			std::string sec = configMgr->getString(section, name);
-			global->OpenTime.hour = std::stoi(hour);
-			global->OpenTime.min = std::stoi(min);
-			global->OpenTime.sec = std::stoi(sec);
+			VtGlobal::OpenTime.hour = std::stoi(hour);
+			VtGlobal::OpenTime.min = std::stoi(min);
+			VtGlobal::OpenTime.sec = std::stoi(sec);
 
 			name = _T("close_hour");
 			hour = configMgr->getString(section, name);
@@ -586,9 +586,9 @@ void CMainFrame::OnShowWindow(BOOL bShow, UINT nStatus)
 			min = configMgr->getString(section, name);
 			name = _T("close_sec");
 			sec = configMgr->getString(section, name);
-			global->CloseTime.hour = std::stoi(hour);
-			global->CloseTime.min = std::stoi(min);
-			global->CloseTime.sec = std::stoi(sec);
+			VtGlobal::CloseTime.hour = std::stoi(hour);
+			VtGlobal::CloseTime.min = std::stoi(min);
+			VtGlobal::CloseTime.sec = std::stoi(sec);
 
 			VtRealtimeRegisterManager* regMgr = VtRealtimeRegisterManager::GetInstance();
 			regMgr->RegisterCurrent();

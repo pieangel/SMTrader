@@ -67,6 +67,12 @@ void VtChartData::ShiftLeft(std::vector<double>& src, int count)
 	std::memmove(src.data(), src.data() + count, sizeof(src[0]) * (ChartDataSize - count));
 }
 
+void VtChartData::ShiftIdLeft(int count)
+{
+	if (count <= 0) return;
+	std::memmove(Id.data(), Id.data() + count, sizeof(Id[0]) * (ChartDataSize - count));
+}
+
 int VtChartData::FindIndex(VtDate date, VtTime time)
 {
 	for (int i = ChartDataSize - 1; i >= 0; --i)

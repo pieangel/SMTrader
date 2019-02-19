@@ -15,6 +15,8 @@ COLORREF VtGlobal::SelDialogBackColor = RGB(210, 224, 237);
 COLORREF VtGlobal::SelCellBackColor = RGB(252, 252, 190);
 COLORREF VtGlobal::MainBackColor = RGB(220, 220, 220);
 COLORREF VtGlobal::MainTextColor = RGB(0, 0, 0);
+VtTime VtGlobal::OpenTime;
+VtTime VtGlobal::CloseTime;
 
 std::pair<int, int> VtGlobal::GetScaleFact()
 {

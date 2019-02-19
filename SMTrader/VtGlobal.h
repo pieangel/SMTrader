@@ -92,11 +92,11 @@ public:
 	/// <summary>
 	/// 영업 시작시간
 	/// </summary>
-	VtTime OpenTime;
+	static VtTime OpenTime;
 	/// <summary>
 	/// 영업 종료 시간
 	/// </summary>
-	VtTime CloseTime;
+	static VtTime CloseTime;
 private:
 
 	VtExchangeName _SeLExcIndex;

@@ -199,8 +199,6 @@ public:
 	void ATR(int val) { _ATR = val; }
 	bool CheckAtrLiqForBuy();
 	bool CheckAtrLiqForSell();
-	bool CheckAtrLiq();
-	bool CheckAtrLiq(int index);
 	bool CheckAtrLiqForBuy(int index);
 	bool CheckAtrLiqForSell(int index);
 	int GetDailyIndex(int index);
@@ -452,7 +450,7 @@ protected:
 	/// <summary>
 	/// 마지막으로 진입한 데일리 인덱스
 	/// </summary>
-	int _LastEntryIndex = -1;
+	int _LastEntryDailyIndex = -1;
 	bool _EnableBarIndex = false;
 	bool _EnableFilterMulti = false;
 };

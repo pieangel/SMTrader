@@ -2804,18 +2804,8 @@ void VtOrderPanelGrid::ClearOldPosition(CellPosMap& refreshMap)
 
 void VtOrderPanelGrid::ClearOldCloseLine()
 {
-	/*
-	for (int i = 0; i < _ColCount; ++i)
-	{
-		QuickSetBorder(i, _OldCloseLineRow, UG_BDR_BTHIN);
-		QuickSetBorderColor(i, _OldCloseLineRow, &m_Pen);
-		QuickRedrawCell(i, _OldCloseLineRow);
-	}
-	*/
-
 	CUGCell cell;
-	for (auto it = _CloseLinePos.begin(); it != _CloseLinePos.end(); ++it)
-	{
+	for (auto it = _CloseLinePos.begin(); it != _CloseLinePos.end(); ++it) {
 		VtCellPos pos = *it;
 		GetCell(pos.Col, pos.Row, &cell);
 		cell.SetBorder(UG_BDR_BTHIN);
@@ -2828,8 +2818,7 @@ void VtOrderPanelGrid::ClearOldCloseLine()
 void VtOrderPanelGrid::ClearOldCloseLine(CellPosMap& refreshMap)
 {
 	CUGCell cell;
-	for (auto it = _CloseLinePos.begin(); it != _CloseLinePos.end(); ++it)
-	{
+	for (auto it = _CloseLinePos.begin(); it != _CloseLinePos.end(); ++it) {
 		VtCellPos pos = *it;
 		GetCell(pos.Col, pos.Row, &cell);
 		cell.SetBorder(UG_BDR_BTHIN);
@@ -2921,14 +2910,12 @@ void VtOrderPanelGrid::DrawMovingRect(int col, long row)
 
 void VtOrderPanelGrid::DrawSelectedRect(int col, long row)
 {
-	if (row >= _EndRowForValue || row < _StartRowForValue)
-	{
+	if (row >= _EndRowForValue || row < _StartRowForValue) {
 		_SelectedRow = -1;
 		_SelectedCol = -1;
 		return;
 	}
-	if (!(col == CenterCol - 3 || col == CenterCol + 3 || col == CenterCol - 4 || col == CenterCol + 4))
-	{
+	if (!(col == CenterCol - 3 || col == CenterCol + 3 || col == CenterCol - 4 || col == CenterCol + 4)) {
 		_SelectedRow = -1;
 		_SelectedCol = -1;
 		return;
