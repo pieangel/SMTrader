@@ -1473,7 +1473,7 @@ bool VtSystem::CheckAtrLiqForBuy(int index)
 
 		int dailyStartIndex = closeArray.size() - 1 - curDailyIndex;
 		int startIndex = dailyStartIndex + _LastEntryDailyIndex + 1;
-		int endIndex = closeArray.size() - 1;
+		int endIndex = index;
 		double maxClose = closeArray[startIndex];
 		for (int i = 0; i <= endIndex; ++i) {
 			if (closeArray[i] > maxClose) {
@@ -1555,7 +1555,7 @@ bool VtSystem::CheckAtrLiqForSell(int index)
 
 		int dailyStartIndex = closeArray.size() - 1 - curDailyIndex;
 		int startIndex = dailyStartIndex + _LastEntryDailyIndex + 1;
-		int endIndex = closeArray.size() - 1;
+		int endIndex = index;
 		double minClose = closeArray[startIndex];
 		for (int i = 0; i <= endIndex; ++i) {
 			if (closeArray[i] < minClose) {
@@ -1624,7 +1624,7 @@ int VtSystem::GetDailyIndex()
 		return -1;
 
 	int dateIndex = 0;
-	for (size_t i = dateArray.size() - 1; i >= 0; --i) {
+	for (size_t i = dateArray.size() - 1; i > 0; --i) {
 		double pre = dateArray[i - 1];
 		double cur = dateArray[i];
 		if (pre != cur)
