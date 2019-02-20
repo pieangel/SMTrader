@@ -261,6 +261,11 @@ void VtUsdStrategyConfigGrid::RefreshRealTimeValue(std::string argName, CString 
 	}
 }
 
+void VtUsdStrategyConfigGrid::ClearArgMap()
+{
+	_ArgMap.clear();
+}
+
 void VtUsdStrategyConfigGrid::ResizeWindow()
 {
 	CRect rcWnd, rcClient;

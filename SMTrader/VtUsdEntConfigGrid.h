@@ -55,6 +55,7 @@ public:
 	void SetHogaCountEntRatio(double uac, double ubc);
 	void SetHogaQtyEntRatio(double uas, double ubs);
 	void RefreshRealTimeValue(std::string argName, CString value);
+	void ClearArgMap();
 private:
 	std::map<std::string, std::pair<int, int>> _ArgMap;
 	bool _Showing = false;

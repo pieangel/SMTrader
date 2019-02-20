@@ -58,7 +58,7 @@ public:
 	CStatic _StaticAccount;
 	CStatic _StaticSymbol;
 	virtual BOOL OnInitDialog();
-
+	void ClearArgMap();
 private:
 	void InitComboMap();
 	std::map<int, std::pair<std::string, VtSystem*>> _SystemMap;

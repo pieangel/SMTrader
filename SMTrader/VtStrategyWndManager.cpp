@@ -157,6 +157,7 @@ void VtStrategyWndManager::RestoreDialog(std::string sysName, CRect rcWnd)
 	VtSystemManager* sysMgr = VtSystemManager::GetInstance();
 	VtSystem* sys = sysMgr->GetSystem(sysName);
 	if (sys) {
+		dlg->ClearArgMap();
 		dlg->SetSystem(sys);
 		AddSystemDialog(sysName, dlg);
 	}

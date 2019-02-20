@@ -52,6 +52,7 @@ public:
 
 	void SetArg(VtSystemArgGroup& argGrp);
 	void RefreshRealTimeValue(std::string argName, CString value);
+	void ClearArgMap();
 private:
 	std::map<std::string, std::pair<int, int>> _ArgMap;
 	std::vector<int> _ColWidthVec;

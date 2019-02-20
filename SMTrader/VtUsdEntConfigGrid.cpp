@@ -302,6 +302,11 @@ void VtUsdEntConfigGrid::RefreshRealTimeValue(std::string argName, CString value
 	}
 }
 
+void VtUsdEntConfigGrid::ClearArgMap()
+{
+	_ArgMap.clear();
+}
+
 void VtUsdEntConfigGrid::SetHogaQtyBuyEntRatio(CString value)
 {
 	CUGCell cell;
