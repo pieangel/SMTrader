@@ -48,6 +48,7 @@
 #include "VtDataCollectWnd.h"
 #include "VtChartDataCollector.h"
 #include "VtLogInDlg.h"
+#include "VtStrategyWndManager.h"
 
 extern TApplicationFont g_Font;
 
@@ -691,7 +692,6 @@ bool CMainFrame::ClearAllResources()
 		if (Ret == IDNO)
 			return false;
 	}
-
 	VtHdClient* client = VtHdClient::GetInstance();
 	// 먼저 클라이언트가 메시지를 받는 것을 막는다. 
 	client->SetBlock(true);
@@ -716,6 +716,10 @@ bool CMainFrame::ClearAllResources()
 
 	HdWindowManager* wndMgr = HdWindowManager::GetInstance();
 	wndMgr->DestroyAllWindow();
+
+	VtStrategyWndManager* stgWndMgr = VtStrategyWndManager::GetInstance();
+	stgWndMgr->DestroyAllWindow();
+	VtStrategyWndManager::DestroyInstance();
 
 	VtOrderDialogManager* orderDlgMgr = VtOrderDialogManager::GetInstance();
 	orderDlgMgr->ReleaseMainOrderWnd();

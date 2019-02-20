@@ -7,6 +7,7 @@
 #include "VtChartWindow.h"
 #include "resource.h"
 #include "VtStrategyToolWnd.h"
+#include "VtUsdStrategyConfigDlg.h"
 
 HdWindowManager::HdWindowManager()
 {
@@ -133,6 +134,13 @@ void HdWindowManager::RestoreDialog(HdWindowType type, CRect rcWnd)
 	case HdWindowType::StrategyToolWindow: {
 		VtStrategyToolWnd* dlg = new VtStrategyToolWnd((CWnd*)_MainFrm);
 		dlg->Create(IDD_STRATEGE_TOOLS, (CWnd*)_MainFrm);
+		dlg->MoveWindow(rcWnd);
+		dlg->ShowWindow(SW_SHOW);
+	}
+		break;
+	case HdWindowType::StrategySetWindow: {
+		VtUsdStrategyConfigDlg* dlg = new VtUsdStrategyConfigDlg((CWnd*)_MainFrm);
+		dlg->Create(IDD_SYSTEM_USD, (CWnd*)_MainFrm);
 		dlg->MoveWindow(rcWnd);
 		dlg->ShowWindow(SW_SHOW);
 	}

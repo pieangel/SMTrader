@@ -1354,6 +1354,7 @@
     <ClInclude Include="VtKo4b.h">
       <Filter>System\Option</Filter>
     </ClInclude>
+    <ClInclude Include="VtStrategyWndManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ChildFrm.cpp">
@@ -2445,6 +2446,7 @@
     <ClCompile Include="VtKo4b.cpp">
       <Filter>System\Option</Filter>
     </ClCompile>
+    <ClCompile Include="VtStrategyWndManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="SMTrader.rc">

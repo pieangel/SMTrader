@@ -19,6 +19,7 @@
 #include "File/resolver.h"
 #include <exception>
 #include "VtSystemGroupManager.h"
+#include "VtStrategyWndManager.h"
 
 
 using namespace std;
@@ -170,6 +171,9 @@ void VtSaveManager::SaveOrderWndList(std::string fileName, CMainFrame* mainFrm)
 		dlgMgr->MainFrm(mainFrm);
 		dlgMgr->Save(outfile);
 
+		VtStrategyWndManager* stgWndMgr = VtStrategyWndManager::GetInstance();
+		stgWndMgr->Save(outfile);
+
 		outfile.flush();
 		outfile.close();
 	} catch (std::exception& e) {
@@ -205,6 +209,9 @@ void VtSaveManager::LoadOrderWndList(std::string fileName, CMainFrame* mainFrm)
 	HdWindowManager* dlgMgr = HdWindowManager::GetInstance();
 	dlgMgr->MainFrm(mainFrm);
 	dlgMgr->Load(in);
+
+	VtStrategyWndManager* stgWndMgr = VtStrategyWndManager::GetInstance();
+	stgWndMgr->Load(in);
 
 	GetSymbolMasters();
 }

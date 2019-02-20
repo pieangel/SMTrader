@@ -125,7 +125,6 @@ int VtStrategyGrid::OnPushButton(long ID, int col, long row, long msg, long para
 				VtUsdStrategyConfigDlg* dlg = new VtUsdStrategyConfigDlg();
 				dlg->System(sys);
 				dlg->Create(IDD_SYSTEM_USD, this);
-				dlg->SelRow(row);
 				dlg->StGrid(this);
 				dlg->ShowWindow(SW_SHOW);
 				_DlgMap[dlg] = dlg;

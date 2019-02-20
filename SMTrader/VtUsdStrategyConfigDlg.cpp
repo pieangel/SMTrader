@@ -20,7 +20,10 @@
 #include "XFormatNumber.h"
 #include "System/VtSystemManager.h"
 #include "VtRealtimeRegisterManager.h"
-
+#include "HdWindowManager.h"
+#include "Poco/Delegate.h"
+#include "VtStrategyWndManager.h"
+using Poco::Delegate;
 using Poco::NumberFormatter;
 
 
@@ -41,6 +44,13 @@ VtUsdStrategyConfigDlg::VtUsdStrategyConfigDlg(CWnd* pParent /*=nullptr*/)
 
 VtUsdStrategyConfigDlg::~VtUsdStrategyConfigDlg()
 {
+	VtStrategyWndManager* wndMgr = VtStrategyWndManager::GetInstance();
+	_WindowEvent -= delegate(wndMgr, &VtStrategyWndManager::OnWindowEvent);
+}
+
+void VtUsdStrategyConfigDlg::System(VtSystem* val)
+{
+	_System = val;
 }
 
 void VtUsdStrategyConfigDlg::DoDataExchange(CDataExchange* pDX)
@@ -161,6 +171,16 @@ BOOL VtUsdStrategyConfigDlg::OnInitDialog()
 	sysMgr->AddSystemDialog(this);
 
 	SetTimer(ArgTimer, 100, NULL);
+
+	VtStrategyWndManager* wndMgr = VtStrategyWndManager::GetInstance();
+	_WindowEvent += delegate(wndMgr, &VtStrategyWndManager::OnWindowEvent);
+
+	HdWindowEventArgs arg;
+	arg.pWnd = this;
+	arg.wndType = HdWindowType::StrategySetWindow;
+	arg.eventType = HdWindowEventType::Created;
+	FireWindowEvent(std::move(arg));
+
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // EXCEPTION: OCX Property Pages should return FALSE
 }
@@ -427,7 +447,7 @@ void VtUsdStrategyConfigDlg::PostNcDestroy()
 		_StGrid->RemoveDlg(this);
 	}
 	// TODO: Add your specialized code here and/or call the base class
-	delete this;
+	//delete this;
 	CDialogEx::PostNcDestroy();
 }
 
@@ -635,6 +655,25 @@ void VtUsdStrategyConfigDlg::OnCbnSelchangeComboProfitTarget()
 }
 
 
+void VtUsdStrategyConfigDlg::SetSystem(VtSystem* sys)
+{
+	if (!sys)
+		return;
+	_System = sys;
+	_Type = (int)sys->SysTargetType();
+	_SelSymbol = sys->Symbol();
+	if (_Type == 0) {
+		_Account = sys->Account();
+	}
+	else if (_Type == 1) {
+		_Account = sys->Account();
+	}
+	else if (_Type == 2) {
+		_Fund = sys->Fund();
+	}
+	InitControls();
+}
+
 void VtUsdStrategyConfigDlg::OnBnClickedCheckTs()
 {
 	_CheckTs.GetCheck() == BST_CHECKED ? _EnableTrailStop = true : _EnableTrailStop = false;
@@ -689,6 +728,12 @@ void VtUsdStrategyConfigDlg::OnClose()
 	sysMgr->RemoveSystemDialog(this);
 
 	CDialogEx::OnClose();
+
+	HdWindowEventArgs arg;
+	arg.pWnd = this;
+	arg.wndType = HdWindowType::StrategySetWindow;
+	arg.eventType = HdWindowEventType::Closed;
+	FireWindowEvent(std::move(arg));
 }
 
 

@@ -24,7 +24,8 @@ enum class HdWindowType
 	FundDesigner,
 	FundMiniJangoWindow,
 	ChartWindow,
-	StrategyToolWindow
+	StrategyToolWindow,
+	StrategySetWindow
 };
 class HdWindowEventArgs : public EventArgs
 {

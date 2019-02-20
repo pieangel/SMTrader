@@ -609,6 +609,9 @@ void VtHdCtrl::OnNewOrderHd(CString& sTrCode, LONG& nRqID)
 	strMsg.Format("OnNewOrderHd 번호[%d][%s]처리[%s]계좌번호[%s]주문번호[%s]\n", nRqID, strExchTp, strProcTp, strAcctNo, strOrdNo);
 
 	strPrice = strPrice.TrimLeft('0');
+	CString strOriOrderPrice;
+	strOriOrderPrice = strPrice;
+
 	strPrice.Remove('.');
 	strAcctNo.TrimRight();
 	strOrdNo.TrimLeft('0');
@@ -641,6 +644,7 @@ void VtHdCtrl::OnNewOrderHd(CString& sTrCode, LONG& nRqID)
 	order->amount = _ttoi(strAmount);
 	order->SubAccountNo = strSubAcntNo;
 	order->FundName = strFundName;
+	order->orderPrice = _ttof(strOriOrderPrice);
 
 	if (strPosition.Compare(_T("1")) == 0)
 	{
@@ -718,6 +722,8 @@ void VtHdCtrl::OnModifyOrderHd(CString& sTrCode, LONG& nRqID)
 	//TRACE(strMsg);
 
 	strPrice = strPrice.TrimLeft('0');
+	CString strOriOrderPrice;
+	strOriOrderPrice = strPrice;
 	strPrice.Remove('.');
 	strAcctNo.TrimRight();
 	strOrdNo.TrimLeft('0');
@@ -745,6 +751,7 @@ void VtHdCtrl::OnModifyOrderHd(CString& sTrCode, LONG& nRqID)
 	order->intOrderPrice = _ttoi(strPrice);
 	order->amount = _ttoi(strAmount);
 	order->oriOrderNo = _ttoi(strOriOrdNo);
+	order->orderPrice = _ttof(strOriOrderPrice);
 
 	order->SubAccountNo = strSubAcntNo;
 	order->FundName = strFundName;
@@ -819,6 +826,9 @@ void VtHdCtrl::OnCancelOrderHd(CString& sTrCode, LONG& nRqID)
 	//TRACE(strMsg);
 
 	strPrice = strPrice.TrimLeft('0');
+	CString strOriOrderPrice;
+	strOriOrderPrice = strPrice;
+
 	strPrice.Remove('.');
 	strAcctNo.TrimRight();
 	strOrdNo.TrimLeft('0');
@@ -845,6 +855,7 @@ void VtHdCtrl::OnCancelOrderHd(CString& sTrCode, LONG& nRqID)
 	order->intOrderPrice = _ttoi(strPrice);
 	order->amount = _ttoi(strAmount);
 	order->oriOrderNo = _ttoi(strOriOrdNo);
+	order->orderPrice = _ttoi(strOriOrderPrice);
 
 	order->SubAccountNo = strSubAcntNo;
 	order->FundName = strFundName;
@@ -980,6 +991,7 @@ void VtHdCtrl::OnOrderAcceptedHd(CString& strKey, LONG& nRealType)
 	CString strMan = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "조작구분");
 	CString strOriOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "원주문번호");
 	CString strFirstOrderNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "최초원주문번호");
+	CString strTraderTime = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "접수시간");
 
 	CString strMsg;
 	strMsg.Format("OnOrderAcceptedHd 계좌번호[%s]주문번호[%s]\n", strAcctNo, strOrdNo);
@@ -992,6 +1004,9 @@ void VtHdCtrl::OnOrderAcceptedHd(CString& strKey, LONG& nRealType)
 	strSeries.TrimRight();
 
 	strPrice = strPrice.TrimLeft('0');
+	CString strOriOrderPrice;
+	strOriOrderPrice = strPrice;
+
 	strPrice.Remove('.');
 
 	strPrice.TrimRight();
@@ -1016,8 +1031,7 @@ void VtHdCtrl::OnOrderAcceptedHd(CString& strKey, LONG& nRealType)
 		order->intOrderPrice = _ttoi(strPrice);
 		order->amount = _ttoi(strAmount);
 
-		//order->SubAccountNo = strSubAcntNo;
-		//order->FundName = strFundName;
+		order->orderPrice = _ttof(strOriOrderPrice);
 
 		if (strPosition.Compare(_T("1")) == 0) {
 			order->orderPosition = VtPositionType::Buy;
@@ -1032,10 +1046,13 @@ void VtHdCtrl::OnOrderAcceptedHd(CString& strKey, LONG& nRealType)
 		else if (strPosition.Compare(_T("2")) == 0) {
 			order->priceType = VtPriceType::Market;
 		}
+		order->tradeTime = (LPCTSTR)strTraderTime;
 	}
 	else {
 		order->intOrderPrice = _ttoi(strPrice);
 		order->amount = _ttoi(strAmount);
+		order->orderPrice = _ttof(strOriOrderPrice);
+		order->tradeTime = (LPCTSTR)strTraderTime;
 		if (order->state == VtOrderState::Filled) {
 			LOG_F(INFO, _T("OnAccepted :: // 주문역전 : 이 때는 주문의 상태가 체결인 경우는 펀드 주문이나 서브 계좌 주문인 경우 초기 과정부터 다시 진행 시켜 준다."));
 		}
@@ -1119,6 +1136,8 @@ void VtHdCtrl::OnOrderUnfilledHd(CString& strKey, LONG& nRealType)
 
 
 	strPrice = strPrice.TrimRight();
+	CString strOriOrderPrice;
+	strOriOrderPrice = strPrice;
 	strPrice.Remove('.');
 	strAcctNo.TrimRight();
 	strOrdNo.TrimLeft('0');
@@ -1163,6 +1182,7 @@ void VtHdCtrl::OnOrderUnfilledHd(CString& strKey, LONG& nRealType)
 	order->orderNo = _ttoi(strOrdNo);
 	order->intOrderPrice = _ttoi(strPrice);
 	order->amount = _ttoi(strAmount);
+	order->orderPrice = _ttof(strOriOrderPrice);
 
 	//order->SubAccountNo = strSubAcntNo;
 	//order->FundName = strFundName;

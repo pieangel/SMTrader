@@ -9,6 +9,11 @@
 #include "VtUsdEntConfigGrid.h"
 #include "afxwin.h"
 #include "GradientStatic.h"
+#include "HdWindowEvent.h"
+#include "Poco/BasicEvent.h"
+
+using Poco::BasicEvent;
+
 // VtUsdStrategyConfigDlg dialog
 class VtSystem;
 class VtSymbol;
@@ -30,9 +35,7 @@ public:
 #endif
 
 	VtSystem* System() const { return _System; }
-	void System(VtSystem* val) { _System = val; }
-	int SelRow() const { return _SelRow; }
-	void SelRow(int val) { _SelRow = val; }
+	void System(VtSystem* val);
 	VtStrategyGrid* StGrid() const { return _StGrid; }
 	void StGrid(VtStrategyGrid* val) { _StGrid = val; }
 protected:
@@ -72,10 +75,20 @@ private:
 	bool _EnableLossCut;
 	bool _EnableTargetCut;
 	bool _LiqByStop;
-	int _SelRow = -1;
 	bool _ShowingGrid = false;
 	VtStrategyGrid* _StGrid = nullptr;
 	int _WndHeight = 0;
+	BasicEvent<HdWindowEventArgs> _WindowEvent;
+	void FireWindowEvent(HdWindowEventArgs&& arg)
+	{
+		_WindowEvent(this, arg);
+	}
+	VtSymbol* _SelSymbol;
+	VtFund* _Fund = nullptr;
+	VtAccount* _Account = nullptr;
+	int _Type = 0;
+	ValueType _LossCutType = ValueType::Tick;
+	ValueType _TargetProfitType = ValueType::Tick;
 public:
 	afx_msg void OnBnClickedBtnAccount();
 	afx_msg void OnBnClickedBtnSymbol();
@@ -90,15 +103,8 @@ public:
 	afx_msg void OnBnClickedBtnApply();
 	afx_msg void OnCbnSelchangeComboLosscutType();
 	afx_msg void OnCbnSelchangeComboProfitTarget();
-
+	void SetSystem(VtSystem* sys);
 public:
-	std::tuple<int, VtAccount*, VtFund* > TargetInfo;
-	VtSymbol* _SelSymbol;
-	VtFund* _Fund = nullptr;
-	VtAccount* _Account = nullptr;
-	int _Type = 0;
-	ValueType _LossCutType = ValueType::Tick;
-	ValueType _TargetProfitType = ValueType::Tick;
 	afx_msg void OnBnClickedCheckTs();
 	afx_msg void OnBnClickedCheckLosscut();
 	afx_msg void OnBnClickedCheckProfitTarget();

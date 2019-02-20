@@ -546,6 +546,7 @@
     <ClInclude Include="VtStopOrderManager.h" />
     <ClInclude Include="VtStrategyGrid.h" />
     <ClInclude Include="VtStrategyToolWnd.h" />
+    <ClInclude Include="VtStrategyWndManager.h" />
     <ClInclude Include="VtStringUtil.h" />
     <ClInclude Include="VtSubAccountManager.h" />
     <ClInclude Include="VtSubAcntGrid.h" />
@@ -932,6 +933,7 @@
     <ClCompile Include="VtStopOrderManager.cpp" />
     <ClCompile Include="VtStrategyGrid.cpp" />
     <ClCompile Include="VtStrategyToolWnd.cpp" />
+    <ClCompile Include="VtStrategyWndManager.cpp" />
     <ClCompile Include="VtStringUtil.cpp" />
     <ClCompile Include="VtSubAccountManager.cpp" />
     <ClCompile Include="VtSubAcntGrid.cpp" />

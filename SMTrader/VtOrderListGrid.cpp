@@ -138,11 +138,14 @@ void VtOrderListGrid::InitGrid()
 	VtSymbolManager* symMgr = VtSymbolManager::GetInstance();
 	VtTotalOrderManager* totalOrderMgr = VtTotalOrderManager::GetInstance();
 	std::map<int, VtOrder*>& orderMap = totalOrderMgr->GetOrderMap();
-	int i = 0;
-	for (auto it = orderMap.begin(); it != orderMap.end(); ++it) {
+	int i = 2;
+	// 주문을 역순으로 표시
+	for (auto it = orderMap.rbegin(); it != orderMap.rend(); ++it) {
 		VtOrder* order = it->second;
+		// 종목코드
 		QuickSetText(0, i, order->shortCode.c_str());
 		QuickRedrawCell(0, i);
+		// 주문종류
 		if (order->orderType == VtOrderType::New) {
 			QuickSetText(1, i, _T("신규"));
 		}
@@ -154,6 +157,7 @@ void VtOrderListGrid::InitGrid()
 		}
 		QuickRedrawCell(1, i);
 
+		// 주문가격
 		VtSymbol* sym = symMgr->FindSymbol(order->shortCode);
 		CUGCell cell;
 		GetCell(2, i, &cell);
@@ -163,8 +167,54 @@ void VtOrderListGrid::InitGrid()
 		SetCell(2, i, &cell);
 		QuickRedrawCell(2, i);
 
+		// 주문 수량
 		QuickSetNumber(3, i, order->amount);
 		QuickRedrawCell(3, i);
+		// 주문 미체결
+		QuickSetNumber(4, i, order->unacceptedQty);
+		QuickRedrawCell(4, i);
+		// 체결 수량
+		QuickSetNumber(5, i, order->filledQty);
+		QuickRedrawCell(5, i);
+		// 체결 가격
+		cell;
+		GetCell(6, i, &cell);
+		temp = NumberFormatter::format(order->filledPrice, sym->IntDecimal);
+		thVal = XFormatNumber(temp.c_str(), sym->IntDecimal);
+		cell.SetText(thVal);
+		SetCell(6, i, &cell);
+		QuickRedrawCell(6, i);
+		// 주문 상태
+		if (order->state == VtOrderState::Accepted)
+			QuickSetText(7, i, _T("접수"));
+		else if (order->state == VtOrderState::Filled)
+			QuickSetText(7, i, _T("체결"));
+		else if (order->state == VtOrderState::ConfirmModify)
+			QuickSetText(7, i, _T("정정확인"));
+		else if (order->state == VtOrderState::ConfirmCancel)
+			QuickSetText(7, i, _T("취소확인"));
+		else if (order->state == VtOrderState::Ledger)
+			QuickSetText(7, i, _T("원장접수"));
+		else if (order->state == VtOrderState::Preordered)
+			QuickSetText(7, i, _T("예약접수"));
+		else if (order->state == VtOrderState::Settled)
+			QuickSetText(7, i, _T("청산"));
+		QuickRedrawCell(7, i);
+		// 접수시간
+		QuickSetText(8, i, order->tradeTime.c_str());
+		QuickRedrawCell(8, i);
+		// 주문번호
+		QuickSetNumber(9, i, order->orderNo);
+		QuickRedrawCell(9, i);
+		// 원주문번호
+		QuickSetNumber(10, i, order->oriOrderNo);
+		QuickRedrawCell(10, i);
+		// 주문타입
+		if (order->priceType == VtPriceType::Price)
+			QuickSetText(11, i, _T("지정가"));
+		else 
+			QuickSetText(11, i, _T("시장가"));
+		QuickRedrawCell(11, i);
 		i++;
 	}
 }
