@@ -5,7 +5,7 @@
 
 using Poco::BasicEvent;
 // VtStrategyToolWnd dialog
-
+class VtSystem;
 class VtStrategyToolWnd : public CDialogEx
 {
 	DECLARE_DYNAMIC(VtStrategyToolWnd)
@@ -32,6 +32,7 @@ private:
 		_WindowEvent(this, arg);
 	}
 public:
+	void UpdateSystem(VtSystem* sys, bool enable);
 	virtual BOOL OnInitDialog();
 	afx_msg void OnClose();
 };

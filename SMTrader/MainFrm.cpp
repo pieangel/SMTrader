@@ -872,9 +872,13 @@ void CMainFrame::OnShowMultiAccountBalance()
 
 void CMainFrame::OnStrategyToolbar()
 {
+	if (VtGlobal::StrategyToolWnd)
+		return;
+
 	VtStrategyToolWnd* dlg = new VtStrategyToolWnd(this);
 	dlg->Create(IDD_STRATEGE_TOOLS, this);
 	dlg->ShowWindow(SW_SHOW);
+	VtGlobal::StrategyToolWnd = dlg;
 }
 
 

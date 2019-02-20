@@ -7,6 +7,7 @@
 #include "resource.h"
 #include "HdWindowManager.h"
 #include "Poco/Delegate.h"
+#include "VtGlobal.h"
 using Poco::Delegate;
 
 // VtStrategyToolWnd dialog
@@ -39,6 +40,13 @@ END_MESSAGE_MAP()
 // VtStrategyToolWnd message handlers
 
 
+void VtStrategyToolWnd::UpdateSystem(VtSystem* sys, bool enable)
+{
+	if (!sys)
+		return;
+	_GridCtrl.UpdateSystem(sys, enable);
+}
+
 BOOL VtStrategyToolWnd::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
@@ -58,6 +66,8 @@ BOOL VtStrategyToolWnd::OnInitDialog()
 	arg.eventType = HdWindowEventType::Created;
 	FireWindowEvent(std::move(arg));
 
+	VtGlobal::StrategyToolWnd = this;
+
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // EXCEPTION: OCX Property Pages should return FALSE
 }
@@ -74,4 +84,5 @@ void VtStrategyToolWnd::OnClose()
 	arg.wndType = HdWindowType::StrategyToolWindow;
 	arg.eventType = HdWindowEventType::Closed;
 	FireWindowEvent(std::move(arg));
+	VtGlobal::StrategyToolWnd = nullptr;
 }

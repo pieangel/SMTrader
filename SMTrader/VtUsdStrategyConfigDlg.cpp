@@ -23,6 +23,8 @@
 #include "HdWindowManager.h"
 #include "Poco/Delegate.h"
 #include "VtStrategyWndManager.h"
+#include "VtGlobal.h"
+#include "VtStrategyToolWnd.h"
 using Poco::Delegate;
 using Poco::NumberFormatter;
 
@@ -181,6 +183,10 @@ BOOL VtUsdStrategyConfigDlg::OnInitDialog()
 	arg.eventType = HdWindowEventType::Created;
 	FireWindowEvent(std::move(arg));
 
+	if (_System) {
+		VtStrategyWndManager* stgWndMgr = VtStrategyWndManager::GetInstance();
+		stgWndMgr->AddSystemDialog(_System->Name(), this);
+	}
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // EXCEPTION: OCX Property Pages should return FALSE
 }
@@ -739,9 +745,14 @@ void VtUsdStrategyConfigDlg::OnClose()
 
 void VtUsdStrategyConfigDlg::OnBnClickedCheckRun()
 {
-	if (_StGrid) {
-		_StGrid->UpdateSystem(_System, _CheckRun.GetCheck() == BST_CHECKED ? true : false);
+// 	if (_StGrid) {
+// 		_StGrid->UpdateSystem(_System, _CheckRun.GetCheck() == BST_CHECKED ? true : false);
+// 	}
+	if (VtGlobal::StrategyToolWnd) {
+		VtGlobal::StrategyToolWnd->UpdateSystem(_System, _CheckRun.GetCheck() == BST_CHECKED ? true : false);
 	}
+	VtStrategyWndManager* stgWndMgr = VtStrategyWndManager::GetInstance();
+	stgWndMgr->UpdateDialog(_System);
 }
 
 void VtUsdStrategyConfigDlg::OnRealTimeEvent()

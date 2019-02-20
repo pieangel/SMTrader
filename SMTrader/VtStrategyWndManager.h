@@ -2,11 +2,13 @@
 #include "Global/TemplateSingleton.h"
 #include "HdWindowEvent.h"
 #include <map>
+#include <string>
 #include "SimpleBinStream.h"
 using same_endian_type = std::is_same<simple::LittleEndian, simple::LittleEndian>;
 class VtUsdStrategyConfigDlg;
 typedef std::map<VtUsdStrategyConfigDlg*, std::pair<HdWindowType, VtUsdStrategyConfigDlg*>> StrategyWindowMap;
 class CMainFrame;
+class VtSystem;
 class VtStrategyWndManager : public TemplateSingleton<VtStrategyWndManager>
 {
 public:
@@ -22,7 +24,11 @@ public:
 	void Load(simple::file_istream<same_endian_type>& ss);
 	CMainFrame* MainFrm() const { return _MainFrm; }
 	void MainFrm(CMainFrame* val) { _MainFrm = val; }
+	void AddSystemDialog(std::string sysName, VtUsdStrategyConfigDlg* dlg);
+	void RemoveSystemDialog(std::string sysName, VtUsdStrategyConfigDlg* dlg);
+	void UpdateDialog(VtSystem* sys);
 private:
+	std::map<std::string, std::map<VtUsdStrategyConfigDlg*, VtUsdStrategyConfigDlg*>> _SystemToSetDialogMap;
 	StrategyWindowMap _WindowMap;
 	void AddWindow(HdWindowType wndType, VtUsdStrategyConfigDlg* wnd);
 	void RemoveWindow(VtUsdStrategyConfigDlg* wnd);

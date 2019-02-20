@@ -9,6 +9,7 @@
 #include "VtStrategyToolWnd.h"
 #include "VtSystemProperty.h"
 #include "VtUsdStrategyConfigDlg.h"
+#include "VtStrategyWndManager.h"
 
 VtStrategyGrid::VtStrategyGrid()
 {
@@ -286,7 +287,9 @@ void VtStrategyGrid::UpdateDialog(VtSystem* sys)
 {
 	if (!sys)
 		return;
-	for (auto it = _DlgMap.begin(); it != _DlgMap.end(); ++it) {
-		it->second->UpdateRunCheck(sys);
-	}
+// 	for (auto it = _DlgMap.begin(); it != _DlgMap.end(); ++it) {
+// 		it->second->UpdateRunCheck(sys);
+// 	}
+	VtStrategyWndManager* stgWndMgr = VtStrategyWndManager::GetInstance();
+	stgWndMgr->UpdateDialog(sys);
 }

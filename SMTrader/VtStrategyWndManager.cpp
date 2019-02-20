@@ -85,6 +85,46 @@ void VtStrategyWndManager::Load(simple::file_istream<same_endian_type>& ss)
 	}
 }
 
+void VtStrategyWndManager::AddSystemDialog(std::string sysName, VtUsdStrategyConfigDlg* dlg)
+{
+	auto it = _SystemToSetDialogMap.find(sysName);
+	if (it != _SystemToSetDialogMap.end()) {
+		std::map<VtUsdStrategyConfigDlg*, VtUsdStrategyConfigDlg*>& dlgMap = it->second;
+		dlgMap[dlg] = dlg;
+	} 
+	else {
+		std::map<VtUsdStrategyConfigDlg*, VtUsdStrategyConfigDlg*> dlgMap;
+		dlgMap[dlg] = dlg;
+		_SystemToSetDialogMap[sysName] = dlgMap;
+	}
+}
+
+void VtStrategyWndManager::RemoveSystemDialog(std::string sysName, VtUsdStrategyConfigDlg* dlg)
+{
+	auto it = _SystemToSetDialogMap.find(sysName);
+	if (it != _SystemToSetDialogMap.end()) {
+		std::map<VtUsdStrategyConfigDlg*, VtUsdStrategyConfigDlg*>& dlgMap = it->second;
+		auto itd = dlgMap.find(dlg);
+		if (itd != dlgMap.end()) {
+			dlgMap.erase(itd);
+		}
+	}
+}
+
+void VtStrategyWndManager::UpdateDialog(VtSystem* sys)
+{
+	if (!sys)
+		return;
+	auto it = _SystemToSetDialogMap.find(sys->Name());
+	if (it != _SystemToSetDialogMap.end()) {
+		std::map<VtUsdStrategyConfigDlg*, VtUsdStrategyConfigDlg*>& dlgMap = it->second;
+		for (auto itd = dlgMap.begin(); itd != dlgMap.end(); ++itd) {
+			VtUsdStrategyConfigDlg* dlg = itd->second;
+			dlg->UpdateRunCheck(sys);
+		}
+	}
+}
+
 void VtStrategyWndManager::AddWindow(HdWindowType wndType, VtUsdStrategyConfigDlg* wnd)
 {
 	if (!wnd)
@@ -96,6 +136,9 @@ void VtStrategyWndManager::RemoveWindow(VtUsdStrategyConfigDlg* wnd)
 {
 	auto it = _WindowMap.find(wnd);
 	if (it != _WindowMap.end()) {
+		if (wnd->System()) {
+			RemoveSystemDialog(wnd->System()->Name(), wnd);
+		}
 		_WindowMap.erase(it);
 	}
 }
@@ -113,7 +156,9 @@ void VtStrategyWndManager::RestoreDialog(std::string sysName, CRect rcWnd)
 
 	VtSystemManager* sysMgr = VtSystemManager::GetInstance();
 	VtSystem* sys = sysMgr->GetSystem(sysName);
-	if (sys)
+	if (sys) {
 		dlg->SetSystem(sys);
+		AddSystemDialog(sysName, dlg);
+	}
 	dlg->ShowWindow(SW_SHOW);
 }

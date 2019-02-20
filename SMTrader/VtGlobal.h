@@ -11,6 +11,7 @@ class VtSymbolSelector;
 class VtSymbol;
 class cWaitDialog;
 class VtAccount;
+class VtStrategyToolWnd;
 class VtGlobal : public TemplateSingleton<VtGlobal>
 {
 public:
@@ -97,6 +98,7 @@ public:
 	/// 영업 종료 시간
 	/// </summary>
 	static VtTime CloseTime;
+	static VtStrategyToolWnd* StrategyToolWnd;
 private:
 
 	VtExchangeName _SeLExcIndex;

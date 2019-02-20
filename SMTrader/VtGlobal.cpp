@@ -17,6 +17,7 @@ COLORREF VtGlobal::MainBackColor = RGB(220, 220, 220);
 COLORREF VtGlobal::MainTextColor = RGB(0, 0, 0);
 VtTime VtGlobal::OpenTime;
 VtTime VtGlobal::CloseTime;
+VtStrategyToolWnd* VtGlobal::StrategyToolWnd = nullptr;
 
 std::pair<int, int> VtGlobal::GetScaleFact()
 {
