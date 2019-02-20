@@ -459,7 +459,7 @@ bool VtSystem::CheckByArg(ArgNameType argName, VtSymbol* sym, double param)
 		break;
 	case ArgNameType::UacGtUbc:
 		LOG_F(INFO, _T("Uac>Ubc : param = %.2f, first = %.2f > last = %d"), param, sym->Hoga.TotSellNo*param, sym->Hoga.TotBuyNo);
-		if (sym->Hoga.TotBuyNo > sym->Hoga.TotSellNo) {
+		if (sym->Hoga.TotSellNo*param > sym->Hoga.TotBuyNo) {
 			return true;
 		}
 		else {
@@ -670,7 +670,7 @@ bool VtSystem::CheckByArg(ArgNameType argName, VtSymbol* sym, double param, int 
 		if (buyVec.size() == 0 || index <= buyVec.size())
 			return false;
 
-		if (buyVec[index]*param > sellVec[index]) {
+		if (sellVec[index]*param > buyVec[index]) {
 			return true;
 		}
 		else {
@@ -787,7 +787,7 @@ bool VtSystem::CheckByArg(ArgNameType argName, VtSymbol* sym, double param, int 
 	}
 		break;
 	case ArgNameType::QbsGtQas: {
-		std::string code = sym->ShortCode + (_T("SHTC"));
+		std::string code = sym->ShortCode + (_T("SHTQ"));
 		std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
 		VtChartData* chartData = _RefDataMap[dataKey];
 		if (!chartData)
@@ -796,7 +796,7 @@ bool VtSystem::CheckByArg(ArgNameType argName, VtSymbol* sym, double param, int 
 		if (sellVec.size() == 0 || index <= sellVec.size())
 			return false;
 
-		code = sym->ShortCode + (_T("BHTC"));
+		code = sym->ShortCode + (_T("BHTQ"));
 		dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
 		chartData = _RefDataMap[dataKey];
 		if (!chartData)
@@ -814,7 +814,7 @@ bool VtSystem::CheckByArg(ArgNameType argName, VtSymbol* sym, double param, int 
 	}
 		break;
 	case ArgNameType::QasGtQbs: {
-		std::string code = sym->ShortCode + (_T("SHTC"));
+		std::string code = sym->ShortCode + (_T("SHTQ"));
 		std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
 		VtChartData* chartData = _RefDataMap[dataKey];
 		if (!chartData)
@@ -823,7 +823,7 @@ bool VtSystem::CheckByArg(ArgNameType argName, VtSymbol* sym, double param, int 
 		if (sellVec.size() == 0 || index <= sellVec.size())
 			return false;
 
-		code = sym->ShortCode + (_T("BHTC"));
+		code = sym->ShortCode + (_T("BHTQ"));
 		dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
 		chartData = _RefDataMap[dataKey];
 		if (!chartData)
@@ -841,7 +841,7 @@ bool VtSystem::CheckByArg(ArgNameType argName, VtSymbol* sym, double param, int 
 	}
 		break;
 	case ArgNameType::UbsGtUas: {
-		std::string code = sym->ShortCode + (_T("SHTC"));
+		std::string code = sym->ShortCode + (_T("SHTQ"));
 		std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
 		VtChartData* chartData = _RefDataMap[dataKey];
 		if (!chartData)
@@ -850,7 +850,7 @@ bool VtSystem::CheckByArg(ArgNameType argName, VtSymbol* sym, double param, int 
 		if (sellVec.size() == 0 || index <= sellVec.size())
 			return false;
 
-		code = sym->ShortCode + (_T("BHTC"));
+		code = sym->ShortCode + (_T("BHTQ"));
 		dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
 		chartData = _RefDataMap[dataKey];
 		if (!chartData)
@@ -868,7 +868,7 @@ bool VtSystem::CheckByArg(ArgNameType argName, VtSymbol* sym, double param, int 
 	}
 		break;
 	case ArgNameType::UasGtUbs: {
-		std::string code = sym->ShortCode + (_T("SHTC"));
+		std::string code = sym->ShortCode + (_T("SHTQ"));
 		std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
 		VtChartData* chartData = _RefDataMap[dataKey];
 		if (!chartData)
@@ -877,7 +877,7 @@ bool VtSystem::CheckByArg(ArgNameType argName, VtSymbol* sym, double param, int 
 		if (sellVec.size() == 0 || index <= sellVec.size())
 			return false;
 
-		code = sym->ShortCode + (_T("BHTC"));
+		code = sym->ShortCode + (_T("BHTQ"));
 		dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
 		chartData = _RefDataMap[dataKey];
 		if (!chartData)
@@ -1025,7 +1025,7 @@ bool VtSystem::CheckCondition(std::string argGrpName, int index)
 
 bool VtSystem::CheckEntranceForBuy()
 {
-	return true;
+	return false;
 }
 
 bool VtSystem::CheckEntranceForBuy(size_t index)
@@ -1629,9 +1629,7 @@ int VtSystem::GetDailyIndex()
 	if (!chartData)
 		return -1;
 	std::vector<double>& dateArray = chartData->GetDataArray(_T("date"));
-	if (dateArray.size() == 0)
-		return -1;
-	if (dateArray.size() == 1)
+	if (dateArray.size() == 0 || dateArray.size() == 1)
 		return -1;
 	int localDate = VtChartDataCollector::GetLocalDate();
 	if (dateArray[dateArray.size() - 1] < localDate)
@@ -1661,9 +1659,9 @@ void VtSystem::SetPositionState(VtPosition* posi)
 		return;
 	CString str;
 	if (posi->OpenQty < 0)
-		str.Format(_T("매도:%d"), std::abs(posi->OpenQty));
+		str.Format(_T("매도:%4d"), std::abs(posi->OpenQty));
 	else if (posi->OpenQty > 0)
-		str.Format(_T("매수:%d"), std::abs(posi->OpenQty));
+		str.Format(_T("매수:%4d"), std::abs(posi->OpenQty));
 	else
 		str.Format(_T("없음"), 0);
 	PositionState = str;
@@ -1751,8 +1749,6 @@ void VtSystem::CheckLiqByStop()
 				return;
 
 			VtPosition* posi = _Account->FindPosition(_Symbol->ShortCode);
-			if (!posi)
-				return;
 			if (posi && std::abs(posi->OpenQty) > 0) {
 				int res = AfxMessageBox(_T("잔고가 남아있습니다! 청산하시겠습니까?"), MB_YESNO);
 				if (res == IDYES)
