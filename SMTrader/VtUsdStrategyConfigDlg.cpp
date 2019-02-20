@@ -25,6 +25,7 @@
 #include "VtStrategyWndManager.h"
 #include "VtGlobal.h"
 #include "VtStrategyToolWnd.h"
+#include "Format/time.h"
 using Poco::Delegate;
 using Poco::NumberFormatter;
 
@@ -793,6 +794,21 @@ void VtUsdStrategyConfigDlg::OnRealTimeEvent()
 		_StaticPosition.SetGradientColor(GetSysColor(COLOR_3DFACE));
 	}
 	_StaticPosition.SetWindowText(_System->PositionState);
+
+
+	VtDate curDate = VtGlobal::GetLocalDate();
+	VtTime curTime = VtGlobal::GetLocalTime();
+	CString td;
+	td.Format(_T("%4d-%02d-%02d %02d:%02d:%02d"), curDate, curTime);
+
+	std::string title = _T("전략설정창 - ");
+	title.append(_System->Name());
+	title.append(_T(" - "));
+	title.append(std::to_string(_System->Cycle()));
+	title.append(_T("M"));
+	title.append(_T("    "));
+	title.append(td);
+	SetWindowText(title.c_str());
 }
 
 void VtUsdStrategyConfigDlg::RefreshRealTimeValue(std::string argName, CString value)
