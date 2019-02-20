@@ -25,6 +25,9 @@ public:
 	{
 		return _OrderMap;
 	}
+	int GetOrderCount() {
+		return _OrderMap.size();
+	}
 private:
 	// key : order no, value : order object
 	std::map<int, VtOrder*> _OrderMap;

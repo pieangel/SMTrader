@@ -25,8 +25,9 @@ public:
 
 	void QuickRedrawCell(int col, long row);
 	void InitGrid();
+	void InitGrid(std::vector<VtOrder*>&& orderMap);
+	void ClearCells(int count);
 private:
 	std::vector<int> _GridColVec;
-
 };
 
