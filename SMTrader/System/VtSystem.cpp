@@ -109,25 +109,20 @@ void VtSystem::OnTimer()
 
 bool VtSystem::IsEnterableByTime()
 {
-	VtTime time = VtGlobal::GetLocalTime();
-	if (time.hour < _EntranceStartTime.hour)
+	int curTime = VtGlobal::GetTime(VtGlobal::GetLocalTime());
+	int startTime = VtGlobal::GetTime(_EntranceStartTime);
+	int endTime = VtGlobal::GetTime(_EntranceEndTime);
+	if (curTime < startTime || curTime > endTime)
 		return false;
-	if (time.hour == _EntranceStartTime.hour && time.min < _EntranceStartTime.min)
-		return false;
-	if (time.hour > _EntranceEndTime.hour)
-		return false;
-	if (time.hour == _EntranceEndTime.hour && time.min > _EntranceEndTime.min)
-		return false;
-	return true;
+	else
+		return true;
 }
 
 bool VtSystem::LiqByEndTime()
 {
-	if (_CurPosition == VtPositionType::None)
-		return false;
-
-	VtTime time = VtGlobal::GetLocalTime();
-	if (time.hour >= _LiqTime.hour && time.min >= _LiqTime.min && time.sec >= _LiqTime.sec) {
+	int curTime = VtGlobal::GetTime(VtGlobal::GetLocalTime());
+	int liqTime = VtGlobal::GetTime(_LiqTime);
+	if (curTime >= liqTime) {
 		// 여기서 청산을 진행한다.
 		if (LiqudAll())
 			return true;
@@ -140,7 +135,7 @@ bool VtSystem::LiqByEndTime()
 
 bool VtSystem::LiqByEndTime(int index)
 {
-	if (_CurPosition == VtPositionType::None || !_Symbol)
+	if (!_Symbol)
 		return false;
 
 	std::string dataKey = VtChartDataManager::MakeChartDataKey(_Symbol->ShortCode, VtChartType::MIN, _Cycle);
@@ -153,7 +148,9 @@ bool VtSystem::LiqByEndTime(int index)
 		return false;
 
 	VtTime time = VtGlobal::GetTime(int(timeArray[index]));
-	if (time.hour >= _LiqTime.hour && time.min >= _LiqTime.min && time.sec >= _LiqTime.sec) {
+	int curTime = VtGlobal::GetTime(time);
+	int liqTime = VtGlobal::GetTime(_LiqTime);
+	if (curTime >= liqTime) {
 		// 여기서 청산을 진행한다.
 		if (LiqudAll())
 			return true;
@@ -1238,7 +1235,7 @@ bool VtSystem::LiqudAll()
 			return false;
 		VtPosition* posi = _Account->FindPosition(_Symbol->ShortCode);
 
-		if (!posi || posi->Position == VtPositionType::None)
+		if (!posi || posi->OpenQty == 0 || posi->Position == VtPositionType::None)
 			return false;
 		if (_LiqPriceType == VtPriceType::Market) // 시장가
 			PutOrder(posi, 0, true);
@@ -1257,7 +1254,7 @@ bool VtSystem::LiqudAll()
 			VtAccount* subAcnt = *it;
 			VtPosition* posi = subAcnt->FindPosition(_Symbol->ShortCode);
 
-			if (!posi || posi->Position == VtPositionType::None)
+			if (!posi || posi->OpenQty == 0 || posi->Position == VtPositionType::None)
 				continue;
 			if (_LiqPriceType == VtPriceType::Market) // 시장가
 				PutOrder(posi, 0, true);
