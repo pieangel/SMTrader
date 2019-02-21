@@ -563,12 +563,13 @@ void CMainFrame::OnShowWindow(BOOL bShow, UINT nStatus)
 			std::string name, value;
 			name = _T("savepwd");
 			value = configMgr->getString(section, name);
-			if (!saveMgr->IsAccountFileExist() || value.compare(_T("false")) == 0) {
-				VtAccountPasswordDlg dlg;
-				dlg.FromServer(true);
-				int Ret = dlg.DoModal();
-			}
 
+			VtAccountPasswordDlg dlg;
+			if (!saveMgr->IsAccountFileExist() || value.compare(_T("false")) == 0)
+				dlg.FromServer(true);
+			else
+				dlg.FromServer(false);
+			dlg.DoModal();
 			section = _T("RUN_INFO");
 			VtGlobal* global = VtGlobal::GetInstance();
 			name = _T("open_hour");

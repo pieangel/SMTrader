@@ -62,7 +62,7 @@ void VtUsIn2::InitArgs()
 	_Cycle = 1;
 
 	_EntranceStartTime.hour = 9;
-	_EntranceStartTime.min = 5;
+	_EntranceStartTime.min = 50;
 	_EntranceStartTime.sec = 0;
 
 	_EntranceEndTime.hour = 15;
@@ -70,10 +70,10 @@ void VtUsIn2::InitArgs()
 	_EntranceEndTime.sec = 0;
 
 	_LiqTime.hour = 15;
-	_LiqTime.min = 29;
+	_LiqTime.min = 28;
 	_LiqTime.sec = 0;
 
-	_MaxEntrance = 3;
+	_MaxEntrance = 2;
 
 	_EntryBarIndex = 0;
 	_ATRTime.hour = 14;
