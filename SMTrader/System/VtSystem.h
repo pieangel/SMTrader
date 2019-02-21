@@ -179,8 +179,6 @@ public:
 	void LiqByStop(bool val) { _LiqByStop = val; }
 	int OrderAmount() const { return _OrderAmount; }
 	void OrderAmount(int val) { _OrderAmount = val; }
-	VtUsdStrategyConfigDlg* UsdCfgDlg() const { return _UsdCfgDlg; }
-	void UsdCfgDlg(VtUsdStrategyConfigDlg* val) { _UsdCfgDlg = val; }
 	bool ShowRealtime() const { return _ShowRealtime; }
 	void ShowRealtime(bool val) { _ShowRealtime = val; }
 	int LatestEntPrice() const { return _LatestEntPrice; }
@@ -229,6 +227,10 @@ public:
 	/// </summary>
 	/// <returns></returns>
 	bool CheckEntranceBar();
+	/// <summary>
+	/// 현재 매개변수의 조건을 만족하는지 돌려준다.
+	/// </summary>
+	bool GetCondition(std::string argName, std::string param);
 protected:
 	int FindDateIndex(double date, std::vector<double>& dateArray);
 	void PutOrder(int price, VtPositionType position, VtPriceType priceType = VtPriceType::Price);
@@ -293,12 +295,6 @@ protected:
 	/// 시스템 정지시 잔고 청산
 	/// </summary>
 	bool _LiqByStop = false;
-
-	/// <summary>
-	/// 시스템 설정 대화상자 객체
-	/// </summary>
-	VtUsdStrategyConfigDlg* _UsdCfgDlg = nullptr;
-
 
 	/// <summary>
 	/// 시스템 타입

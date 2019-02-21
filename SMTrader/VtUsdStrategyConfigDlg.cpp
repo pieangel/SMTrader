@@ -161,8 +161,6 @@ BOOL VtUsdStrategyConfigDlg::OnInitDialog()
 		_System = (VtSystem*)_ComboStrategy.GetItemDataPtr(0);
 	}
 
-	_System->UsdCfgDlg(this);
-
 	InitControls();
 
 	CRect rcWnd;
@@ -306,7 +304,10 @@ void VtUsdStrategyConfigDlg::InitControls()
 
 	profit.Format(_T("%d"), _System->LatestEntPrice());
 	_StaticLastEntPrice.SetWindowText(profit);
-
+	_EntGrid.ClearArgMap();
+	_LiqGrid.ClearArgMap();
+	_EntGrid.System(_System);
+	_LiqGrid.System(_System);
 	std::vector<VtSystemArgGroup>& argGrpVec = _System->GetArgGroupVec();
 	for (auto it = argGrpVec.begin(); it != argGrpVec.end(); ++it) {
 		VtSystemArgGroup& argGrp = *it;
@@ -428,14 +429,10 @@ void VtUsdStrategyConfigDlg::SetTargetAcntOrFund(std::tuple<int, VtAccount*, VtF
 
 void VtUsdStrategyConfigDlg::OnCbnSelchangeComboStrategy()
 {
-	if (_System) {
-		_System->UsdCfgDlg(nullptr);
-	}
 	_SelSysIndex = _ComboStrategy.GetCurSel();
 	auto it = _SystemMap.find(_SelSysIndex);
 	if (it != _SystemMap.end()) {
 		_System = std::get<1>(it->second);
-		_System->UsdCfgDlg(this);
 		InitControls();
 	}
 }

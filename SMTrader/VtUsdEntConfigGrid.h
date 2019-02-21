@@ -7,6 +7,7 @@
 #include "VtSystemArgGroup.h"
 
 const int USD_CONFIG_EDIT = 0x0010;
+class VtSystem;
 class VtUsdEntConfigGrid : public VtGrid
 {
 public:
@@ -56,7 +57,10 @@ public:
 	void SetHogaQtyEntRatio(double uas, double ubs);
 	void RefreshRealTimeValue(std::string argName, CString value);
 	void ClearArgMap();
+	VtSystem* System() const { return _System; }
+	void System(VtSystem* val) { _System = val; }
 private:
+	VtSystem* _System = nullptr;
 	std::map<std::string, std::pair<int, int>> _ArgMap;
 	bool _Showing = false;
 	std::vector<int> _ColWidthVec;

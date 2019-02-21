@@ -1779,6 +1779,13 @@ bool VtSystem::CheckEntranceBar()
 		return true;
 }
 
+bool VtSystem::GetCondition(std::string argName, std::string par)
+{
+	double param = std::stod(par);
+	ArgNameType arg = _ArgTypeMap[argName];
+	return CheckByArg(arg, _Symbol, param);
+}
+
 void VtSystem::AddSystemArg(std::string groupName, VtSystemArg arg)
 {
 	VtSystemArgGroup* argGrp = FindArgGroup(groupName);

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "VtUsdStrategyConfigGrid.h"
-
+#include "System/VtSystem.h"
 
 VtUsdStrategyConfigGrid::VtUsdStrategyConfigGrid()
 {
@@ -256,8 +256,17 @@ void VtUsdStrategyConfigGrid::RefreshRealTimeValue(std::string argName, CString 
 	auto it = _ArgMap.find(argName);
 	if (it != _ArgMap.end()) {
 		std::pair<int, int> pos = it->second;
-		QuickSetText(std::get<0>(pos), std::get<1>(pos), value);
-		QuickRedrawCell(std::get<0>(pos), std::get<1>(pos));
+		int col = std::get<0>(pos);
+		int row = std::get<1>(pos);
+		QuickSetText(col, row, value);
+		QuickRedrawCell(col, row);
+		CUGCell cell;
+		GetCell(col - 3, row, &cell);
+		if (_System && cell.GetNumber() == 1.0) {
+			std::string param = QuickGetText(col - 2, row);
+			QuickSetBackColor(col - 1, row, _System->GetCondition(argName, param) ? RGB(255, 227, 132) : RGB(255, 255, 255));
+			QuickRedrawCell(col - 1, row);
+		}
 	}
 }
 

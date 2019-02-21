@@ -7,6 +7,7 @@
 #include "VtSystemArgGroup.h"
 
 const int CONFIG_EDIT = 0x0001;
+class VtSystem;
 class VtUsdStrategyConfigGrid : public VtGrid
 {
 public:
@@ -53,7 +54,10 @@ public:
 	void SetArg(VtSystemArgGroup& argGrp);
 	void RefreshRealTimeValue(std::string argName, CString value);
 	void ClearArgMap();
+	VtSystem* System() const { return _System; }
+	void System(VtSystem* val) { _System = val; }
 private:
+	VtSystem* _System = nullptr;
 	std::map<std::string, std::pair<int, int>> _ArgMap;
 	std::vector<int> _ColWidthVec;
 	// 0 : 진입1, 1 : 청산1, 2 : 진입2, 3 : 청산2
