@@ -420,7 +420,7 @@ bool VtSystem::CheckEntranceByOpenForSell(size_t index)
 	return  closeArray[curDayIndex] < openArray[curDayIndex] ? true : false;
 }
 
-bool VtSystem::CheckByArg(ArgNameType argName, VtSymbol* sym, double param)
+bool VtSystem::CheckByArg(ArgNameType argName, VtSymbol* sym, double param, bool log)
 {
 	if (!sym)
 		return false;
@@ -428,7 +428,7 @@ bool VtSystem::CheckByArg(ArgNameType argName, VtSymbol* sym, double param)
 	switch (argName)
 	{
 	case ArgNameType::KbsMiKas:
-		LOG_F(INFO, _T("Kbs-Kas : param = %.0f, value = %d"), param, sym->Hoga.TotBuyQty - sym->Hoga.TotSellQty);
+		if (log) LOG_F(INFO, _T("Kbs-Kas : param = %.0f, value = %d"), param, sym->Hoga.TotBuyQty - sym->Hoga.TotSellQty);
 		if (sym->Hoga.TotBuyQty - sym->Hoga.TotSellQty > param) {
 			return true;
 		}
@@ -437,7 +437,7 @@ bool VtSystem::CheckByArg(ArgNameType argName, VtSymbol* sym, double param)
 		}
 		break;
 	case ArgNameType::KbcGtKac:
-		LOG_F(INFO, _T("Kbc>Kac : param = %.2f, first = %.2f > last = %d"), param, sym->Hoga.TotBuyNo*param, sym->Hoga.TotSellNo);
+		if (log) LOG_F(INFO, _T("Kbc>Kac : param = %.2f, first = %.2f > last = %d"), param, sym->Hoga.TotBuyNo*param, sym->Hoga.TotSellNo);
 		if (sym->Hoga.TotBuyNo*param > sym->Hoga.TotSellNo) {
 			return true;
 		}
@@ -446,7 +446,7 @@ bool VtSystem::CheckByArg(ArgNameType argName, VtSymbol* sym, double param)
 		}
 		break;
 	case ArgNameType::QbcGtQac:
-		LOG_F(INFO, _T("Qbc>Qac : param = %.2f, first = %.2f > last = %d"), param, sym->Hoga.TotBuyNo*param, sym->Hoga.TotSellNo);
+		if (log) LOG_F(INFO, _T("Qbc>Qac : param = %.2f, first = %.2f > last = %d"), param, sym->Hoga.TotBuyNo*param, sym->Hoga.TotSellNo);
 		if (sym->Hoga.TotBuyNo*param > sym->Hoga.TotSellNo) {
 			return true;
 		}
@@ -455,7 +455,7 @@ bool VtSystem::CheckByArg(ArgNameType argName, VtSymbol* sym, double param)
 		}
 		break;
 	case ArgNameType::UacGtUbc:
-		LOG_F(INFO, _T("Uac>Ubc : param = %.2f, first = %.2f > last = %d"), param, sym->Hoga.TotSellNo*param, sym->Hoga.TotBuyNo);
+		if (log) LOG_F(INFO, _T("Uac>Ubc : param = %.2f, first = %.2f > last = %d"), param, sym->Hoga.TotSellNo*param, sym->Hoga.TotBuyNo);
 		if (sym->Hoga.TotSellNo*param > sym->Hoga.TotBuyNo) {
 			return true;
 		}
@@ -464,7 +464,7 @@ bool VtSystem::CheckByArg(ArgNameType argName, VtSymbol* sym, double param)
 		}
 		break;
 	case ArgNameType::KasMiKbs:
-		LOG_F(INFO, _T("Kas-Kbs : param = %.0f, value = %d"), param, sym->Hoga.TotSellQty - sym->Hoga.TotBuyQty);
+		if (log) LOG_F(INFO, _T("Kas-Kbs : param = %.0f, value = %d"), param, sym->Hoga.TotSellQty - sym->Hoga.TotBuyQty);
 		if (sym->Hoga.TotSellQty - sym->Hoga.TotBuyQty > param) {
 			return true;
 		}
@@ -473,7 +473,7 @@ bool VtSystem::CheckByArg(ArgNameType argName, VtSymbol* sym, double param)
 		}
 		break;
 	case ArgNameType::KacGtKbc:
-		LOG_F(INFO, _T("Kac>Kbc : param = %.2f, first = %.2f > last = %d"), param, sym->Hoga.TotSellNo*param, sym->Hoga.TotBuyNo);
+		if (log) LOG_F(INFO, _T("Kac>Kbc : param = %.2f, first = %.2f > last = %d"), param, sym->Hoga.TotSellNo*param, sym->Hoga.TotBuyNo);
 		if (sym->Hoga.TotSellNo*param > sym->Hoga.TotBuyNo) {
 			return true;
 		}
@@ -482,7 +482,7 @@ bool VtSystem::CheckByArg(ArgNameType argName, VtSymbol* sym, double param)
 		}
 		break;
 	case ArgNameType::QacGtQbc:
-		LOG_F(INFO, _T("Qac>Qbc : param = %.2f, first = %.2f > last = %d"), param, sym->Hoga.TotSellNo*param, sym->Hoga.TotBuyNo);
+		if (log) LOG_F(INFO, _T("Qac>Qbc : param = %.2f, first = %.2f > last = %d"), param, sym->Hoga.TotSellNo*param, sym->Hoga.TotBuyNo);
 		if (sym->Hoga.TotSellNo*param > sym->Hoga.TotBuyNo) {
 			return true;
 		}
@@ -491,7 +491,7 @@ bool VtSystem::CheckByArg(ArgNameType argName, VtSymbol* sym, double param)
 		}
 		break;
 	case ArgNameType::UbcGtUac:
-		LOG_F(INFO, _T("Ubc>Uac : param = %.2f, first = %.2f > last = %d"), param, sym->Hoga.TotBuyNo*param, sym->Hoga.TotSellNo);
+		if (log) LOG_F(INFO, _T("Ubc>Uac : param = %.2f, first = %.2f > last = %d"), param, sym->Hoga.TotBuyNo*param, sym->Hoga.TotSellNo);
 		if (sym->Hoga.TotBuyNo*param > sym->Hoga.TotSellNo) {
 			return true;
 		}
@@ -500,7 +500,7 @@ bool VtSystem::CheckByArg(ArgNameType argName, VtSymbol* sym, double param)
 		}
 		break;
 	case ArgNameType::QbsGtQas:
-		LOG_F(INFO, _T("Qbs>Qas : param = %.2f, first = %.2f > last = %d"), param, sym->Hoga.TotBuyQty*param, sym->Hoga.TotSellQty);
+		if (log) LOG_F(INFO, _T("Qbs>Qas : param = %.2f, first = %.2f > last = %d"), param, sym->Hoga.TotBuyQty*param, sym->Hoga.TotSellQty);
 		if (sym->Hoga.TotBuyQty*param > sym->Hoga.TotSellQty) {
 			return true;
 		}
@@ -509,7 +509,7 @@ bool VtSystem::CheckByArg(ArgNameType argName, VtSymbol* sym, double param)
 		}
 		break;
 	case ArgNameType::QasGtQbs:
-		LOG_F(INFO, _T("Qas>Qbs : param = %.2f, first = %.2f > last = %d"), param, sym->Hoga.TotSellQty*param, sym->Hoga.TotBuyQty);
+		if (log) LOG_F(INFO, _T("Qas>Qbs : param = %.2f, first = %.2f > last = %d"), param, sym->Hoga.TotSellQty*param, sym->Hoga.TotBuyQty);
 		if (sym->Hoga.TotSellQty*param > sym->Hoga.TotBuyQty) {
 			return true;
 		}
@@ -518,7 +518,7 @@ bool VtSystem::CheckByArg(ArgNameType argName, VtSymbol* sym, double param)
 		}
 		break;
 	case ArgNameType::UbsGtUas:
-		LOG_F(INFO, _T("Ubs>Uas : param = %.2f, first = %.2f > last = %d"), param, sym->Hoga.TotBuyQty*param, sym->Hoga.TotSellQty);
+		if (log) LOG_F(INFO, _T("Ubs>Uas : param = %.2f, first = %.2f > last = %d"), param, sym->Hoga.TotBuyQty*param, sym->Hoga.TotSellQty);
 		if (sym->Hoga.TotBuyQty*param > sym->Hoga.TotSellQty) {
 			return true;
 		}
@@ -527,7 +527,7 @@ bool VtSystem::CheckByArg(ArgNameType argName, VtSymbol* sym, double param)
 		}
 		break;
 	case ArgNameType::UasGtUbs:
-		LOG_F(INFO, _T("Uas>Ubs : param = %.2f, first = %.2f > last = %d"), param, sym->Hoga.TotSellQty*param, sym->Hoga.TotBuyQty);
+		if (log) LOG_F(INFO, _T("Uas>Ubs : param = %.2f, first = %.2f > last = %d"), param, sym->Hoga.TotSellQty*param, sym->Hoga.TotBuyQty);
 		if (sym->Hoga.TotSellQty*param > sym->Hoga.TotBuyQty) {
 			return true;
 		}
@@ -536,7 +536,7 @@ bool VtSystem::CheckByArg(ArgNameType argName, VtSymbol* sym, double param)
 		}
 		break;
 	case ArgNameType::KasGtKbs:
-		LOG_F(INFO, _T("Kas>Kbs : param = %.2f, first = %.2f > last = %d"), param, sym->Hoga.TotSellQty*param, sym->Hoga.TotBuyQty);
+		if (log) LOG_F(INFO, _T("Kas>Kbs : param = %.2f, first = %.2f > last = %d"), param, sym->Hoga.TotSellQty*param, sym->Hoga.TotBuyQty);
 		if (sym->Hoga.TotSellQty*param > sym->Hoga.TotBuyQty) {
 			return true;
 		}
@@ -545,7 +545,7 @@ bool VtSystem::CheckByArg(ArgNameType argName, VtSymbol* sym, double param)
 		}
 		break;
 	case ArgNameType::KbsGtKas:
-		LOG_F(INFO, _T("Kbs>Kas : param = %.2f, first = %.2f > last = %d"), param, sym->Hoga.TotBuyQty*param, sym->Hoga.TotSellQty);
+		if (log) LOG_F(INFO, _T("Kbs>Kas : param = %.2f, first = %.2f > last = %d"), param, sym->Hoga.TotBuyQty*param, sym->Hoga.TotSellQty);
 		if (sym->Hoga.TotBuyQty*param > sym->Hoga.TotSellQty) {
 			return true;
 		}
@@ -1271,19 +1271,25 @@ bool VtSystem::LiqudAll()
 void VtSystem::Symbol(VtSymbol* val)
 {
 	_Symbol = val;
+	SetDataSrc();
+}
+
+void VtSystem::SetDataSrc()
+{
+	if (!_Symbol)
+		return;
+
 	// 일별 데이터 추가
 	VtChartData* data = AddDataSource(_Symbol->ShortCode, VtChartType::DAY, 1);
+	if (!data)
+		return;
+
 	data->RequestChartData();
 	data = AddDataSource(_Symbol->ShortCode, VtChartType::MIN, _Cycle);
 	data->RequestChartData();
 	_DataSrcSymbolVec.push_back(_Symbol->ShortCode);
 	VtRealtimeRegisterManager* realRegiMgr = VtRealtimeRegisterManager::GetInstance();
 	realRegiMgr->RegisterProduct(_Symbol->ShortCode);
-}
-
-void VtSystem::SetDataSrc()
-{
-	
 }
 
 void VtSystem::SetDataSrc(VtSymbol* sym, VtChartType type, int cycle)
@@ -1418,7 +1424,6 @@ void VtSystem::Load(simple::file_istream<same_endian_type>& ss)
 		argGrp.Load(ss);
 		AddSystemArgGroup(argGrp.Name(), argGrp);
 	}
-
 	_ArgsLoaded = true;
 }
 
@@ -1783,7 +1788,7 @@ bool VtSystem::GetCondition(std::string argName, std::string par)
 {
 	double param = std::stod(par);
 	ArgNameType arg = _ArgTypeMap[argName];
-	return CheckByArg(arg, _Symbol, param);
+	return CheckByArg(arg, _Symbol, param, false);
 }
 
 void VtSystem::AddSystemArg(std::string groupName, VtSystemArg arg)

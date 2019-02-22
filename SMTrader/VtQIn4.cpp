@@ -48,7 +48,7 @@ VtQIn4::~VtQIn4()
 /// </summary>
 void VtQIn4::SetDataSrc()
 {
-	
+	VtSystem::SetDataSrc();
 }
 
 void VtQIn4::InitArgs()

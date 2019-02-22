@@ -48,7 +48,7 @@ VtUsComp::~VtUsComp()
 /// </summary>
 void VtUsComp::SetDataSrc()
 {
-	
+	VtSystem::SetDataSrc();
 }
 
 void VtUsComp::InitArgs()

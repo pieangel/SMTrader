@@ -73,7 +73,7 @@ VtKo4b::~VtKo4b()
 /// </summary>
 void VtKo4b::SetDataSrc()
 {
-
+	VtSystem::SetDataSrc();
 }
 
 void VtKo4b::InitArgs()

@@ -27,6 +27,8 @@ public:
 	void AddSystemDialog(std::string sysName, VtUsdStrategyConfigDlg* dlg);
 	void RemoveSystemDialog(std::string sysName, VtUsdStrategyConfigDlg* dlg);
 	void UpdateDialog(VtSystem* sys);
+	int WndCnt() const { return _WndCnt; }
+	void WndCnt(int val) { _WndCnt = val; }
 private:
 	std::map<std::string, std::map<VtUsdStrategyConfigDlg*, VtUsdStrategyConfigDlg*>> _SystemToSetDialogMap;
 	StrategyWindowMap _WindowMap;
@@ -35,6 +37,7 @@ private:
 	void RestoreDialog(HdWindowType type, CRect rcWnd);
 	void RestoreDialog(std::string sysName, CRect rcWnd);
 	CMainFrame* _MainFrm = nullptr;
+	int _WndCnt = 0;
 };
 
 

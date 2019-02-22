@@ -48,7 +48,7 @@ VtUsIn3::~VtUsIn3()
 /// </summary>
 void VtUsIn3::SetDataSrc()
 {
-	
+	VtSystem::SetDataSrc();
 }
 
 void VtUsIn3::InitArgs()

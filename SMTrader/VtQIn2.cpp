@@ -48,7 +48,7 @@ VtQIn2::~VtQIn2()
 /// </summary>
 void VtQIn2::SetDataSrc()
 {
-	
+	VtSystem::SetDataSrc();
 }
 
 void VtQIn2::InitArgs()

@@ -72,7 +72,7 @@ VtKp5In1::~VtKp5In1()
 /// </summary>
 void VtKp5In1::SetDataSrc()
 {
-	
+	VtSystem::SetDataSrc();
 }
 
 void VtKp5In1::InitArgs()

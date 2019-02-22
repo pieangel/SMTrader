@@ -50,7 +50,7 @@ VtQH2::~VtQH2()
 /// </summary>
 void VtQH2::SetDataSrc()
 {
-	
+	VtSystem::SetDataSrc();
 }
 
 void VtQH2::InitArgs()

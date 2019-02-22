@@ -72,7 +72,7 @@ VtKp2s::~VtKp2s()
 /// </summary>
 void VtKp2s::SetDataSrc()
 {
-	
+	VtSystem::SetDataSrc();
 }
 
 void VtKp2s::InitArgs()

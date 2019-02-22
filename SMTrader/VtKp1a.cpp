@@ -71,7 +71,7 @@ VtKp1a::~VtKp1a()
 /// </summary>
 void VtKp1a::SetDataSrc()
 {
-	
+	VtSystem::SetDataSrc();
 }
 
 void VtKp1a::InitArgs()

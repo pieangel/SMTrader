@@ -92,6 +92,7 @@ int VtStrategyGrid::OnCheckbox(long ID, int col, long row, long msg, long param)
 		if (num == 1.0) {
 			sys->Enable(true);
 			sys->ShowRealtime(true);
+			sys->SetDataSrc();
 		}
 		else {
 			sys->Enable(false);
@@ -186,7 +187,6 @@ void VtStrategyGrid::InitGrid()
 		auto& rlist = catItem.second;
 		for (auto its = sysList.begin(); its != sysList.end(); ++its) {
 			VtSystem* sys = *its;
-			sys->SetDataSrc();
 			rlist.push_back(i);
 			QuickSetLabelText(0, i, sys->Name().c_str());
 			QuickSetCellType(0, i, UGCT_CHECKBOX);

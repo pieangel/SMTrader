@@ -49,7 +49,7 @@ VtQF2::~VtQF2()
 /// </summary>
 void VtQF2::SetDataSrc()
 {
-	
+	VtSystem::SetDataSrc();
 }
 
 void VtQF2::InitArgs()

@@ -71,7 +71,7 @@ VtKp3s::~VtKp3s()
 /// </summary>
 void VtKp3s::SetDataSrc()
 {
-
+	VtSystem::SetDataSrc();
 }
 
 void VtKp3s::InitArgs()
@@ -368,12 +368,6 @@ VtPositionType VtKp3s::UpdateSignal(int index)
 	// 시스템 업데이트
 	UpdateSystem(index);
 
-	// 청산 시간에 의한 청산 확인
-	if (_CurPosition != VtPositionType::None && LiqByEndTime(index)) {
-		LOG_F(INFO, _T("청산시간에 따른 청산성공"));
-		_CurPosition = VtPositionType::None;
-	}
-
 	// 손절 확인
 	if (_CurPosition != VtPositionType::None && CheckLossCut(index)) {
 		LOG_F(INFO, _T("손절성공"));
@@ -407,6 +401,7 @@ void VtKp3s::OnTimer()
 	// 청산 시간에 따른 청산 - 조건없이 무조건 청산한다.
 	if (_CurPosition != VtPositionType::None) {
 		if (LiqByEndTime()) {
+			LOG_F(INFO, _T("청산시간에 따른 청산성공"));
 			_CurPosition = VtPositionType::None;
 			_LastEntryDailyIndex = -1;
 			return;

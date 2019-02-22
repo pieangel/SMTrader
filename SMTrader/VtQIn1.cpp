@@ -49,7 +49,7 @@ VtQIn1::~VtQIn1()
 /// </summary>
 void VtQIn1::SetDataSrc()
 {
-	
+	VtSystem::SetDataSrc();
 }
 
 void VtQIn1::InitArgs()

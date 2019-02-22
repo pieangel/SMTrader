@@ -73,6 +73,7 @@ void VtStrategyWndManager::Load(simple::file_istream<same_endian_type>& ss)
 {
 	int count;
 	ss >> count;
+	_WndCnt = count;
 	for (int i = 0; i < count; ++i) {
 		int type = 0;
 		ss >> type;
@@ -162,4 +163,5 @@ void VtStrategyWndManager::RestoreDialog(std::string sysName, CRect rcWnd)
 		AddSystemDialog(sysName, dlg);
 	}
 	dlg->ShowWindow(SW_SHOW);
+	_WndCnt--;
 }

@@ -155,7 +155,7 @@ public:
 	bool CheckEntranceByOpenForBuy(size_t index);
 	bool CheckEntranceByOpenForSell(size_t index);
 
-	bool CheckByArg(ArgNameType argName, VtSymbol* sym, double param);
+	bool CheckByArg(ArgNameType argName, VtSymbol* sym, double param, bool log = true);
 	bool CheckByArg(ArgNameType argName, VtSymbol* sym, double param, int index);
 	bool CheckCondition(std::string argGrpName);
 	bool CheckCondition(std::string argGrpName, int index);

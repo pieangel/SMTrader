@@ -48,7 +48,7 @@ VtUsH2::~VtUsH2()
 /// </summary>
 void VtUsH2::SetDataSrc()
 {
-	
+	VtSystem::SetDataSrc();
 }
 
 void VtUsH2::InitArgs()

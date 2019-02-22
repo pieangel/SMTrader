@@ -48,7 +48,7 @@ VtUsI2::~VtUsI2()
 /// </summary>
 void VtUsI2::SetDataSrc()
 {
-	
+	VtSystem::SetDataSrc();
 }
 
 void VtUsI2::InitArgs()

@@ -750,14 +750,14 @@ void VtUsdStrategyConfigDlg::OnClose()
 
 void VtUsdStrategyConfigDlg::OnBnClickedCheckRun()
 {
-// 	if (_StGrid) {
-// 		_StGrid->UpdateSystem(_System, _CheckRun.GetCheck() == BST_CHECKED ? true : false);
-// 	}
 	if (VtGlobal::StrategyToolWnd) {
 		VtGlobal::StrategyToolWnd->UpdateSystem(_System, _CheckRun.GetCheck() == BST_CHECKED ? true : false);
 	}
 	VtStrategyWndManager* stgWndMgr = VtStrategyWndManager::GetInstance();
 	stgWndMgr->UpdateDialog(_System);
+	if (_System) {
+		_System->SetDataSrc();
+	}
 }
 
 void VtUsdStrategyConfigDlg::OnRealTimeEvent()

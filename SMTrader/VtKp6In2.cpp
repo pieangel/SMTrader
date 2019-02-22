@@ -71,7 +71,7 @@ VtKp6In2::~VtKp6In2()
 /// </summary>
 void VtKp6In2::SetDataSrc()
 {
-	
+	VtSystem::SetDataSrc();
 }
 
 void VtKp6In2::InitArgs()

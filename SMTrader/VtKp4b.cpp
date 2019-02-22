@@ -72,7 +72,7 @@ VtKp4b::~VtKp4b()
 /// </summary>
 void VtKp4b::SetDataSrc()
 {
-	
+	VtSystem::SetDataSrc();
 }
 
 void VtKp4b::InitArgs()

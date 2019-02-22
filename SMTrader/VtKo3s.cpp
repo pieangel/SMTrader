@@ -71,7 +71,7 @@ VtKo3s::~VtKo3s()
 /// </summary>
 void VtKo3s::SetDataSrc()
 {
-
+	VtSystem::SetDataSrc();
 }
 
 void VtKo3s::InitArgs()
