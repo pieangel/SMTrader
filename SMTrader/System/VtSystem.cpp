@@ -1456,7 +1456,7 @@ bool VtSystem::CheckAtrLiqForBuy()
 		}
 
 		double atr = GetAtr(closeArray.size() - 1, _ATR, highArray.data(), lowArray.data(), closeArray.data());
-		LOG_F(INFO, _T("CheckAtrLiqForBuy : Code = %s, close = %.2f, maxClose = %.2f, atr = %.2f, _ATRMulti = %d"), _Symbol->ShortCode, closeArray.back(), maxClose, atr, _ATRMulti);
+		LOG_F(INFO, _T("CheckAtrLiqForBuy : Code = %s, close = %.2f, maxClose = %.2f, atr = %.2f, _ATRMulti = %.2f"), _Symbol->ShortCode, closeArray.back(), maxClose, atr, _ATRMulti);
 		if (closeArray.back() < maxClose - atr * _ATRMulti) {
 			return true;
 		}
@@ -1538,7 +1538,7 @@ bool VtSystem::CheckAtrLiqForSell()
 		}
 
 		double atr = GetAtr(closeArray.size() - 1, _ATR, highArray.data(), lowArray.data(), closeArray.data());
-		LOG_F(INFO, _T("CheckAtrLiqForBuy : Code = %s, close = %.2f, maxClose = %.2f, atr = %.2f, _ATRMulti = %d"), _Symbol->ShortCode, closeArray.back(), minClose, atr, _ATRMulti);
+		LOG_F(INFO, _T("CheckAtrLiqForBuy : Code = %s, close = %.2f, minClose = %.2f, atr = %.2f, _ATRMulti = %.2f"), _Symbol->ShortCode, closeArray.back(), minClose, atr, _ATRMulti);
 		if (closeArray.back() > minClose + atr * _ATRMulti) {
 			return true;
 		}
@@ -1580,7 +1580,7 @@ bool VtSystem::CheckAtrLiqForSell(int index)
 		}
 
 		double atr = GetAtr(closeArray.size() - 1, _ATR, highArray.data(), lowArray.data(), closeArray.data());
-		LOG_F(INFO, _T("CheckAtrLiqForBuy : Code = %s, close = %.2f, maxClose = %.2f, atr = %.2f, _ATRMulti = %d"), _Symbol->ShortCode, closeArray.back(), minClose, atr, _ATRMulti);
+		LOG_F(INFO, _T("CheckAtrLiqForBuy : Code = %s, close = %.2f, minClose = %.2f, atr = %.2f, _ATRMulti = %d"), _Symbol->ShortCode, closeArray.back(), minClose, atr, _ATRMulti);
 		if (closeArray[index] > minClose + atr * _ATRMulti) {
 			return true;
 		}
@@ -1789,6 +1789,33 @@ bool VtSystem::GetCondition(std::string argName, std::string par)
 	double param = std::stod(par);
 	ArgNameType arg = _ArgTypeMap[argName];
 	return CheckByArg(arg, _Symbol, param, false);
+}
+
+void VtSystem::RegisterRealtimeAccountEvent()
+{
+	VtRealtimeRegisterManager* realtimeRegiMgr = VtRealtimeRegisterManager::GetInstance();
+	if (_SysTargetType == TargetType::RealAccount || _SysTargetType == TargetType::SubAccount) {
+		if (_Account) {
+			if (_Account->AccountLevel() == 0) {
+				realtimeRegiMgr->RegisterAccount(_Account->AccountNo);
+			}
+			else {
+				VtAccount* parentAcnt = _Account->ParentAccount();
+				if (parentAcnt) {
+					realtimeRegiMgr->RegisterAccount(parentAcnt->AccountNo);
+				}
+			}
+		}
+	}
+	else {
+		if (_Fund) {
+			std::set<VtAccount*> parendAcntSet = _Fund->GetParentAccountSet();
+			for (auto it = parendAcntSet.begin(); it != parendAcntSet.end(); ++it) {
+				VtAccount* parentAcnt = *it;
+				realtimeRegiMgr->RegisterAccount(parentAcnt->AccountNo);
+			}
+		}
+	}
 }
 
 void VtSystem::AddSystemArg(std::string groupName, VtSystemArg arg)

@@ -93,6 +93,7 @@ int VtStrategyGrid::OnCheckbox(long ID, int col, long row, long msg, long param)
 			sys->Enable(true);
 			sys->ShowRealtime(true);
 			sys->SetDataSrc();
+			sys->RegisterRealtimeAccountEvent();
 		}
 		else {
 			sys->Enable(false);

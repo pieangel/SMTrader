@@ -231,6 +231,7 @@ public:
 	/// 현재 매개변수의 조건을 만족하는지 돌려준다.
 	/// </summary>
 	bool GetCondition(std::string argName, std::string param);
+	void RegisterRealtimeAccountEvent();
 protected:
 	int FindDateIndex(double date, std::vector<double>& dateArray);
 	void PutOrder(int price, VtPositionType position, VtPriceType priceType = VtPriceType::Price);

@@ -757,6 +757,7 @@ void VtUsdStrategyConfigDlg::OnBnClickedCheckRun()
 	stgWndMgr->UpdateDialog(_System);
 	if (_System) {
 		_System->SetDataSrc();
+		_System->RegisterRealtimeAccountEvent();
 	}
 }
 
