@@ -45,6 +45,8 @@ private:
 	VtFund* _Fund;
 	VtFundProductRemainGrid _ProductGrid;
 public:
+	std::string _DefaultFund;
+	void SetFund(VtFund* fund);
 	void OnFundAdded();
 	void OnFundDeleted(VtFund* fund);
 	void InitFund();

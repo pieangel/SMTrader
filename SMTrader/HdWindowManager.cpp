@@ -8,6 +8,8 @@
 #include "resource.h"
 #include "VtStrategyToolWnd.h"
 #include "VtUsdStrategyConfigDlg.h"
+#include "VtAccount.h"
+#include "VtFund.h"
 
 HdWindowManager::HdWindowManager()
 {
@@ -59,6 +61,16 @@ void HdWindowManager::Save(simple::file_ostream<same_endian_type>& ss)
 		std::get<1>(item)->GetWindowRect(rcWnd);
 		ss << dlgType;
 		ss << rcWnd.left << rcWnd.top << rcWnd.right << rcWnd.bottom;
+		if ((HdWindowType)dlgType == HdWindowType::MiniJangoWindow) {
+			VtAccount* acnt = ((HdAccountPLDlg*)std::get<1>(item))->Account();
+			if (acnt)
+				ss << acnt->AccountNo;
+		}
+		else if ((HdWindowType)dlgType == HdWindowType::FundMiniJangoWindow) {
+			VtFund* fund = ((VtFundMiniJango*)std::get<1>(item))->Fund();
+			if (fund)
+				ss << fund->Name;
+		}
 	}
 }
 
@@ -72,7 +84,12 @@ void HdWindowManager::Load(simple::file_istream<same_endian_type>& ss)
 		HdWindowType wndType = (HdWindowType)type;
 		CRect rcWnd;
 		ss >> rcWnd.left >> rcWnd.top >> rcWnd.right >> rcWnd.bottom;
-		RestoreDialog(wndType, rcWnd);
+		std::string info;
+		if ((HdWindowType)type == HdWindowType::MiniJangoWindow || 
+			(HdWindowType)type == HdWindowType::FundMiniJangoWindow) {
+			ss >> info;
+		}
+		RestoreDialog(wndType, rcWnd, info);
 	}
 }
 
@@ -91,7 +108,7 @@ void HdWindowManager::RemoveWindow(CWnd* wnd)
 	}
 }
 
-void HdWindowManager::RestoreDialog(HdWindowType type, CRect rcWnd)
+void HdWindowManager::RestoreDialog(HdWindowType type, CRect rcWnd, std::string info)
 {
 	if (!_MainFrm)
 		return;
@@ -112,6 +129,7 @@ void HdWindowManager::RestoreDialog(HdWindowType type, CRect rcWnd)
 		break;
 	case HdWindowType::FundMiniJangoWindow: {
 		VtFundMiniJango* dlg = new VtFundMiniJango((CWnd*)_MainFrm);
+		dlg->_DefaultFund = info;
 		dlg->Create(IDD_MINI_JANGO_FUND, (CWnd*)_MainFrm);
 		dlg->MoveWindow(rcWnd);
 		dlg->ShowWindow(SW_SHOW);
@@ -119,6 +137,7 @@ void HdWindowManager::RestoreDialog(HdWindowType type, CRect rcWnd)
 		break;
 	case HdWindowType::MiniJangoWindow: {
 		HdAccountPLDlg* dlg = new HdAccountPLDlg((CWnd*)_MainFrm);
+		dlg->_DefaultAccount = info;
 		dlg->Create(IDD_MINI_JANGO, (CWnd*)_MainFrm);
 		dlg->MoveWindow(rcWnd);
 		dlg->ShowWindow(SW_SHOW);

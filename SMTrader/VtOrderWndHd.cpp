@@ -1043,7 +1043,16 @@ void VtOrderWndHd::InitAccount()
 				acntName.append(subAcnt->AccountName);
 				index = _ComboAcnt.AddString(acntName.c_str());
 				_ComboAcnt.SetItemDataPtr(index, subAcnt);
+				if (_DefaultAccountNo.compare(subAcnt->AccountNo) == 0) { // 정해진 계좌가 있으면 선택
+					selAcnt = index;
+					_OrderConfigMgr->Account(subAcnt);
+				}
 			}
+		}
+
+		if (_DefaultAccountNo.compare(acnt->AccountNo) == 0) { // 정해진 계좌가 있으면 선택
+			selAcnt = index;
+			_OrderConfigMgr->Account(acnt);
 		}
 	}
 

@@ -2,6 +2,7 @@
 #include "Global/TemplateSingleton.h"
 #include "HdWindowEvent.h"
 #include <map>
+#include <string>
 #include "SimpleBinStream.h"
 using same_endian_type = std::is_same<simple::LittleEndian, simple::LittleEndian>;
 
@@ -27,7 +28,7 @@ private:
 	std::map<CWnd*, std::pair<HdWindowType, CWnd*>> _WindowMap;
 	void AddWindow(HdWindowType wndType, CWnd* wnd);
 	void RemoveWindow(CWnd* wnd);
-	void RestoreDialog(HdWindowType type, CRect rcWnd);
+	void RestoreDialog(HdWindowType type, CRect rcWnd, std::string info);
 	CMainFrame* _MainFrm = nullptr;
 };
 

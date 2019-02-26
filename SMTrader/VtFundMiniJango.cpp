@@ -46,6 +46,17 @@ END_MESSAGE_MAP()
 // VtFundMiniJango message handlers
 
 
+void VtFundMiniJango::SetFund(VtFund* fund)
+{
+	if (!fund)
+		return;
+	_Fund = fund;
+	_FundPLGrid.ClearValues();
+	_ProductGrid.ClearValues();
+	_FundPLGrid.InitGrid();
+	_ProductGrid.InitGrid();
+}
+
 void VtFundMiniJango::OnFundAdded()
 {
 	CString str1;
@@ -128,15 +139,22 @@ void VtFundMiniJango::InitFund()
 		_Fund = nullptr;
 		return;
 	}
+	int selIndex = -1;
 	for (auto it = fundList.begin(); it != fundList.end(); ++it) {
 		VtFund* fund = it->second;
 		int index = _ComboFund.AddString(fund->Name.c_str());
-		if (index == 0)
-			_Fund = fund;
+		if (_DefaultFund.compare(fund->Name) == 0) { // 정해진 펀드가 있으면 선택
+			selIndex = index;
+		}
 		_ComboFund.SetItemDataPtr(index, fund);
 	}
 
-	_ComboFund.SetCurSel(0);
+	if (selIndex == -1) { // 정해진 펀드가 없을 때 맨처음 펀드 선택
+		VtFund* fund = fundList.begin()->second;
+		selIndex = 0;
+	}
+	// 찾은 펀드 선택
+	_ComboFund.SetCurSel(selIndex);
 }
 
 BOOL VtFundMiniJango::OnInitDialog()
@@ -202,7 +220,6 @@ void VtFundMiniJango::OnCbnSelchangeComboFund()
 	if (curSel != -1) {
 		_Fund = (VtFund*)_ComboFund.GetItemDataPtr(curSel);
 		_FundPLGrid.InitGrid();
-		//_ProductGrid.ClearCells();
 		_ProductGrid.InitGrid();
 	}
 }
@@ -216,7 +233,6 @@ void VtFundMiniJango::OnReceiveQuote(VtSymbol* sym)
 void VtFundMiniJango::OnOrderFilledHd(VtOrder* order)
 {
 	_FundPLGrid.InitGrid();
-	//_ProductGrid.ClearCells();
 	_ProductGrid.InitGrid();
 }
 

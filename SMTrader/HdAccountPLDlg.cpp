@@ -107,10 +107,16 @@ void HdAccountPLDlg::InitAccount()
 				acntName.append(subAcnt->AccountName);
 				index = _ComboAccount.AddString(acntName.c_str());
 				_ComboAccount.SetItemDataPtr(index, subAcnt);
+				if (_DefaultAccount.compare(subAcnt->AccountNo) == 0) { // 정해진 계좌가 있으면 선택
+					selAcnt = index;
+				}
 			}
 		}
+		if (_DefaultAccount.compare(acnt->AccountNo) == 0) { // 정해진 계좌가 있으면 선택
+			selAcnt = index;
+		}
 	}
-
+	
 	if (selAcnt != -1)
 	{
 		_ComboAccount.SetCurSel(selAcnt);
@@ -119,6 +125,20 @@ void HdAccountPLDlg::InitAccount()
 	}
 }
 
+
+void HdAccountPLDlg::Account(VtAccount* val)
+{
+	_Account = val;
+}
+
+void HdAccountPLDlg::SetAccount(VtAccount* acnt)
+{
+	_AccountGrid.ClearValues();
+	_ProductGrid.ClearValues();
+
+	_AccountGrid.InitGrid();
+	_ProductGrid.InitGrid();
+}
 
 int HdAccountPLDlg::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
@@ -189,7 +209,7 @@ void HdAccountPLDlg::OnCbnSelchangeComboAccount()
 		_AccountGrid.ClearValues();
 		_ProductGrid.ClearValues();
 		VtAccount* acnt = (VtAccount*)_ComboAccount.GetItemDataPtr(curSel);
-		acnt->GetAccountInfoNFee(1);
+		acnt->GetApiCustomerProfitLoss();
 		_Account = acnt;
 	}
 }

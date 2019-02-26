@@ -43,10 +43,12 @@ private:
 		_WindowEvent(this, arg);
 	}
 public:
+	std::string _DefaultAccount;
 	CComboBox _ComboAccount;
 	void InitAccount();
 	VtAccount* Account() const { return _Account; }
-	void Account(VtAccount* val) { _Account = val; }
+	void Account(VtAccount* val);
+	void SetAccount(VtAccount* acnt);
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnClose();
 	void OnReceiveQuote(VtSymbol* sym);
