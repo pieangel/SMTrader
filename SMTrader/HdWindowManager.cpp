@@ -61,16 +61,19 @@ void HdWindowManager::Save(simple::file_ostream<same_endian_type>& ss)
 		std::get<1>(item)->GetWindowRect(rcWnd);
 		ss << dlgType;
 		ss << rcWnd.left << rcWnd.top << rcWnd.right << rcWnd.bottom;
-		if ((HdWindowType)dlgType == HdWindowType::MiniJangoWindow) {
-			VtAccount* acnt = ((HdAccountPLDlg*)std::get<1>(item))->Account();
-			if (acnt)
-				ss << acnt->AccountNo;
-		}
-		else if ((HdWindowType)dlgType == HdWindowType::FundMiniJangoWindow) {
-			VtFund* fund = ((VtFundMiniJango*)std::get<1>(item))->Fund();
-			if (fund)
-				ss << fund->Name;
-		}
+// 		if ((HdWindowType)dlgType == HdWindowType::MiniJangoWindow) {
+// 			VtAccount* acnt = ((HdAccountPLDlg*)std::get<1>(item))->Account();
+// 			if (acnt)
+// 				ss << acnt->AccountNo;
+// 		}
+// 		else if ((HdWindowType)dlgType == HdWindowType::FundMiniJangoWindow) {
+// 			VtFund* fund = ((VtFundMiniJango*)std::get<1>(item))->Fund();
+// 			if (fund)
+// 				ss << fund->Name;
+// 		}
+// 		else {
+// 			std::string info = _T("no");
+// 		}
 	}
 }
 
@@ -85,10 +88,7 @@ void HdWindowManager::Load(simple::file_istream<same_endian_type>& ss)
 		CRect rcWnd;
 		ss >> rcWnd.left >> rcWnd.top >> rcWnd.right >> rcWnd.bottom;
 		std::string info;
-		if ((HdWindowType)type == HdWindowType::MiniJangoWindow || 
-			(HdWindowType)type == HdWindowType::FundMiniJangoWindow) {
-			ss >> info;
-		}
+		/*ss >> info;*/
 		RestoreDialog(wndType, rcWnd, info);
 	}
 }
