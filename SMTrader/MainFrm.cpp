@@ -97,6 +97,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CMDIFrameWndEx)
 	ON_COMMAND(ID_MULTIACCOUNT_BRIEF_BALANCE, &CMainFrame::OnShowMultiAccountBalance)
 
 	ON_COMMAND(ID_STRATEGY_TOOLBAR, &CMainFrame::OnStrategyToolbar)
+	ON_WM_TIMER()
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -534,6 +535,7 @@ void CMainFrame::OnLoginTest()
 
 void CMainFrame::OnClose()
 {
+	KillTimer(SysLiqTimer);
 	SaveSettings();
 	if (!ClearAllResources())
 		return;
@@ -623,6 +625,8 @@ void CMainFrame::OnReceiveComplete()
 		VtSaveManager* saveMgr = VtSaveManager::GetInstance();
 		saveMgr->LoadSystems(_T("systemlist.dat"));
 		saveMgr->LoadOrderWndList(_T("orderwndlist.dat"), this);
+
+		SetTimer(SysLiqTimer, 10000, NULL);
 	}
 }
 
@@ -887,4 +891,15 @@ void CMainFrame::OnSettimeToServer()
 {
 	VtHdClient* client = VtHdClient::GetInstance();
 	client->GetServerTime();
+}
+
+
+void CMainFrame::OnTimer(UINT_PTR nIDEvent)
+{
+	if (nIDEvent == SysLiqTimer) {
+		VtSystemManager* sysMgr = VtSystemManager::GetInstance();
+		sysMgr->OnRegularTimer();
+	}
+
+	CMDIFrameWndEx::OnTimer(nIDEvent);
 }

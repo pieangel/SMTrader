@@ -107,6 +107,19 @@ void VtSystem::OnTimer()
 	
 }
 
+void VtSystem::OnRegularTimer()
+{
+	// 청산 시간에 따른 청산 - 조건없이 무조건 청산한다.
+	if (_CurPosition != VtPositionType::None) {
+		if (LiqByEndTime()) {
+			_CurPosition = VtPositionType::None;
+			_LastEntryDailyIndex = -1;
+			LOG_F(INFO, _T("청산시간에 따른 청산성공"));
+			return;
+		}
+	}
+}
+
 bool VtSystem::IsEnterableByTime()
 {
 	int curTime = VtGlobal::GetTime(VtGlobal::GetLocalTime());

@@ -42,6 +42,7 @@ public:
 	void SetDataMap(VtChartData* chartData, VtSystem* system);
 	void UpdateSystem(int index);
 	void OnTimer();
+	void OnRegularTimer();
 	std::map<std::string, CppTime::timer_id> _TimerMap;
 	void InitDataSources();
 	void UpdateRealtimeArgs(VtChartData* chartData);

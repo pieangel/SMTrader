@@ -130,6 +130,7 @@ public:
 	VtFund* Fund() const { return _Fund; }
 	void Fund(VtFund* val) { _Fund = val; }
 	virtual void OnTimer();
+	void OnRegularTimer();
 	/// <summary>
 	/// 시간에 따른 진입 여부 확인
 	/// 정해진 시간 범위 내에 있으면 참을 반환, 그렇지 않으면 거짓을 반환한다.

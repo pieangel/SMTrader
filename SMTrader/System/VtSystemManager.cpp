@@ -319,6 +319,16 @@ void VtSystemManager::OnTimer()
 }
 
 
+void VtSystemManager::OnRegularTimer()
+{
+	for (auto it = _SystemVector.begin(); it != _SystemVector.end(); ++it) {
+		VtSystem* sys = *it;
+		if (sys->Enable()) {
+			sys->OnRegularTimer();
+		}
+	}
+}
+
 VtChartData* VtSystemManager::AddDataSource(std::string symCode, VtChartType type, int cycle)
 {
 	// 여기서 실시간 차트 데이터 수집을 등록해 준다.

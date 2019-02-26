@@ -10,6 +10,7 @@
 #include "VtProgressDlg.h"
 #include "VtMainToolbar.h"
 
+const int SysLiqTimer = 0x00000010;
 class VtSymbol;
 class VtChartContainer;
 class CMainFrame : public CMDIFrameWndEx
@@ -108,6 +109,7 @@ public:
 	afx_msg void OnShowMultiAccountBalance();
 	afx_msg void OnStrategyToolbar();
 	afx_msg void OnSettimeToServer();
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
 };
 
 
