@@ -683,6 +683,8 @@ void CMainFrame::OpenFundJango()
 
 bool CMainFrame::ClearAllResources()
 {
+	HdScheduler* sch = HdScheduler::GetInstance();
+	sch->ClearTasks();
 	VtTotalOrderManager* totalOrderMgr = VtTotalOrderManager::GetInstance();
 	std::vector<std::string> msgList = totalOrderMgr->GetUnsettledList();
 	if (totalOrderMgr->GetUnsettledCount() > 0) {

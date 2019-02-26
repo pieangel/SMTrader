@@ -167,12 +167,12 @@ void VtSaveManager::SaveOrderWndList(std::string fileName, CMainFrame* mainFrm)
 		orderDlgMgr->MainFrm(mainFrm);
 		orderDlgMgr->Save(outfile);
 
+		VtStrategyWndManager* stgWndMgr = VtStrategyWndManager::GetInstance();
+		stgWndMgr->Save(outfile);
+
 		HdWindowManager* dlgMgr = HdWindowManager::GetInstance();
 		dlgMgr->MainFrm(mainFrm);
 		dlgMgr->Save(outfile);
-
-		VtStrategyWndManager* stgWndMgr = VtStrategyWndManager::GetInstance();
-		stgWndMgr->Save(outfile);
 
 		outfile.flush();
 		outfile.close();
@@ -206,12 +206,12 @@ void VtSaveManager::LoadOrderWndList(std::string fileName, CMainFrame* mainFrm)
 	orderDlgMgr->MainFrm(mainFrm);
 	orderDlgMgr->Load(in);
 
+	VtStrategyWndManager* stgWndMgr = VtStrategyWndManager::GetInstance();
+	stgWndMgr->Load(in);
+
 	HdWindowManager* dlgMgr = HdWindowManager::GetInstance();
 	dlgMgr->MainFrm(mainFrm);
 	dlgMgr->Load(in);
-
-	VtStrategyWndManager* stgWndMgr = VtStrategyWndManager::GetInstance();
-	stgWndMgr->Load(in);
 
 	GetSymbolMasters();
 }
