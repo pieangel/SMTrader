@@ -43,6 +43,21 @@ END_MESSAGE_MAP()
 // VtAccountAssetDlg message handlers
 
 
+void VtAccountAssetDlg::Save(simple::file_ostream<same_endian_type>& ss)
+{
+	CRect rcWnd;
+	GetWindowRect(rcWnd);
+	ss << rcWnd.left << rcWnd.top << rcWnd.right << rcWnd.bottom;
+}
+
+void VtAccountAssetDlg::Load(simple::file_istream<same_endian_type>& ss)
+{
+	CRect rcWnd;
+	ss >> rcWnd.left >> rcWnd.top >> rcWnd.right >> rcWnd.bottom;
+	MoveWindow(rcWnd);
+	ShowWindow(SW_SHOW);
+}
+
 void VtAccountAssetDlg::InitTabCtrl()
 {
 	_TabCtrl.InsertItem(0, _T("¿¹Å¹ÀÜ°í ¹× Áõ°Å±Ý"));

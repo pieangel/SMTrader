@@ -22,6 +22,8 @@ public:
 	void OnWindowEvent(HdWindowEventArgs& arg);
 	void Save(simple::file_ostream<same_endian_type>& ss);
 	void Load(simple::file_istream<same_endian_type>& ss);
+	void Save(simple::file_ostream<same_endian_type>& ss, HdWindowType wndType, CWnd* wnd);
+	void Load(simple::file_istream<same_endian_type>& ss, HdWindowType wndType);
 	CMainFrame* MainFrm() const { return _MainFrm; }
 	void MainFrm(CMainFrame* val) { _MainFrm = val; }
 private:

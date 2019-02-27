@@ -77,12 +77,43 @@ BOOL HdAccountPLDlg::OnInitDialog()
 				  // EXCEPTION: OCX Property Pages should return FALSE
 }
 
+void HdAccountPLDlg::Save(simple::file_ostream<same_endian_type>& ss)
+{
+	CRect rcWnd;
+	GetWindowRect(rcWnd);
+	// 주문창 크기 및 위치 저장
+	ss << rcWnd.left << rcWnd.top << rcWnd.right << rcWnd.bottom;
+	if (_Account) {
+		ss << true;
+		ss << _Account->AccountNo;
+	}
+	else {
+		ss << false;
+	}
+}
+
+void HdAccountPLDlg::Load(simple::file_istream<same_endian_type>& ss)
+{
+	CRect rcWnd;
+	ss >> rcWnd.left >> rcWnd.top >> rcWnd.right >> rcWnd.bottom;
+	bool exist = false;
+	ss >> exist;
+	if (exist) {
+		ss >> _DefaultAccount;
+		SetDefaultAccount();
+	}
+	MoveWindow(rcWnd);
+	ShowWindow(SW_SHOW);
+}
+
 void HdAccountPLDlg::InitAccount()
 {
+	_ComboAccount.ResetContent();
 	VtGlobal* global = VtGlobal::GetInstance();
 	VtAccountManager* acntMgr = VtAccountManager::GetInstance();
 	int selAcnt = 0;
 	std::string acntName;
+	
 	for (auto it = acntMgr->AccountMap.begin(); it != acntMgr->AccountMap.end(); ++it)
 	{
 		VtAccount* acnt = it->second;
@@ -131,8 +162,9 @@ void HdAccountPLDlg::Account(VtAccount* val)
 	_Account = val;
 }
 
-void HdAccountPLDlg::SetAccount(VtAccount* acnt)
+void HdAccountPLDlg::SetDefaultAccount()
 {
+	InitAccount();
 	_AccountGrid.ClearValues();
 	_ProductGrid.ClearValues();
 

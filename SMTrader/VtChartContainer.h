@@ -9,6 +9,8 @@
 #include "HdWindowEvent.h"
 #include "Poco/BasicEvent.h"
 #include "VtChartTimeToolBar.h"
+#include "SimpleBinStream.h"
+using same_endian_type = std::is_same<simple::LittleEndian, simple::LittleEndian>;
 
 using Poco::BasicEvent;
 // VtChartContainer dialog
@@ -37,6 +39,8 @@ public:
 	virtual BOOL OnInitDialog();
 
 public:
+	void Save(simple::file_ostream<same_endian_type>& ss);
+	void Load(simple::file_istream<same_endian_type>& ss);
 	VtChartWindow* ActiveChartWnd() const { return _ActiveChartWnd; }
 	void ActiveChartWnd(VtChartWindow* val) { _ActiveChartWnd = val; }
 	int CurMode() const { return _CurMode; }

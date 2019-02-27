@@ -5,7 +5,8 @@
 #include "HdWindowEvent.h"
 #include "Poco/BasicEvent.h"
 #include "afxwin.h"
-//#include "TTComboBox.h"
+#include "SimpleBinStream.h"
+using same_endian_type = std::is_same<simple::LittleEndian, simple::LittleEndian>;
 
 using Poco::BasicEvent;
 
@@ -45,8 +46,11 @@ private:
 	VtFund* _Fund;
 	VtFundProductRemainGrid _ProductGrid;
 public:
+	void Save(simple::file_ostream<same_endian_type>& ss);
+	void Load(simple::file_istream<same_endian_type>& ss);
+
 	std::string _DefaultFund;
-	void SetFund(VtFund* fund);
+	void SetDefaultFund();
 	void OnFundAdded();
 	void OnFundDeleted(VtFund* fund);
 	void InitFund();

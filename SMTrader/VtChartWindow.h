@@ -20,6 +20,8 @@
 #include "VtReferenceChart.h"
 #include "Xml/pugixml.hpp"
 #include "Sound/Pipe.h"
+#include "SimpleBinStream.h"
+using same_endian_type = std::is_same<simple::LittleEndian, simple::LittleEndian>;
 
 #define WM_CHARTDATA_RECEIVED (WM_USER + 1000)
 #define WM_CHARTDATA_UPDATED (WM_USER + 1001)
@@ -72,6 +74,9 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 public:
+	void Save(simple::file_ostream<same_endian_type>& ss);
+	void Load(simple::file_istream<same_endian_type>& ss);
+
 	void InsertIndex(CMFCPropertyGridProperty* prop);
 	void CallTest();
 	void OnReceiveChartData(VtChartData* data);

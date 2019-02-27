@@ -4,7 +4,8 @@
 #include "afxwin.h"
 #include "HdWindowEvent.h"
 #include "Poco/BasicEvent.h"
-//#include "TTComboBox.h"
+#include "SimpleBinStream.h"
+using same_endian_type = std::is_same<simple::LittleEndian, simple::LittleEndian>;
 
 using Poco::BasicEvent;
 // HdAccountPLDlg dialog
@@ -43,12 +44,15 @@ private:
 		_WindowEvent(this, arg);
 	}
 public:
+	void Save(simple::file_ostream<same_endian_type>& ss);
+	void Load(simple::file_istream<same_endian_type>& ss);
+
 	std::string _DefaultAccount;
 	CComboBox _ComboAccount;
 	void InitAccount();
 	VtAccount* Account() const { return _Account; }
 	void Account(VtAccount* val);
-	void SetAccount(VtAccount* acnt);
+	void SetDefaultAccount();
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnClose();
 	void OnReceiveQuote(VtSymbol* sym);

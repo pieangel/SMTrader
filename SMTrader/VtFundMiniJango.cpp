@@ -46,11 +46,38 @@ END_MESSAGE_MAP()
 // VtFundMiniJango message handlers
 
 
-void VtFundMiniJango::SetFund(VtFund* fund)
+void VtFundMiniJango::Save(simple::file_ostream<same_endian_type>& ss)
 {
-	if (!fund)
-		return;
-	_Fund = fund;
+	CRect rcWnd;
+	GetWindowRect(rcWnd);
+	// 주문창 크기 및 위치 저장
+	ss << rcWnd.left << rcWnd.top << rcWnd.right << rcWnd.bottom;
+	if (_Fund) {
+		ss << true;
+		ss << _Fund->Name;
+	}
+	else {
+		ss << false;
+	}
+}
+
+void VtFundMiniJango::Load(simple::file_istream<same_endian_type>& ss)
+{
+	CRect rcWnd;
+	ss >> rcWnd.left >> rcWnd.top >> rcWnd.right >> rcWnd.bottom;
+	bool exist = false;
+	ss >> exist;
+	if (exist) {
+		ss >> _DefaultFund;
+		SetDefaultFund();
+	}
+	MoveWindow(rcWnd);
+	ShowWindow(SW_SHOW);
+}
+
+void VtFundMiniJango::SetDefaultFund()
+{
+	InitFund();
 	_FundPLGrid.ClearValues();
 	_ProductGrid.ClearValues();
 	_FundPLGrid.InitGrid();
@@ -145,12 +172,14 @@ void VtFundMiniJango::InitFund()
 		int index = _ComboFund.AddString(fund->Name.c_str());
 		if (_DefaultFund.compare(fund->Name) == 0) { // 정해진 펀드가 있으면 선택
 			selIndex = index;
+			_Fund = fund;
 		}
 		_ComboFund.SetItemDataPtr(index, fund);
 	}
 
 	if (selIndex == -1) { // 정해진 펀드가 없을 때 맨처음 펀드 선택
 		VtFund* fund = fundList.begin()->second;
+		_Fund = fund;
 		selIndex = 0;
 	}
 	// 찾은 펀드 선택

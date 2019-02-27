@@ -57,23 +57,42 @@ void HdWindowManager::Save(simple::file_ostream<same_endian_type>& ss)
 	for (auto it = _WindowMap.begin(); it != _WindowMap.end(); ++it) {
 		auto item = it->second;
 		int dlgType = (int)std::get<0>(item);
-		CRect rcWnd;
-		std::get<1>(item)->GetWindowRect(rcWnd);
 		ss << dlgType;
-		ss << rcWnd.left << rcWnd.top << rcWnd.right << rcWnd.bottom;
-// 		if ((HdWindowType)dlgType == HdWindowType::MiniJangoWindow) {
-// 			VtAccount* acnt = ((HdAccountPLDlg*)std::get<1>(item))->Account();
-// 			if (acnt)
-// 				ss << acnt->AccountNo;
-// 		}
-// 		else if ((HdWindowType)dlgType == HdWindowType::FundMiniJangoWindow) {
-// 			VtFund* fund = ((VtFundMiniJango*)std::get<1>(item))->Fund();
-// 			if (fund)
-// 				ss << fund->Name;
-// 		}
-// 		else {
-// 			std::string info = _T("no");
-// 		}
+		Save(ss, std::get<0>(item), std::get<1>(item));
+// 		int dlgType = (int)std::get<0>(item);
+// 		CRect rcWnd;
+// 		std::get<1>(item)->GetWindowRect(rcWnd);
+// 		ss << dlgType;
+// 		ss << rcWnd.left << rcWnd.top << rcWnd.right << rcWnd.bottom;
+	}
+}
+
+void HdWindowManager::Save(simple::file_ostream<same_endian_type>& ss, HdWindowType wndType, CWnd* wnd)
+{
+	if (!wnd)
+		return;
+
+	switch (wndType) {
+	case HdWindowType::ChartWindow: {
+		((VtChartWindow*) wnd)->Save(ss);
+	}
+	break;
+	case HdWindowType::FundMiniJangoWindow: {
+		((VtFundMiniJango*)wnd)->Save(ss);
+	}
+	break;
+	case HdWindowType::MiniJangoWindow: {
+		((HdAccountPLDlg*)wnd)->Save(ss);
+	}
+	break;
+	case HdWindowType::AssetWindow: {
+		((VtAccountAssetDlg*)wnd)->Save(ss);
+	}
+	break;
+	case HdWindowType::StrategyToolWindow: {
+		((VtStrategyToolWnd*)wnd)->Save(ss);
+	}
+	break;
 	}
 }
 
@@ -85,11 +104,48 @@ void HdWindowManager::Load(simple::file_istream<same_endian_type>& ss)
 		int type = 0;
 		ss >> type;
 		HdWindowType wndType = (HdWindowType)type;
-		CRect rcWnd;
-		ss >> rcWnd.left >> rcWnd.top >> rcWnd.right >> rcWnd.bottom;
-		std::string info;
-		/*ss >> info;*/
-		RestoreDialog(wndType, rcWnd, info);
+		Load(ss, wndType);
+// 		CRect rcWnd;
+// 		ss >> rcWnd.left >> rcWnd.top >> rcWnd.right >> rcWnd.bottom;
+// 		std::string info;
+// 		RestoreDialog(wndType, rcWnd, info);
+	}
+}
+
+void HdWindowManager::Load(simple::file_istream<same_endian_type>& ss, HdWindowType wndType)
+{
+	
+	switch (wndType) {
+	case HdWindowType::ChartWindow: {
+		VtChartWindow* dlg = new VtChartWindow((CWnd*)_MainFrm);
+		dlg->Create(IDD_DIALOG_CHART, (CWnd*)_MainFrm);
+		dlg->Load(ss);
+	}
+	break;
+	case HdWindowType::FundMiniJangoWindow: {
+		VtFundMiniJango* dlg = new VtFundMiniJango((CWnd*)_MainFrm);
+		dlg->Create(IDD_MINI_JANGO_FUND, (CWnd*)_MainFrm);
+		dlg->Load(ss);
+	}
+	break;
+	case HdWindowType::MiniJangoWindow: {
+		HdAccountPLDlg* dlg = new HdAccountPLDlg((CWnd*)_MainFrm);
+		dlg->Create(IDD_MINI_JANGO, (CWnd*)_MainFrm);
+		dlg->Load(ss);
+	}
+	break;
+	case HdWindowType::AssetWindow: {
+		VtAccountAssetDlg* dlg = new VtAccountAssetDlg((CWnd*)_MainFrm);
+		dlg->Create(IDD_ACCOUNT_ASSET, (CWnd*)_MainFrm);
+		dlg->Load(ss);
+	}
+	break;
+	case HdWindowType::StrategyToolWindow: {
+		VtStrategyToolWnd* dlg = new VtStrategyToolWnd((CWnd*)_MainFrm);
+		dlg->Create(IDD_STRATEGE_TOOLS, (CWnd*)_MainFrm);
+		dlg->Load(ss);
+	}
+	break;
 	}
 }
 

@@ -162,17 +162,29 @@ void VtSaveManager::SaveOrderWndList(std::string fileName, CMainFrame* mainFrm)
 		appPath.append(_T("\\"));
 		appPath.append(fileName);
 		simple::file_ostream<same_endian_type> outfile(appPath.c_str());
-
+		std::string seperator;
+		seperator = _T("order_wnd_list_begin");
+		outfile << seperator;
 		VtOrderDialogManager* orderDlgMgr = VtOrderDialogManager::GetInstance();
 		orderDlgMgr->MainFrm(mainFrm);
 		orderDlgMgr->Save(outfile);
+		seperator = _T("order_wnd_list_end");
+		outfile << seperator;
 
+		seperator = _T("strategy_wnd_list_begin");
+		outfile << seperator;
 		VtStrategyWndManager* stgWndMgr = VtStrategyWndManager::GetInstance();
 		stgWndMgr->Save(outfile);
+		seperator = _T("strategy_wnd_list_end");
+		outfile << seperator;
 
+		seperator = _T("others_wnd_list_begin");
+		outfile << seperator;
 		HdWindowManager* dlgMgr = HdWindowManager::GetInstance();
 		dlgMgr->MainFrm(mainFrm);
 		dlgMgr->Save(outfile);
+		seperator = _T("others_wnd_list_end");
+		outfile << seperator;
 
 		outfile.flush();
 		outfile.close();
@@ -202,16 +214,23 @@ void VtSaveManager::LoadOrderWndList(std::string fileName, CMainFrame* mainFrm)
 	simple::file_istream<same_endian_type> in(appPath.c_str());
 	if (in.file_length() == 0)
 		return;
+	std::string seperator;
+	in >> seperator;
 	VtOrderDialogManager* orderDlgMgr = VtOrderDialogManager::GetInstance();
 	orderDlgMgr->MainFrm(mainFrm);
 	orderDlgMgr->Load(in);
+	in >> seperator;
 
+	in >> seperator;
 	VtStrategyWndManager* stgWndMgr = VtStrategyWndManager::GetInstance();
 	stgWndMgr->Load(in);
+	in >> seperator;
 
+	in >> seperator;
 	HdWindowManager* dlgMgr = HdWindowManager::GetInstance();
 	dlgMgr->MainFrm(mainFrm);
 	dlgMgr->Load(in);
+	in >> seperator;
 
 	GetSymbolMasters();
 }

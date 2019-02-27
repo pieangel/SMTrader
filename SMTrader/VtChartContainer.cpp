@@ -167,6 +167,16 @@ BOOL VtChartContainer::OnInitDialog()
 }
 
 
+void VtChartContainer::Save(simple::file_ostream<same_endian_type>& ss)
+{
+
+}
+
+void VtChartContainer::Load(simple::file_istream<same_endian_type>& ss)
+{
+
+}
+
 void VtChartContainer::OnMouseHWheel(UINT nFlags, short zDelta, CPoint pt)
 {
 	if (_ActiveChartWnd)

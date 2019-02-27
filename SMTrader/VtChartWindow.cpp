@@ -199,6 +199,16 @@ void VtChartWindow::DoDataExchange(CDataExchange* pDX)
 }
 
 
+void VtChartWindow::Save(simple::file_ostream<same_endian_type>& ss)
+{
+
+}
+
+void VtChartWindow::Load(simple::file_istream<same_endian_type>& ss)
+{
+
+}
+
 void VtChartWindow::InsertIndex(CMFCPropertyGridProperty* prop)
 {
 // 	if (_ChartFrm)

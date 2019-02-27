@@ -2,7 +2,8 @@
 #include "VtStrategyGrid.h"
 #include "HdWindowEvent.h"
 #include "Poco/BasicEvent.h"
-
+#include "SimpleBinStream.h"
+using same_endian_type = std::is_same<simple::LittleEndian, simple::LittleEndian>;
 using Poco::BasicEvent;
 // VtStrategyToolWnd dialog
 class VtSystem;
@@ -32,6 +33,8 @@ private:
 		_WindowEvent(this, arg);
 	}
 public:
+	void Save(simple::file_ostream<same_endian_type>& ss);
+	void Load(simple::file_istream<same_endian_type>& ss);
 	void UpdateSystem(VtSystem* sys, bool enable);
 	virtual BOOL OnInitDialog();
 	afx_msg void OnClose();
