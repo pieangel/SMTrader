@@ -537,6 +537,7 @@
     <ClInclude Include="VtProductSection.h" />
     <ClInclude Include="VtProductSubSection.h" />
     <ClInclude Include="VtProgressDlg.h" />
+    <ClInclude Include="VtQCh.h" />
     <ClInclude Include="VtQF2.h" />
     <ClInclude Include="VtQH2.h" />
     <ClInclude Include="VtQIn1.h" />
@@ -933,6 +934,7 @@
     <ClCompile Include="VtProductSection.cpp" />
     <ClCompile Include="VtProductSubSection.cpp" />
     <ClCompile Include="VtProgressDlg.cpp" />
+    <ClCompile Include="VtQCh.cpp" />
     <ClCompile Include="VtQF2.cpp" />
     <ClCompile Include="VtQH2.cpp" />
     <ClCompile Include="VtQIn1.cpp" />

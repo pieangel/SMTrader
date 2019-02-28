@@ -1393,6 +1393,9 @@
     <ClInclude Include="FileWatch\VtFileEventMonitor.h">
       <Filter>FileWatch</Filter>
     </ClInclude>
+    <ClInclude Include="VtQCh.h">
+      <Filter>System\Kosdaq</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ChildFrm.cpp">
@@ -2507,6 +2510,9 @@
     </ClCompile>
     <ClCompile Include="FileWatch\ReadDirectoryServer.cpp">
       <Filter>FileWatch</Filter>
+    </ClCompile>
+    <ClCompile Include="VtQCh.cpp">
+      <Filter>System\Kosdaq</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -154,11 +154,14 @@ public:
 			}
 			std::string lastline;
 			getline(fs, lastline);
-			lastline.append(_T("\n"));
-			std::cout << lastline << std::endl;
-			TRACE(lastline.c_str());
+			std::string msg;
+			msg.append(filename);
+			msg.append(lastline);
+			msg.append(_T("\n"));
+			std::cout << msg << std::endl;
+			TRACE(msg.c_str());
 
-			std::vector<std::string> result = split(lastline, ' ');
+			std::vector<std::string> result = split(lastline, ',');
 			for (auto it = result.begin(); it != result.end(); /* NOTHING */)
 			{
 				if ((*it).empty())
@@ -176,13 +179,7 @@ public:
 			strftime(buffer, 80, " %H:%M:%S", timeinfo);
 			puts(buffer);
 			std::string curTime = buffer;
-			TRACE(curTime.c_str());
-			if (result.size() > 0 && result[1].length() > 6 && result[1].at(0) != ':') {
-				int signal_hour = std::stoi(result[1].substr(0, 2));
-				int local_hour = std::stoi(curTime.substr(0, 2));
-
-			}
-			
+			TRACE(curTime.c_str());			
 		}
 		else {
 			std::cout << "Could not find end line character" << std::endl;

@@ -89,6 +89,7 @@ void VtSystemGroupManager::InitSystemGroup()
 	sysGrp.AddSystem(VtSystemType::Q_IN4);
 	sysGrp.AddSystem(VtSystemType::Q_H2);
 	sysGrp.AddSystem(VtSystemType::Q_F2);
+	sysGrp.AddSystem(VtSystemType::Q_CH);
 	_SystemGroupVec.push_back(sysGrp);
 
 	sysGrp.ClearSystems();

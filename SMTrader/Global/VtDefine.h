@@ -254,6 +254,7 @@ enum class VtSystemType
 	Q_IN4,
 	Q_H2,
 	Q_F2,
+	Q_CH,
 	TR_US1,
 	TR_US2,
 	TR_US3,

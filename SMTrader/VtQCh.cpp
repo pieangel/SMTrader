@@ -1,5 +1,7 @@
 #include "stdafx.h"
-#include "VtKo3s.h"
+#include "VtQCh.h"
+
+
 #include "System/VtSignal.h"
 #include "VtChartData.h"
 #include "VtChartDataManager.h"
@@ -13,50 +15,29 @@
 #include "VtAccount.h"
 #include "VtFund.h"
 #include "VtCutManager.h"
-
-template < typename T>
-std::pair<bool, int > findInVector(const std::vector<T>  & vecOfElements, const T  & element)
-{
-	std::pair<bool, int > result;
-
-	// Find given element in vector
-	auto it = std::find(vecOfElements.begin(), vecOfElements.end(), element);
-
-	if (it != vecOfElements.end())
-	{
-		result.second = distance(vecOfElements.begin(), it);
-		result.first = true;
-	}
-	else
-	{
-		result.first = false;
-		result.second = -1;
-	}
-
-	return result;
-}
+#include "VtGlobal.h"
 
 
-VtKo3s::VtKo3s()
+VtQCh::VtQCh()
 	:VtSystem()
 {
 	InitArgs();
 }
 
 
-VtKo3s::VtKo3s(VtSystemType type)
+VtQCh::VtQCh(VtSystemType type)
 	:VtSystem(type)
 {
 	InitArgs();
 }
 
-VtKo3s::VtKo3s(VtSystemType systemType, std::string name)
+VtQCh::VtQCh(VtSystemType systemType, std::string name)
 	: VtSystem(systemType, name)
 {
 	InitArgs();
 }
 
-VtKo3s::~VtKo3s()
+VtQCh::~VtQCh()
 {
 	VtRealtimeRegisterManager* realRegiMgr = VtRealtimeRegisterManager::GetInstance();
 	for (auto it = _DataSrcSymbolVec.begin(); it != _DataSrcSymbolVec.end(); ++it) {
@@ -69,51 +50,59 @@ VtKo3s::~VtKo3s()
 /// 그리고 최초 등록에서 실시간으로 데이터를 축적할 수 있도록 
 /// 차트 데이터 컬렉터에 요청을 한다.
 /// </summary>
-void VtKo3s::SetDataSrc()
+void VtQCh::SetDataSrc()
 {
 	VtSystem::SetDataSrc();
 }
 
-void VtKo3s::InitArgs()
+void VtQCh::InitArgs()
 {
 	// 이미 매개변수가 로딩 됐다면 더이사 읽어 들이지 않는다.
 	if (_ArgsLoaded)
 		return;
 
 
+
 	_Cycle = 1;
 
-	_EntranceStartTime.hour = 9;
+	_EntranceStartTime.hour = 11;
 	_EntranceStartTime.min = 0;
 	_EntranceStartTime.sec = 0;
 
 	_EntranceEndTime.hour = 15;
-	_EntranceEndTime.min = 0;
+	_EntranceEndTime.min = 15;
 	_EntranceEndTime.sec = 0;
 
 	_LiqTime.hour = 15;
-	_LiqTime.min = 34;
+	_LiqTime.min = 14;
 	_LiqTime.sec = 30;
 
-	_MaxEntrance = 1;
+	_MaxEntrance = 2;
 
 	_EntryBarIndex = 0;
-	_ATRTime.hour = 9;
-	_ATRTime.min = 0;
+	_ATRTime.hour = 14;
+	_ATRTime.min = 30;
 	_ATRTime.sec = 0;
 	_ATR = 20;
 
 	_ATRMulti = 2.0;
-	_BandMulti = 0.25;
+	_BandMulti = 0.333;
 	_FilterMulti = 3.0;
 
 	VtSystemArg arg;
 
-	arg.Name = _T("Kbs-Kas");
+	arg.Name = _T("Qbc>Qac");
 	arg.Type = VtParamType::STRING;
-	arg.sValue = _T("1500");
+	arg.sValue = _T("1");
 	arg.Enable = true;
-	arg.Desc = _T("Kbs-Kas 값을 설정 합니다.");
+	arg.Desc = _T("Qbc>Qac 값을 설정 합니다.");
+	AddSystemArg(_T("매수진입"), arg);
+
+	arg.Name = _T("Qbs>Qas");
+	arg.Type = VtParamType::STRING;
+	arg.sValue = _T("1");
+	arg.Enable = true;
+	arg.Desc = _T("Qbs>Qas 값을 설정 합니다.");
 	AddSystemArg(_T("매수진입"), arg);
 
 	arg.Name = _T("Kbc>Kac");
@@ -121,13 +110,6 @@ void VtKo3s::InitArgs()
 	arg.sValue = _T("1");
 	arg.Enable = false;
 	arg.Desc = _T("Kbc>Kac 값을 설정 합니다.");
-	AddSystemArg(_T("매수진입"), arg);
-
-	arg.Name = _T("Qbc>Qac");
-	arg.Type = VtParamType::STRING;
-	arg.sValue = _T("1");
-	arg.Enable = false;
-	arg.Desc = _T("Qbc>Qac 값을 설정 합니다.");
 	AddSystemArg(_T("매수진입"), arg);
 
 	arg.Name = _T("Uac>Ubc");
@@ -137,11 +119,18 @@ void VtKo3s::InitArgs()
 	arg.Desc = _T("Uac-Ubc 값을 설정 합니다.");
 	AddSystemArg(_T("매수진입"), arg);
 
-	arg.Name = _T("Kas-Kbs");
+	arg.Name = _T("Qac>Qbc");
 	arg.Type = VtParamType::STRING;
-	arg.sValue = _T("1500");
+	arg.sValue = _T("1");
 	arg.Enable = true;
-	arg.Desc = _T("Kas-Kbs 값을 설정 합니다.");
+	arg.Desc = _T("Qac>Qbc 값을 설정 합니다.");
+	AddSystemArg(_T("매도진입"), arg);
+
+	arg.Name = _T("Qas>Qbs");
+	arg.Type = VtParamType::STRING;
+	arg.sValue = _T("1");
+	arg.Enable = true;
+	arg.Desc = _T("Qas>Qbs 값을 설정 합니다.");
 	AddSystemArg(_T("매도진입"), arg);
 
 	arg.Name = _T("Kac>Kbc");
@@ -151,13 +140,6 @@ void VtKo3s::InitArgs()
 	arg.Desc = _T("Kbc>Kac 값을 설정 합니다.");
 	AddSystemArg(_T("매도진입"), arg);
 
-	arg.Name = _T("Qac>Qbc");
-	arg.Type = VtParamType::STRING;
-	arg.sValue = _T("1");
-	arg.Enable = false;
-	arg.Desc = _T("Qac>Qbc 값을 설정 합니다.");
-	AddSystemArg(_T("매도진입"), arg);
-
 	arg.Name = _T("Ubc>Uac");
 	arg.Type = VtParamType::STRING;
 	arg.sValue = _T("1");
@@ -165,11 +147,18 @@ void VtKo3s::InitArgs()
 	arg.Desc = _T("Ubc>Uac 값을 설정 합니다.");
 	AddSystemArg(_T("매도진입"), arg);
 
-	arg.Name = _T("Kas-Kbs");
+	arg.Name = _T("Qac>Qbc");
 	arg.Type = VtParamType::STRING;
-	arg.sValue = _T("1500");
+	arg.sValue = _T("1");
 	arg.Enable = true;
-	arg.Desc = _T("Kas-Kbs 값을 설정 합니다.");
+	arg.Desc = _T("Qac>Qbc 값을 설정 합니다.");
+	AddSystemArg(_T("매수청산"), arg);
+
+	arg.Name = _T("Qas>Qbs");
+	arg.Type = VtParamType::STRING;
+	arg.sValue = _T("1");
+	arg.Enable = true;
+	arg.Desc = _T("Qas>Qbs 값을 설정 합니다.");
 	AddSystemArg(_T("매수청산"), arg);
 
 	arg.Name = _T("Kac>Kbc");
@@ -179,13 +168,6 @@ void VtKo3s::InitArgs()
 	arg.Desc = _T("Kbc>Kac 값을 설정 합니다.");
 	AddSystemArg(_T("매수청산"), arg);
 
-	arg.Name = _T("Qac>Qbc");
-	arg.Type = VtParamType::STRING;
-	arg.sValue = _T("1");
-	arg.Enable = false;
-	arg.Desc = _T("Qac>Qbc 값을 설정 합니다.");
-	AddSystemArg(_T("매수청산"), arg);
-
 	arg.Name = _T("Ubc>Uac");
 	arg.Type = VtParamType::STRING;
 	arg.sValue = _T("1");
@@ -193,11 +175,18 @@ void VtKo3s::InitArgs()
 	arg.Desc = _T("Ubc>Uac 값을 설정 합니다.");
 	AddSystemArg(_T("매수청산"), arg);
 
-	arg.Name = _T("Kbs-Kas");
+	arg.Name = _T("Qbc>Qac");
 	arg.Type = VtParamType::STRING;
-	arg.sValue = _T("1500");
+	arg.sValue = _T("1");
 	arg.Enable = true;
-	arg.Desc = _T("Kbs-Kas 값을 설정 합니다.");
+	arg.Desc = _T("Qbc>Qac 값을 설정 합니다.");
+	AddSystemArg(_T("매도청산"), arg);
+
+	arg.Name = _T("Qbs>Qas");
+	arg.Type = VtParamType::STRING;
+	arg.sValue = _T("1");
+	arg.Enable = true;
+	arg.Desc = _T("Qbs>Qas 값을 설정 합니다.");
 	AddSystemArg(_T("매도청산"), arg);
 
 	arg.Name = _T("Kbc>Kac");
@@ -205,13 +194,6 @@ void VtKo3s::InitArgs()
 	arg.sValue = _T("1");
 	arg.Enable = false;
 	arg.Desc = _T("Kbc>Kac 값을 설정 합니다.");
-	AddSystemArg(_T("매도청산"), arg);
-
-	arg.Name = _T("Qbc>Qac");
-	arg.Type = VtParamType::STRING;
-	arg.sValue = _T("1");
-	arg.Enable = false;
-	arg.Desc = _T("Qbc>Qac 값을 설정 합니다.");
 	AddSystemArg(_T("매도청산"), arg);
 
 	arg.Name = _T("Uac>Ubc");
@@ -230,7 +212,7 @@ void VtKo3s::InitArgs()
 
 	arg.Name = _T("ATR Time");
 	arg.Type = VtParamType::STRING;
-	arg.sValue = _T("9:00");
+	arg.sValue = _T("14:30");
 	arg.Enable = false;
 	arg.Desc = _T("ATR Time값을 설정 합니다.");
 	AddSystemArg(_T("기타변수"), arg);
@@ -244,7 +226,7 @@ void VtKo3s::InitArgs()
 
 	arg.Name = _T("BandMulti");
 	arg.Type = VtParamType::STRING;
-	arg.sValue = _T("0.25");
+	arg.sValue = _T("0.333");
 	arg.Enable = false;
 	arg.Desc = _T("BandMulti 값을 설정 합니다.");
 	AddSystemArg(_T("기타변수"), arg);
@@ -269,10 +251,11 @@ void VtKo3s::InitArgs()
 	arg.Enable = false;
 	arg.Desc = _T("c>o,c<o 값을 설정 합니다.");
 	AddSystemArg(_T("기타변수"), arg);
+
 	VtSystem::InitArgs();
 }
 
-void VtKo3s::CreateSignal(int startIndex, int endIndex)
+void VtQCh::CreateSignal(int startIndex, int endIndex)
 {
 	if (!_DateTime)
 		return;
@@ -298,8 +281,7 @@ void VtKo3s::CreateSignal(int startIndex, int endIndex)
 	}
 }
 
-
-VtPositionType VtKo3s::UpdateSignal(int start, int end)
+VtPositionType VtQCh::UpdateSignal(int start, int end)
 {
 	VtPositionType sigType = VtPositionType::None;
 	VtPositionType oldSigType = _LastSignalType;
@@ -323,7 +305,7 @@ VtPositionType VtKo3s::UpdateSignal(int start, int end)
 	return sigType;
 }
 
-void VtKo3s::SetDataMap(VtChartData* chartData)
+void VtQCh::SetDataMap(VtChartData* chartData)
 {
 	VtSystem::SetDataMap(chartData);
 
@@ -340,7 +322,7 @@ void VtKo3s::SetDataMap(VtChartData* chartData)
 	}
 }
 
-void VtKo3s::SaveToXml(pugi::xml_node& node)
+void VtQCh::SaveToXml(pugi::xml_node& node)
 {
 	VtSystem::SaveToXml(node);
 
@@ -350,7 +332,7 @@ void VtKo3s::SaveToXml(pugi::xml_node& node)
 
 }
 
-void VtKo3s::LoadFromXml(pugi::xml_node& node)
+void VtQCh::LoadFromXml(pugi::xml_node& node)
 {
 	VtSystem::LoadFromXml(node);
 
@@ -363,7 +345,7 @@ void VtKo3s::LoadFromXml(pugi::xml_node& node)
 /// </summary>
 /// <param name="index"></param>
 /// <returns></returns>
-VtPositionType VtKo3s::UpdateSignal(int index)
+VtPositionType VtQCh::UpdateSignal(int index)
 {
 	// 시스템 업데이트
 	UpdateSystem(index);
@@ -392,13 +374,21 @@ VtPositionType VtKo3s::UpdateSignal(int index)
 	return _ExpPosition;
 }
 
-void VtKo3s::OnTimer()
+void VtQCh::OnTimer()
 {
 	if (!_Enable || !_Symbol)
 		return;
 	// 진입 시작시간 0분에 나오는 신호는 무시한다.
 	if (!CheckEntranceBar())
 		return;
+	// 청산 시간에 따른 청산 - 조건없이 무조건 청산한다.
+	if (_CurPosition != VtPositionType::None) {
+		if (LiqByEndTime()) {
+			_CurPosition = VtPositionType::None;
+			_LastEntryDailyIndex = -1;
+			return;
+		}
+	}
 	// 포지션에 따른 청산
 	// 매수일 때 청산 조건 확인
 	if (_CurPosition == VtPositionType::Buy) {
@@ -475,27 +465,27 @@ void VtKo3s::OnTimer()
 	}
 }
 
-void VtKo3s::UpdateSystem(int index)
+void VtQCh::UpdateSystem(int index)
 {
 	VtSystem::UpdateSystem(index);
 }
 
-void VtKo3s::ReadExtraArgs()
+void VtQCh::ReadExtraArgs()
 {
 	VtSystem::ReadExtraArgs();
 }
 
-void VtKo3s::ReloadSystem(int startIndex, int endIndex)
+void VtQCh::ReloadSystem(int startIndex, int endIndex)
 {
 	ClearSignal();
 	CreateSignal(startIndex, endIndex);
 }
 
-bool VtKo3s::CheckEntranceForBuy()
+bool VtQCh::CheckEntranceForBuy()
 {
 	std::vector<bool> argCond;
 
-	argCond.push_back(CheckCondition(_T("매수진입")));
+	argCond.push_back(CheckEntCondition());
 
 	if (_EnableByBand) {
 		// 밴드에 의한 조건을 먼저 확인한다.
@@ -514,7 +504,7 @@ bool VtKo3s::CheckEntranceForBuy()
 		return true;
 }
 
-bool VtKo3s::CheckEntranceForBuy(size_t index)
+bool VtQCh::CheckEntranceForBuy(size_t index)
 {
 	std::vector<bool> argCond;
 
@@ -537,11 +527,11 @@ bool VtKo3s::CheckEntranceForBuy(size_t index)
 		return true;
 }
 
-bool VtKo3s::CheckEntranceForSell()
+bool VtQCh::CheckEntranceForSell()
 {
 	std::vector<bool> argCond;
 
-	argCond.push_back(CheckCondition(_T("매도진입")));
+	argCond.push_back(CheckEntCondition());
 
 	if (_EnableByBand) {
 		// 밴드에 의한 조건을 먼저 확인한다.
@@ -560,7 +550,7 @@ bool VtKo3s::CheckEntranceForSell()
 		return true;
 }
 
-bool VtKo3s::CheckEntranceForSell(size_t index)
+bool VtQCh::CheckEntranceForSell(size_t index)
 {
 	std::vector<bool> argCond;
 
@@ -583,7 +573,7 @@ bool VtKo3s::CheckEntranceForSell(size_t index)
 		return true;
 }
 
-bool VtKo3s::CheckLiqForSell()
+bool VtQCh::CheckLiqForSell()
 {
 	std::vector<bool> argCond;
 
@@ -604,7 +594,7 @@ bool VtKo3s::CheckLiqForSell()
 		return true;
 }
 
-bool VtKo3s::CheckLiqForSell(size_t index)
+bool VtQCh::CheckLiqForSell(size_t index)
 {
 	std::vector<bool> argCond;
 
@@ -625,7 +615,7 @@ bool VtKo3s::CheckLiqForSell(size_t index)
 		return true;
 }
 
-bool VtKo3s::CheckLiqForBuy()
+bool VtQCh::CheckLiqForBuy()
 {
 	std::vector<bool> argCond;
 
@@ -646,7 +636,7 @@ bool VtKo3s::CheckLiqForBuy()
 		return true;
 }
 
-bool VtKo3s::CheckLiqForBuy(size_t index)
+bool VtQCh::CheckLiqForBuy(size_t index)
 {
 	std::vector<bool> argCond;
 
@@ -665,4 +655,59 @@ bool VtKo3s::CheckLiqForBuy(size_t index)
 		return false;
 	else
 		return true;
+}
+
+bool VtQCh::CheckEntCondition()
+{
+	VtTime time = VtGlobal::GetLocalTime();
+	if (!(time.hour >= _ATRTime.hour && time.min >= _ATRTime.min))
+		return false;
+	int curDailyIndex = GetDailyIndex();
+	if (_Symbol && _LastEntryDailyIndex >= 0 && curDailyIndex > _LastEntryDailyIndex) {
+
+		// 현재 종목의 시고저종을 가져온다.
+		std::string dataKey = VtChartDataManager::MakeChartDataKey(_Symbol->ShortCode, VtChartType::MIN, _Cycle);
+		VtChartData* chartData = _RefDataMap[dataKey];
+		if (!chartData)
+			return false;
+
+		std::vector<double>& closeArray = chartData->GetDataArray(_T("close"));
+		std::vector<double>& highArray = chartData->GetDataArray(_T("high"));
+		std::vector<double>& lowArray = chartData->GetDataArray(_T("low"));
+		std::vector<double>& timeArray = chartData->GetDataArray(_T("time"));
+		int index11 = closeArray.size() - 1;
+		for (int i = index11; i >= 0; --i) {
+			int curTime = (int)timeArray[i];
+			if (curTime == 110000) {
+				index11 = i;
+				break;
+			}
+		}
+
+		int dailyStartIndex = closeArray.size() - 1 - curDailyIndex;
+		int startIndex = dailyStartIndex + _LastEntryDailyIndex + 1;
+		int endIndex = index11;
+		double maxClose = closeArray[startIndex];
+		double minClose = maxClose;
+		for (int i = startIndex; i <= endIndex; ++i) {
+			if (closeArray[i] > maxClose) {
+				maxClose = closeArray[i];
+			}
+			if (closeArray[i] < minClose) {
+				minClose = closeArray[i];
+			}
+		}
+
+		double atr = GetAtr(closeArray.size() - 1, _ATR, highArray.data(), lowArray.data(), closeArray.data());
+		LOG_F(INFO, _T("CheckAtrLiqForBuy : Code = %s, close = %.2f, maxClose = %.2f, atr = %.2f, _ATRMulti = %.2f"), _Symbol->ShortCode, closeArray.back(), maxClose, atr, _ATRMulti);
+		if (closeArray.back() < maxClose - atr * _ATRMulti) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	else {
+		return false;
+	}
 }

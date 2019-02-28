@@ -32,6 +32,7 @@
 #include "../VtKp6In2.h"
 #include "../VtQH2.h"
 #include "../VtQF2.h"
+#include "../VtQCh.h"
 #include "../VtProductCategoryManager.h"
 #include "../VtRealtimeRegisterManager.h"
 #include "../VtSymbol.h"
@@ -126,6 +127,9 @@ VtSystem* VtSystemManager::CreateSystem(VtSystemType systemType)
 		break;
 	case VtSystemType::Q_F2:
 		system = new VtQF2(VtSystemType::Q_F2, _T("Q_F2"));
+		break;
+	case VtSystemType::Q_CH:
+		system = new VtQCh(VtSystemType::Q_CH, _T("Q_CH"));
 		break;
 	case VtSystemType::TR_US1:
 		system = new VtTrUs1(VtSystemType::TR_US1, _T("TR_US1"));
