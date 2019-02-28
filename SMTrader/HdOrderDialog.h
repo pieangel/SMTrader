@@ -33,6 +33,7 @@ private:
 	std::vector<VtOrder*> FindByAccount(std::pair<int, std::string> acntNo);
 	std::vector<VtOrder*> FindBySymbol(std::string symbolCode);
 public:
+	virtual void PostNcDestroy();
 	virtual BOOL OnInitDialog();
 	CButton _CheckShowCancelOrders;
 	CButton _CheckShowRealAccountOnly;

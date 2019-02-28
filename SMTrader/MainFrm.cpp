@@ -723,9 +723,9 @@ void CMainFrame::CreateFileWatch()
 	// TODO: 여기에 추가 초기화 작업을 추가합니다.
 	_FildMonitor = new VtFileEventMonitor();
 	//_FildMonitor->AddMonDir(_T("C:\\예스트레이더\\YesLang"), true);
-	_FildMonitor->AddMonDir(_T("C:\\WRFutures\\YesGlobalPro\\YesLang"), true);
+	//_FildMonitor->AddMonDir(_T("C:\\WRFutures\\YesGlobalPro\\YesLang"), true);
 	//C:\WRFutures\YesGlobalPro\YesLang
-	//_FildMonitor->AddMonDir(_T("C:\\WRFutures\\YesGlobalPro\\Spot\\Export"), true);
+	_FildMonitor->AddMonDir(_T("C:\\WRFutures\\YesGlobalPro\\Spot\\Export"), true);
 	_FildMonitor->Start();
 }
 
@@ -880,8 +880,9 @@ void CMainFrame::OnShowBalance()
 
 void CMainFrame::OnShowOrderList()
 {
-	HdOrderDialog dlg;
-	dlg.DoModal();
+	HdOrderDialog* dlg = new HdOrderDialog();
+	dlg->Create(IDD_ORDER_TOTAL, this);
+	dlg->ShowWindow(SW_SHOW);
 }
 
 void CMainFrame::OnShowStopList()

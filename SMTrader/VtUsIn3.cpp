@@ -125,7 +125,7 @@ void VtUsIn3::InitArgs()
 	arg.Name = _T("Uas>Ubs");
 	arg.Type = VtParamType::STRING;
 	arg.sValue = _T("1");
-	arg.Enable = false;
+	arg.Enable = true;
 	arg.Desc = _T("Uas-Ubs 값을 설정 합니다.");
 	AddSystemArg(_T("매도진입"), arg);
 

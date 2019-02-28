@@ -163,3 +163,9 @@ void HdOrderDialog::OnBnClickedMfcbuttonState()
 {
 	// TODO: Add your control notification handler code here
 }
+
+void HdOrderDialog::PostNcDestroy()
+{
+	delete this;
+	CDialogEx::PostNcDestroy();
+}
