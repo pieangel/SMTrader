@@ -207,6 +207,14 @@ void VtUsdStrategyConfigDlg::InitComboMap()
 		_SystemMap[i] = std::make_pair(sysList1[i]->Name(), sysList1[i]);
 	}
 	total += sysList1.size();
+
+	cat = strCatMgr->GetSystemGroup(VtSystemGroupType::KOSDAQ150F);
+	std::vector<VtSystem*>& sysList4 = cat->GetSystemList();
+	for (size_t j = 0; j < sysList4.size(); ++j) {
+		_SystemMap[total + j] = std::make_pair(sysList4[j]->Name(), sysList4[j]);
+	}
+	total += sysList4.size();
+
 	cat = strCatMgr->GetSystemGroup(VtSystemGroupType::KOSDAQ150F);
 	std::vector<VtSystem*>& sysList2 = cat->GetSystemList();
 	for (size_t j = 0; j < sysList2.size(); ++j) {

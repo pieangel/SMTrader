@@ -77,13 +77,6 @@ VtHdCtrl::VtHdCtrl(CWnd* pParent /*=NULL*/)
 
 	HdScheduler* scheduler = HdScheduler::GetInstance();
 	_TaskCompleteEvent += delegate(scheduler, &HdScheduler::OnTaskCompleted);
-
-#ifdef _DEBUG
-	m_sUserId = _T("angelpie");
-	m_sUserPw = _T("orion1");
-	m_sAuthPw = _T("11orion@@@");
-	m_sAcntPw = _T("1234");
-#endif
 }
 
 VtHdCtrl::~VtHdCtrl()

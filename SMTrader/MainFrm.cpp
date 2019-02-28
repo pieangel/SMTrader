@@ -49,7 +49,7 @@
 #include "VtChartDataCollector.h"
 #include "VtLogInDlg.h"
 #include "VtStrategyWndManager.h"
-
+#include "FileWatch/VtFileEventMonitor.h"
 extern TApplicationFont g_Font;
 
 #ifdef _DEBUG
@@ -133,6 +133,10 @@ CMainFrame::CMainFrame()
 
 CMainFrame::~CMainFrame()
 {
+	if (_FildMonitor) {
+		delete _FildMonitor;
+		_FildMonitor = nullptr;
+	}
 }
 
 int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
@@ -567,7 +571,7 @@ void CMainFrame::OnShowWindow(BOOL bShow, UINT nStatus)
 			value = configMgr->getString(section, name);
 
 			VtAccountPasswordDlg dlg;
-			if (!saveMgr->IsAccountFileExist() || value.compare(_T("false")) == 0)
+			if (value.length() > 0 && (!saveMgr->IsAccountFileExist() || value.compare(_T("false")) == 0))
 				dlg.FromServer(true);
 			else
 				dlg.FromServer(false);
@@ -580,9 +584,16 @@ void CMainFrame::OnShowWindow(BOOL bShow, UINT nStatus)
 			std::string min = configMgr->getString(section, name);
 			name = _T("open_sec");
 			std::string sec = configMgr->getString(section, name);
-			VtGlobal::OpenTime.hour = std::stoi(hour);
-			VtGlobal::OpenTime.min = std::stoi(min);
-			VtGlobal::OpenTime.sec = std::stoi(sec);
+			if (hour.length() > 0 && min.length() > 0 && sec.length() > 0) {
+				VtGlobal::OpenTime.hour = std::stoi(hour);
+				VtGlobal::OpenTime.min = std::stoi(min);
+				VtGlobal::OpenTime.sec = std::stoi(sec);
+			}
+			else {
+				VtGlobal::OpenTime.hour = 9;
+				VtGlobal::OpenTime.min = 0;
+				VtGlobal::OpenTime.sec = 0;
+			}
 
 			name = _T("close_hour");
 			hour = configMgr->getString(section, name);
@@ -590,9 +601,35 @@ void CMainFrame::OnShowWindow(BOOL bShow, UINT nStatus)
 			min = configMgr->getString(section, name);
 			name = _T("close_sec");
 			sec = configMgr->getString(section, name);
-			VtGlobal::CloseTime.hour = std::stoi(hour);
-			VtGlobal::CloseTime.min = std::stoi(min);
-			VtGlobal::CloseTime.sec = std::stoi(sec);
+			if (hour.length() > 0 && min.length() > 0 && sec.length() > 0) {
+				VtGlobal::CloseTime.hour = std::stoi(hour);
+				VtGlobal::CloseTime.min = std::stoi(min);
+				VtGlobal::CloseTime.sec = std::stoi(sec);
+			}
+			else {
+				VtGlobal::CloseTime.hour = 15;
+				VtGlobal::CloseTime.min = 45;
+				VtGlobal::CloseTime.sec = 0;
+			}
+
+			section = _T("FILE_WATCH");
+			std::string file_watch_flag;
+			name = _T("enable");
+			file_watch_flag = configMgr->getString(section, name);
+			std::string file_watch_path;
+			name = _T("path");
+			file_watch_path = configMgr->getString(section, name);
+			if (file_watch_flag.length() > 0 && stoi(file_watch_flag) == 1) {
+				_EnableFileWatch = true;
+			}
+			else {
+				_EnableFileWatch = false;
+			}
+
+			_FleWathPath = file_watch_path;
+			if (_FleWathPath.length() > 0) {
+				CreateFileWatch();
+			}
 
 			VtRealtimeRegisterManager* regMgr = VtRealtimeRegisterManager::GetInstance();
 			regMgr->RegisterCurrent();
@@ -680,6 +717,17 @@ void CMainFrame::OpenFundJango()
 	fundPLDlg->ShowWindow(SW_SHOW);
 }
 
+
+void CMainFrame::CreateFileWatch()
+{
+	// TODO: 여기에 추가 초기화 작업을 추가합니다.
+	_FildMonitor = new VtFileEventMonitor();
+	//_FildMonitor->AddMonDir(_T("C:\\예스트레이더\\YesLang"), true);
+	_FildMonitor->AddMonDir(_T("C:\\WRFutures\\YesGlobalPro\\YesLang"), true);
+	//C:\WRFutures\YesGlobalPro\YesLang
+	//_FildMonitor->AddMonDir(_T("C:\\WRFutures\\YesGlobalPro\\Spot\\Export"), true);
+	_FildMonitor->Start();
+}
 
 bool CMainFrame::ClearAllResources()
 {

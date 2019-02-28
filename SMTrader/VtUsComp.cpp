@@ -347,11 +347,6 @@ VtPositionType VtUsComp::UpdateSignal(int index)
 	// 시스템 업데이트
 	UpdateSystem(index);
 
-	// 청산 시간에 의한 청산 확인
-	if (_CurPosition != VtPositionType::None && LiqByEndTime(index)) {
-		LOG_F(INFO, _T("청산시간에 따른 청산성공"));
-		_CurPosition = VtPositionType::None;
-	}
 
 	// 손절 확인
 	if (_CurPosition != VtPositionType::None && CheckLossCut(index)) {

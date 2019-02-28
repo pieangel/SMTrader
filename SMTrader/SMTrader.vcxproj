@@ -90,7 +90,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;_CRT_SECURE_NO_WARNINGS;POCO_NO_UNWINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>../include;$(POCO_ROOT)\Util\include;$(POCO_ROOT)\Foundation\include;$(POCO_ROOT)\Data\include;$(POCO_ROOT)\Net\include;$(POCO_ROOT)\Data\MySQL\include;.\Ultimate Toolbox\include</AdditionalIncludeDirectories>
     </ClCompile>
@@ -139,7 +139,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_CRT_SECURE_NO_WARNINGS;POCO_NO_UNWINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>../include;$(POCO_ROOT)\Util\include;$(POCO_ROOT)\Foundation\include;$(POCO_ROOT)\Data\include;$(POCO_ROOT)\Net\include;$(POCO_ROOT)\Data\MySQL\include;.\Ultimate Toolbox\include</AdditionalIncludeDirectories>
     </ClCompile>
@@ -160,6 +160,9 @@
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
+    <Manifest>
+      <EnableDpiAwareness>false</EnableDpiAwareness>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -233,6 +236,17 @@
     <ClInclude Include="Drawing\VtVLineTracker.h" />
     <ClInclude Include="ETSLayout.h" />
     <ClInclude Include="FileView.h" />
+    <ClInclude Include="FileWatch\auto_release.h" />
+    <ClInclude Include="FileWatch\CompletionRoutineRequest.h" />
+    <ClInclude Include="FileWatch\CompletionRoutineServer.h" />
+    <ClInclude Include="FileWatch\IoCompletionPort.h" />
+    <ClInclude Include="FileWatch\IoCompletionPortReqeust.h" />
+    <ClInclude Include="FileWatch\IoCompletionPortServer.h" />
+    <ClInclude Include="FileWatch\ReadDirectoryChanges.h" />
+    <ClInclude Include="FileWatch\ReadDirectoryRequest.h" />
+    <ClInclude Include="FileWatch\ReadDirectoryServer.h" />
+    <ClInclude Include="FileWatch\ThreadSafeQueue.h" />
+    <ClInclude Include="FileWatch\VtFileEventMonitor.h" />
     <ClInclude Include="File\fwd.h" />
     <ClInclude Include="File\path.h" />
     <ClInclude Include="File\resolver.h" />
@@ -637,6 +651,13 @@
     <ClCompile Include="Drawing\VtVLineTracker.cpp" />
     <ClCompile Include="ETSLayout.cpp" />
     <ClCompile Include="FileView.cpp" />
+    <ClCompile Include="FileWatch\CompletionRoutineRequest.cpp" />
+    <ClCompile Include="FileWatch\CompletionRoutineServer.cpp" />
+    <ClCompile Include="FileWatch\IoCompletionPortReqeust.cpp" />
+    <ClCompile Include="FileWatch\IoCompletionPortServer.cpp" />
+    <ClCompile Include="FileWatch\ReadDirectoryChanges.cpp" />
+    <ClCompile Include="FileWatch\ReadDirectoryRequest.cpp" />
+    <ClCompile Include="FileWatch\ReadDirectoryServer.cpp" />
     <ClCompile Include="Format\format.cc">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>

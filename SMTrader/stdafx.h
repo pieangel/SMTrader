@@ -38,6 +38,19 @@
 #include "Log/loguru.hpp"
 #include <afxcontrolbars.h>
 
+#include "FileWatch/auto_release.h"
+#include "FileWatch/IoCompletionPort.h"
+#include "FileWatch/ThreadSafeQueue.h"
+
+#ifndef OVERRIDE
+#if _MSC_VER >= 1600
+// Visual Studio 2010 and later support override.
+#define OVERRIDE override
+#else
+#define OVERRIDE
+#endif
+#endif  // OVERRIDE
+
 #ifdef _UNICODE
 #if defined _M_IX86
 #pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='x86' publicKeyToken='6595b64144ccf1df' language='*'\"")

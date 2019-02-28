@@ -48,7 +48,7 @@ void VtAccountGrid::OnSetup()
 
 void VtAccountGrid::OnDClicked(int col, long row, RECT *rect, POINT *point, BOOL processed)
 {
-	if (_FundEditor && _FundEditor->SourceVector.size() == 0)
+	if (!_FundEditor || _FundEditor->SourceVector.size() == 0)
 		return;
 	ChangeSelectedRow(_SelRow, row);
 	_FundEditor->OnBnClickedBtnAcntIn();
@@ -56,7 +56,7 @@ void VtAccountGrid::OnDClicked(int col, long row, RECT *rect, POINT *point, BOOL
 
 void VtAccountGrid::OnLClicked(int col, long row, int updn, RECT *rect, POINT *point, int processed)
 {
-	if (_FundEditor && _FundEditor->SourceVector.size() == 0)
+	if (!_FundEditor || _FundEditor->SourceVector.size() == 0)
 		return;
 
 	ChangeSelectedRow(_SelRow, row);
@@ -74,7 +74,7 @@ void VtAccountGrid::OnLClicked(int col, long row, int updn, RECT *rect, POINT *p
 
 void VtAccountGrid::OnRClicked(int col, long row, int updn, RECT *rect, POINT *point, int processed)
 {
-	if (_FundEditor && _FundEditor->SourceVector.size() == 0)
+	if (!_FundEditor || _FundEditor->SourceVector.size() == 0)
 		return;
 
 	ChangeSelectedRow(_SelRow, row);
@@ -121,6 +121,9 @@ void VtAccountGrid::QuickRedrawCell(int col, long row)
 
 void VtAccountGrid::InitGrid(std::vector<VtAccount*>& acntVector)
 {
+	if (!_FundEditor || _FundEditor->SourceVector.size() == 0)
+		return;
+
 	int i = 0;
 	CUGCell cell;
 	for (auto it = acntVector.begin(); it != acntVector.end(); ++it)

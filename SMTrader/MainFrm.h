@@ -13,6 +13,7 @@
 const int SysLiqTimer = 0x00000010;
 class VtSymbol;
 class VtChartContainer;
+class VtFileEventMonitor;
 class CMainFrame : public CMDIFrameWndEx
 {
 	DECLARE_DYNAMIC(CMainFrame)
@@ -79,6 +80,10 @@ private:
 	VtProgressDlg* ProgressDlg = nullptr;
 	VtMainToolbar _MainToolbar;
 	VtChartContainer* _ChartContainer = nullptr;
+	VtFileEventMonitor* _FildMonitor = nullptr;
+	std::string _FleWathPath;
+	bool _EnableFileWatch = false;
+	void CreateFileWatch();
 	bool ClearAllResources();
 public:
 	void GetSymbolCode();

@@ -125,6 +125,9 @@
     <Filter Include="System\Option">
       <UniqueIdentifier>{511492fb-c55f-47e6-bec9-5c1c23250ad8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="FileWatch">
+      <UniqueIdentifier>{b2c6de0f-04c3-4cbb-97f9-3cf9f0e425ed}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -1357,6 +1360,39 @@
     <ClInclude Include="VtStrategyWndManager.h">
       <Filter>System</Filter>
     </ClInclude>
+    <ClInclude Include="FileWatch\auto_release.h">
+      <Filter>FileWatch</Filter>
+    </ClInclude>
+    <ClInclude Include="FileWatch\CompletionRoutineRequest.h">
+      <Filter>FileWatch</Filter>
+    </ClInclude>
+    <ClInclude Include="FileWatch\CompletionRoutineServer.h">
+      <Filter>FileWatch</Filter>
+    </ClInclude>
+    <ClInclude Include="FileWatch\IoCompletionPort.h">
+      <Filter>FileWatch</Filter>
+    </ClInclude>
+    <ClInclude Include="FileWatch\IoCompletionPortReqeust.h">
+      <Filter>FileWatch</Filter>
+    </ClInclude>
+    <ClInclude Include="FileWatch\IoCompletionPortServer.h">
+      <Filter>FileWatch</Filter>
+    </ClInclude>
+    <ClInclude Include="FileWatch\ReadDirectoryChanges.h">
+      <Filter>FileWatch</Filter>
+    </ClInclude>
+    <ClInclude Include="FileWatch\ReadDirectoryRequest.h">
+      <Filter>FileWatch</Filter>
+    </ClInclude>
+    <ClInclude Include="FileWatch\ReadDirectoryServer.h">
+      <Filter>FileWatch</Filter>
+    </ClInclude>
+    <ClInclude Include="FileWatch\ThreadSafeQueue.h">
+      <Filter>FileWatch</Filter>
+    </ClInclude>
+    <ClInclude Include="FileWatch\VtFileEventMonitor.h">
+      <Filter>FileWatch</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ChildFrm.cpp">
@@ -2450,6 +2486,27 @@
     </ClCompile>
     <ClCompile Include="VtStrategyWndManager.cpp">
       <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="FileWatch\CompletionRoutineRequest.cpp">
+      <Filter>FileWatch</Filter>
+    </ClCompile>
+    <ClCompile Include="FileWatch\CompletionRoutineServer.cpp">
+      <Filter>FileWatch</Filter>
+    </ClCompile>
+    <ClCompile Include="FileWatch\IoCompletionPortReqeust.cpp">
+      <Filter>FileWatch</Filter>
+    </ClCompile>
+    <ClCompile Include="FileWatch\IoCompletionPortServer.cpp">
+      <Filter>FileWatch</Filter>
+    </ClCompile>
+    <ClCompile Include="FileWatch\ReadDirectoryChanges.cpp">
+      <Filter>FileWatch</Filter>
+    </ClCompile>
+    <ClCompile Include="FileWatch\ReadDirectoryRequest.cpp">
+      <Filter>FileWatch</Filter>
+    </ClCompile>
+    <ClCompile Include="FileWatch\ReadDirectoryServer.cpp">
+      <Filter>FileWatch</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
