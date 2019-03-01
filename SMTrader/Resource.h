@@ -91,6 +91,7 @@
 #define IDD_SYM_CAT1                    311
 #define IDD_ORDER_LEFT_HD               312
 #define IDR_PRDT_256                    313
+#define IDD_SYS_AUTO_CONNECT            313
 #define IDD_SYM_CAT2                    314
 #define IDB_SORT_25                     314
 #define IDD_SYM_CAT3                    315
@@ -330,9 +331,11 @@
 #define IDC_COMBO_PRODUCT               1006
 #define IDC_EDIT_ACNT_PWD               1006
 #define IDC_STATIC_CHART                1006
+#define IDC_CHECK1                      1006
 #define IDC_ZoomOutPB                   1007
 #define IDC_STATIC_LEFT                 1007
 #define IDC_COMBO_OPTION                1007
+#define IDC_CHECK2                      1007
 #define IDC_BTN_MONTH                   1008
 #define IDC_BTN_ACCOUNT                 1008
 #define IDC_BTN_SHOW_LEFT               1008
@@ -344,6 +347,7 @@
 #define IDC_BTN_FUND_NEW                1008
 #define IDC_BTN_START                   1008
 #define IDC_BTN_COMMIT                  1008
+#define IDC_BUTTON2                     1008
 #define IDC_CHECK_SAVE                  1009
 #define IDC_BTN_WEEK                    1009
 #define IDC_BTN_SYMBOL                  1009
@@ -370,6 +374,7 @@
 #define IDC_BTN_ACNT_OUT                1010
 #define IDC_BTN_FUND_MODIFY             1010
 #define IDC_CHECK_SHOW_PWD              1010
+#define IDC_BUTTON4                     1010
 #define IDC_EDIT_ID                     1011
 #define IDC_BTN_MIN                     1011
 #define IDC_CHECK_TS                    1011
@@ -383,6 +388,7 @@
 #define IDC_EDIT_SUBACNT_CODE           1011
 #define IDC_BTN_ACNT_OUT_ALL            1011
 #define IDC_BTN_FUND_DELETE             1011
+#define IDC_STATIC_TOTAL_SIGNAL         1011
 #define IDC_EDIT_PWD                    1012
 #define IDC_BTN_TICK                    1012
 #define IDC_EDIT_ENT_MAX                1012
@@ -392,12 +398,14 @@
 #define IDC_EDIT_SUB_ACNT_NAME          1012
 #define IDC_EDIT_SEUNSU                 1012
 #define IDC_EDIT_CUT_LOSS               1012
+#define IDC_STATIC_SIGNAL_CONNECTION    1012
 #define IDC_EDIT_CERT                   1013
 #define IDC_CHECK_PROFIT_TARGET         1013
 #define IDC_BTN_DOWN                    1013
 #define IDC_RunPB                       1013
 #define IDC_BTN_SAVE                    1013
 #define IDC_SPIN_CUT_PROFIT             1013
+#define IDC_STATIC_SIGNAL_DEFINITION    1013
 #define IDC_SPIN_ORDER_AMT              1014
 #define IDC_BTN_UP                      1014
 #define IDC_BTN_CLOSE                   1014
@@ -623,14 +631,18 @@
 #define ID_DATA_COL                     32787
 #define ID_LOGIN_TEST                   32788
 #define ID_CHART_ORDER                  32792
+#define ID_32793                        32793
+#define ID_AUTO_SIGNAL_CONNECT          32794
+#define ID_32795                        32795
+#define ID_SAVE_CURRENT_SCREEN          32796
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        310
-#define _APS_NEXT_COMMAND_VALUE         32793
-#define _APS_NEXT_CONTROL_VALUE         1006
+#define _APS_NEXT_RESOURCE_VALUE        315
+#define _APS_NEXT_COMMAND_VALUE         32797
+#define _APS_NEXT_CONTROL_VALUE         1014
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif

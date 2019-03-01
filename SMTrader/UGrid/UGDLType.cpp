@@ -32,7 +32,7 @@ CUGDropListType::CUGDropListType()
 	m_btnWidth = GetSystemMetrics(SM_CXVSCROLL);
 
 	m_btnDown = FALSE;
-
+	m_ExistListBox = FALSE;
 	m_btnCol = -1;
 	m_btnRow = -1;
 
@@ -209,8 +209,14 @@ BOOL CUGDropListType::OnLClicked(int col,long row,int updn,RECT *rect,POINT *poi
 	if(updn)
 	{
 		if(point->x > (rect->right - m_btnWidth))
-		{			
-			if(col == m_btnCol && row == m_btnRow)
+		{
+			if (m_btnCol == -2 && m_btnRow == -2) {
+				m_btnCol = -1;
+				m_btnRow = -1;
+				if (m_listBox->GetSafeHwnd() != NULL)
+					m_listBox->DestroyWindow();
+			}
+			else if(col == m_btnCol && row == m_btnRow)
 			{
 				m_btnCol = -1;
 				m_btnRow = -1;			
@@ -219,15 +225,19 @@ BOOL CUGDropListType::OnLClicked(int col,long row,int updn,RECT *rect,POINT *poi
 			}
 			else
 			{
+				if (m_listBox->GetSafeHwnd() != NULL) {
+					int i = 0;
+					i = i + 1;
+				}
 				//copy the droplist button co-ords
-				CopyRect(&m_btnRect,rect);
+				CopyRect(&m_btnRect, rect);
 				m_btnRect.left = rect->right - m_btnWidth;
-			
+
 				//redraw the button
 				m_btnDown = TRUE;
 				m_btnCol = col;
 				m_btnRow = row;
-				m_ctrl->RedrawCell(m_btnCol,m_btnRow);
+				m_ctrl->RedrawCell(m_btnCol, m_btnRow);
 
 				//start the drop list
 				StartDropList();
@@ -245,6 +255,9 @@ BOOL CUGDropListType::OnLClicked(int col,long row,int updn,RECT *rect,POINT *poi
 	{
 		m_btnDown = FALSE;
 		m_ctrl->RedrawCell(col,row);
+		if (m_listBox->GetSafeHwnd() != NULL) {
+			m_ExistListBox = TRUE;
+		}
 		return TRUE;
 	}
 

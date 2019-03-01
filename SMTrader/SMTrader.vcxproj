@@ -419,6 +419,7 @@
     <ClInclude Include="VtAccountRemainGrid.h" />
     <ClInclude Include="VtAssetPage.h" />
     <ClInclude Include="VtAtrIndex.h" />
+    <ClInclude Include="VtAutoSignalManagerDialog.h" />
     <ClInclude Include="VtBaseBand.h" />
     <ClInclude Include="VtBaseIndex.h" />
     <ClInclude Include="VtBaseStress.h" />
@@ -555,6 +556,8 @@
     <ClInclude Include="VtRobo1Stress.h" />
     <ClInclude Include="VtRsiIndex.h" />
     <ClInclude Include="VtSaveManager.h" />
+    <ClInclude Include="VtSignalConnectionGrid.h" />
+    <ClInclude Include="VtSignalDefinitionGrid.h" />
     <ClInclude Include="VtSimpleMaStress.h" />
     <ClInclude Include="VtSplitterManager.h" />
     <ClInclude Include="VtStochasticIndex.h" />
@@ -588,6 +591,7 @@
     <ClInclude Include="VtTickQuote.h" />
     <ClInclude Include="VtTotalOrderManager.h" />
     <ClInclude Include="VtTotalRemainGrid.h" />
+    <ClInclude Include="VtTotalSignalGrid.h" />
     <ClInclude Include="VtTrixIndex.h" />
     <ClInclude Include="VtTrUs1.h" />
     <ClInclude Include="VtTrUs2.h" />
@@ -823,6 +827,7 @@
     <ClCompile Include="VtAccountRemainGrid.cpp" />
     <ClCompile Include="VtAssetPage.cpp" />
     <ClCompile Include="VtAtrIndex.cpp" />
+    <ClCompile Include="VtAutoSignalManagerDialog.cpp" />
     <ClCompile Include="VtBaseBand.cpp" />
     <ClCompile Include="VtBaseIndex.cpp" />
     <ClCompile Include="VtBaseStress.cpp" />
@@ -950,6 +955,8 @@
     <ClCompile Include="VtRobo1Stress.cpp" />
     <ClCompile Include="VtRsiIndex.cpp" />
     <ClCompile Include="VtSaveManager.cpp" />
+    <ClCompile Include="VtSignalConnectionGrid.cpp" />
+    <ClCompile Include="VtSignalDefinitionGrid.cpp" />
     <ClCompile Include="VtSimpleMaStress.cpp" />
     <ClCompile Include="VtSplitterManager.cpp" />
     <ClCompile Include="VtStochasticIndex.cpp" />
@@ -978,6 +985,7 @@
     <ClCompile Include="VtTaskManager.cpp" />
     <ClCompile Include="VtTotalOrderManager.cpp" />
     <ClCompile Include="VtTotalRemainGrid.cpp" />
+    <ClCompile Include="VtTotalSignalGrid.cpp" />
     <ClCompile Include="VtTrixIndex.cpp" />
     <ClCompile Include="VtTrUs1.cpp" />
     <ClCompile Include="VtTrUs2.cpp" />

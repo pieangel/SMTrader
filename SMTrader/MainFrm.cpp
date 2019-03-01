@@ -50,6 +50,7 @@
 #include "VtLogInDlg.h"
 #include "VtStrategyWndManager.h"
 #include "FileWatch/VtFileEventMonitor.h"
+#include "VtAutoSignalManagerDialog.h"
 extern TApplicationFont g_Font;
 
 #ifdef _DEBUG
@@ -98,6 +99,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CMDIFrameWndEx)
 
 	ON_COMMAND(ID_STRATEGY_TOOLBAR, &CMainFrame::OnStrategyToolbar)
 	ON_WM_TIMER()
+	ON_COMMAND(ID_AUTO_SIGNAL_CONNECT, &CMainFrame::OnAutoSignalConnect)
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -953,4 +955,12 @@ void CMainFrame::OnTimer(UINT_PTR nIDEvent)
 	}
 
 	CMDIFrameWndEx::OnTimer(nIDEvent);
+}
+
+
+void CMainFrame::OnAutoSignalConnect()
+{
+	VtAutoSignalManagerDialog* dlg = new VtAutoSignalManagerDialog();
+	dlg->Create(IDD_SYS_AUTO_CONNECT, this);
+	dlg->ShowWindow(SW_SHOW);
 }

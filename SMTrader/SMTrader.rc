@@ -269,6 +269,7 @@ BEGIN
         MENUITEM "끝내기(&X)",                     ID_APP_EXIT
         MENUITEM "서버시간에맞추기",                    ID_SETTIME_TO_SERVER
         MENUITEM "로그인테스트",                      ID_LOGIN_TEST
+        MENUITEM "현재화면상태저장하기",                  ID_SAVE_CURRENT_SCREEN
     END
     POPUP "계좌"
     BEGIN
@@ -297,6 +298,7 @@ BEGIN
     POPUP "전략"
     BEGIN
         MENUITEM "전략툴바",                        ID_STRATEGY_TOOLBAR
+        MENUITEM "시스템자동연결",                     ID_AUTO_SIGNAL_CONNECT
     END
 END
 
@@ -1348,6 +1350,23 @@ BEGIN
     CONTROL         "",IDC_TAB_ACCOUNT_ASSET,"SysTabControl32",0x0,0,0,259,98
 END
 
+IDD_SYS_AUTO_CONNECT DIALOGEX 0, 0, 655, 368
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "시스템 주문"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "Static",IDC_STATIC_TOTAL_SIGNAL,0,19,653,172
+    CONTROL         "자동주문",IDC_CHECK1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,9,4,45,10
+    CONTROL         "상세표시",IDC_CHECK2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,63,4,45,10
+    PUSHBUTTON      "신호합계적용",IDC_BUTTON1,119,2,50,14
+    PUSHBUTTON      "포지션청산",IDC_BUTTON2,180,2,50,14
+    PUSHBUTTON      "설정",IDC_BUTTON4,233,2,50,14
+    LTEXT           "신호연결설정",IDC_STATIC,3,200,45,8
+    LTEXT           "Static",IDC_STATIC_SIGNAL_CONNECTION,4,212,296,155
+    LTEXT           "신호정의",IDC_STATIC,316,199,30,8
+    LTEXT           "Static",IDC_STATIC_SIGNAL_DEFINITION,311,214,344,153
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -1728,6 +1747,10 @@ BEGIN
     BEGIN
         BOTTOMMARGIN, 96
     END
+
+    IDD_SYS_AUTO_CONNECT, DIALOG
+    BEGIN
+    END
 END
 #endif    // APSTUDIO_INVOKED
 
@@ -1948,6 +1971,11 @@ BEGIN
 END
 
 IDD_ACCOUNT_ASSET AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_SYS_AUTO_CONNECT AFX_DIALOG_LAYOUT
 BEGIN
     0
 END

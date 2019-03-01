@@ -35,9 +35,6 @@
     <Filter Include="Format">
       <UniqueIdentifier>{06b4e1d1-e343-4252-b0aa-af9fad82216a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Fund">
-      <UniqueIdentifier>{aae79731-e602-4676-9c84-a9c2c625012b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="FundOrder">
       <UniqueIdentifier>{3d4a775a-1b15-4e17-a2b3-d704b3a22427}</UniqueIdentifier>
     </Filter>
@@ -127,6 +124,12 @@
     </Filter>
     <Filter Include="FileWatch">
       <UniqueIdentifier>{b2c6de0f-04c3-4cbb-97f9-3cf9f0e425ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="System\AutoConnect">
+      <UniqueIdentifier>{846e0207-6882-4a0e-b1ee-e6f04683c1d5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Format\Fund">
+      <UniqueIdentifier>{aae79731-e602-4676-9c84-a9c2c625012b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -416,40 +419,40 @@
       <Filter>Format</Filter>
     </ClInclude>
     <ClInclude Include="VtAccountFundGrid.h">
-      <Filter>Fund</Filter>
+      <Filter>Format\Fund</Filter>
     </ClInclude>
     <ClInclude Include="VtFDMultiAcntPage.h">
-      <Filter>Fund</Filter>
+      <Filter>Format\Fund</Filter>
     </ClInclude>
     <ClInclude Include="VtFDSubAcntPage.h">
-      <Filter>Fund</Filter>
+      <Filter>Format\Fund</Filter>
     </ClInclude>
     <ClInclude Include="VtFund.h">
-      <Filter>Fund</Filter>
+      <Filter>Format\Fund</Filter>
     </ClInclude>
     <ClInclude Include="VtFundAccount.h">
-      <Filter>Fund</Filter>
+      <Filter>Format\Fund</Filter>
     </ClInclude>
     <ClInclude Include="VtFundDesigner.h">
-      <Filter>Fund</Filter>
+      <Filter>Format\Fund</Filter>
     </ClInclude>
     <ClInclude Include="VtFundEditor.h">
-      <Filter>Fund</Filter>
+      <Filter>Format\Fund</Filter>
     </ClInclude>
     <ClInclude Include="VtFundGrid.h">
-      <Filter>Fund</Filter>
+      <Filter>Format\Fund</Filter>
     </ClInclude>
     <ClInclude Include="VtFundManager.h">
-      <Filter>Fund</Filter>
+      <Filter>Format\Fund</Filter>
     </ClInclude>
     <ClInclude Include="VtFundMap.h">
-      <Filter>Fund</Filter>
+      <Filter>Format\Fund</Filter>
     </ClInclude>
     <ClInclude Include="VtFundNameEditor.h">
-      <Filter>Fund</Filter>
+      <Filter>Format\Fund</Filter>
     </ClInclude>
     <ClInclude Include="VtSubAcntGrid.h">
-      <Filter>Fund</Filter>
+      <Filter>Format\Fund</Filter>
     </ClInclude>
     <ClInclude Include="VtFundOrderManager.h">
       <Filter>FundOrder</Filter>
@@ -1396,6 +1399,10 @@
     <ClInclude Include="VtQCh.h">
       <Filter>System\Kosdaq</Filter>
     </ClInclude>
+    <ClInclude Include="VtTotalSignalGrid.h" />
+    <ClInclude Include="VtSignalConnectionGrid.h" />
+    <ClInclude Include="VtSignalDefinitionGrid.h" />
+    <ClInclude Include="VtAutoSignalManagerDialog.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ChildFrm.cpp">
@@ -1627,40 +1634,40 @@
       <Filter>Format</Filter>
     </ClCompile>
     <ClCompile Include="VtAccountFundGrid.cpp">
-      <Filter>Fund</Filter>
+      <Filter>Format\Fund</Filter>
     </ClCompile>
     <ClCompile Include="VtFDMultiAcntPage.cpp">
-      <Filter>Fund</Filter>
+      <Filter>Format\Fund</Filter>
     </ClCompile>
     <ClCompile Include="VtFDSubAcntPage.cpp">
-      <Filter>Fund</Filter>
+      <Filter>Format\Fund</Filter>
     </ClCompile>
     <ClCompile Include="VtFund.cpp">
-      <Filter>Fund</Filter>
+      <Filter>Format\Fund</Filter>
     </ClCompile>
     <ClCompile Include="VtFundAccount.cpp">
-      <Filter>Fund</Filter>
+      <Filter>Format\Fund</Filter>
     </ClCompile>
     <ClCompile Include="VtFundDesigner.cpp">
-      <Filter>Fund</Filter>
+      <Filter>Format\Fund</Filter>
     </ClCompile>
     <ClCompile Include="VtFundEditor.cpp">
-      <Filter>Fund</Filter>
+      <Filter>Format\Fund</Filter>
     </ClCompile>
     <ClCompile Include="VtFundGrid.cpp">
-      <Filter>Fund</Filter>
+      <Filter>Format\Fund</Filter>
     </ClCompile>
     <ClCompile Include="VtFundManager.cpp">
-      <Filter>Fund</Filter>
+      <Filter>Format\Fund</Filter>
     </ClCompile>
     <ClCompile Include="VtFundMap.cpp">
-      <Filter>Fund</Filter>
+      <Filter>Format\Fund</Filter>
     </ClCompile>
     <ClCompile Include="VtFundNameEditor.cpp">
-      <Filter>Fund</Filter>
+      <Filter>Format\Fund</Filter>
     </ClCompile>
     <ClCompile Include="VtSubAcntGrid.cpp">
-      <Filter>Fund</Filter>
+      <Filter>Format\Fund</Filter>
     </ClCompile>
     <ClCompile Include="VtFundOrderManager.cpp">
       <Filter>FundOrder</Filter>
@@ -2514,6 +2521,10 @@
     <ClCompile Include="VtQCh.cpp">
       <Filter>System\Kosdaq</Filter>
     </ClCompile>
+    <ClCompile Include="VtTotalSignalGrid.cpp" />
+    <ClCompile Include="VtSignalConnectionGrid.cpp" />
+    <ClCompile Include="VtSignalDefinitionGrid.cpp" />
+    <ClCompile Include="VtAutoSignalManagerDialog.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="SMTrader.rc">

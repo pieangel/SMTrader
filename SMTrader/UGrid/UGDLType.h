@@ -81,7 +81,7 @@ protected:
 	// v7.2 - update 03 - added for mods to StartDropList - adjust 
 	//        droplist to width of text - Allen Shiels
 	int CUGDropListType::GetMaxStringWidth(const CStringList& list) const;
-
+	BOOL m_ExistListBox;
 public:
 	CUGDropListType();
 	~CUGDropListType();
