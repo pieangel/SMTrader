@@ -148,20 +148,28 @@ BOOL CUGCTDateTimePicker::OnLClicked(int col,long row,int updn,
 	if(updn)
 	{
 		if(point->x > (rect->right - m_btnWidth))
-		{			
-			//copy the droplist button co-ords
-			CopyRect(&m_btnRect,rect);
-			m_btnRect.left = rect->right - m_btnWidth;
-		
-			//redraw the button
-			m_btnDown = TRUE;
-			m_btnCol = col;
-			m_btnRow = row;
-			m_ctrl->RedrawCell(m_btnCol,m_btnRow);
+		{		
+			if (col == m_btnCol && row == m_btnRow) {
+				m_btnCol = -1;
+				m_btnRow = -1;
+				//if (m_pDropGridStruct->pGridCtrl->GetSafeHwnd() != NULL)
+				//	m_pDropGridStruct->pGridCtrl->DestroyWindow();
+			}
+			else {
+				//copy the droplist button co-ords
+				CopyRect(&m_btnRect, rect);
+				m_btnRect.left = rect->right - m_btnWidth;
 
-			//start the drop list
-			DisplayMonthCalendar();
-			return FALSE;
+				//redraw the button
+				m_btnDown = TRUE;
+				m_btnCol = col;
+				m_btnRow = row;
+				m_ctrl->RedrawCell(m_btnCol, m_btnRow);
+
+				//start the drop list
+				DisplayMonthCalendar();
+				return FALSE;
+			}
 		}
 		else if(m_btnCol ==-2)
 		{

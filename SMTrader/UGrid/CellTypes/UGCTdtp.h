@@ -143,7 +143,7 @@ protected:
 
 	// internal flag. Set to TRUE if popup calendar is currently displayed
 	BOOL	m_bActiveMonthCal;
-
+	CMonthCalCtrl* _pMonthCtrl;
 
 protected:
 	// displays month calendar for current cell

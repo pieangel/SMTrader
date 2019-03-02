@@ -112,6 +112,7 @@
 #define IDD_ORDER_WND_HD                323
 #define IDB_BITMAP_OUT                  323
 #define IDB_BITMAP_CANCEL               324
+#define IDD_ADD_SIG_CONNECT             324
 #define IDD_SYMBOL_SELECTER_HD          325
 #define IDD_FUND_SUBACCOUNTPAGE         326
 #define IDD_ORDER_WND                   327
@@ -124,7 +125,9 @@
 #define IDD_DIALOG_CHART                334
 #define IDD_FUT_PAGE                    335
 #define IDD_FUND_ACCOUNTPAGE            336
+#define IDD_ADD_SIG_DEF                 337
 #define IDD_MINI_JANGO                  338
+#define IDD_AUTOSIG_CONFIG              339
 #define IDD_BUSY_DLG                    340
 #define IDD_ORDER_TOTAL                 341
 #define IDB_CALC_ANIM2                  342
@@ -410,11 +413,14 @@
 #define IDC_BTN_UP                      1014
 #define IDC_BTN_CLOSE                   1014
 #define IDC_SPIN_CUT_LOSS               1014
+#define IDC_BTN_ADD_CONNECT             1014
 #define IDC_COMBO_PRODUCT5              1015
 #define IDC_BTN_DEL                     1015
 #define IDC_BUSY_PIC                    1015
+#define IDC_BTN_ADD_SIGNAL              1015
 #define IDC_COMBO_ACCOUNT5              1016
 #define IDC_BUSY_TEXT                   1016
+#define IDC_COMBO_ACNT                  1016
 #define IDC_BTN_EXTRA_VAR               1017
 #define IDC_BTN_EDIT_FUND               1017
 #define IDC_BTN_CANCEL_SELECTED         1017
@@ -428,28 +434,37 @@
 #define IDC_SPIN_ORDER_CELL_HEIGHT      1018
 #define IDC_BTN_INSERT                  1018
 #define IDC_RADIO_ENTIRE                1018
+#define IDC_COMBO_SIGNAL                1018
 #define IDC_BTN_ORDER_AMT1              1019
 #define IDC_PROP_CHART                  1019
 #define IDC_RADIO_ACNT                  1019
+#define IDC_EDIT_SIGNAL                 1019
 #define IDC_BTN_APPLY                   1020
 #define IDC_BTN_ORDER_AMT2              1020
 #define IDC_RADIO_FUND                  1020
 #define IDC_EDIT_USER_ID                1021
 #define IDC_BTN_ORDER_AMT3              1021
+#define IDC_SPIN_SEUNGSU                1021
 #define IDC_EDIT_USER_PWD               1022
 #define IDC_BTN_ORDER_AMT4              1022
 #define IDC_BTN_REGISTER_USER           1023
 #define IDC_BTN_ORDER_AMT5              1023
+#define IDC_EDIT_SYMBOL                 1023
 #define IDC_HScrollBar                  1024
 #define IDC_BTN_LOGIN                   1024
 #define IDC_BTN_ORDER_AMT6              1024
+#define IDC_EDIT_STRATEGY               1024
 #define IDC_RADIO_TICKRIGHT             1025
 #define IDC_CANCEL_SELECTED             1025
+#define IDC_EDIT_DESC                   1025
 #define IDC_STARTDATE                   1026
 #define IDC_EDIT_ORDER_TYPE_SLIP        1026
+#define IDC_BTN_FIND_SYMBOL             1026
 #define IDC_ENDDATE                     1027
 #define IDC_SPIN_ORDER_TYPE_SLIP        1027
+#define IDC_EDIT_SEUNGSU                1027
 #define IDC_BTN_RIGHT_EXTEND            1028
+#define IDC_COMBO_TYPE                  1028
 #define IDC_CK_LIQ_ALL                  1029
 #define IDC_CHECK_SHOW_STOPCOL          1029
 #define IDC_EDIT_PS_STOP                1029
@@ -640,9 +655,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        315
+#define _APS_NEXT_RESOURCE_VALUE        346
 #define _APS_NEXT_COMMAND_VALUE         32797
-#define _APS_NEXT_CONTROL_VALUE         1014
+#define _APS_NEXT_CONTROL_VALUE         1029
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif

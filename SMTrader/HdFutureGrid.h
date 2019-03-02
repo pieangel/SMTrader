@@ -7,6 +7,7 @@ class VtSymbol;
 class VtOrderConfigManager;
 class VtUsdStrategyConfigDlg;
 class HdSymbolSelecter;
+class VtAddConnectSignalDlg;
 class HdFutureGrid :
 	public VtGrid
 {
@@ -39,6 +40,10 @@ public:
 	void SetConfigDlg(VtUsdStrategyConfigDlg* ConfigDlg);
 	HdSymbolSelecter* SymSelecter() const { return _SymSelecter; }
 	void SymSelecter(HdSymbolSelecter* val) { _SymSelecter = val; }
+	void SetAddConSigDlg(VtAddConnectSignalDlg* conSigDlg)
+	{
+		_AddConSigDlg = conSigDlg;
+	}
 private:
 	HdSymbolSelecter* _SymSelecter;
 	int _OldSelRow = -2;
@@ -51,5 +56,6 @@ private:
 	VtOrderConfigManager* _OrderConfigMgr = nullptr;
 	void ClearSymbolInfo();
 	VtUsdStrategyConfigDlg* _UsdConfigDlg;
+	VtAddConnectSignalDlg* _AddConSigDlg = nullptr;
 };
 

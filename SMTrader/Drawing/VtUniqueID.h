@@ -7,6 +7,6 @@ protected:
 public:
 	VtUniqueID();
 	~VtUniqueID();
-	int Id() { return _id++; }
+	int Id() { return _id; }
 };
 

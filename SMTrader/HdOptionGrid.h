@@ -7,6 +7,7 @@ class VtSymbol;
 class VtOrderConfigManager;
 class VtUsdStrategyConfigDlg;
 class HdSymbolSelecter;
+class VtAddConnectSignalDlg;
 class HdOptionGrid :
 	public VtGrid
 {
@@ -46,6 +47,10 @@ public:
 	void SetConfigDlg(VtUsdStrategyConfigDlg* ConfigDlg);
 	HdSymbolSelecter* SymSelecter() const { return _SymSelecter; }
 	void SymSelecter(HdSymbolSelecter* val) { _SymSelecter = val; }
+	void SetAddConSigDlg(VtAddConnectSignalDlg* conSigDlg)
+	{
+		_AddConSigDlg = conSigDlg;
+	}
 private:
 	HdSymbolSelecter* _SymSelecter;
 	VtProductSection* _CurPrdtSec = nullptr;
@@ -65,5 +70,6 @@ private:
 	COLORREF _ClickedColor = RGB(216, 234, 253);
 	COLORREF _CallColor = RGB(252, 226, 228);
 	COLORREF _PutColor = RGB(218, 226, 245);
+	VtAddConnectSignalDlg* _AddConSigDlg = nullptr;
 };
 

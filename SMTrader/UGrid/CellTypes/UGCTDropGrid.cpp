@@ -173,15 +173,13 @@ BOOL CUGCTDropGrid::OnLClicked( int col, long row, int updn, RECT *rect, POINT *
 	{
 		if( point->x > ( rect->right - m_btnWidth ))
 		{			
-			if( col == m_btnCol && row == m_btnRow )
-			{
+			if( col == m_btnCol && row == m_btnRow ) {
 				m_btnCol = -1;
 				m_btnRow = -1;		
 				if ( m_pDropGridStruct->pGridCtrl->GetSafeHwnd() != NULL )
 					m_pDropGridStruct->pGridCtrl->DestroyWindow();
 			}
-			else
-			{
+			else {
 				//copy the dropdown button co-ords
 				CopyRect( &m_btnRect, rect );
 				m_btnRect.left = rect->right - m_btnWidth;
@@ -197,15 +195,13 @@ BOOL CUGCTDropGrid::OnLClicked( int col, long row, int updn, RECT *rect, POINT *
 				return TRUE;
 			}
 		}
-		else if(m_btnCol ==-2)
-		{
+		else if(m_btnCol ==-2) {
 			m_btnCol = -1;
 			m_btnRow = -1;			
 			return FALSE;
 		}
 	}
-	else if(m_btnDown)
-	{
+	else if(m_btnDown) {
 		m_ctrl->RedrawCell( col, row );
 		return TRUE;
 	}

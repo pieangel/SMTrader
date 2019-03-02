@@ -1399,10 +1399,20 @@
     <ClInclude Include="VtQCh.h">
       <Filter>System\Kosdaq</Filter>
     </ClInclude>
-    <ClInclude Include="VtTotalSignalGrid.h" />
-    <ClInclude Include="VtSignalConnectionGrid.h" />
-    <ClInclude Include="VtSignalDefinitionGrid.h" />
-    <ClInclude Include="VtAutoSignalManagerDialog.h" />
+    <ClInclude Include="VtAutoSignalManagerDialog.h">
+      <Filter>System\AutoConnect</Filter>
+    </ClInclude>
+    <ClInclude Include="VtSignalConnectionGrid.h">
+      <Filter>System\AutoConnect</Filter>
+    </ClInclude>
+    <ClInclude Include="VtSignalDefinitionGrid.h">
+      <Filter>System\AutoConnect</Filter>
+    </ClInclude>
+    <ClInclude Include="VtTotalSignalGrid.h">
+      <Filter>System\AutoConnect</Filter>
+    </ClInclude>
+    <ClInclude Include="VtExSystemManager.h" />
+    <ClInclude Include="VtAddConnectSignalDlg.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ChildFrm.cpp">
@@ -2521,10 +2531,20 @@
     <ClCompile Include="VtQCh.cpp">
       <Filter>System\Kosdaq</Filter>
     </ClCompile>
-    <ClCompile Include="VtTotalSignalGrid.cpp" />
-    <ClCompile Include="VtSignalConnectionGrid.cpp" />
-    <ClCompile Include="VtSignalDefinitionGrid.cpp" />
-    <ClCompile Include="VtAutoSignalManagerDialog.cpp" />
+    <ClCompile Include="VtAutoSignalManagerDialog.cpp">
+      <Filter>System\AutoConnect</Filter>
+    </ClCompile>
+    <ClCompile Include="VtSignalConnectionGrid.cpp">
+      <Filter>System\AutoConnect</Filter>
+    </ClCompile>
+    <ClCompile Include="VtSignalDefinitionGrid.cpp">
+      <Filter>System\AutoConnect</Filter>
+    </ClCompile>
+    <ClCompile Include="VtTotalSignalGrid.cpp">
+      <Filter>System\AutoConnect</Filter>
+    </ClCompile>
+    <ClCompile Include="VtExSystemManager.cpp" />
+    <ClCompile Include="VtAddConnectSignalDlg.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="SMTrader.rc">

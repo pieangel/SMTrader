@@ -30,4 +30,7 @@ private:
 	VtTotalSignalGrid _TotalSigGrid;
 	VtSignalConnectionGrid _ConnectGrid;
 	VtSignalDefinitionGrid _DefineGrid;
+public:
+	afx_msg void OnBnClickedBtnAddConnect();
+	afx_msg void OnBnClickedBtnAddSignal();
 };

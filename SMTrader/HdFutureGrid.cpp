@@ -13,6 +13,7 @@
 #include "VtUsdStrategyConfigDlg.h"
 #include "VtGlobal.h"
 #include "HdSymbolSelecter.h"
+#include "VtAddConnectSignalDlg.h"
 using Poco::NumberFormatter;
 
 HdFutureGrid::HdFutureGrid()
@@ -78,6 +79,12 @@ void HdFutureGrid::OnDClicked(int col, long row, RECT *rect, POINT *point, BOOL 
 	if (sym) {
 		if (_UsdConfigDlg) {
 			_UsdConfigDlg->SetSymbol(sym);
+			if (_SymSelecter)
+				_SymSelecter->SendMessage(WM_CLOSE, 0, 0);
+			return;
+		}
+		if (_AddConSigDlg) {
+			_AddConSigDlg->SetSymbol(sym);
 			if (_SymSelecter)
 				_SymSelecter->SendMessage(WM_CLOSE, 0, 0);
 			return;

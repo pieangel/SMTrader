@@ -71,3 +71,8 @@ void HdFuturePage::SetConfigDlg(VtUsdStrategyConfigDlg* ConfigDlg)
 {
 	_FutureGrid.SetConfigDlg(ConfigDlg);
 }
+
+void HdFuturePage::SetAddConSigDlg(VtAddConnectSignalDlg* conSigDlg)
+{
+	_FutureGrid.SetAddConSigDlg(conSigDlg);
+}

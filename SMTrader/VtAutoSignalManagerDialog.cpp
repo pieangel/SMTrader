@@ -5,7 +5,7 @@
 #include "SMTrader.h"
 #include "VtAutoSignalManagerDialog.h"
 #include "afxdialogex.h"
-
+#include "VtAddConnectSignalDlg.h"
 
 // VtAutoSignalManagerDialog dialog
 
@@ -34,6 +34,8 @@ void VtAutoSignalManagerDialog::PostNcDestroy()
 }
 
 BEGIN_MESSAGE_MAP(VtAutoSignalManagerDialog, CDialogEx)
+	ON_BN_CLICKED(IDC_BTN_ADD_CONNECT, &VtAutoSignalManagerDialog::OnBnClickedBtnAddConnect)
+	ON_BN_CLICKED(IDC_BTN_ADD_SIGNAL, &VtAutoSignalManagerDialog::OnBnClickedBtnAddSignal)
 END_MESSAGE_MAP()
 
 
@@ -50,4 +52,17 @@ BOOL VtAutoSignalManagerDialog::OnInitDialog()
 	_DefineGrid.AttachGrid(this, IDC_STATIC_SIGNAL_DEFINITION);
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // EXCEPTION: OCX Property Pages should return FALSE
+}
+
+
+void VtAutoSignalManagerDialog::OnBnClickedBtnAddConnect()
+{
+	VtAddConnectSignalDlg dlg;
+	dlg.DoModal();
+}
+
+
+void VtAutoSignalManagerDialog::OnBnClickedBtnAddSignal()
+{
+	// TODO: Add your control notification handler code here
 }

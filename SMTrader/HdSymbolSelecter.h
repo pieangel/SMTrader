@@ -6,6 +6,7 @@
 // HdSymbolSelecter dialog
 class VtOrderConfigManager;
 class VtUsdStrategyConfigDlg;
+class VtAddConnectSignalDlg;
 class HdSymbolSelecter : public CDialogEx
 {
 	DECLARE_DYNAMIC(HdSymbolSelecter)
@@ -42,6 +43,7 @@ public:
 
 	int SelTab;
 	void SetConfigDlg(VtUsdStrategyConfigDlg* ConfigDlg);
+	void SetAddConSigDlg(VtAddConnectSignalDlg* conSigDlg);
 private:
 	VtOrderConfigManager* _OrderConfigMgr = nullptr;
 };

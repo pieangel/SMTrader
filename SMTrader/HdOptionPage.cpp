@@ -84,3 +84,8 @@ void HdOptionPage::SetConfigDlg(VtUsdStrategyConfigDlg* ConfigDlg)
 {
 	_OptionGrid.SetConfigDlg(ConfigDlg);
 }
+
+void HdOptionPage::SetAddConSigDlg(VtAddConnectSignalDlg* conSigDlg)
+{
+	_OptionGrid.SetAddConSigDlg(conSigDlg);
+}

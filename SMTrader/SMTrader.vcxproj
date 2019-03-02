@@ -417,6 +417,7 @@
     <ClInclude Include="VtAccountPasswordDlg.h" />
     <ClInclude Include="VtAccountPasswordGrid.h" />
     <ClInclude Include="VtAccountRemainGrid.h" />
+    <ClInclude Include="VtAddConnectSignalDlg.h" />
     <ClInclude Include="VtAssetPage.h" />
     <ClInclude Include="VtAtrIndex.h" />
     <ClInclude Include="VtAutoSignalManagerDialog.h" />
@@ -453,6 +454,7 @@
     <ClInclude Include="VtDoubleBufferedQueue.h" />
     <ClInclude Include="VtEditCtrl.h" />
     <ClInclude Include="VtEntireBand.h" />
+    <ClInclude Include="VtExSystemManager.h" />
     <ClInclude Include="VtFavoritGrid.h" />
     <ClInclude Include="VtFDMultiAcntPage.h" />
     <ClInclude Include="VtFDSubAcntPage.h" />
@@ -825,6 +827,7 @@
     <ClCompile Include="VtAccountPasswordDlg.cpp" />
     <ClCompile Include="VtAccountPasswordGrid.cpp" />
     <ClCompile Include="VtAccountRemainGrid.cpp" />
+    <ClCompile Include="VtAddConnectSignalDlg.cpp" />
     <ClCompile Include="VtAssetPage.cpp" />
     <ClCompile Include="VtAtrIndex.cpp" />
     <ClCompile Include="VtAutoSignalManagerDialog.cpp" />
@@ -858,6 +861,7 @@
     <ClCompile Include="VtDoubleBufferedQueue.cpp" />
     <ClCompile Include="VtEditCtrl.cpp" />
     <ClCompile Include="VtEntireBand.cpp" />
+    <ClCompile Include="VtExSystemManager.cpp" />
     <ClCompile Include="VtFavoritGrid.cpp" />
     <ClCompile Include="VtFDMultiAcntPage.cpp" />
     <ClCompile Include="VtFDSubAcntPage.cpp" />
