@@ -204,7 +204,7 @@ void VtAddConnectSignalDlg::InitOutSigDefCombo()
 	int selIndex = -1;
 	for (auto it = sigDefVec.begin(); it != sigDefVec.end(); ++it) {
 		SharedOutSigDef& sig = *it;
-		selIndex = _ComboSignal.AddString(sig->Name.c_str());
+		selIndex = _ComboSignal.AddString(sig->SignalName.c_str());
 	}
 	if (selIndex != -1) {
 		_ComboSignal.SetCurSel(0);

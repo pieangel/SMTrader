@@ -421,6 +421,7 @@
 #define IDC_COMBO_ACCOUNT5              1016
 #define IDC_BUSY_TEXT                   1016
 #define IDC_COMBO_ACNT                  1016
+#define IDC_BTN_DEL_CONNECT             1016
 #define IDC_BTN_EXTRA_VAR               1017
 #define IDC_BTN_EDIT_FUND               1017
 #define IDC_BTN_CANCEL_SELECTED         1017
@@ -429,6 +430,7 @@
 #define IDC_INDEX_PROPERTY              1017
 #define IDC_BTN_END                     1017
 #define IDC_BTN_SEARCH                  1017
+#define IDC_BTN_DEL_SIGNAL              1017
 #define IDC_RADIO_TICKLEFT              1018
 #define IDC_CANCEL_LAST_ORDER           1018
 #define IDC_SPIN_ORDER_CELL_HEIGHT      1018

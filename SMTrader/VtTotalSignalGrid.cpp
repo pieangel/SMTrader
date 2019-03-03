@@ -41,6 +41,7 @@ void VtTotalSignalGrid::OnSetup()
 	SetHS_Height(0);
 	SetColTitle();
 	SetVScrollMode(UG_SCROLLNORMAL);
+	InitGrid();
 }
 
 void VtTotalSignalGrid::OnDClicked(int col, long row, RECT *rect, POINT *point, BOOL processed)
@@ -102,26 +103,25 @@ void VtTotalSignalGrid::InitGrid()
 		if (sys->Account()) QuickSetText(0, i, sys->Account()->AccountNo.c_str());
 		if (sys->Symbol()) QuickSetText(1, i, sys->Symbol()->ShortCode.c_str());
 		VtPosition posi = sys->GetPosition();
-		posi.Position == VtPositionType::Buy ? QuickSetText(2, i, _T("매수")) : QuickSetText(2, i, _T("매도"));
+		posi.Position == VtPositionType::None ? QuickSetText(2, i, _T("없음"))  : posi.Position == VtPositionType::Buy ? QuickSetText(2, i, _T("매수")) : QuickSetText(2, i, _T("매도"));
 		QuickSetText(3, i, std::to_string(posi.AvgPrice).c_str());
 		QuickSetText(4, i, std::to_string(posi.CurPrice).c_str());
 		QuickSetText(5, i, std::to_string(posi.OpenProfitLoss).c_str());
 		QuickSetNumber(6, i, sys->EntryToday());
 		QuickSetNumber(7, i, sys->EntryToday());
-		QuickSetText(8, i, sys->OutSignal()->Name.c_str());
+		QuickSetText(8, i, sys->OutSignal()->SignalName.c_str());
 		for (int j = 0; j < _ColCount; ++j) {
 			QuickRedrawCell(j, i);
 		}
 	}
 
-	
 	_RowNumber = sysVec.size();
 }
 
 void VtTotalSignalGrid::ClearCells()
 {
 	CUGCell cell;
-	for (int i = 0; i < _RowNumber; i++)
+	for (int i = 0; i < _RowNumber + 1; i++)
 	{
 		for (int j = 0; j < _ColCount; j++)
 		{

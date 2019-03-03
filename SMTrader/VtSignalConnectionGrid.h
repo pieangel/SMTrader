@@ -47,13 +47,16 @@ public:
 	int					m_nSpinIndex;
 	void SetTargetAcntOrFund(std::tuple<int, VtAccount*, VtFund*>& selItem);
 	void AddSystem(SharedSystem sys);
+	void RemoveSystem();
 	VtTotalSignalGrid* TotalGrid() const { return _TotalGrid; }
 	void TotalGrid(VtTotalSignalGrid* val) { _TotalGrid = val; }
+	void Refresh();
 private:
 	int _SelRow = -2;
 	int _OldSelRow = -2;
 	int _ClickedRow = -2;
 	int _ButtonRow = -2;
+	int _OccupiedRowCount = 0;
 	COLORREF _SelColor = RGB(255, 227, 132);
 	COLORREF _ClickedColor = RGB(216, 234, 253);
 	//celltype notification handlers

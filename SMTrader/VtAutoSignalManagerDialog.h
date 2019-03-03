@@ -33,4 +33,6 @@ private:
 public:
 	afx_msg void OnBnClickedBtnAddConnect();
 	afx_msg void OnBnClickedBtnAddSignal();
+	afx_msg void OnBnClickedBtnDelConnect();
+	afx_msg void OnBnClickedBtnDelSignal();
 };

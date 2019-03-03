@@ -199,21 +199,37 @@ void VtSignalConnectionGrid::InitGrid()
 		SharedSystem sys = *it;
 		for (int xIndex = 0; xIndex < _ColCount; ++xIndex) {
 			if (xIndex == 0) {
-				QuickSetLabelText(xIndex, yIndex, _T(""));
-				QuickSetCellType(xIndex, yIndex, UGCT_CHECKBOX);
-				QuickSetCellTypeEx(xIndex, yIndex, UGCT_CHECKBOXFLAT | UGCT_CHECKBOXCHECKMARK);
-			}
-			else if (xIndex == 1 || xIndex == 2) {
 				GetCell(xIndex, yIndex, &cell);
-				xIndex == 1 ? cell.SetText(_T("계좌선택")) : cell.SetText(_T("종목선택"));
+				sys->Enable() ? cell.SetNumber(1.0) : cell.SetNumber(0.0);
+				cell.SetLabelText(_T(""));
+				cell.SetCellType(UGCT_CHECKBOX);
+				cell.SetCellTypeEx(UGCT_CHECKBOXFLAT | UGCT_CHECKBOXCHECKMARK);
+				SetCell(xIndex, yIndex, &cell);
+			}
+			else if (xIndex == 1) {
+				GetCell(xIndex, yIndex, &cell);
+				if (sys->SysTargetType() == TargetType::RealAccount || sys->SysTargetType() == TargetType::SubAccount) {
+					if (sys->Account()) cell.SetText(sys->Account()->AccountNo.c_str());
+				}
+				else {
+					if (sys->Fund()) cell.SetText(sys->Fund()->Name.c_str());
+				}
 				cell.SetCellType(m_nEllipsisIndex);
 				cell.SetCellTypeEx(UGCT_NORMALELLIPSIS);
-				xIndex == 1 ? cell.SetParam(ELLIPSISBUTTON_CLICK_ACNT) : cell.SetParam(ELLIPSISBUTTON_CLICK_PRDT);
+				cell.SetParam(ELLIPSISBUTTON_CLICK_ACNT);
+				SetCell(xIndex, yIndex, &cell);
+			}
+			else if (xIndex == 2) {
+				GetCell(xIndex, yIndex, &cell);
+				if (sys->Symbol()) cell.SetText(sys->Symbol()->ShortCode.c_str());
+				cell.SetCellType(m_nEllipsisIndex);
+				cell.SetCellTypeEx(UGCT_NORMALELLIPSIS);
+				cell.SetParam(ELLIPSISBUTTON_CLICK_PRDT);
 				SetCell(xIndex, yIndex, &cell);
 			}
 			else if (xIndex == 3) {
 				GetCell(xIndex, yIndex, &cell);
-				cell.SetText("신호선택");
+				if (sys->OutSignal())  cell.SetText(sys->OutSignal()->SignalName.c_str());
 				cell.SetCellType(UGCT_DROPLIST);
 				cell.SetCellTypeEx(UGCT_DROPLISTHIDEBUTTON);
 				cell.SetReadOnly(FALSE);
@@ -222,15 +238,17 @@ void VtSignalConnectionGrid::InitGrid()
 			}
 			else if (xIndex == 4) {
 				GetCell(xIndex, yIndex, &cell);
-				cell.SetText("1");
+				cell.SetNumber(sys->SeungSu());
 				cell.SetCellType(m_nSpinIndex);
 				cell.SetParam(SPIN_TYPE_SEUNGSU);
 				SetCell(xIndex, yIndex, &cell);
 			}
+			QuickRedrawCell(xIndex, yIndex);
 		}
 		_SystemMap[yIndex] = sys;
 		yIndex++;
 	}
+	_OccupiedRowCount = yIndex;
 }
 
 void VtSignalConnectionGrid::ClearCells()
@@ -243,6 +261,7 @@ void VtSignalConnectionGrid::ClearCells()
 			QuickRedrawCell(j, i);
 			GetCell(j, i, &cell);
 			cell.Tag(nullptr);
+			cell.SetCellType(UGCT_NORMAL);
 			SetCell(j, i, &cell);
 		}
 	}
@@ -276,9 +295,12 @@ void VtSignalConnectionGrid::AddSystem(SharedSystem sys)
 	int yIndex = outSysMgr->GetSysMap().size();
 	for (int xIndex = 0; xIndex < _ColCount; ++xIndex) {
 		if (xIndex == 0) {
-			QuickSetLabelText(xIndex, yIndex, _T(""));
-			QuickSetCellType(xIndex, yIndex, UGCT_CHECKBOX);
-			QuickSetCellTypeEx(xIndex, yIndex, UGCT_CHECKBOXFLAT | UGCT_CHECKBOXCHECKMARK);
+			GetCell(xIndex, yIndex, &cell);
+			sys->Enable() ? cell.SetNumber(1.0) : cell.SetNumber(0.0);
+			cell.SetLabelText(_T(""));
+			cell.SetCellType(UGCT_CHECKBOX);
+			cell.SetCellTypeEx(UGCT_CHECKBOXFLAT | UGCT_CHECKBOXCHECKMARK);
+			SetCell(xIndex, yIndex, &cell);
 		}
 		else if (xIndex == 1) {
 			GetCell(xIndex, yIndex, &cell);
@@ -303,7 +325,7 @@ void VtSignalConnectionGrid::AddSystem(SharedSystem sys)
 		}
 		else if (xIndex == 3) {
 			GetCell(xIndex, yIndex, &cell);
-			if (sys->OutSignal())  cell.SetText(sys->OutSignal()->Name.c_str());
+			if (sys->OutSignal())  cell.SetText(sys->OutSignal()->SignalName.c_str());
 			cell.SetCellType(UGCT_DROPLIST);
 			cell.SetCellTypeEx(UGCT_DROPLISTHIDEBUTTON);
 			cell.SetReadOnly(FALSE);
@@ -321,6 +343,43 @@ void VtSignalConnectionGrid::AddSystem(SharedSystem sys)
 	}
 	_SystemMap[yIndex] = sys;
 	outSysMgr->AddSystem(sys);
+	_OccupiedRowCount = yIndex;
+}
+
+void VtSignalConnectionGrid::RemoveSystem()
+{
+	int row = _ClickedRow;
+	auto it = _SystemMap.find(row);
+	if (it != _SystemMap.end()) {
+		SharedSystem sys = it->second;
+		// 시스템을 정지 시킨다.
+		sys->Enable(false);
+		VtOutSystemOrderManager* outSysOrderMgr = VtOutSystemOrderManager::GetInstance();
+		// 주문관리자에서 삭제한다.
+		outSysOrderMgr->RemoveSystem(sys);
+		// 주문상태 목록을 리프레쉬 한다.
+		if (_TotalGrid) _TotalGrid->Refresh();
+
+		// 시스템 목록에서 삭제한다.
+		VtOutSystemManager* outSysMgr = VtOutSystemManager::GetInstance();
+		outSysMgr->RemoveSystem(sys->Id());
+
+		// 모든 셀 정보를 초기화 시킨다.
+		CUGCell cell;
+		for (int i = 0; i < _ColCount; ++i) {
+			GetCell(i, row, &cell);
+			cell.SetCellType(UGCT_NORMAL);
+			cell.SetText(_T(""));
+			SetCell(i, row, &cell);
+			QuickRedrawCell(i, row);
+		}
+	}
+}
+
+void VtSignalConnectionGrid::Refresh()
+{
+	ClearCells();
+	InitGrid();
 }
 
 int VtSignalConnectionGrid::OnDropList(long ID, int col, long row, long msg, long param)
@@ -342,7 +401,7 @@ int VtSignalConnectionGrid::OnCheckbox(long ID, int col, long row, long msg, lon
 		}
 		else {
 			sys->Enable(false);
-			outSysOrderMgr->RemoveSystem(sys->Id());
+			outSysOrderMgr->RemoveSystem(sys);
 		}
 		if (_TotalGrid) _TotalGrid->Refresh();
 	}

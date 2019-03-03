@@ -167,7 +167,7 @@ void VtSignalDefinitionGrid::InitGrid()
 	OutSigDefVec& sigDefVec = outSigDefMgr->GetSignalDefVec();
 	for (auto it = sigDefVec.begin(); it != sigDefVec.end(); ++it) {
 		SharedOutSigDef sig = *it;
-		QuickSetText(0, i, sig->Name.c_str());
+		QuickSetText(0, i, sig->SignalName.c_str());
 		QuickSetText(3, i, sig->Desc.c_str());
 		QuickRedrawCell(0, i);
 		QuickRedrawCell(0, 3);
@@ -195,7 +195,7 @@ void VtSignalDefinitionGrid::AddOutSigDef(SharedOutSigDef sig)
 	VtOutSignalDefManager* outSigDefMgr = VtOutSignalDefManager::GetInstance();
 	OutSigDefVec& sigDefVec = outSigDefMgr->GetSignalDefVec();
 	int yIndex = sigDefVec.size() - 1;
-	QuickSetText(0, yIndex, sig->Name.c_str());
+	QuickSetText(0, yIndex, sig->SignalName.c_str());
 	QuickSetText(1, yIndex, sig->SymbolCode.c_str());
 	QuickSetText(2, yIndex, sig->StrategyName.c_str());
 	QuickSetText(3, yIndex, sig->Desc.c_str());

@@ -37,6 +37,8 @@ void VtAutoSignalManagerDialog::PostNcDestroy()
 BEGIN_MESSAGE_MAP(VtAutoSignalManagerDialog, CDialogEx)
 	ON_BN_CLICKED(IDC_BTN_ADD_CONNECT, &VtAutoSignalManagerDialog::OnBnClickedBtnAddConnect)
 	ON_BN_CLICKED(IDC_BTN_ADD_SIGNAL, &VtAutoSignalManagerDialog::OnBnClickedBtnAddSignal)
+	ON_BN_CLICKED(IDC_BTN_DEL_CONNECT, &VtAutoSignalManagerDialog::OnBnClickedBtnDelConnect)
+	ON_BN_CLICKED(IDC_BTN_DEL_SIGNAL, &VtAutoSignalManagerDialog::OnBnClickedBtnDelSignal)
 END_MESSAGE_MAP()
 
 
@@ -70,4 +72,17 @@ void VtAutoSignalManagerDialog::OnBnClickedBtnAddSignal()
 	VtAddOutSigDefDlg dlg;
 	dlg.SigDefGrid(&_DefineGrid);
 	dlg.DoModal();
+}
+
+
+void VtAutoSignalManagerDialog::OnBnClickedBtnDelConnect()
+{
+	_ConnectGrid.RemoveSystem();
+	_ConnectGrid.Refresh();
+}
+
+
+void VtAutoSignalManagerDialog::OnBnClickedBtnDelSignal()
+{
+	// TODO: Add your control notification handler code here
 }

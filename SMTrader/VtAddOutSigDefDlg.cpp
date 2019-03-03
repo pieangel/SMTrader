@@ -52,7 +52,7 @@ void VtAddOutSigDefDlg::OnBnClickedOk()
 	_EditSymbol.GetWindowText(strSymbol);
 	_EditStrategy.GetWindowText(strStrategy);
 	_EditDesc.GetWindowText(strDesc);
-	sig->Name = (LPCTSTR)strSignal;
+	sig->SignalName = (LPCTSTR)strSignal;
 	sig->SymbolCode = (LPCTSTR)strSymbol;
 	sig->StrategyName = (LPCTSTR)strStrategy;
 	sig->Desc = (LPCTSTR)strDesc;
