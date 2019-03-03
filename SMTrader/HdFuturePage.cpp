@@ -76,3 +76,8 @@ void HdFuturePage::SetAddConSigDlg(VtAddConnectSignalDlg* conSigDlg)
 {
 	_FutureGrid.SetAddConSigDlg(conSigDlg);
 }
+
+void HdFuturePage::SetSigConGrid(VtSignalConnectionGrid* sigConGrid)
+{
+	_FutureGrid.SetSigConGrid(sigConGrid);
+}

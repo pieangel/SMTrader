@@ -8,6 +8,7 @@
 #include "VtUsdStrategyConfigDlg.h"
 #include "VtSubAccountManager.h"
 #include "VtAccountFundSelector.h"
+#include "VtSignalConnectionGrid.h"
 
 VtAccountFundGrid::VtAccountFundGrid()
 {
@@ -54,6 +55,9 @@ void VtAccountFundGrid::OnDClicked(int col, long row, RECT *rect, POINT *point, 
 	if (selItem != _RowToNameMap.end()) {
 		if (_ConfigDlg) {
 			_ConfigDlg->SetTargetAcntOrFund(selItem->second);
+		}
+		if (_SigConGrid) {
+			_SigConGrid->SetTargetAcntOrFund(selItem->second);
 		}
 		if (_ParendDlg)
 			_ParendDlg->SendMessage(WM_CLOSE, 0, 0);

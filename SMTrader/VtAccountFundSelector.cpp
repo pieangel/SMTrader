@@ -42,6 +42,7 @@ BOOL VtAccountFundSelector::OnInitDialog()
 	// TODO:  Add extra initialization here
 	_Grid.AttachGrid(this, IDC_STATIC_GRID);
 	_Grid.ParendDlg(this);
+	_Grid.SetFocus();
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // EXCEPTION: OCX Property Pages should return FALSE
 }
@@ -69,4 +70,9 @@ void VtAccountFundSelector::OnBnClickedRadioFund()
 void VtAccountFundSelector::SetConfigDlg(VtUsdStrategyConfigDlg* ConfigDlg)
 {
 	_Grid.SetConfigDlg(ConfigDlg);
+}
+
+void VtAccountFundSelector::SetSignalConnectionGrid(VtSignalConnectionGrid* SigConGrid)
+{
+	_Grid.SetSignalConnectionGrid(SigConGrid);
 }

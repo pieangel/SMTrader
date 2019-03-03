@@ -51,6 +51,8 @@
 #include "VtStrategyWndManager.h"
 #include "FileWatch/VtFileEventMonitor.h"
 #include "VtAutoSignalManagerDialog.h"
+#include "VtOutSystemManager.h"
+#include "VtOutSignalDefManager.h"
 extern TApplicationFont g_Font;
 
 #ifdef _DEBUG
@@ -752,6 +754,7 @@ bool CMainFrame::ClearAllResources()
 	VtHdClient* client = VtHdClient::GetInstance();
 	// 먼저 클라이언트가 메시지를 받는 것을 막는다. 
 	client->SetBlock(true);
+
 	VtChartDataCollector::DestroyInstance();
 	VtSystemGroupManager::DestroyInstance();
 
@@ -800,6 +803,8 @@ bool CMainFrame::ClearAllResources()
 	VtWindowManager::DestroyInstance();
 	VtSaveManager::DestroyInstance();
 	VtOrderQueueManager::DestroyInstance();
+	VtOutSignalDefManager::DestroyInstance();
+	VtOutSystemManager::DestroyInstance();
 
 	return true;
 }

@@ -7,6 +7,7 @@ class HdSymbolSelecter;
 class VtOrderConfigManager;
 class VtUsdStrategyConfigDlg;
 class VtAddConnectSignalDlg;
+class VtSignalConnectionGrid;
 class HdOptionPage : public CDialogEx
 {
 	DECLARE_DYNAMIC(HdOptionPage)
@@ -48,4 +49,5 @@ public:
 	void GetSymbolMaster();
 	void SetConfigDlg(VtUsdStrategyConfigDlg* ConfigDlg);
 	void SetAddConSigDlg(VtAddConnectSignalDlg* conSigDlg);
+	void SetSigConGrid(VtSignalConnectionGrid* sigConGrid);
 };

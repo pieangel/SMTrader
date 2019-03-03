@@ -1,10 +1,15 @@
 #pragma once
 #include "afxwin.h"
 #include "afxcmn.h"
-
+#include "VtOutSignalDefManager.h"
 
 // VtAddConnectSignalDlg dialog
 class VtSymbol;
+class VtAccount;
+class VtFund;
+class VtSymbol;
+class VtOutSignalDef;
+class VtSignalConnectionGrid;
 class VtAddConnectSignalDlg : public CDialogEx
 {
 	DECLARE_DYNAMIC(VtAddConnectSignalDlg)
@@ -39,5 +44,13 @@ public:
 	virtual BOOL OnInitDialog();
 	int _Mode = 0;
 	void InitCombo();
+	void InitOutSigDefCombo();
 	void SetSymbol(VtSymbol* sym);
+	VtAccount* _Acnt = nullptr;
+	VtSymbol* _Symbol = nullptr;
+	VtFund* _Fund = nullptr;
+	SharedOutSigDef _Signal = nullptr;
+	void SigConGrid(VtSignalConnectionGrid* val) { _SigConGrid = val; }
+private:
+	VtSignalConnectionGrid* _SigConGrid = nullptr;
 };

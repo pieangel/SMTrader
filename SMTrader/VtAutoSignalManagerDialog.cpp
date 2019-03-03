@@ -6,6 +6,7 @@
 #include "VtAutoSignalManagerDialog.h"
 #include "afxdialogex.h"
 #include "VtAddConnectSignalDlg.h"
+#include "VtAddOutSigDefDlg.h"
 
 // VtAutoSignalManagerDialog dialog
 
@@ -58,11 +59,14 @@ BOOL VtAutoSignalManagerDialog::OnInitDialog()
 void VtAutoSignalManagerDialog::OnBnClickedBtnAddConnect()
 {
 	VtAddConnectSignalDlg dlg;
+	dlg.SigConGrid(&_ConnectGrid);
 	dlg.DoModal();
 }
 
 
 void VtAutoSignalManagerDialog::OnBnClickedBtnAddSignal()
 {
-	// TODO: Add your control notification handler code here
+	VtAddOutSigDefDlg dlg;
+	dlg.SigDefGrid(&_DefineGrid);
+	dlg.DoModal();
 }

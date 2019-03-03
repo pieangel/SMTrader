@@ -130,3 +130,9 @@ void HdSymbolSelecter::SetAddConSigDlg(VtAddConnectSignalDlg* conSigDlg)
 	_FutPage.SetAddConSigDlg(conSigDlg);
 	_OptPage.SetAddConSigDlg(conSigDlg);
 }
+
+void HdSymbolSelecter::SetSigConGrid(VtSignalConnectionGrid* sigConGrid)
+{
+	_FutPage.SetSigConGrid(sigConGrid);
+	_OptPage.SetSigConGrid(sigConGrid);
+}

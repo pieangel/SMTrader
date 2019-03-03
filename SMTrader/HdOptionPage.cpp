@@ -89,3 +89,8 @@ void HdOptionPage::SetAddConSigDlg(VtAddConnectSignalDlg* conSigDlg)
 {
 	_OptionGrid.SetAddConSigDlg(conSigDlg);
 }
+
+void HdOptionPage::SetSigConGrid(VtSignalConnectionGrid* sigConGrid)
+{
+	_OptionGrid.SetSigConGrid(sigConGrid);
+}

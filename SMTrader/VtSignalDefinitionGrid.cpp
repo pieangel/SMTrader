@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "VtSignalDefinitionGrid.h"
 #include "VtGlobal.h"
+#include "VtOutSignalDefManager.h"
+#include "VtOutSignalDef.h"
 
 VtSignalDefinitionGrid::VtSignalDefinitionGrid()
 {
@@ -34,6 +36,7 @@ void VtSignalDefinitionGrid::OnSetup()
 	SetHS_Height(0);
 	SetColTitle();
 	SetVScrollMode(UG_SCROLLNORMAL);
+	InitGrid();
 }
 
 void VtSignalDefinitionGrid::OnDClicked(int col, long row, RECT *rect, POINT *point, BOOL processed)
@@ -80,7 +83,17 @@ void VtSignalDefinitionGrid::QuickRedrawCell(int col, long row)
 
 void VtSignalDefinitionGrid::InitGrid()
 {
-
+	VtOutSignalDefManager* outSigDefMgr = VtOutSignalDefManager::GetInstance();
+	int i = 0;
+	OutSigDefVec& sigDefVec = outSigDefMgr->GetSignalDefVec();
+	for (auto it = sigDefVec.begin(); it != sigDefVec.end(); ++it) {
+		SharedOutSigDef sig = *it;
+		QuickSetText(0, i, sig->Name.c_str());
+		QuickSetText(3, i, sig->Desc.c_str());
+		QuickRedrawCell(0, i);
+		QuickRedrawCell(0, 3);
+		i++;
+	}
 }
 
 void VtSignalDefinitionGrid::ClearCells()
@@ -96,4 +109,19 @@ void VtSignalDefinitionGrid::ClearCells()
 			SetCell(j, i, &cell);
 		}
 	}
+}
+
+void VtSignalDefinitionGrid::AddOutSigDef(SharedOutSigDef sig)
+{
+	VtOutSignalDefManager* outSigDefMgr = VtOutSignalDefManager::GetInstance();
+	OutSigDefVec& sigDefVec = outSigDefMgr->GetSignalDefVec();
+	int yIndex = sigDefVec.size() - 1;
+	QuickSetText(0, yIndex, sig->Name.c_str());
+	QuickSetText(1, yIndex, sig->SymbolCode.c_str());
+	QuickSetText(2, yIndex, sig->StrategyName.c_str());
+	QuickSetText(3, yIndex, sig->Desc.c_str());
+	QuickRedrawCell(0, yIndex);
+	QuickRedrawCell(1, yIndex);
+	QuickRedrawCell(2, yIndex);
+	QuickRedrawCell(3, yIndex);
 }

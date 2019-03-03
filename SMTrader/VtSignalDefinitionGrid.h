@@ -4,7 +4,7 @@
 #include "Global/VtDefine.h"
 #include <map>
 #include <vector>
-
+#include "VtOutSignalDefManager.h"
 class VtSignalDefinitionGrid : public VtGrid
 {
 public:
@@ -24,6 +24,7 @@ public:
 	void InitGrid();
 
 	void ClearCells();
+	void AddOutSigDef(SharedOutSigDef sig);
 };
 
 

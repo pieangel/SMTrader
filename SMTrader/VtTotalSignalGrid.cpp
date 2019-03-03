@@ -1,7 +1,12 @@
 #include "stdafx.h"
 #include "VtTotalSignalGrid.h"
 #include "VtGlobal.h"
-
+#include "VtOutSystemOrderManager.h"
+#include "System/VtSystem.h"
+#include "VtAccount.h"
+#include "VtSymbol.h"
+#include "VtPosition.h"
+#include "VtOutSignalDef.h"
 VtTotalSignalGrid::VtTotalSignalGrid()
 {
 }
@@ -83,7 +88,23 @@ void VtTotalSignalGrid::QuickRedrawCell(int col, long row)
 
 void VtTotalSignalGrid::InitGrid()
 {
-
+	ClearCells();
+	VtOutSystemOrderManager* outSysOrderMgr = VtOutSystemOrderManager::GetInstance();
+	SharedSystemVec& sysVec = outSysOrderMgr->GetSysVec();
+	
+	for (size_t i = 0; i < sysVec.size(); ++i) {
+		SharedSystem sys = sysVec[i];
+		if (sys->Account()) QuickSetText(0, i, sys->Account()->AccountNo.c_str());
+		if (sys->Symbol()) QuickSetText(1, i, sys->Symbol()->ShortCode.c_str());
+		VtPosition posi = sys->GetPosition();
+		posi.Position == VtPositionType::Buy ? QuickSetText(2, i, _T("매수")) : QuickSetText(2, i, _T("매도"));
+		QuickSetText(3, i, std::to_string(posi.AvgPrice).c_str());
+		QuickSetText(4, i, std::to_string(posi.CurPrice).c_str());
+		QuickSetText(5, i, std::to_string(posi.OpenProfitLoss).c_str());
+		QuickSetNumber(6, i, sys->EntryToday());
+		QuickSetNumber(7, i, sys->EntryToday());
+		QuickSetText(8, i, sys->OutSignal()->Name.c_str());
+	}
 }
 
 void VtTotalSignalGrid::ClearCells()

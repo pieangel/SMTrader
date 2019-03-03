@@ -7,6 +7,7 @@
 class VtOrderConfigManager;
 class VtUsdStrategyConfigDlg;
 class VtAddConnectSignalDlg;
+class VtSignalConnectionGrid;
 class HdSymbolSelecter : public CDialogEx
 {
 	DECLARE_DYNAMIC(HdSymbolSelecter)
@@ -44,6 +45,7 @@ public:
 	int SelTab;
 	void SetConfigDlg(VtUsdStrategyConfigDlg* ConfigDlg);
 	void SetAddConSigDlg(VtAddConnectSignalDlg* conSigDlg);
+	void SetSigConGrid(VtSignalConnectionGrid* sigConGrid);
 private:
 	VtOrderConfigManager* _OrderConfigMgr = nullptr;
 };

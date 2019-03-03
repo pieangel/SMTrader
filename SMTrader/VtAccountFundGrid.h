@@ -8,6 +8,7 @@ class VtUsdStrategyConfigDlg;
 class VtFund;
 class VtAccount;
 class VtAccountFundSelector;
+class VtSignalConnectionGrid;
 class VtAccountFundGrid : public VtGrid
 {
 public:
@@ -35,6 +36,9 @@ public:
 	void SetConfigDlg(VtUsdStrategyConfigDlg* ConfigDlg);
 	VtAccountFundSelector* ParendDlg() const { return _ParendDlg; }
 	void ParendDlg(VtAccountFundSelector* val) { _ParendDlg = val; }
+	void SetSignalConnectionGrid(VtSignalConnectionGrid* SigConGrid) {
+		_SigConGrid = SigConGrid;
+	}
 private:
 	int _SelRow = -2;
 	int _OldSelRow = -2;
@@ -50,5 +54,6 @@ private:
 	std::vector<int> _HeightVec;
 	void ResizeWindow();
 	VtAccountFundSelector* _ParendDlg = nullptr;
+	VtSignalConnectionGrid* _SigConGrid = nullptr;
 };
 

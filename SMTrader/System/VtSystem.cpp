@@ -1831,6 +1831,27 @@ void VtSystem::RegisterRealtimeAccountEvent()
 	}
 }
 
+VtPosition VtSystem::GetPosition()
+{
+	VtPosition curPosi;
+	if (_SysTargetType == TargetType::RealAccount || _SysTargetType == TargetType::SubAccount) { // 계좌 주문일 때
+		if (!_Account || !_Symbol)
+			return curPosi;
+		VtPosition* posi = _Account->FindPosition(_Symbol->ShortCode);
+
+		if (!posi || posi->OpenQty == 0 || posi->Position == VtPositionType::None)
+			return curPosi;
+		return *posi;
+	}
+	else {
+		if (!_Fund || !_Symbol)
+			return curPosi;
+		int count = 0;
+		curPosi = _Fund->GetPosition(_Symbol->ShortCode, count);
+		return curPosi;
+	}
+}
+
 void VtSystem::AddSystemArg(std::string groupName, VtSystemArg arg)
 {
 	VtSystemArgGroup* argGrp = FindArgGroup(groupName);

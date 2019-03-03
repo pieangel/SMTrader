@@ -8,7 +8,7 @@ struct VtPosition
 	std::string AccountNo; //	12	string	가상계좌번호
 	std::string FullCode; //	16	string	종목코드
 	std::string ShortCode;
-	VtPositionType Position; //	1	
+	VtPositionType Position = VtPositionType::None; //	1	
 	int TotVolume; //	10	int	전체잔고
 	int TodayVol; //	10	int	당일잔고
 	int PrevOpenQty; //	10	int	전일잔고

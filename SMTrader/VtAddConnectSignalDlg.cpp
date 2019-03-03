@@ -12,8 +12,12 @@
 #include "VtAccount.h"
 #include "HdSymbolSelecter.h"
 #include "VtSymbol.h"
-
-
+#include "VtOutSignalDefManager.h"
+#include "VtOutSignalDef.h"
+#include "VtOutSystemManager.h"
+#include "Global/VtDefine.h"
+#include "System/VtSystem.h"
+#include "VtSignalConnectionGrid.h"
 // VtAddConnectSignalDlg dialog
 
 IMPLEMENT_DYNAMIC(VtAddConnectSignalDlg, CDialogEx)
@@ -66,13 +70,22 @@ void VtAddConnectSignalDlg::OnCbnSelchangeComboType()
 
 void VtAddConnectSignalDlg::OnCbnSelchangeComboAcnt()
 {
-	// TODO: Add your control notification handler code here
+	int selIndex = _ComboAcnt.GetCurSel();
+	if (selIndex != -1) {
+		if (_Mode == 0)
+			_Acnt = (VtAccount*)_ComboAcnt.GetItemDataPtr(selIndex);
+		else 
+			_Fund = (VtFund*)_ComboAcnt.GetItemDataPtr(selIndex);
+	}
 }
 
 
 void VtAddConnectSignalDlg::OnCbnSelchangeComboSymbol()
 {
-	
+	int selIndex = _ComboSymbol.GetCurSel();
+	if (selIndex != -1) {
+		_Symbol = (VtSymbol*)_ComboSymbol.GetItemDataPtr(selIndex);
+	}
 }
 
 
@@ -86,12 +99,44 @@ void VtAddConnectSignalDlg::OnBnClickedBtnFindSymbol()
 
 void VtAddConnectSignalDlg::OnCbnSelchangeComboSignal()
 {
-	// TODO: Add your control notification handler code here
+	int selIndex = _ComboSignal.GetCurSel();
+	if (selIndex != -1) {
+		VtOutSignalDefManager* outSigDefMgr = VtOutSignalDefManager::GetInstance();
+		CString strName;
+		_ComboSignal.GetLBText(selIndex, strName);
+		SharedOutSigDef sig = outSigDefMgr->FindOutSigDef((LPCTSTR)strName);
+		sig ? _Signal = sig : _Signal = nullptr;
+	}
 }
 
 
 void VtAddConnectSignalDlg::OnBnClickedBtnOk()
 {
+	SharedSystem sys = std::make_shared<VtSystem>(VtSystemType::SYS_OUT);
+	if (_Mode == 0) {
+		if (_Acnt) {
+			_Acnt->AccountLevel() == 0 ? sys->SysTargetType(TargetType::RealAccount) : sys->SysTargetType(TargetType::SubAccount);
+			sys->Account(_Acnt);
+		}
+	}
+	else {
+		if (_Fund) {
+			sys->SysTargetType(TargetType::Fund);
+			sys->Fund(_Fund);
+		}
+	}
+
+	if (_Symbol) sys->Symbol(_Symbol);
+
+	if (_Signal) sys->OutSignal(_Signal);
+
+	CString strSeungSu;
+	_EditSeungsu.GetWindowText(strSeungSu);
+	sys->SeungSu(_ttoi(strSeungSu));
+
+	if (_SigConGrid) {
+		_SigConGrid->AddSystem(sys);
+	}
 	CDialogEx::OnOK();
 }
 
@@ -112,6 +157,7 @@ BOOL VtAddConnectSignalDlg::OnInitDialog()
 	_EditSeungsu.SetWindowText(_T("1"));
 	_SpinSeungsu.SetRange(0, 100);
 	InitCombo();
+	InitOutSigDefCombo();
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // EXCEPTION: OCX Property Pages should return FALSE
 }
@@ -125,6 +171,7 @@ void VtAddConnectSignalDlg::InitCombo()
 		for (auto it = acntMgr->AccountMap.begin(); it != acntMgr->AccountMap.end(); ++it) {
 			VtAccount* acnt = it->second;
 			index = _ComboAcnt.AddString(acnt->AccountNo.c_str());
+			if (index == 0) _Acnt = acnt;
 			_ComboAcnt.SetItemDataPtr(index, acnt);
 		}
 
@@ -141,12 +188,28 @@ void VtAddConnectSignalDlg::InitCombo()
 		for (auto it = fundList.begin(); it != fundList.end(); ++it) {
 			VtFund* fund = it->second;
 			index = _ComboAcnt.AddString(fund->Name.c_str());
+			if (index == 0) _Fund = fund;
 			_ComboAcnt.SetItemDataPtr(index, fund);
 		}
 	}
 
 	if (index != -1)
 		_ComboAcnt.SetCurSel(0);
+}
+
+void VtAddConnectSignalDlg::InitOutSigDefCombo()
+{
+	VtOutSignalDefManager* outSigDefMgr = VtOutSignalDefManager::GetInstance();
+	OutSigDefVec& sigDefVec = outSigDefMgr->GetSignalDefVec();
+	int selIndex = -1;
+	for (auto it = sigDefVec.begin(); it != sigDefVec.end(); ++it) {
+		SharedOutSigDef& sig = *it;
+		selIndex = _ComboSignal.AddString(sig->Name.c_str());
+	}
+	if (selIndex != -1) {
+		_ComboSignal.SetCurSel(0);
+		_Signal = sigDefVec[selIndex];
+	}
 }
 
 void VtAddConnectSignalDlg::SetSymbol(VtSymbol* sym)
@@ -156,4 +219,5 @@ void VtAddConnectSignalDlg::SetSymbol(VtSymbol* sym)
 	int index = _ComboSymbol.AddString(sym->ShortCode.c_str());
 	_ComboSymbol.SetItemDataPtr(index, sym);
 	_ComboSymbol.SetCurSel(index);
+	_Symbol = sym;
 }

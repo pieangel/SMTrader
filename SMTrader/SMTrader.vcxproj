@@ -418,6 +418,7 @@
     <ClInclude Include="VtAccountPasswordGrid.h" />
     <ClInclude Include="VtAccountRemainGrid.h" />
     <ClInclude Include="VtAddConnectSignalDlg.h" />
+    <ClInclude Include="VtAddOutSigDefDlg.h" />
     <ClInclude Include="VtAssetPage.h" />
     <ClInclude Include="VtAtrIndex.h" />
     <ClInclude Include="VtAutoSignalManagerDialog.h" />
@@ -454,7 +455,8 @@
     <ClInclude Include="VtDoubleBufferedQueue.h" />
     <ClInclude Include="VtEditCtrl.h" />
     <ClInclude Include="VtEntireBand.h" />
-    <ClInclude Include="VtExSystemManager.h" />
+    <ClInclude Include="VtOutSysDef.h" />
+    <ClInclude Include="VtOutSystemManager.h" />
     <ClInclude Include="VtFavoritGrid.h" />
     <ClInclude Include="VtFDMultiAcntPage.h" />
     <ClInclude Include="VtFDSubAcntPage.h" />
@@ -527,6 +529,9 @@
     <ClInclude Include="VtOrderWnd.h" />
     <ClInclude Include="VtOrderWndEvent.h" />
     <ClInclude Include="VtOrderWndHd.h" />
+    <ClInclude Include="VtOutSignalDef.h" />
+    <ClInclude Include="VtOutSignalDefManager.h" />
+    <ClInclude Include="VtOutSystemOrderManager.h" />
     <ClInclude Include="VtPosition.h" />
     <ClInclude Include="VtPreOrderGrid.h" />
     <ClInclude Include="VtPriceChannelIndex.h" />
@@ -828,6 +833,7 @@
     <ClCompile Include="VtAccountPasswordGrid.cpp" />
     <ClCompile Include="VtAccountRemainGrid.cpp" />
     <ClCompile Include="VtAddConnectSignalDlg.cpp" />
+    <ClCompile Include="VtAddOutSigDefDlg.cpp" />
     <ClCompile Include="VtAssetPage.cpp" />
     <ClCompile Include="VtAtrIndex.cpp" />
     <ClCompile Include="VtAutoSignalManagerDialog.cpp" />
@@ -861,7 +867,7 @@
     <ClCompile Include="VtDoubleBufferedQueue.cpp" />
     <ClCompile Include="VtEditCtrl.cpp" />
     <ClCompile Include="VtEntireBand.cpp" />
-    <ClCompile Include="VtExSystemManager.cpp" />
+    <ClCompile Include="VtOutSystemManager.cpp" />
     <ClCompile Include="VtFavoritGrid.cpp" />
     <ClCompile Include="VtFDMultiAcntPage.cpp" />
     <ClCompile Include="VtFDSubAcntPage.cpp" />
@@ -930,6 +936,9 @@
     <ClCompile Include="VtOrderSettlePage.cpp" />
     <ClCompile Include="VtOrderWnd.cpp" />
     <ClCompile Include="VtOrderWndHd.cpp" />
+    <ClCompile Include="VtOutSignalDef.cpp" />
+    <ClCompile Include="VtOutSignalDefManager.cpp" />
+    <ClCompile Include="VtOutSystemOrderManager.cpp" />
     <ClCompile Include="VtPosition.cpp" />
     <ClCompile Include="VtPreOrderGrid.cpp" />
     <ClCompile Include="VtPriceChannelIndex.cpp" />

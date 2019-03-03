@@ -263,7 +263,8 @@ enum class VtSystemType
 	US_IN3,
 	US_I2,
 	US_Comp,
-	US_H2
+	US_H2,
+	SYS_OUT
 };
 
 enum class VtOrderEvent

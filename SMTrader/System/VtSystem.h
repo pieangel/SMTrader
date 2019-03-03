@@ -10,6 +10,7 @@
 #include "../Drawing/VtUniqueID.h"
 #include "../SimpleBinStream.h"
 #include "../VtSystemDef.h"
+#include "../VtOutSignalDefManager.h"
 using same_endian_type = std::is_same<simple::LittleEndian, simple::LittleEndian>;
 class VtSignal;
 class VtChartData;
@@ -19,6 +20,7 @@ class VtSymbol;
 struct VtPosition;
 
 class VtUsdStrategyConfigDlg;
+class VtOutSignalDef;
 class VtSystem : public VtUniqueID
 {
 public:
@@ -233,6 +235,11 @@ public:
 	/// </summary>
 	bool GetCondition(std::string argName, std::string param);
 	void RegisterRealtimeAccountEvent();
+	int SeungSu() const { return _SeungSu; }
+	void SeungSu(int val) { _SeungSu = val; }
+	SharedOutSigDef OutSignal() const { return _OutSignal; }
+	void OutSignal(SharedOutSigDef val) { _OutSignal = val; }
+	VtPosition GetPosition();
 protected:
 	int FindDateIndex(double date, std::vector<double>& dateArray);
 	void PutOrder(int price, VtPositionType position, VtPriceType priceType = VtPriceType::Price);
@@ -451,5 +458,13 @@ protected:
 	int _LastEntryDailyIndex = -1;
 	bool _EnableBarIndex = false;
 	bool _EnableFilterMulti = false;
+	/// <summary>
+	/// 시스템 승수
+	/// </summary>
+	int _SeungSu = 1;
+	/// <summary>
+	/// 외부 시그널 객체
+	/// </summary>
+	SharedOutSigDef _OutSignal = nullptr;
 };
 

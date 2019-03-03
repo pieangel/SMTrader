@@ -128,7 +128,7 @@
     <Filter Include="System\AutoConnect">
       <UniqueIdentifier>{846e0207-6882-4a0e-b1ee-e6f04683c1d5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Format\Fund">
+    <Filter Include="Fund">
       <UniqueIdentifier>{aae79731-e602-4676-9c84-a9c2c625012b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -419,40 +419,40 @@
       <Filter>Format</Filter>
     </ClInclude>
     <ClInclude Include="VtAccountFundGrid.h">
-      <Filter>Format\Fund</Filter>
+      <Filter>Fund</Filter>
     </ClInclude>
     <ClInclude Include="VtFDMultiAcntPage.h">
-      <Filter>Format\Fund</Filter>
+      <Filter>Fund</Filter>
     </ClInclude>
     <ClInclude Include="VtFDSubAcntPage.h">
-      <Filter>Format\Fund</Filter>
+      <Filter>Fund</Filter>
     </ClInclude>
     <ClInclude Include="VtFund.h">
-      <Filter>Format\Fund</Filter>
+      <Filter>Fund</Filter>
     </ClInclude>
     <ClInclude Include="VtFundAccount.h">
-      <Filter>Format\Fund</Filter>
+      <Filter>Fund</Filter>
     </ClInclude>
     <ClInclude Include="VtFundDesigner.h">
-      <Filter>Format\Fund</Filter>
+      <Filter>Fund</Filter>
     </ClInclude>
     <ClInclude Include="VtFundEditor.h">
-      <Filter>Format\Fund</Filter>
+      <Filter>Fund</Filter>
     </ClInclude>
     <ClInclude Include="VtFundGrid.h">
-      <Filter>Format\Fund</Filter>
+      <Filter>Fund</Filter>
     </ClInclude>
     <ClInclude Include="VtFundManager.h">
-      <Filter>Format\Fund</Filter>
+      <Filter>Fund</Filter>
     </ClInclude>
     <ClInclude Include="VtFundMap.h">
-      <Filter>Format\Fund</Filter>
+      <Filter>Fund</Filter>
     </ClInclude>
     <ClInclude Include="VtFundNameEditor.h">
-      <Filter>Format\Fund</Filter>
+      <Filter>Fund</Filter>
     </ClInclude>
     <ClInclude Include="VtSubAcntGrid.h">
-      <Filter>Format\Fund</Filter>
+      <Filter>Fund</Filter>
     </ClInclude>
     <ClInclude Include="VtFundOrderManager.h">
       <Filter>FundOrder</Filter>
@@ -1411,8 +1411,27 @@
     <ClInclude Include="VtTotalSignalGrid.h">
       <Filter>System\AutoConnect</Filter>
     </ClInclude>
-    <ClInclude Include="VtExSystemManager.h" />
-    <ClInclude Include="VtAddConnectSignalDlg.h" />
+    <ClInclude Include="VtAddConnectSignalDlg.h">
+      <Filter>System\AutoConnect</Filter>
+    </ClInclude>
+    <ClInclude Include="VtOutSignalDef.h">
+      <Filter>System\AutoConnect</Filter>
+    </ClInclude>
+    <ClInclude Include="VtOutSignalDefManager.h">
+      <Filter>System\AutoConnect</Filter>
+    </ClInclude>
+    <ClInclude Include="VtOutSystemManager.h">
+      <Filter>System\AutoConnect</Filter>
+    </ClInclude>
+    <ClInclude Include="VtAddOutSigDefDlg.h">
+      <Filter>System\AutoConnect</Filter>
+    </ClInclude>
+    <ClInclude Include="VtOutSysDef.h">
+      <Filter>System\AutoConnect</Filter>
+    </ClInclude>
+    <ClInclude Include="VtOutSystemOrderManager.h">
+      <Filter>System\AutoConnect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ChildFrm.cpp">
@@ -1644,40 +1663,40 @@
       <Filter>Format</Filter>
     </ClCompile>
     <ClCompile Include="VtAccountFundGrid.cpp">
-      <Filter>Format\Fund</Filter>
+      <Filter>Fund</Filter>
     </ClCompile>
     <ClCompile Include="VtFDMultiAcntPage.cpp">
-      <Filter>Format\Fund</Filter>
+      <Filter>Fund</Filter>
     </ClCompile>
     <ClCompile Include="VtFDSubAcntPage.cpp">
-      <Filter>Format\Fund</Filter>
+      <Filter>Fund</Filter>
     </ClCompile>
     <ClCompile Include="VtFund.cpp">
-      <Filter>Format\Fund</Filter>
+      <Filter>Fund</Filter>
     </ClCompile>
     <ClCompile Include="VtFundAccount.cpp">
-      <Filter>Format\Fund</Filter>
+      <Filter>Fund</Filter>
     </ClCompile>
     <ClCompile Include="VtFundDesigner.cpp">
-      <Filter>Format\Fund</Filter>
+      <Filter>Fund</Filter>
     </ClCompile>
     <ClCompile Include="VtFundEditor.cpp">
-      <Filter>Format\Fund</Filter>
+      <Filter>Fund</Filter>
     </ClCompile>
     <ClCompile Include="VtFundGrid.cpp">
-      <Filter>Format\Fund</Filter>
+      <Filter>Fund</Filter>
     </ClCompile>
     <ClCompile Include="VtFundManager.cpp">
-      <Filter>Format\Fund</Filter>
+      <Filter>Fund</Filter>
     </ClCompile>
     <ClCompile Include="VtFundMap.cpp">
-      <Filter>Format\Fund</Filter>
+      <Filter>Fund</Filter>
     </ClCompile>
     <ClCompile Include="VtFundNameEditor.cpp">
-      <Filter>Format\Fund</Filter>
+      <Filter>Fund</Filter>
     </ClCompile>
     <ClCompile Include="VtSubAcntGrid.cpp">
-      <Filter>Format\Fund</Filter>
+      <Filter>Fund</Filter>
     </ClCompile>
     <ClCompile Include="VtFundOrderManager.cpp">
       <Filter>FundOrder</Filter>
@@ -2543,8 +2562,24 @@
     <ClCompile Include="VtTotalSignalGrid.cpp">
       <Filter>System\AutoConnect</Filter>
     </ClCompile>
-    <ClCompile Include="VtExSystemManager.cpp" />
-    <ClCompile Include="VtAddConnectSignalDlg.cpp" />
+    <ClCompile Include="VtAddConnectSignalDlg.cpp">
+      <Filter>System\AutoConnect</Filter>
+    </ClCompile>
+    <ClCompile Include="VtOutSignalDef.cpp">
+      <Filter>System\AutoConnect</Filter>
+    </ClCompile>
+    <ClCompile Include="VtOutSignalDefManager.cpp">
+      <Filter>System\AutoConnect</Filter>
+    </ClCompile>
+    <ClCompile Include="VtOutSystemManager.cpp">
+      <Filter>System\AutoConnect</Filter>
+    </ClCompile>
+    <ClCompile Include="VtAddOutSigDefDlg.cpp">
+      <Filter>System\AutoConnect</Filter>
+    </ClCompile>
+    <ClCompile Include="VtOutSystemOrderManager.cpp">
+      <Filter>System\AutoConnect</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="SMTrader.rc">

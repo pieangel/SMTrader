@@ -3,6 +3,7 @@
 
 // VtAccountFundSelector dialog
 class VtUsdStrategyConfigDlg;
+class VtSignalConnectionGrid;
 class VtAccountFundSelector : public CDialogEx
 {
 	DECLARE_DYNAMIC(VtAccountFundSelector)
@@ -30,4 +31,5 @@ public:
 	afx_msg void OnBnClickedRadioAcnt();
 	afx_msg void OnBnClickedRadioFund();
 	void SetConfigDlg(VtUsdStrategyConfigDlg* ConfigDlg);
+	void SetSignalConnectionGrid(VtSignalConnectionGrid* SigConGrid);
 };
