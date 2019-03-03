@@ -53,6 +53,7 @@
 #include "VtAutoSignalManagerDialog.h"
 #include "VtOutSystemManager.h"
 #include "VtOutSignalDefManager.h"
+#include "VtOutSystemOrderManager.h"
 extern TApplicationFont g_Font;
 
 #ifdef _DEBUG
@@ -805,7 +806,7 @@ bool CMainFrame::ClearAllResources()
 	VtOrderQueueManager::DestroyInstance();
 	VtOutSignalDefManager::DestroyInstance();
 	VtOutSystemManager::DestroyInstance();
-
+	VtOutSystemOrderManager::DestroyInstance();
 	return true;
 }
 

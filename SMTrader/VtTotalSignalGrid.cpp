@@ -86,9 +86,14 @@ void VtTotalSignalGrid::QuickRedrawCell(int col, long row)
 	m_CUGGrid->PaintDrawHintsNow(rect);
 }
 
-void VtTotalSignalGrid::InitGrid()
+void VtTotalSignalGrid::Refresh()
 {
 	ClearCells();
+	InitGrid();
+}
+
+void VtTotalSignalGrid::InitGrid()
+{
 	VtOutSystemOrderManager* outSysOrderMgr = VtOutSystemOrderManager::GetInstance();
 	SharedSystemVec& sysVec = outSysOrderMgr->GetSysVec();
 	
@@ -104,13 +109,19 @@ void VtTotalSignalGrid::InitGrid()
 		QuickSetNumber(6, i, sys->EntryToday());
 		QuickSetNumber(7, i, sys->EntryToday());
 		QuickSetText(8, i, sys->OutSignal()->Name.c_str());
+		for (int j = 0; j < _ColCount; ++j) {
+			QuickRedrawCell(j, i);
+		}
 	}
+
+	
+	_RowNumber = sysVec.size();
 }
 
 void VtTotalSignalGrid::ClearCells()
 {
 	CUGCell cell;
-	for (int i = 0; i < _RowCount; i++)
+	for (int i = 0; i < _RowNumber; i++)
 	{
 		for (int j = 0; j < _ColCount; j++)
 		{

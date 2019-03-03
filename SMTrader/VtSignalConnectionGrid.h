@@ -14,6 +14,7 @@
 class VtAccount;
 class VtFund;
 class VtSystem;
+class VtTotalSignalGrid;
 class VtSignalConnectionGrid : public VtGrid
 {
 public:
@@ -27,7 +28,7 @@ public:
 	virtual void OnMouseMove(int col, long row, POINT *point, UINT nFlags, BOOL processed = 0);
 	//cell type notifications
 	int OnCellTypeNotify(long ID, int col, long row, long msg, long param);
-
+	virtual void OnMouseLeaveFromMainGrid();
 	void SetColTitle();
 	int _ColCount = 5;
 	int _RowCount = 100;
@@ -46,6 +47,8 @@ public:
 	int					m_nSpinIndex;
 	void SetTargetAcntOrFund(std::tuple<int, VtAccount*, VtFund*>& selItem);
 	void AddSystem(SharedSystem sys);
+	VtTotalSignalGrid* TotalGrid() const { return _TotalGrid; }
+	void TotalGrid(VtTotalSignalGrid* val) { _TotalGrid = val; }
 private:
 	int _SelRow = -2;
 	int _OldSelRow = -2;
@@ -58,6 +61,8 @@ private:
 	int OnCheckbox(long ID, int col, long row, long msg, long param);
 	int OnEllipsisButton(long ID, int col, long row, long msg, long param);
 	int OnSpinButton(long ID, int col, long row, long msg, long param);
+	std::map<int, SharedSystem> _SystemMap;
+	VtTotalSignalGrid* _TotalGrid = nullptr;
 };
 
 

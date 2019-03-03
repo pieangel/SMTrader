@@ -21,9 +21,12 @@ public:
 	CFont _defFont;
 	CFont _titleFont;
 	void QuickRedrawCell(int col, long row);
+	void Refresh();
+private:
 	void InitGrid();
 
 	void ClearCells();
+	int _RowNumber = 0;
 };
 
 

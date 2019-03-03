@@ -51,6 +51,7 @@ BOOL VtAutoSignalManagerDialog::OnInitDialog()
 	_TotalSigGrid.AttachGrid(this, IDC_STATIC_TOTAL_SIGNAL);
 	_ConnectGrid.AttachGrid(this, IDC_STATIC_SIGNAL_CONNECTION);
 	_DefineGrid.AttachGrid(this, IDC_STATIC_SIGNAL_DEFINITION);
+	_ConnectGrid.TotalGrid(&_TotalSigGrid);
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // EXCEPTION: OCX Property Pages should return FALSE
 }

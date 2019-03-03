@@ -39,9 +39,88 @@ void VtSignalDefinitionGrid::OnSetup()
 	InitGrid();
 }
 
+
 void VtSignalDefinitionGrid::OnDClicked(int col, long row, RECT *rect, POINT *point, BOOL processed)
 {
+	if (col == 0 && row == 0)
+		RedrawAll();
+}
 
+void VtSignalDefinitionGrid::OnLClicked(int col, long row, int updn, RECT *rect, POINT *point, int processed)
+{
+	if (_ClickedRow == row)
+		return;
+
+	if (_ClickedRow >= 0) {
+		for (int i = 0; i < _ColCount; ++i) {
+			QuickSetBackColor(i, _ClickedRow, RGB(255, 255, 255));
+			QuickRedrawCell(i, _ClickedRow);
+		}
+	}
+	for (int i = 0; i < _ColCount; ++i) {
+		QuickSetBackColor(i, row, _ClickedColor);
+		QuickRedrawCell(i, row);
+	}
+	_ClickedRow = row;
+}
+
+void VtSignalDefinitionGrid::OnRClicked(int col, long row, int updn, RECT *rect, POINT *point, int processed)
+{
+	if (_ClickedRow == row)
+		return;
+
+	if (_ClickedRow >= 0) {
+		for (int i = 0; i < _ColCount; ++i) {
+			QuickSetBackColor(i, _ClickedRow, RGB(255, 255, 255));
+			QuickRedrawCell(i, _ClickedRow);
+		}
+	}
+	for (int i = 0; i < _ColCount; ++i) {
+		QuickSetBackColor(i, row, _ClickedColor);
+		QuickRedrawCell(i, row);
+	}
+	_ClickedRow = row;
+}
+
+void VtSignalDefinitionGrid::OnMouseMove(int col, long row, POINT *point, UINT nFlags, BOOL processed /*= 0*/)
+{
+	if (_OldSelRow == row)
+		return;
+
+	if (_OldSelRow != _ClickedRow && _OldSelRow >= 0) {
+		for (int i = 0; i < _ColCount; ++i) {
+			QuickSetBackColor(i, _OldSelRow, RGB(255, 255, 255));
+			QuickRedrawCell(i, _OldSelRow);
+		}
+	}
+
+	if (row != _ClickedRow) {
+		for (int i = 0; i < _ColCount; ++i) {
+			QuickSetBackColor(i, row, _SelColor);
+			QuickRedrawCell(i, row);
+		}
+	}
+	else {
+		for (int i = 0; i < _ColCount; ++i) {
+			QuickSetBackColor(i, row, _ClickedColor);
+			QuickRedrawCell(i, row);
+		}
+	}
+
+	_OldSelRow = row;
+}
+
+void VtSignalDefinitionGrid::OnMouseLeaveFromMainGrid()
+{
+	if (_OldSelRow == _ClickedRow)
+		return;
+
+	for (int i = 0; i < _ColCount; ++i) {
+		QuickSetBackColor(i, _OldSelRow, RGB(255, 255, 255));
+		QuickRedrawCell(i, _OldSelRow);
+	}
+
+	_OldSelRow = -2;
 }
 
 int VtSignalDefinitionGrid::OnCanViewMove(int oldcol, long oldrow, int newcol, long newrow)
@@ -53,7 +132,7 @@ void VtSignalDefinitionGrid::SetColTitle()
 {
 	CUGCell cell;
 	LPCTSTR title[4] = { "신호", "포지션", "발생장소", "설명" };
-	int colWidth[4] = { 80, 110, 50, 80 };
+	int colWidth[4] = { 80, 110, 50, 114 };
 
 
 	for (int i = 0; i < _ColCount; i++) {

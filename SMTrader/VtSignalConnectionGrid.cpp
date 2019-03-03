@@ -9,6 +9,8 @@
 #include "System/VtSystem.h"
 #include "VtSymbol.h"
 #include "VtOutSignalDef.h"
+#include "VtOutSystemOrderManager.h"
+#include "VtTotalSignalGrid.h"
 
 VtSignalConnectionGrid::VtSignalConnectionGrid()
 {
@@ -140,11 +142,24 @@ int VtSignalConnectionGrid::OnCellTypeNotify(long ID, int col, long row, long ms
 }
 
 
+void VtSignalConnectionGrid::OnMouseLeaveFromMainGrid()
+{
+	if (_OldSelRow == _ClickedRow)
+		return;
+
+	for (int i = 0; i < _ColCount; ++i) {
+		QuickSetBackColor(i, _OldSelRow, RGB(255, 255, 255));
+		QuickRedrawCell(i, _OldSelRow);
+	}
+
+	_OldSelRow = -2;
+}
+
 void VtSignalConnectionGrid::SetColTitle()
 {
 	CUGCell cell;
 	LPCTSTR title[5] = { "실행", "계좌번호", "종목", "신호", "승수" };
-	int colWidth[5] = { 25, 80, 110, 50, 80 };
+	int colWidth[5] = { 25, 98, 90, 80, 60 };
 
 
 	for (int i = 0; i < _ColCount; i++) {
@@ -174,6 +189,7 @@ void VtSignalConnectionGrid::QuickRedrawCell(int col, long row)
 
 void VtSignalConnectionGrid::InitGrid()
 {
+	_SystemMap.clear();
 	int yIndex = 0;
 	CUGCell cell;
 	VtOutSignalDefManager* outSigDefMgr = VtOutSignalDefManager::GetInstance();
@@ -212,6 +228,7 @@ void VtSignalConnectionGrid::InitGrid()
 				SetCell(xIndex, yIndex, &cell);
 			}
 		}
+		_SystemMap[yIndex] = sys;
 		yIndex++;
 	}
 }
@@ -302,7 +319,7 @@ void VtSignalConnectionGrid::AddSystem(SharedSystem sys)
 		}
 		QuickRedrawCell(xIndex, yIndex);
 	}
-
+	_SystemMap[yIndex] = sys;
 	outSysMgr->AddSystem(sys);
 }
 
@@ -313,7 +330,24 @@ int VtSignalConnectionGrid::OnDropList(long ID, int col, long row, long msg, lon
 
 int VtSignalConnectionGrid::OnCheckbox(long ID, int col, long row, long msg, long param)
 {
-	return 1;
+	VtOutSystemOrderManager* outSysOrderMgr = VtOutSystemOrderManager::GetInstance();
+	SharedSystem sys = _SystemMap[row];
+	if (sys) {
+		CUGCell cell;
+		GetCell(col, row, &cell);
+		double num = cell.GetNumber();
+		if (num == 1.0) {
+			sys->Enable(true);
+			outSysOrderMgr->AddSystem(sys);
+		}
+		else {
+			sys->Enable(false);
+			outSysOrderMgr->RemoveSystem(sys->Id());
+		}
+		if (_TotalGrid) _TotalGrid->Refresh();
+	}
+
+	return TRUE;
 }
 
 int VtSignalConnectionGrid::OnEllipsisButton(long ID, int col, long row, long msg, long param)

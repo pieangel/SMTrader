@@ -17,7 +17,8 @@ void VtOutSystemOrderManager::AddSystem(SharedSystem sys)
 	if (!sys)
 		return;
 
-	_SystemVec[sys->Id()] = sys;
+	_SystemVec.push_back(sys);
+	
 }
 
 void VtOutSystemOrderManager::RemoveSystem(int sysId)
