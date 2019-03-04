@@ -39,6 +39,8 @@ BEGIN_MESSAGE_MAP(VtAutoSignalManagerDialog, CDialogEx)
 	ON_BN_CLICKED(IDC_BTN_ADD_SIGNAL, &VtAutoSignalManagerDialog::OnBnClickedBtnAddSignal)
 	ON_BN_CLICKED(IDC_BTN_DEL_CONNECT, &VtAutoSignalManagerDialog::OnBnClickedBtnDelConnect)
 	ON_BN_CLICKED(IDC_BTN_DEL_SIGNAL, &VtAutoSignalManagerDialog::OnBnClickedBtnDelSignal)
+	ON_WM_TIMER()
+	ON_WM_CLOSE()
 END_MESSAGE_MAP()
 
 
@@ -54,10 +56,16 @@ BOOL VtAutoSignalManagerDialog::OnInitDialog()
 	_ConnectGrid.AttachGrid(this, IDC_STATIC_SIGNAL_CONNECTION);
 	_DefineGrid.AttachGrid(this, IDC_STATIC_SIGNAL_DEFINITION);
 	_ConnectGrid.TotalGrid(&_TotalSigGrid);
+	SetTimer(RefTimer, 100, NULL);
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // EXCEPTION: OCX Property Pages should return FALSE
 }
 
+
+void VtAutoSignalManagerDialog::RefreshOrder()
+{
+	_TotalSigGrid.RefreshOrders();
+}
 
 void VtAutoSignalManagerDialog::OnBnClickedBtnAddConnect()
 {
@@ -85,4 +93,20 @@ void VtAutoSignalManagerDialog::OnBnClickedBtnDelConnect()
 void VtAutoSignalManagerDialog::OnBnClickedBtnDelSignal()
 {
 	// TODO: Add your control notification handler code here
+}
+
+
+void VtAutoSignalManagerDialog::OnTimer(UINT_PTR nIDEvent)
+{
+	if (nIDEvent == RefTimer) {
+		RefreshOrder();
+	}
+	CDialogEx::OnTimer(nIDEvent);
+}
+
+
+void VtAutoSignalManagerDialog::OnClose()
+{
+	KillTimer(RefTimer);
+	CDialogEx::OnClose();
 }

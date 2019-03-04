@@ -92,6 +92,9 @@ void VtSaveManager::LoadFundList(std::string fileName)
 			outfile.close();
 		}
 
+		std::string name;
+		name = path1.filename();
+
 		simple::file_istream<same_endian_type> in(appPath.c_str());
 		if (in.file_length() == 0)
 			return;

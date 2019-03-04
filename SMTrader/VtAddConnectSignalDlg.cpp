@@ -208,7 +208,7 @@ void VtAddConnectSignalDlg::InitOutSigDefCombo()
 	}
 	if (selIndex != -1) {
 		_ComboSignal.SetCurSel(0);
-		_Signal = sigDefVec[selIndex];
+		_Signal = sigDefVec[0];
 	}
 }
 

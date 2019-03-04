@@ -93,6 +93,27 @@ void VtTotalSignalGrid::Refresh()
 	InitGrid();
 }
 
+void VtTotalSignalGrid::RefreshOrders()
+{
+	VtOutSystemOrderManager* outSysOrderMgr = VtOutSystemOrderManager::GetInstance();
+	SharedSystemVec& sysVec = outSysOrderMgr->GetSysVec();
+
+	for (size_t i = 0; i < sysVec.size(); ++i) {
+		SharedSystem sys = sysVec[i];
+		VtPosition posi = sys->GetPosition();
+		posi.Position == VtPositionType::None ? QuickSetText(2, i, _T("없음")) : posi.Position == VtPositionType::Buy ? QuickSetText(2, i, _T("매수")) : QuickSetText(2, i, _T("매도"));
+		QuickSetText(3, i, std::to_string(posi.AvgPrice).c_str());
+		QuickSetText(4, i, std::to_string(posi.CurPrice).c_str());
+		QuickSetText(5, i, std::to_string(posi.OpenProfitLoss).c_str());
+		QuickSetNumber(6, i, sys->EntryToday());
+		QuickSetNumber(7, i, sys->EntryToday());
+		QuickSetText(8, i, sys->OutSignal()->SignalName.c_str());
+		for (int j = 0; j < _ColCount; ++j) {
+			QuickRedrawCell(j, i);
+		}
+	}
+}
+
 void VtTotalSignalGrid::InitGrid()
 {
 	VtOutSystemOrderManager* outSysOrderMgr = VtOutSystemOrderManager::GetInstance();

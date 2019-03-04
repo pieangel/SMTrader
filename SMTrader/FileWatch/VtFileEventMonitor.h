@@ -16,6 +16,7 @@
 /* strftime example */
 #include <stdio.h>      /* puts */
 #include <time.h>       /* time_t, struct tm, time, localtime, strftime */
+#include "VtOutSystemOrderManager.h"
 using namespace rdc;
 
 /// <summary>
@@ -133,6 +134,7 @@ public:
 	void OnFileChanged(DWORD action, CString fileName)
 	{
 		const std::string filename = fileName;
+		std::string lastline;
 		std::ifstream fs;
 		fs.open(filename.c_str(), std::fstream::in);
 		if (fs.is_open()) {
@@ -152,38 +154,24 @@ public:
 					fs.seekg(i, std::ios_base::beg);
 				}
 			}
-			std::string lastline;
 			getline(fs, lastline);
-			std::string msg;
-			msg.append(filename);
-			msg.append(lastline);
-			msg.append(_T("\n"));
-			std::cout << msg << std::endl;
-			TRACE(msg.c_str());
-
-			std::vector<std::string> result = split(lastline, ',');
-			for (auto it = result.begin(); it != result.end(); /* NOTHING */)
-			{
-				if ((*it).empty())
-					it = result.erase(it);
-				else
-					++it;
-			}
-			time_t rawtime;
-			struct tm * timeinfo;
-			char buffer[80] = { 0 };
-
-			time(&rawtime);
-			timeinfo = localtime(&rawtime);
-
-			strftime(buffer, 80, " %H:%M:%S", timeinfo);
-			puts(buffer);
-			std::string curTime = buffer;
-			TRACE(curTime.c_str());			
 		}
 		else {
 			std::cout << "Could not find end line character" << std::endl;
 		}
+		fs.close();
+
+		std::string msg;
+		msg.append(filename);
+		msg.append(_T(","));
+		msg.append(lastline);
+		
+		VtOutSystemOrderManager* outSysMgr = VtOutSystemOrderManager::GetInstance();
+		outSysMgr->OnOutSignal(msg);
+
+		msg.append(_T("\n"));
+		std::cout << msg << std::endl;
+		TRACE(msg.c_str());
 	}
 	/// <summary>
 	/// 감시할 디렉토리를 추가한다.

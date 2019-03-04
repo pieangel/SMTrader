@@ -240,10 +240,10 @@ public:
 	SharedOutSigDef OutSignal() const { return _OutSignal; }
 	void OutSignal(SharedOutSigDef val) { _OutSignal = val; }
 	VtPosition GetPosition();
-protected:
-	int FindDateIndex(double date, std::vector<double>& dateArray);
 	void PutOrder(int price, VtPositionType position, VtPriceType priceType = VtPriceType::Price);
 	void PutOrder(VtPosition* posi, int price, bool liqud = false);
+protected:
+	int FindDateIndex(double date, std::vector<double>& dateArray);
 	bool LiqudAll();
 	VtPositionType _CurPosition = VtPositionType::None;
 	// 종가 예상 포지션

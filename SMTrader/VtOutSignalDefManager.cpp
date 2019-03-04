@@ -41,7 +41,7 @@ void VtOutSignalDefManager::InitDefaultOutSignalDefs()
 
 SharedOutSigDef VtOutSignalDefManager::FindOutSigDef(std::string name)
 {
-	auto it = std::find_if(_SignalDefVec.begin(), _SignalDefVec.end(), [&](const SharedOutSigDef& x) { return x->SignalName.compare(name); });
+	auto it = std::find_if(_SignalDefVec.begin(), _SignalDefVec.end(), [&](const SharedOutSigDef& x) { return x->SignalName.compare(name) == 0; });
 	if (it != _SignalDefVec.end()) {
 		return *it;
 	}

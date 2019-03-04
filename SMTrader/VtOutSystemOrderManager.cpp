@@ -3,6 +3,11 @@
 #include "System/VtSystem.h"
 #include <algorithm>
 #include "VtOutSignalDef.h"
+#include <sstream>
+#include <string>
+#include "File/path.h"
+#include "File/resolver.h"
+#include "VtPosition.h"
 
 VtOutSystemOrderManager::VtOutSystemOrderManager()
 {
@@ -33,6 +38,31 @@ void VtOutSystemOrderManager::RemoveSystem(SharedSystem sys)
 	}
 }
 
+#pragma warning ( push )
+#pragma warning ( disable : 4996 )
+void VtOutSystemOrderManager::OnOutSignal(std::string sig)
+{
+	std::vector<std::string> result = split(sig, ',');
+	for (auto it = result.begin(); it != result.end(); /* NOTHING */)
+	{
+		if ((*it).empty())
+			it = result.erase(it);
+		else
+			++it;
+	}
+	if (result[0].length() > 0) {
+		filesystem::path full_path(result[0]);
+		std::string signame = full_path.filename();
+		auto pos = signame.find_first_of(_T("-"));
+		signame = signame.substr(0, pos);
+		CString strOrderKind(result[4].c_str());
+		int order_kind = _ttoi(strOrderKind);
+		PutOrder(signame, order_kind);
+	}
+}
+
+#pragma  warning ( pop )
+
 void VtOutSystemOrderManager::AddSignalOrder(SharedSystem sys)
 {
 	if (!sys || !sys->OutSignal()) return;
@@ -59,6 +89,59 @@ void VtOutSystemOrderManager::RemoveSignalOrder(SharedSystem sys)
 		auto iit = orderMap.find(sys->Id());
 		if (iit != orderMap.end()) {
 			orderMap.erase(iit);
+		}
+	}
+}
+
+std::string VtOutSystemOrderManager::GetTime()
+{
+	time_t rawtime;
+	struct tm * timeinfo;
+	char buffer[80] = { 0 };
+
+	time(&rawtime);
+	timeinfo = localtime(&rawtime);
+
+	strftime(buffer, 80, " %H:%M:%S", timeinfo);
+	puts(buffer);
+	std::string curTime = buffer;
+	return curTime;
+}
+
+void VtOutSystemOrderManager::PutOrder(std::string sigName, int orderKind)
+{
+	auto it = _SignalOrderMap.find(sigName);
+	if (it != _SignalOrderMap.end()) {
+		SharedSystemMap& orderMap = it->second;
+		for (auto itn = orderMap.begin(); itn != orderMap.end(); ++itn) {
+			SharedSystem sys = itn->second;
+			// 비활성화 시스템은 그냥 넘어간다.
+			if (!sys->Enable()) continue;
+
+			// 활성화된 시스템에 대하여 주문을 넣는다.
+			switch (orderKind)
+			{
+			case 1: // Buy
+				sys->PutOrder(0, VtPositionType::Buy, VtPriceType::Market);
+				break;
+			case 2: { // ExitLong -> Sell
+				VtPosition posi = sys->GetPosition();
+				if (std::abs(posi.OpenQty) > 0)
+					sys->PutOrder(0, VtPositionType::Sell, VtPriceType::Market);
+			}
+				break;
+			case 3: // Sell
+				sys->PutOrder(0, VtPositionType::Sell, VtPriceType::Market);
+				break;
+			case 4: { // ExitShort -> Buy
+				VtPosition posi = sys->GetPosition();
+				if (std::abs(posi.OpenQty) > 0)
+					sys->PutOrder(0, VtPositionType::Buy, VtPriceType::Market);
+			}
+				break;
+			default:
+				break;
+			}
 		}
 	}
 }

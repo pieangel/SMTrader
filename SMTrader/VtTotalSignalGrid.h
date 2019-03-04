@@ -22,9 +22,9 @@ public:
 	CFont _titleFont;
 	void QuickRedrawCell(int col, long row);
 	void Refresh();
+	void RefreshOrders();
 private:
 	void InitGrid();
-
 	void ClearCells();
 	int _RowNumber = 0;
 };
