@@ -15,6 +15,7 @@ class VtAccount;
 class VtFund;
 class VtSystem;
 class VtTotalSignalGrid;
+class VtSymbol;
 class VtSignalConnectionGrid : public VtGrid
 {
 public:
@@ -46,6 +47,7 @@ public:
 	CUGSpinButtonType	m_spin;
 	int					m_nSpinIndex;
 	void SetTargetAcntOrFund(std::tuple<int, VtAccount*, VtFund*>& selItem);
+	void SetSymbol(VtSymbol* sym);
 	void AddSystem(SharedSystem sys);
 	void RemoveSystem();
 	VtTotalSignalGrid* TotalGrid() const { return _TotalGrid; }

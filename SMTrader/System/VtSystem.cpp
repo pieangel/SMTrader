@@ -26,6 +26,7 @@
 #include "../VtSystemDef.h"
 #include "../VtTotalOrderManager.h"
 #include "../VtOutSignalDef.h"
+#include "../VtOutSignalDefManager.h"
 
 VtSystem::VtSystem()
 {
@@ -1437,6 +1438,10 @@ void VtSystem::Load(simple::file_istream<same_endian_type>& ss)
 		VtFundManager* fundMgr = VtFundManager::GetInstance();
 		_Fund = fundMgr->FindFund(_SysTargetName);
 	}
+
+	VtOutSignalDefManager* outSigMgr = VtOutSignalDefManager::GetInstance();
+	SharedOutSigDef outSig = outSigMgr->FindOutSigDef(_OutSignalName);
+	if (outSig) _OutSignal = outSig;
 
 	VtSymbolManager* symMgr = VtSymbolManager::GetInstance();
 	_Symbol = symMgr->FindSymbol(_SymbolCode);

@@ -7,6 +7,12 @@
 #include "VtSymbol.h"
 #include "VtPosition.h"
 #include "VtOutSignalDef.h"
+#include "XFormatNumber.h"
+#include <array>
+#include <numeric>
+#include "Poco/NumberFormatter.h"
+using Poco::NumberFormatter;
+
 VtTotalSignalGrid::VtTotalSignalGrid()
 {
 }
@@ -102,11 +108,59 @@ void VtTotalSignalGrid::RefreshOrders()
 		SharedSystem sys = sysVec[i];
 		VtPosition posi = sys->GetPosition();
 		posi.Position == VtPositionType::None ? QuickSetText(2, i, _T("없음")) : posi.Position == VtPositionType::Buy ? QuickSetText(2, i, _T("매수")) : QuickSetText(2, i, _T("매도"));
-		QuickSetText(3, i, std::to_string(posi.AvgPrice).c_str());
-		QuickSetText(4, i, std::to_string(posi.CurPrice).c_str());
-		QuickSetText(5, i, std::to_string(posi.OpenProfitLoss).c_str());
-		QuickSetNumber(6, i, sys->EntryToday());
-		QuickSetNumber(7, i, sys->EntryToday());
+		CString thVal;
+		std::string temp;
+		if (sys->Symbol()) {
+			temp = NumberFormatter::format(posi.AvgPrice, sys->Symbol()->IntDecimal);
+			thVal = XFormatNumber(temp.c_str(), sys->Symbol()->IntDecimal);
+		}
+		else {
+			temp = NumberFormatter::format(0, 0);
+			thVal = XFormatNumber(temp.c_str(), -1);
+		}
+		QuickSetText(3, 0, thVal);
+
+
+
+		CUGCell cell;
+		GetCell(4, 0, &cell);
+		int curValue = sys->Symbol() ? sys->Symbol()->Quote.intClose : 0;
+		if (sys->Symbol()) {
+			temp = NumberFormatter::format(curValue / std::pow(10, sys->Symbol()->IntDecimal), sys->Symbol()->IntDecimal);
+			thVal = XFormatNumber(temp.c_str(), sys->Symbol()->IntDecimal);
+		}
+		else {
+			temp = NumberFormatter::format(0, 0);
+			thVal = XFormatNumber(temp.c_str(), -1);
+		}
+		cell.SetText(thVal);
+		cell.LongValue(curValue);
+		SetCell(4, 0, &cell);
+
+		temp = NumberFormatter::format(posi.OpenProfitLoss, 0);
+		CString profitLoss = XFormatNumber(temp.c_str(), -1);
+
+		if (posi.OpenProfitLoss > 0) {
+			QuickSetTextColor(5, 0, RGB(255, 0, 0));
+			QuickSetText(5, 0, profitLoss);
+		}
+		else if (posi.OpenProfitLoss < 0) {
+			QuickSetTextColor(5, 0, RGB(0, 0, 255));
+			QuickSetText(5, 0, profitLoss);
+		}
+		else {
+			QuickSetTextColor(5, 0, RGB(0, 0, 0));
+			QuickSetNumber(5, 0, 0);
+		}
+
+		if (posi.OpenQty != 0) {
+			posi.OpenQty > 0 ? QuickSetNumber(6, i, std::abs(posi.OpenQty)) : QuickSetNumber(7, i, 0);
+			posi.OpenQty < 0 ? QuickSetNumber(7, i, std::abs(posi.OpenQty)) : QuickSetNumber(6, i, 0);
+		}
+		else {
+			QuickSetNumber(6, i, 0);
+			QuickSetNumber(7, i, 0);
+		}
 		QuickSetText(8, i, sys->OutSignal()->SignalName.c_str());
 		for (int j = 0; j < _ColCount; ++j) {
 			QuickRedrawCell(j, i);
@@ -125,11 +179,62 @@ void VtTotalSignalGrid::InitGrid()
 		if (sys->Symbol()) QuickSetText(1, i, sys->Symbol()->ShortCode.c_str());
 		VtPosition posi = sys->GetPosition();
 		posi.Position == VtPositionType::None ? QuickSetText(2, i, _T("없음"))  : posi.Position == VtPositionType::Buy ? QuickSetText(2, i, _T("매수")) : QuickSetText(2, i, _T("매도"));
-		QuickSetText(3, i, std::to_string(posi.AvgPrice).c_str());
-		QuickSetText(4, i, std::to_string(posi.CurPrice).c_str());
-		QuickSetText(5, i, std::to_string(posi.OpenProfitLoss).c_str());
-		QuickSetNumber(6, i, sys->EntryToday());
-		QuickSetNumber(7, i, sys->EntryToday());
+		//QuickSetText(3, i, std::to_string(posi.AvgPrice).c_str());
+		//QuickSetText(4, i, std::to_string(posi.CurPrice).c_str());
+		//QuickSetText(5, i, std::to_string(posi.OpenProfitLoss).c_str());
+		CString thVal;
+		std::string temp;
+		if (sys->Symbol()) {
+			temp = NumberFormatter::format(posi.AvgPrice, sys->Symbol()->IntDecimal);
+			thVal = XFormatNumber(temp.c_str(), sys->Symbol()->IntDecimal);
+		}
+		else {
+			temp = NumberFormatter::format(0, 0);
+			thVal = XFormatNumber(temp.c_str(), -1);
+		}
+		QuickSetText(3, 0, thVal);
+
+
+
+		CUGCell cell;
+		GetCell(4, 0, &cell);
+		int curValue = sys->Symbol() ? sys->Symbol()->Quote.intClose : 0;
+		if (sys->Symbol()) {
+			temp = NumberFormatter::format(curValue / std::pow(10, sys->Symbol()->IntDecimal), sys->Symbol()->IntDecimal);
+			thVal = XFormatNumber(temp.c_str(), sys->Symbol()->IntDecimal);
+		}
+		else {
+			temp = NumberFormatter::format(0, 0);
+			thVal = XFormatNumber(temp.c_str(), -1);
+		}
+		cell.SetText(thVal);
+		cell.LongValue(curValue);
+		SetCell(4, 0, &cell);
+
+		temp = NumberFormatter::format(posi.OpenProfitLoss, 0);
+		CString profitLoss = XFormatNumber(temp.c_str(), -1);
+
+		if (posi.OpenProfitLoss > 0) {
+			QuickSetTextColor(5, 0, RGB(255, 0, 0));
+			QuickSetText(5, 0, profitLoss);
+		}
+		else if (posi.OpenProfitLoss < 0) {
+			QuickSetTextColor(5, 0, RGB(0, 0, 255));
+			QuickSetText(5, 0, profitLoss);
+		}
+		else {
+			QuickSetTextColor(5, 0, RGB(0, 0, 0));
+			QuickSetNumber(5, 0, 0);
+		}
+
+		if (posi.OpenQty != 0) {
+			posi.OpenQty > 0 ? QuickSetNumber(6, i, std::abs(posi.OpenQty)) : QuickSetNumber(7, i, 0);
+			posi.OpenQty < 0 ? QuickSetNumber(7, i, std::abs(posi.OpenQty)) : QuickSetNumber(6, i, 0);
+		}
+		else {
+			QuickSetNumber(6, i, 0);
+			QuickSetNumber(7, i, 0);
+		}
 		QuickSetText(8, i, sys->OutSignal()->SignalName.c_str());
 		for (int j = 0; j < _ColCount; ++j) {
 			QuickRedrawCell(j, i);

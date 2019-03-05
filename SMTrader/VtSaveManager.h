@@ -29,6 +29,8 @@ public:
 	void LoadSystems(std::string fileName);
 	void SaveOutSystems(std::string fileName);
 	void LoadOutSystems(std::string fileName);
+	void SaveOutSignal(std::string fileName);
+	void LoadOutSignal(std::string fileName);
 	std::vector<VtSymbol*>& GetSymbolVector()
 	{
 		return _SymbolVector;

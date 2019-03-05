@@ -16,6 +16,7 @@
 #include "VtOrderCenterWndHd.h"
 #include "VtGlobal.h"
 #include "HdSymbolSelecter.h"
+#include "VtSignalConnectionGrid.h"
 #include "VtUsdStrategyConfigDlg.h"
 using Poco::NumberFormatter;
 
@@ -88,6 +89,13 @@ void HdOptionGrid::OnDClicked(int col, long row, RECT *rect, POINT *point, BOOL 
 	{
 		if (_UsdConfigDlg) {
 			_UsdConfigDlg->SetSymbol(sym);
+			if (_SymSelecter)
+				_SymSelecter->SendMessage(WM_CLOSE, 0, 0);
+			return;
+		}
+
+		if (_SigConGrid) {
+			_SigConGrid->SetSymbol(sym);
 			if (_SymSelecter)
 				_SymSelecter->SendMessage(WM_CLOSE, 0, 0);
 			return;

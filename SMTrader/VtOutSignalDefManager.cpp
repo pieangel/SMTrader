@@ -59,3 +59,29 @@ std::string VtOutSignalDefManager::GetOutSigDefString()
 	}
 	return result;
 }
+
+void VtOutSignalDefManager::Save(simple::file_ostream<same_endian_type>& ss)
+{
+	size_t count = _SignalDefVec.size();
+	ss << count; // 시스템 갯수
+
+	// 각 시스템을 저장한다.
+	for (auto it = _SignalDefVec.begin(); it != _SignalDefVec.end(); ++it) {
+		SharedOutSigDef sig = *it;
+		sig->Save(ss);
+	}
+}
+
+void VtOutSignalDefManager::Load(simple::file_istream<same_endian_type>& ss)
+{
+	int count = 0;
+	ss >> count;
+	if (count == 0)
+		return;
+
+	for (int i = 0; i < count; ++i) {
+		SharedOutSigDef sig = std::make_shared<VtOutSignalDef>();
+		sig->Load(ss);
+		AddOutSignalDef(sig);
+	}
+}

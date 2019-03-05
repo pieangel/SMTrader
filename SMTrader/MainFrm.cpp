@@ -665,6 +665,7 @@ void CMainFrame::OnReceiveComplete()
 		sysMgr->InitDataSources();
 
 		VtSaveManager* saveMgr = VtSaveManager::GetInstance();
+		saveMgr->LoadOutSignal(_T("outsignal.dat"));
 		saveMgr->LoadSystems(_T("systemlist.dat"));
 		saveMgr->LoadOutSystems(_T("outsystemlist.dat"));
 		saveMgr->LoadOrderWndList(_T("orderwndlist.dat"), this);
@@ -828,6 +829,7 @@ void CMainFrame::SaveSettings()
 	saveMgr->SaveAccountList(_T("accountlist.dat"));
 	saveMgr->SaveOrderWndList(_T("orderwndlist.dat"), this);
 	saveMgr->SaveSystems(_T("systemlist.dat"));
+	saveMgr->SaveOutSignal(_T("outsignal.dat"));
 	saveMgr->SaveOutSystems(_T("outsystemlist.dat"));
 	saveMgr->SaveTotal(_T("smtrader.sav"), this);
 }

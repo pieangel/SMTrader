@@ -500,6 +500,16 @@ void VtSaveManager::LoadOutSystems(std::string fileName)
 	}
 }
 
+void VtSaveManager::SaveOutSignal(std::string fileName)
+{
+
+}
+
+void VtSaveManager::LoadOutSignal(std::string fileName)
+{
+
+}
+
 bool VtSaveManager::IsAccountFileExist()
 {
 	ZmConfigManager* configMgr = ZmConfigManager::GetInstance();

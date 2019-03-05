@@ -11,6 +11,8 @@
 #include "VtOutSignalDef.h"
 #include "VtOutSystemOrderManager.h"
 #include "VtTotalSignalGrid.h"
+#include "VtOutSignalDefManager.h"
+#include "VtSymbol.h"
 
 VtSignalConnectionGrid::VtSignalConnectionGrid()
 {
@@ -272,19 +274,42 @@ void VtSignalConnectionGrid::SetTargetAcntOrFund(std::tuple<int, VtAccount*, VtF
 	CUGCell cell;
 	GetCell(1, _ButtonRow, &cell);
 	int _Type = std::get<0>(selItem);
+	SharedSystem sys = _SystemMap[_ButtonRow];
 	cell.LongValue(_Type);
 	if (_Type == 0 || _Type == 1) {
 		VtAccount* _Account = std::get<1>(selItem);
 		cell.SetText(_Account->AccountNo.c_str());
 		cell.Tag(_Account);
+		if (sys) {
+			sys->Account(_Account);
+		}
 	}
 	else {
 		VtFund* _Fund = std::get<2>(selItem);
 		cell.SetText(_Fund->Name.c_str());
 		cell.Tag(_Fund);
+		if (sys) {
+			sys->Fund(_Fund);
+		}
 	}
 	SetCell(1, _ButtonRow, &cell);
 	QuickRedrawCell(1, _ButtonRow);
+}
+
+void VtSignalConnectionGrid::SetSymbol(VtSymbol* sym)
+{
+	if (!sym)
+		return;
+	SharedSystem sys = _SystemMap[_ButtonRow];
+	if (sys) {
+		CUGCell cell;
+		GetCell(2, _ButtonRow, &cell);
+		cell.SetText(sym->ShortCode.c_str());
+		cell.Tag(sym);
+		SetCell(2, _ButtonRow, &cell);
+		sys->Symbol(sym);
+		QuickRedrawCell(2, _ButtonRow);
+	}
 }
 
 void VtSignalConnectionGrid::AddSystem(SharedSystem sys)
@@ -384,7 +409,22 @@ void VtSignalConnectionGrid::Refresh()
 
 int VtSignalConnectionGrid::OnDropList(long ID, int col, long row, long msg, long param)
 {
-	return 1;
+	if (msg == UGCT_DROPLISTSELECT) {
+		VtOutSignalDefManager* outSigMgr = VtOutSignalDefManager::GetInstance();
+		CString * pString = (CString*)param;
+		std::string sigName = *pString;
+		SharedOutSigDef sig = outSigMgr->FindOutSigDef(sigName);
+		SharedSystem sys = _SystemMap[row];
+		if (sig && sys) {
+			sys->OutSignal(sig);
+			CUGCell cell;
+			GetCell(col, row, &cell);
+			cell.SetText(sig->SignalName.c_str());
+			QuickRedrawCell(col, row);
+		}
+	}
+	
+	return TRUE;
 }
 
 int VtSignalConnectionGrid::OnCheckbox(long ID, int col, long row, long msg, long param)
@@ -426,7 +466,7 @@ int VtSignalConnectionGrid::OnEllipsisButton(long ID, int col, long row, long ms
 		else if (nParam == ELLIPSISBUTTON_CLICK_PRDT) {
 			_ButtonRow = row;
 			HdSymbolSelecter dlg;
-			//dlg.SetConfigDlg(this);
+			dlg.SetSigConGrid(this);
 			dlg.DoModal();
 		}
 		else {
