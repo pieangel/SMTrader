@@ -128,9 +128,9 @@ public:
 	bool Enable() const { return _Enable; }
 	void Enable(bool val);
 	VtAccount* Account() const { return _Account; }
-	void Account(VtAccount* val) { _Account = val; }
+	void Account(VtAccount* val);
 	VtFund* Fund() const { return _Fund; }
-	void Fund(VtFund* val) { _Fund = val; }
+	void Fund(VtFund* val);
 	virtual void OnTimer();
 	void OnRegularTimer();
 	/// <summary>
@@ -238,7 +238,7 @@ public:
 	int SeungSu() const { return _SeungSu; }
 	void SeungSu(int val) { _SeungSu = val; }
 	SharedOutSigDef OutSignal() const { return _OutSignal; }
-	void OutSignal(SharedOutSigDef val) { _OutSignal = val; }
+	void OutSignal(SharedOutSigDef val);
 	VtPosition GetPosition();
 	void PutOrder(int price, VtPositionType position, VtPriceType priceType = VtPriceType::Price);
 	void PutOrder(VtPosition* posi, int price, bool liqud = false);
@@ -466,5 +466,6 @@ protected:
 	/// 외부 시그널 객체
 	/// </summary>
 	SharedOutSigDef _OutSignal = nullptr;
+	std::string _OutSignalName;
 };
 

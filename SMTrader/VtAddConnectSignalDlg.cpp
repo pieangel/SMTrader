@@ -18,6 +18,7 @@
 #include "Global/VtDefine.h"
 #include "System/VtSystem.h"
 #include "VtSignalConnectionGrid.h"
+#include "VtRealtimeRegisterManager.h"
 // VtAddConnectSignalDlg dialog
 
 IMPLEMENT_DYNAMIC(VtAddConnectSignalDlg, CDialogEx)
@@ -112,20 +113,37 @@ void VtAddConnectSignalDlg::OnCbnSelchangeComboSignal()
 
 void VtAddConnectSignalDlg::OnBnClickedBtnOk()
 {
+	VtRealtimeRegisterManager* realtimeRegiMgr = VtRealtimeRegisterManager::GetInstance();
+
 	SharedSystem sys = std::make_shared<VtSystem>(VtSystemType::SYS_OUT);
 	if (_Mode == 0) {
 		if (_Acnt) {
 			_Acnt->AccountLevel() == 0 ? sys->SysTargetType(TargetType::RealAccount) : sys->SysTargetType(TargetType::SubAccount);
 			sys->Account(_Acnt);
+			if (_Acnt->AccountLevel() == 0) {
+				realtimeRegiMgr->RegisterAccount(_Acnt->AccountNo);
+			}
+			else {
+				VtAccount* parentAcnt = _Acnt->ParentAccount();
+				if (parentAcnt) {
+					realtimeRegiMgr->RegisterAccount(parentAcnt->AccountNo);
+				}
+			}
 		}
 	}
 	else {
 		if (_Fund) {
 			sys->SysTargetType(TargetType::Fund);
 			sys->Fund(_Fund);
+			std::set<VtAccount*> parendAcntSet = _Fund->GetParentAccountSet();
+			for (auto it = parendAcntSet.begin(); it != parendAcntSet.end(); ++it) {
+				VtAccount* parentAcnt = *it;
+				realtimeRegiMgr->RegisterAccount(parentAcnt->AccountNo);
+			}
 		}
 	}
 
+	
 	if (_Symbol) sys->Symbol(_Symbol);
 
 	if (_Signal) sys->OutSignal(_Signal);

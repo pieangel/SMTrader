@@ -25,10 +25,11 @@
 #include "../VtUsdStrategyConfigDlg.h"
 #include "../VtSystemDef.h"
 #include "../VtTotalOrderManager.h"
-
+#include "../VtOutSignalDef.h"
 
 VtSystem::VtSystem()
 {
+	_Name = _T("NoTitle");
 	_Running = true;
 	_EntryPrice = 0.0;
 	_LastSignalType = VtPositionType::None;
@@ -51,6 +52,7 @@ VtSystem::VtSystem()
 
 VtSystem::VtSystem(VtSystemType systemType)
 {
+	_Name = _T("NoTitle");
 	_SystemType = systemType;
 	_EntryPrice = 0.0;
 	_Running = true;
@@ -100,6 +102,13 @@ VtChartData* VtSystem::AddDataSource(std::string symCode, VtChartType type, int 
 	}
 
 	return chartData;
+}
+
+void VtSystem::Fund(VtFund* val)
+{
+	_Fund = val;
+	_SysTargetType = TargetType::Fund;
+	_SysTargetName = _Fund->Name;
 }
 
 void VtSystem::OnTimer()
@@ -1283,7 +1292,11 @@ bool VtSystem::LiqudAll()
 
 void VtSystem::Symbol(VtSymbol* val)
 {
+	if (!val)
+		return;
+
 	_Symbol = val;
+	_SymbolCode = _Symbol->ShortCode;
 	SetDataSrc();
 }
 
@@ -1364,6 +1377,7 @@ void VtSystem::Save(simple::file_ostream<same_endian_type>& ss)
 	ss << _ATRMulti;
 	ss << _BandMulti;
 	ss << _FilterMulti;
+	ss << _OutSignalName;
 
 	// 시스템 매개변수를 그룹별로 저장한다.
 	ss << _ArgGroupMap.size();
@@ -1409,6 +1423,7 @@ void VtSystem::Load(simple::file_istream<same_endian_type>& ss)
 	ss >> _ATRMulti;
 	ss >> _BandMulti;
 	ss >> _FilterMulti;
+	ss >> _OutSignalName;
 
 	if (_SysTargetType == TargetType::RealAccount) {
 		VtAccountManager* acntMgr = VtAccountManager::GetInstance();
@@ -1829,6 +1844,15 @@ void VtSystem::RegisterRealtimeAccountEvent()
 			}
 		}
 	}
+}
+
+void VtSystem::OutSignal(SharedOutSigDef val)
+{
+	if (!val)
+		return;
+
+	_OutSignal = val;
+	_OutSignalName = _OutSignal->SignalName;
 }
 
 VtPosition VtSystem::GetPosition()
@@ -2351,6 +2375,19 @@ void VtSystem::Enable(bool val)
 	if (!val)
 		CheckLiqByStop();
 	_Enable = val;
+}
+
+void VtSystem::Account(VtAccount* val)
+{
+	if (!val)
+		return;
+
+	_Account = val;
+	if (_Account->AccountLevel() == 0)
+		_SysTargetType = TargetType::RealAccount;
+	else
+		_SysTargetType = TargetType::SubAccount;
+	_SysTargetName = _Account->AccountNo;
 }
 
 double VtSystem::GetDailyHigh(int index, double* datetime, double* high, int backLen)

@@ -20,7 +20,7 @@
 #include <exception>
 #include "VtSystemGroupManager.h"
 #include "VtStrategyWndManager.h"
-
+#include "VtOutSystemManager.h"
 
 using namespace std;
 using same_endian_type = std::is_same<simple::LittleEndian, simple::LittleEndian>;
@@ -433,6 +433,66 @@ void VtSaveManager::LoadSystems(std::string fileName)
 		}
 
 		sysGrpMgr->Load(in);
+	}
+	catch (std::exception& e) {
+		std::string error = e.what();
+		LOG_F(INFO, _T("Error : %s in LoginInfo"), error);
+	}
+}
+
+void VtSaveManager::SaveOutSystems(std::string fileName)
+{
+	try {
+		ZmConfigManager* configMgr = ZmConfigManager::GetInstance();
+		std::string appPath;
+		appPath = configMgr->GetAppPath();
+		appPath.append(_T("\\"));
+		appPath.append(fileName);
+
+		filesystem::path path1(appPath);
+		if (!path1.exists()) { // 디렉토리가 존재하지 않을 경우
+			std::ofstream outfile(appPath);
+			outfile.close();
+		}
+		simple::file_ostream<same_endian_type> outfile(appPath.c_str());
+
+		VtOutSystemManager* outSysMgr = VtOutSystemManager::GetInstance();
+		outSysMgr->Save(outfile);
+
+		// 저장을 끝내고 파일을 닫는다.
+		outfile.flush();
+		outfile.close();
+	}
+	catch (std::exception& e) {
+		std::string error = e.what();
+		LOG_F(INFO, _T("Error : %s in LoginInfo"), error);
+	}
+}
+
+void VtSaveManager::LoadOutSystems(std::string fileName)
+{
+	try {
+		ZmConfigManager* configMgr = ZmConfigManager::GetInstance();
+		std::string appPath;
+		appPath = configMgr->GetAppPath();
+		appPath.append(_T("\\"));
+		appPath.append(fileName);
+
+		filesystem::path path1(appPath);
+		if (!path1.exists()) { // 디렉토리가 존재하지 않을 경우
+			std::ofstream outfile(appPath);
+			outfile.close();
+		}
+
+		
+		simple::file_istream<same_endian_type> in(appPath.c_str());
+		if (in.file_length() == 0) {
+			return;
+		}
+
+		VtOutSystemManager* outSysMgr = VtOutSystemManager::GetInstance();
+		outSysMgr->Load(in);
+
 	}
 	catch (std::exception& e) {
 		std::string error = e.what();

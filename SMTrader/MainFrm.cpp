@@ -666,6 +666,7 @@ void CMainFrame::OnReceiveComplete()
 
 		VtSaveManager* saveMgr = VtSaveManager::GetInstance();
 		saveMgr->LoadSystems(_T("systemlist.dat"));
+		saveMgr->LoadOutSystems(_T("outsystemlist.dat"));
 		saveMgr->LoadOrderWndList(_T("orderwndlist.dat"), this);
 
 		SetTimer(SysLiqTimer, 10000, NULL);
@@ -727,10 +728,9 @@ void CMainFrame::CreateFileWatch()
 {
 	// TODO: 여기에 추가 초기화 작업을 추가합니다.
 	_FildMonitor = new VtFileEventMonitor();
-	//_FildMonitor->AddMonDir(_T("C:\\예스트레이더\\YesLang"), true);
+	_FildMonitor->AddMonDir(_T("C:\\예스트레이더\\Spot\\Export"), true);
 	//_FildMonitor->AddMonDir(_T("C:\\WRFutures\\YesGlobalPro\\YesLang"), true);
-	//C:\WRFutures\YesGlobalPro\YesLang
-	_FildMonitor->AddMonDir(_T("C:\\WRFutures\\YesGlobalPro\\Spot\\Export"), true);
+	//_FildMonitor->AddMonDir(_T("C:\\WRFutures\\YesGlobalPro\\Spot\\Export"), true);
 	_FildMonitor->Start();
 }
 
@@ -828,6 +828,7 @@ void CMainFrame::SaveSettings()
 	saveMgr->SaveAccountList(_T("accountlist.dat"));
 	saveMgr->SaveOrderWndList(_T("orderwndlist.dat"), this);
 	saveMgr->SaveSystems(_T("systemlist.dat"));
+	saveMgr->SaveOutSystems(_T("outsystemlist.dat"));
 	saveMgr->SaveTotal(_T("smtrader.sav"), this);
 }
 

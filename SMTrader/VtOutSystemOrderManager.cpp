@@ -43,14 +43,14 @@ void VtOutSystemOrderManager::RemoveSystem(SharedSystem sys)
 void VtOutSystemOrderManager::OnOutSignal(std::string sig)
 {
 	std::vector<std::string> result = split(sig, ',');
-	for (auto it = result.begin(); it != result.end(); /* NOTHING */)
-	{
-		if ((*it).empty())
-			it = result.erase(it);
-		else
-			++it;
-	}
-	if (result[0].length() > 0) {
+// 	for (auto it = result.begin(); it != result.end(); /* NOTHING */)
+// 	{
+// 		if ((*it).empty())
+// 			it = result.erase(it);
+// 		else
+// 			++it;
+// 	}
+	if (result.size() > 5 && result[0].length() > 0) {
 		filesystem::path full_path(result[0]);
 		std::string signame = full_path.filename();
 		auto pos = signame.find_first_of(_T("-"));
@@ -110,6 +110,7 @@ std::string VtOutSystemOrderManager::GetTime()
 
 void VtOutSystemOrderManager::PutOrder(std::string sigName, int orderKind)
 {
+	CString msg;
 	auto it = _SignalOrderMap.find(sigName);
 	if (it != _SignalOrderMap.end()) {
 		SharedSystemMap& orderMap = it->second;
@@ -122,21 +123,31 @@ void VtOutSystemOrderManager::PutOrder(std::string sigName, int orderKind)
 			switch (orderKind)
 			{
 			case 1: // Buy
+				msg.Format(_T("매수\n"));
+				TRACE(msg);
 				sys->PutOrder(0, VtPositionType::Buy, VtPriceType::Market);
 				break;
 			case 2: { // ExitLong -> Sell
 				VtPosition posi = sys->GetPosition();
-				if (std::abs(posi.OpenQty) > 0)
+				if (std::abs(posi.OpenQty) > 0) {
 					sys->PutOrder(0, VtPositionType::Sell, VtPriceType::Market);
+					msg.Format(_T("매수청산\n"));
+					TRACE(msg);
+				}
 			}
 				break;
 			case 3: // Sell
 				sys->PutOrder(0, VtPositionType::Sell, VtPriceType::Market);
+				msg.Format(_T("매도\n"));
+				TRACE(msg);
 				break;
 			case 4: { // ExitShort -> Buy
 				VtPosition posi = sys->GetPosition();
-				if (std::abs(posi.OpenQty) > 0)
+				if (std::abs(posi.OpenQty) > 0) {
 					sys->PutOrder(0, VtPositionType::Buy, VtPriceType::Market);
+					msg.Format(_T("매도청산\n"));
+					TRACE(msg);
+				}
 			}
 				break;
 			default:

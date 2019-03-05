@@ -27,6 +27,8 @@ public:
 	void LoadLoginInfo(std::string fileName, std::string& id, std::string& pwd, std::string& cert, bool& save);
 	void SaveSystems(std::string fileName);
 	void LoadSystems(std::string fileName);
+	void SaveOutSystems(std::string fileName);
+	void LoadOutSystems(std::string fileName);
 	std::vector<VtSymbol*>& GetSymbolVector()
 	{
 		return _SymbolVector;
