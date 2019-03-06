@@ -49,9 +49,33 @@ void VtFundGrid::OnDClicked(int col, long row, RECT *rect, POINT *point, BOOL pr
 {
 	if (_FundEditor && _FundEditor->TargetVector.size() == 0)
 		return;
-	if (_Mode == 1)
-	{
-		ChangeSelectedRow(_SelRow, row);
+	if (_Mode == 1) {
+		if (_ClickedRow == row)
+			return;
+
+		if (_ClickedRow >= 0) {
+			for (int i = 0; i < _ColCount; ++i) {
+				QuickSetBackColor(i, _ClickedRow, RGB(255, 255, 255));
+				QuickRedrawCell(i, _ClickedRow);
+			}
+		}
+		for (int i = 0; i < _ColCount; ++i) {
+			QuickSetBackColor(i, row, _ClickedColor);
+			QuickRedrawCell(i, row);
+		}
+		_ClickedRow = row;
+
+		CUGCell cell;
+		GetCell(0, _ClickedRow, &cell);
+		if (_FundEditor) {
+			_FundEditor->SelFundAcnt((VtAccount*)cell.Tag());
+			_FundEditor->SelectedTargetRow(_ClickedRow);
+		}
+
+		if (_FundPage) {
+			_FundPage->SelectedTargetRow(_ClickedRow);
+		}
+
 		_FundEditor->OnBnClickedBtnAcntOut();
 	}
 }
@@ -61,7 +85,31 @@ void VtFundGrid::OnLClicked(int col, long row, int updn, RECT *rect, POINT *poin
 	if (_FundEditor && _FundEditor->TargetVector.size() == 0)
 		return;
 
-	ChangeSelectedRow(_SelRow, row);
+	if (_ClickedRow == row)
+		return;
+
+	if (_ClickedRow >= 0) {
+		for (int i = 0; i < _ColCount; ++i) {
+			QuickSetBackColor(i, _ClickedRow, RGB(255, 255, 255));
+			QuickRedrawCell(i, _ClickedRow);
+		}
+	}
+	for (int i = 0; i < _ColCount; ++i) {
+		QuickSetBackColor(i, row, _ClickedColor);
+		QuickRedrawCell(i, row);
+	}
+	_ClickedRow = row;
+
+	CUGCell cell;
+	GetCell(0, _ClickedRow, &cell);
+	if (_FundEditor) {
+		_FundEditor->SelFundAcnt((VtAccount*)cell.Tag());
+		_FundEditor->SelectedTargetRow(_ClickedRow);
+	}
+
+	if (_FundPage) {
+		_FundPage->SelectedTargetRow(_ClickedRow);
+	}
 }
 
 void VtFundGrid::OnRClicked(int col, long row, int updn, RECT *rect, POINT *point, int processed)
@@ -69,12 +117,77 @@ void VtFundGrid::OnRClicked(int col, long row, int updn, RECT *rect, POINT *poin
 	if (_FundEditor && _FundEditor->TargetVector.size() == 0)
 		return;
 
-	ChangeSelectedRow(_SelRow, row);
+	if (_ClickedRow == row)
+		return;
+
+	if (_ClickedRow >= 0) {
+		for (int i = 0; i < _ColCount; ++i) {
+			QuickSetBackColor(i, _ClickedRow, RGB(255, 255, 255));
+			QuickRedrawCell(i, _ClickedRow);
+		}
+	}
+	for (int i = 0; i < _ColCount; ++i) {
+		QuickSetBackColor(i, row, _ClickedColor);
+		QuickRedrawCell(i, row);
+	}
+	_ClickedRow = row;
+
+	CUGCell cell;
+	GetCell(0, _ClickedRow, &cell);
+	if (_FundEditor) {
+		_FundEditor->SelFundAcnt((VtAccount*)cell.Tag());
+		_FundEditor->SelectedTargetRow(_ClickedRow);
+	}
+
+	if (_FundPage) {
+		_FundPage->SelectedTargetRow(_ClickedRow);
+	}
 }
 
 int VtFundGrid::OnCanViewMove(int oldcol, long oldrow, int newcol, long newrow)
 {
 	return 0;
+}
+
+void VtFundGrid::OnMouseMove(int col, long row, POINT *point, UINT nFlags, BOOL processed /*= 0*/)
+{
+	if (_OldSelRow == row)
+		return;
+
+	if (_OldSelRow != _ClickedRow && _OldSelRow >= 0) {
+		for (int i = 0; i < _ColCount; ++i) {
+			QuickSetBackColor(i, _OldSelRow, RGB(255, 255, 255));
+			QuickRedrawCell(i, _OldSelRow);
+		}
+	}
+
+	if (row != _ClickedRow) {
+		for (int i = 0; i < _ColCount; ++i) {
+			QuickSetBackColor(i, row, _SelColor);
+			QuickRedrawCell(i, row);
+		}
+	}
+	else {
+		for (int i = 0; i < _ColCount; ++i) {
+			QuickSetBackColor(i, row, _ClickedColor);
+			QuickRedrawCell(i, row);
+		}
+	}
+
+	_OldSelRow = row;
+}
+
+void VtFundGrid::OnMouseLeaveFromMainGrid()
+{
+	if (_OldSelRow == _ClickedRow)
+		return;
+
+	for (int i = 0; i < _ColCount; ++i) {
+		QuickSetBackColor(i, _OldSelRow, RGB(255, 255, 255));
+		QuickRedrawCell(i, _OldSelRow);
+	}
+
+	_OldSelRow = -2;
 }
 
 void VtFundGrid::SetColTitle()
@@ -140,7 +253,7 @@ void VtFundGrid::InitGrid(std::map<std::string, VtAccount*>& fundAcntMap)
 		QuickSetNumber(2, i, acnt->SeungSu);
 		std::string val = fmt::format("{:.{}f}", acnt->Ratio, 2);
 		QuickSetText(3, i, val.c_str());
-		if (i == _SelRow && fundAcntMap.size() > 0)
+		if (i == _ClickedRow && fundAcntMap.size() > 0)
 		{
 			if (_FundEditor)
 			{
@@ -148,7 +261,7 @@ void VtFundGrid::InitGrid(std::map<std::string, VtAccount*>& fundAcntMap)
 			}
 			for (int j = 0; j < _ColCount; j++)
 			{
-				QuickSetBackColor(j, i, RGB(234, 0, 234));
+				QuickSetBackColor(j, i, _ClickedColor);
 			}
 		}
 		QuickRedrawCell(0, i);
@@ -163,8 +276,7 @@ void VtFundGrid::InitGrid(std::vector<VtAccount*>& fundAcntVector)
 {
 	int i = 0;
 	CUGCell cell;
-	for (auto it = fundAcntVector.begin(); it != fundAcntVector.end(); ++it)
-	{
+	for (auto it = fundAcntVector.begin(); it != fundAcntVector.end(); ++it) {
 		VtAccount* acnt = *it;
 		GetCell(0, i, &cell);
 		cell.Tag(acnt);
@@ -174,28 +286,23 @@ void VtFundGrid::InitGrid(std::vector<VtAccount*>& fundAcntVector)
 		QuickSetNumber(2, i, acnt->SeungSu);
 		std::string val = fmt::format("{:.{}f}%", acnt->Ratio * 100, 2);
 		QuickSetText(3, i, val.c_str());
-		if (i == _SelRow && fundAcntVector.size() > 0)
-		{
-			for (int j = 0; j < _ColCount; j++)
-			{
-				QuickSetBackColor(j, i, RGB(234, 0, 234));
+		if (i == _ClickedRow && fundAcntVector.size() > 0) {
+			for (int j = 0; j < _ColCount; j++) {
+				QuickSetBackColor(j, i, _ClickedColor);
 			}
 		}
-		for (int j = 0; j < _ColCount; j++)
-		{
+		for (int j = 0; j < _ColCount; j++) {
 			_RefreshArea.insert(std::make_pair(j, i));
 		}
 		i++;
 	}
 
-	GetCell(0, _SelRow, &cell);
-	if (_FundEditor)
-	{
+	GetCell(0, _ClickedRow, &cell);
+	if (_FundEditor) {
 		_FundEditor->SelFundAcnt((VtAccount*)cell.Tag());
 	}
 
-	for (auto it = _RefreshArea.begin(); it != _RefreshArea.end(); ++it)
-	{
+	for (auto it = _RefreshArea.begin(); it != _RefreshArea.end(); ++it) {
 		std::pair<int, int> item = *it;
 		QuickRedrawCell(item.first, item.second);
 	}
@@ -243,7 +350,7 @@ void VtFundGrid::ChangeSelectedRow(int oldRow, int newRow)
 
 	for (int j = 0; j < _ColCount; j++)
 	{
-		QuickSetBackColor(j, newRow, RGB(234, 0, 234));
+		QuickSetBackColor(j, newRow, _SelColor);
 		QuickRedrawCell(j, newRow);
 	}
 }

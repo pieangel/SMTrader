@@ -51,10 +51,24 @@ void VtSubAcntGrid::OnLClicked(int col, long row, int updn, RECT *rect, POINT *p
 	if (updn == FALSE)
 		return;
 
-	ChangeSelectedRow(_SelRow, row);
-	_SelRow = row;
+	if (_ClickedRow == row)
+		return;
+
+	if (_ClickedRow >= 0) {
+		for (int i = 0; i < _ColCount; ++i) {
+			QuickSetBackColor(i, _ClickedRow, RGB(255, 255, 255));
+			QuickRedrawCell(i, _ClickedRow);
+		}
+	}
+	for (int i = 0; i < _ColCount; ++i) {
+		QuickSetBackColor(i, row, _ClickedColor);
+		QuickRedrawCell(i, row);
+	}
+	_ClickedRow = row;
+
 	CUGCell cell;
-	GetCell(0, _SelRow, &cell);
+	GetCell(0, _ClickedRow, &cell);
+
 	if (_SubAcntPage)
 	{
 		_SubAcntPage->SelSubAccount((VtAccount*)cell.Tag());
@@ -66,10 +80,24 @@ void VtSubAcntGrid::OnRClicked(int col, long row, int updn, RECT *rect, POINT *p
 	if (updn == FALSE)
 		return;
 
-	ChangeSelectedRow(_SelRow, row);
-	_SelRow = row;
+	if (_ClickedRow == row)
+		return;
+
+	if (_ClickedRow >= 0) {
+		for (int i = 0; i < _ColCount; ++i) {
+			QuickSetBackColor(i, _ClickedRow, RGB(255, 255, 255));
+			QuickRedrawCell(i, _ClickedRow);
+		}
+	}
+	for (int i = 0; i < _ColCount; ++i) {
+		QuickSetBackColor(i, row, _ClickedColor);
+		QuickRedrawCell(i, row);
+	}
+	_ClickedRow = row;
+
 	CUGCell cell;
-	GetCell(0, _SelRow, &cell);
+	GetCell(0, _ClickedRow, &cell);
+
 	VtAccount* subAcnt = (VtAccount*)cell.Tag();
 	if (subAcnt && _ParentAccount)
 	{
@@ -85,6 +113,47 @@ void VtSubAcntGrid::OnRClicked(int col, long row, int updn, RECT *rect, POINT *p
 		}
 	}
 
+}
+
+void VtSubAcntGrid::OnMouseMove(int col, long row, POINT *point, UINT nFlags, BOOL processed /*= 0*/)
+{
+	if (_OldSelRow == row)
+		return;
+
+	if (_OldSelRow != _ClickedRow && _OldSelRow >= 0) {
+		for (int i = 0; i < _ColCount; ++i) {
+			QuickSetBackColor(i, _OldSelRow, RGB(255, 255, 255));
+			QuickRedrawCell(i, _OldSelRow);
+		}
+	}
+
+	if (row != _ClickedRow) {
+		for (int i = 0; i < _ColCount; ++i) {
+			QuickSetBackColor(i, row, _SelColor);
+			QuickRedrawCell(i, row);
+		}
+	}
+	else {
+		for (int i = 0; i < _ColCount; ++i) {
+			QuickSetBackColor(i, row, _ClickedColor);
+			QuickRedrawCell(i, row);
+		}
+	}
+
+	_OldSelRow = row;
+}
+
+void VtSubAcntGrid::OnMouseLeaveFromMainGrid()
+{
+	if (_OldSelRow == _ClickedRow)
+		return;
+
+	for (int i = 0; i < _ColCount; ++i) {
+		QuickSetBackColor(i, _OldSelRow, RGB(255, 255, 255));
+		QuickRedrawCell(i, _OldSelRow);
+	}
+
+	_OldSelRow = -2;
 }
 
 void VtSubAcntGrid::SetColTitle()
@@ -147,11 +216,11 @@ void VtSubAcntGrid::InitGrid(VtAccount* acnt)
 			QuickSetText(2, i, _T("기본"));
 		else
 			QuickSetText(2, i, _T("일반"));
-		if (i == _SelRow && acntMap.size() > 0)
+		if (i == _ClickedRow && acntMap.size() > 0)
 		{
 			for (int j = 0; j < _ColCount; j++)
 			{
-				QuickSetBackColor(j, i, RGB(234, 0, 234));
+				QuickSetBackColor(j, i, _ClickedColor);
 			}
 		}
 
@@ -161,8 +230,7 @@ void VtSubAcntGrid::InitGrid(VtAccount* acnt)
 		i++;
 	}
 
-	for (auto it = _RefreshCells.begin(); it != _RefreshCells.end(); ++it)
-	{
+	for (auto it = _RefreshCells.begin(); it != _RefreshCells.end(); ++it) {
 		std::pair<int, int> cellInfo = *it;
 		QuickRedrawCell(cellInfo.first, cellInfo.second);
 	}
@@ -186,33 +254,30 @@ void VtSubAcntGrid::ClearCells()
 VtAccount* VtSubAcntGrid::GetSelectedAccount()
 {
 	CUGCell cell;
-	GetCell(0, _SelRow, &cell);
+	GetCell(0, _ClickedRow, &cell);
 	return (VtAccount*)cell.Tag();
 }
 
 void VtSubAcntGrid::SetDefaultSelect()
 {
-	ChangeSelectedRow(_SelRow, 0);
-	_SelRow = 0;
+	ChangeSelectedRow(_ClickedRow, 0);
+	_ClickedRow = 0;
 	CUGCell cell;
-	GetCell(0, _SelRow, &cell);
-	if (_SubAcntPage)
-	{
+	GetCell(0, _ClickedRow, &cell);
+	if (_SubAcntPage) {
 		_SubAcntPage->SelSubAccount((VtAccount*)cell.Tag());
 	}
 }
 
 void VtSubAcntGrid::ChangeSelectedRow(int oldRow, int newRow)
 {
-	for (int j = 0; j < _ColCount; j++)
-	{
+	for (int j = 0; j < _ColCount; j++) {
 		QuickSetBackColor(j, oldRow, RGB(255, 255, 255));
 		QuickRedrawCell(j, oldRow);
 	}
 
-	for (int j = 0; j < _ColCount; j++)
-	{
-		QuickSetBackColor(j, newRow, RGB(234, 0, 234));
+	for (int j = 0; j < _ColCount; j++) {
+		QuickSetBackColor(j, newRow, _SelColor);
 		QuickRedrawCell(j, newRow);
 	}
 }
