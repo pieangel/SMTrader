@@ -1432,6 +1432,9 @@
     <ClInclude Include="VtOutSystemOrderManager.h">
       <Filter>System\AutoConnect</Filter>
     </ClInclude>
+    <ClInclude Include="VtSystemOrderConfig.h">
+      <Filter>System</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ChildFrm.cpp">
@@ -2579,6 +2582,9 @@
     </ClCompile>
     <ClCompile Include="VtOutSystemOrderManager.cpp">
       <Filter>System\AutoConnect</Filter>
+    </ClCompile>
+    <ClCompile Include="VtSystemOrderConfig.cpp">
+      <Filter>System</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -107,9 +107,11 @@ VtChartData* VtSystem::AddDataSource(std::string symCode, VtChartType type, int 
 
 void VtSystem::Fund(VtFund* val)
 {
-	_Fund = val;
-	_SysTargetType = TargetType::Fund;
-	_SysTargetName = _Fund->Name;
+	if (val) {
+		_Fund = val;
+		_SysTargetType = TargetType::Fund;
+		_SysTargetName = _Fund->Name;
+	}
 }
 
 void VtSystem::OnTimer()
@@ -1083,6 +1085,117 @@ bool VtSystem::CheckLiqForBuy(size_t index)
 	return false;
 }
 
+bool VtSystem::PutEntranceOrder(VtPositionType position)
+{
+	int orderPrice = GetOrderPrice(position);
+	if (orderPrice < 0) return false;
+
+	PutOrder(orderPrice, position, _PriceType);
+	_LatestEntPrice = _Symbol->Quote.intClose;
+	return true;
+}
+
+bool VtSystem::PutLiqOrder(VtPosition* posi)
+{
+	if (!posi || _CurPosition == VtPositionType::None)
+		return false;
+
+	VtPositionType position = VtPositionType::None;
+	// 여기서 현재 포지션 상태를 설정해 추가로 주문이 나가지 않게 한다.
+	_CurPosition == VtPositionType::Buy ? position = VtPositionType::Sell : position = VtPositionType::Buy;
+	int orderPrice = GetOrderPrice(position);
+	if (orderPrice < 0)
+		return false;
+
+	LOG_F(INFO, _T("PutOrder : openQty = %d"), posi->OpenQty);
+	VtAccount* acnt = nullptr;
+	VtAccountManager* acntMgr = VtAccountManager::GetInstance();
+	acnt = acntMgr->FindAccount(posi->AccountNo);
+	if (!acnt) { // 본계좌에 없을 경우 서브 계좌를 찾아 본다.
+		VtSubAccountManager* subAcntMgr = VtSubAccountManager::GetInstance();
+		acnt = subAcntMgr->FindAccount(posi->AccountNo);
+	}
+
+	if (!acnt) // 계좌가 없는 경우 아무일도 하지 않음.
+		return false;
+
+	VtOrderManagerSelector* orderMgrSelector = VtOrderManagerSelector::GetInstance();
+	VtOrderManager* orderMgr = orderMgrSelector->FindAddOrderManager(acnt->AccountNo);
+
+	HdOrderRequest request;
+	request.Amount = std::abs(posi->OpenQty);
+	if (acnt->AccountLevel() == 0) { // 본계좌 일 때
+		request.AccountNo = acnt->AccountNo;
+		request.Password = acnt->Password;
+	}
+	else { // 서브 계좌 일 때
+		VtAccount* parentAcnt = acnt->ParentAccount();
+		if (parentAcnt) { // 부모 계좌가 있는지 확인 한다.
+			request.AccountNo = parentAcnt->AccountNo;
+			request.Password = parentAcnt->Password;
+		}
+		else return false;
+	}
+	request.SymbolCode = _Symbol->ShortCode;
+	request.FillCondition = _FillCondition;
+
+	request.PriceType = _PriceType;
+	request.Price = orderPrice;
+
+	if (posi->Position == VtPositionType::Buy) { // 매수 청산인 경우
+		request.Position = VtPositionType::Sell;
+	}
+	else if (posi->Position == VtPositionType::Sell) { // 매도 청산인 경우
+		request.Position = VtPositionType::Buy;
+	}
+
+	request.RequestId = orderMgr->GetOrderRequestID();
+	request.SourceId = (long)this;
+
+	if (acnt->AccountLevel() == 0) { // 본계좌 인 경우
+		request.SubAccountNo = _T("");
+		request.FundName = _T("");
+	}
+	else { // 서브 계좌인 경우
+		request.SubAccountNo = acnt->AccountNo;
+		if (acnt->Fund())
+			request.FundName = acnt->Fund()->Name;
+		else
+			request.FundName = _T("");
+	}
+
+	request.orderType = VtOrderType::New;
+	// 정산 주문이냐 청산
+	// 0 : 일반 , 1 : 익절, 2 : 손절- 청산 주문일 때는 익절 손절이 활성화 되어 있어도 처리하지 않는다.
+	request.RequestType = 1;
+
+	orderMgr->PutOrder(std::move(request));
+
+	return true;
+}
+
+int VtSystem::GetOrderPrice(VtPositionType position)
+{
+	int price = -1;
+	if (!_Symbol || position == VtPositionType::None)
+		return price;
+	if (_PriceType == VtPriceType::Market)
+		return price = 0;
+	else if (_PriceType == VtPriceType::Price) {
+		price = _Symbol->Quote.intClose;
+		if (position == VtPositionType::Buy || position == VtPositionType::ExitSell) {
+			// 매수일 경우 목표가격보다 정해진 틱만큼 위로 주문을 낸다.
+			price = price + _Symbol->intTickSize * _OrderTick;
+		}
+		else if (position == VtPositionType::Sell || position == VtPositionType::ExitBuy) {
+			// 매도일 경우 목표가격보다 정해진 틱만큼 아래로 주문을 낸다.
+			price = price - _Symbol->intTickSize * _OrderTick;
+		}
+	}
+
+	return price;
+}
+
 int VtSystem::FindDateIndex(double date, std::vector<double>& dateArray)
 {
 	for (int i = dateArray.size() - 1; i >= 0; --i) {
@@ -1251,8 +1364,6 @@ bool VtSystem::LiqudAll()
 	if (!_Symbol)
 		return false;
 
-	VtTotalOrderManager* totalOrderMgr = VtTotalOrderManager::GetInstance();
-
 	if (_SysTargetType == TargetType::RealAccount || _SysTargetType == TargetType::SubAccount) { // 계좌 주문일 때
 		if (!_Account)
 			return false;
@@ -1260,10 +1371,8 @@ bool VtSystem::LiqudAll()
 
 		if (!posi || posi->OpenQty == 0 || posi->Position == VtPositionType::None)
 			return false;
-		if (_LiqPriceType == VtPriceType::Market) // 시장가
-			PutOrder(posi, 0, true);
-		else // 지정가
- 			PutOrder(posi, static_cast<int>(posi->AvgPrice), false);
+
+		PutLiqOrder(posi);
 
 		_ProfitLoss = 0.0;
 		_MaxProfit = 0.0;
@@ -1279,10 +1388,8 @@ bool VtSystem::LiqudAll()
 
 			if (!posi || posi->OpenQty == 0 || posi->Position == VtPositionType::None)
 				continue;
-			if (_LiqPriceType == VtPriceType::Market) // 시장가
-				PutOrder(posi, 0, true);
-			else // 지정가
-				PutOrder(posi, static_cast<int>(posi->AvgPrice), false);
+
+			PutLiqOrder(posi);
 		}
 
 		_ProfitLoss = 0.0;
@@ -1379,6 +1486,7 @@ void VtSystem::Save(simple::file_ostream<same_endian_type>& ss)
 	ss << _BandMulti;
 	ss << _FilterMulti;
 	ss << _OutSignalName;
+	ss << _OrderTick; // 지정가 주문 틱수
 
 	// 시스템 매개변수를 그룹별로 저장한다.
 	ss << _ArgGroupMap.size();
@@ -1425,6 +1533,7 @@ void VtSystem::Load(simple::file_istream<same_endian_type>& ss)
 	ss >> _BandMulti;
 	ss >> _FilterMulti;
 	ss >> _OutSignalName;
+	ss >> _OrderTick; 
 
 	if (_SysTargetType == TargetType::RealAccount) {
 		VtAccountManager* acntMgr = VtAccountManager::GetInstance();
@@ -1511,7 +1620,7 @@ bool VtSystem::CheckAtrLiqForBuy(int index)
 		return false;
 
 	std::vector<double>& timeArray = chartData->GetDataArray(_T("time"));
-	VtTime time = VtGlobal::GetTime(timeArray[index]);
+	VtTime time = VtGlobal::GetTime((int)timeArray[index]);
 	if (!(time.hour >= _ATRTime.hour && time.min >= _ATRTime.min))
 		return false;
 	int curDailyIndex = GetDailyIndex(index);
@@ -1593,7 +1702,7 @@ bool VtSystem::CheckAtrLiqForSell(int index)
 		return false;
 
 	std::vector<double>& timeArray = chartData->GetDataArray(_T("time"));
-	VtTime time = VtGlobal::GetTime(timeArray[index]);
+	VtTime time = VtGlobal::GetTime((int)timeArray[index]);
 	if (!(time.hour >= _ATRTime.hour && time.min >= _ATRTime.min))
 		return false;
 	int curDailyIndex = GetDailyIndex(index);

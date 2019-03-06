@@ -590,6 +590,7 @@
     <ClInclude Include="VtSystemDef.h" />
     <ClInclude Include="VtSystemGroup.h" />
     <ClInclude Include="VtSystemGroupManager.h" />
+    <ClInclude Include="VtSystemOrderConfig.h" />
     <ClInclude Include="VtSystemProperty.h" />
     <ClInclude Include="VtSystemSetDlg.h" />
     <ClInclude Include="VtTaskArg.h" />
@@ -992,6 +993,7 @@
     <ClCompile Include="VtSystemArgGroup.cpp" />
     <ClCompile Include="VtSystemGroup.cpp" />
     <ClCompile Include="VtSystemGroupManager.cpp" />
+    <ClCompile Include="VtSystemOrderConfig.cpp" />
     <ClCompile Include="VtSystemProperty.cpp" />
     <ClCompile Include="VtSystemSetDlg.cpp" />
     <ClCompile Include="VtTaskArg.cpp" />

@@ -26,6 +26,7 @@
 #include "VtGlobal.h"
 #include "VtStrategyToolWnd.h"
 #include "Format/time.h"
+#include "VtSystemOrderConfig.h"
 using Poco::Delegate;
 using Poco::NumberFormatter;
 
@@ -88,6 +89,7 @@ void VtUsdStrategyConfigDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_STATIC_LAST_ENT_PRICE, _StaticLastEntPrice);
 	//  DDX_Control(pDX, IDC_STATIC_POSITION, _);
 	DDX_Control(pDX, IDC_STATIC_POSITION, _StaticPosition);
+	DDX_Control(pDX, IDC_BTN_SYS_ORDER, _BtnSysOrder);
 }
 
 
@@ -107,6 +109,7 @@ BEGIN_MESSAGE_MAP(VtUsdStrategyConfigDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_CHECK_RUN, &VtUsdStrategyConfigDlg::OnBnClickedCheckRun)
 	ON_EN_CHANGE(IDC_EDIT_ORDER_AMT, &VtUsdStrategyConfigDlg::OnEnChangeEditOrderAmt)
 	ON_WM_TIMER()
+	ON_BN_CLICKED(IDC_BTN_SYS_ORDER, &VtUsdStrategyConfigDlg::OnBnClickedBtnSysOrder)
 END_MESSAGE_MAP()
 
 
@@ -141,6 +144,7 @@ BOOL VtUsdStrategyConfigDlg::OnInitDialog()
 	_btnVec.push_back(&_BtnApply);
 	_btnVec.push_back(&_BtnExtraVar);
 	_btnVec.push_back(&_BtnSymbol);
+	_btnVec.push_back(&_BtnSysOrder);
 
 	for (auto it = _btnVec.begin(); it != _btnVec.end(); ++it) {
 		CShadeButtonST* btn = *it;
@@ -911,4 +915,19 @@ void VtUsdStrategyConfigDlg::OnTimer(UINT_PTR nIDEvent)
 	}
 
 	CDialogEx::OnTimer(nIDEvent);
+}
+
+
+void VtUsdStrategyConfigDlg::OnBnClickedBtnSysOrder()
+{
+	VtSystemOrderConfig sysOrderConfig;
+	if (_System) {
+		sysOrderConfig._PriceType = _System->PriceType();
+		sysOrderConfig._OrderTick = _System->OrderTick();
+	}
+	int result = sysOrderConfig.DoModal();
+	if (result == IDOK && _System) {
+		_System->PriceType(sysOrderConfig._PriceType);
+		_System->OrderTick(sysOrderConfig._OrderTick);
+	}
 }

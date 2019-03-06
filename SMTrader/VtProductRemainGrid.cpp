@@ -439,7 +439,6 @@ void VtProductRemainGrid::SetColTitle(int level)
 	const int ColCount = _ColCount;
 	CUGCell cell;
 	LPCTSTR title[9] = { "종목", "구분", "잔고", "평균가", "현재가", "평가손익" };
-	//int colWidth[9]; // = { 60, 35, 40, 70, 90, 90 };
 	CRect rcWnd;
 	GetWindowRect(rcWnd);
 	std::array<int, 6> ColWidth;

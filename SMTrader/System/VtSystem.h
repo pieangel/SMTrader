@@ -242,7 +242,14 @@ public:
 	VtPosition GetPosition();
 	void PutOrder(int price, VtPositionType position, VtPriceType priceType = VtPriceType::Price);
 	void PutOrder(VtPosition* posi, int price, bool liqud = false);
+	VtPriceType PriceType() const { return _PriceType; }
+	void PriceType(VtPriceType val) { _PriceType = val; }
+	int OrderTick() const { return _OrderTick; }
+	void OrderTick(int val) { _OrderTick = val; }
+	bool PutEntranceOrder(VtPositionType position);
+	bool PutLiqOrder(VtPosition* posi);
 protected:
+	int GetOrderPrice(VtPositionType position);
 	int FindDateIndex(double date, std::vector<double>& dateArray);
 	bool LiqudAll();
 	VtPositionType _CurPosition = VtPositionType::None;
@@ -392,7 +399,7 @@ protected:
 	/// <summary>
 	/// 진입가격 타입
 	/// </summary>
-	VtPriceType _PriceType = VtPriceType::Market;
+	VtPriceType _PriceType = VtPriceType::Price;
 	/// <summary>
 	/// 시스템 주요 심볼
 	/// </summary>
@@ -467,5 +474,9 @@ protected:
 	/// </summary>
 	SharedOutSigDef _OutSignal = nullptr;
 	std::string _OutSignalName;
+	/// <summary>
+	/// 지정가일 경우 주문틱
+	/// </summary>
+	int _OrderTick = 5;
 };
 

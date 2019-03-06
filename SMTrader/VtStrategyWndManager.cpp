@@ -57,6 +57,7 @@ void VtStrategyWndManager::Save(simple::file_ostream<same_endian_type>& ss)
 	// 개별 윈도우 타입과 위치 저장
 	for (auto it = _WindowMap.begin(); it != _WindowMap.end(); ++it) {
 		auto item = it->second;
+		
 		int dlgType = (int)std::get<0>(item);
 		CRect rcWnd;
 		std::get<1>(item)->GetWindowRect(rcWnd);

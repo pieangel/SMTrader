@@ -3,6 +3,9 @@
 #include "System/VtSystem.h"
 #include <algorithm>
 
+VtPriceType VtOutSystemManager::PriceType = VtPriceType::Price;
+int VtOutSystemManager::OrderTick = 5;
+
 void VtOutSystemManager::AddSystem(SharedSystem sys)
 {
 	if (!sys)
@@ -30,6 +33,9 @@ VtOutSystemManager::~VtOutSystemManager()
 
 void VtOutSystemManager::Save(simple::file_ostream<same_endian_type>& ss)
 {
+	ss << (int)VtOutSystemManager::PriceType;
+	ss << VtOutSystemManager::OrderTick;
+
 	size_t count = _SystemVec.size();
 	ss << count; // ½Ã½ºÅÛ °¹¼ö
 	
@@ -47,6 +53,9 @@ void VtOutSystemManager::Save(simple::file_ostream<same_endian_type>& ss)
 
 void VtOutSystemManager::Load(simple::file_istream<same_endian_type>& ss)
 {
+	ss >> VtOutSystemManager::PriceType;
+	ss >> VtOutSystemManager::OrderTick;
+
 	int count = 0;
 	ss >> count;
 	if (count == 0)

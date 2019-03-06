@@ -505,5 +505,9 @@ int VtSignalConnectionGrid::OnSpinButton(long ID, int col, long row, long msg, l
 	str.Format("%ld", num);
 	cell.SetText(str);
 	SetCell(col, row, &cell);
-	return 1;
+
+	SharedSystem sys = _SystemMap[row];
+	sys->SeungSu((int)num);
+
+	return TRUE;
 }

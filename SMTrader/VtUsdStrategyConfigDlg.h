@@ -132,4 +132,6 @@ public:
 	void UpdateRunCheck(VtSystem* sys);
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	CGradientStatic _StaticPosition;
+	afx_msg void OnBnClickedBtnSysOrder();
+	CShadeButtonST _BtnSysOrder;
 };

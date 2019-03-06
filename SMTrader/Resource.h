@@ -133,11 +133,13 @@
 #define IDB_CALC_ANIM2                  342
 #define IDD_REAL_TICK                   344
 #define IDD_DIALOG_EMBED                346
+#define IDD_SYSTEM_ORDER_CONFIG         347
 #define IDD_CENTER_CONFIG               348
 #define IDD_REALTIMETRACK_DIALOG        349
 #define IDD_ZOOMSCROLLTRACK2_DIALOG     350
 #define IDD_INDEX_PROPERTY              351
 #define IDD_ORDERGRID_CONFIG            352
+#define IDD_SYS_ORDER                   353
 #define IDD_CHART_PROPERTY              354
 #define IDD_ASSET_CONTAINER             355
 #define IDD_REGISTER_USER               357
@@ -378,6 +380,7 @@
 #define IDC_BTN_FUND_MODIFY             1010
 #define IDC_CHECK_SHOW_PWD              1010
 #define IDC_BUTTON4                     1010
+#define IDC_BTN_ORDER_CONFIG            1010
 #define IDC_EDIT_ID                     1011
 #define IDC_BTN_MIN                     1011
 #define IDC_CHECK_TS                    1011
@@ -471,17 +474,22 @@
 #define IDC_CHECK_SHOW_STOPCOL          1029
 #define IDC_EDIT_PS_STOP                1029
 #define IDC_FORMAT_THOUSAND             1029
+#define IDC_COMBO_PRICE                 1029
 #define IDC_COMBO_ACCOUNT_HD            1030
 #define IDC_SPIN_ORDER_CELL_WIDTH       1030
+#define IDC_EDIT_TICK                   1030
 #define IDC_EDIT_TS_DEFAULT_LOSS        1031
 #define IDC_COMBO_PRODUCT_HD            1031
 #define IDC_BTN_FV1                     1031
+#define IDC_SPIN_TICK                   1031
 #define IDC_EDIT_TS_PROFIT              1032
 #define IDC_STATIC_MSG                  1032
 #define IDC_BTN_FV2                     1032
+#define IDC_COMBO_PRICE_TYPE            1032
 #define IDC_EDIT_TS_TRAIL               1033
 #define IDC_CK_FIXED_CENTER             1033
 #define IDC_BTN_FV3                     1033
+#define IDC_BTN_SYS_ORDER               1033
 #define IDC_EDIT_TS_STOP                1034
 #define IDC_BTN_FV4                     1034
 #define IDC_RADIO_ATPRICE               1034
@@ -657,9 +665,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        346
+#define _APS_NEXT_RESOURCE_VALUE        355
 #define _APS_NEXT_COMMAND_VALUE         32797
-#define _APS_NEXT_CONTROL_VALUE         1029
+#define _APS_NEXT_CONTROL_VALUE         1034
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif

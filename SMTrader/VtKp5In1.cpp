@@ -453,10 +453,11 @@ void VtKp5In1::OnTimer()
 			LOG_F(INFO, _T("매수진입성공"));
 			// 포지션 설정
 			_CurPosition = VtPositionType::Buy;
-			// 여기서 주문을 낸다. - 일단 시장가로 낸다.
-			PutOrder(0, _CurPosition, VtPriceType::Market);
-			if (_Symbol) // 가장 최근의 진입가를 기록해 놓는다.
-				_LatestEntPrice = _Symbol->Quote.intClose;
+			// 여기서 주문을 낸다.
+			if (!PutEntranceOrder(_CurPosition)) {
+				_CurPosition = VtPositionType::None;
+				return;
+			}
 			int curHourMin = VtChartDataCollector::GetHourMin(curTime, _Cycle);
 			// 가장 최근 신호가 발생한 시간을 저장해 둔다.
 			_LastEntryTime = curHourMin * 100;
@@ -471,9 +472,10 @@ void VtKp5In1::OnTimer()
 			// 포지션 설정
 			_CurPosition = VtPositionType::Sell;
 			// 여기서 주문을 낸다.
-			PutOrder(0, _CurPosition, VtPriceType::Market);
-			if (_Symbol) // 가장 최근의 진입가를 기록해 놓는다.
-				_LatestEntPrice = _Symbol->Quote.intClose;
+			if (!PutEntranceOrder(_CurPosition)) {
+				_CurPosition = VtPositionType::None;
+				return;
+			}
 			int curHourMin = VtChartDataCollector::GetHourMin(curTime, _Cycle);
 			// 가장 최근 신호가 발생한 시간을 저장해 둔다.
 			_LastEntryTime = curHourMin * 100;
