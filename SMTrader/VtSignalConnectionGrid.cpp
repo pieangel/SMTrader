@@ -409,6 +409,16 @@ void VtSignalConnectionGrid::Refresh()
 
 int VtSignalConnectionGrid::OnDropList(long ID, int col, long row, long msg, long param)
 {
+	if (msg == UGCT_DROPLISTSTART) {
+		CStringList* pList = (CStringList*)param;
+		pList->RemoveAll();
+		VtOutSignalDefManager* outSigDefMgr = VtOutSignalDefManager::GetInstance();
+		OutSigDefVec& sigDefVec = outSigDefMgr->GetSignalDefVec();
+		for (size_t loop = 0; loop < sigDefVec.size(); loop++) {
+			SharedOutSigDef sig = sigDefVec[loop];
+			pList->AddTail(sig->SignalName.c_str());
+		}
+	}
 	if (msg == UGCT_DROPLISTSELECT) {
 		VtOutSignalDefManager* outSigMgr = VtOutSignalDefManager::GetInstance();
 		CString * pString = (CString*)param;

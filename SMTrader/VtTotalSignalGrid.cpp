@@ -118,12 +118,12 @@ void VtTotalSignalGrid::RefreshOrders()
 			temp = NumberFormatter::format(0, 0);
 			thVal = XFormatNumber(temp.c_str(), -1);
 		}
-		QuickSetText(3, 0, thVal);
+		QuickSetText(3, i, thVal);
 
 
 
 		CUGCell cell;
-		GetCell(4, 0, &cell);
+		GetCell(4, i, &cell);
 		int curValue = sys->Symbol() ? sys->Symbol()->Quote.intClose : 0;
 		if (sys->Symbol()) {
 			temp = NumberFormatter::format(curValue / std::pow(10, sys->Symbol()->IntDecimal), sys->Symbol()->IntDecimal);
@@ -135,22 +135,22 @@ void VtTotalSignalGrid::RefreshOrders()
 		}
 		cell.SetText(thVal);
 		cell.LongValue(curValue);
-		SetCell(4, 0, &cell);
+		SetCell(4, i, &cell);
 
 		temp = NumberFormatter::format(posi.OpenProfitLoss, 0);
 		CString profitLoss = XFormatNumber(temp.c_str(), -1);
 
 		if (posi.OpenProfitLoss > 0) {
-			QuickSetTextColor(5, 0, RGB(255, 0, 0));
-			QuickSetText(5, 0, profitLoss);
+			QuickSetTextColor(5, i, RGB(255, 0, 0));
+			QuickSetText(5, i, profitLoss);
 		}
 		else if (posi.OpenProfitLoss < 0) {
-			QuickSetTextColor(5, 0, RGB(0, 0, 255));
-			QuickSetText(5, 0, profitLoss);
+			QuickSetTextColor(5, i, RGB(0, 0, 255));
+			QuickSetText(5, i, profitLoss);
 		}
 		else {
-			QuickSetTextColor(5, 0, RGB(0, 0, 0));
-			QuickSetNumber(5, 0, 0);
+			QuickSetTextColor(5, i, RGB(0, 0, 0));
+			QuickSetNumber(5, i, 0);
 		}
 
 		if (posi.OpenQty != 0) {
@@ -192,12 +192,12 @@ void VtTotalSignalGrid::InitGrid()
 			temp = NumberFormatter::format(0, 0);
 			thVal = XFormatNumber(temp.c_str(), -1);
 		}
-		QuickSetText(3, 0, thVal);
+		QuickSetText(3, i, thVal);
 
 
 
 		CUGCell cell;
-		GetCell(4, 0, &cell);
+		GetCell(4, i, &cell);
 		int curValue = sys->Symbol() ? sys->Symbol()->Quote.intClose : 0;
 		if (sys->Symbol()) {
 			temp = NumberFormatter::format(curValue / std::pow(10, sys->Symbol()->IntDecimal), sys->Symbol()->IntDecimal);
@@ -209,22 +209,22 @@ void VtTotalSignalGrid::InitGrid()
 		}
 		cell.SetText(thVal);
 		cell.LongValue(curValue);
-		SetCell(4, 0, &cell);
+		SetCell(4, i, &cell);
 
 		temp = NumberFormatter::format(posi.OpenProfitLoss, 0);
 		CString profitLoss = XFormatNumber(temp.c_str(), -1);
 
 		if (posi.OpenProfitLoss > 0) {
-			QuickSetTextColor(5, 0, RGB(255, 0, 0));
-			QuickSetText(5, 0, profitLoss);
+			QuickSetTextColor(5, i, RGB(255, 0, 0));
+			QuickSetText(5, i, profitLoss);
 		}
 		else if (posi.OpenProfitLoss < 0) {
-			QuickSetTextColor(5, 0, RGB(0, 0, 255));
-			QuickSetText(5, 0, profitLoss);
+			QuickSetTextColor(5, i, RGB(0, 0, 255));
+			QuickSetText(5, i, profitLoss);
 		}
 		else {
-			QuickSetTextColor(5, 0, RGB(0, 0, 0));
-			QuickSetNumber(5, 0, 0);
+			QuickSetTextColor(5, i, RGB(0, 0, 0));
+			QuickSetNumber(5, i, 0);
 		}
 
 		if (posi.OpenQty != 0) {
