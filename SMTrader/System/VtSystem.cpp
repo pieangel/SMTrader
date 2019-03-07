@@ -1219,7 +1219,7 @@ void VtSystem::PutOrder(int price, VtPositionType position, VtPriceType priceTyp
 			HdOrderRequest request;
 			request.Price = price;
 			request.Position = position;
-			request.Amount = _OrderAmount;
+			request.Amount = _OrderAmount * _SeungSu;
 			if (_Account->AccountLevel() == 0) { // 실계좌 일 때
 				request.AccountNo = _Account->AccountNo;
 				request.Password = _Account->Password;
@@ -1260,7 +1260,7 @@ void VtSystem::PutOrder(int price, VtPositionType position, VtPriceType priceTyp
 				HdOrderRequest request;
 				request.Price = price;
 				request.Position = position;
-				request.Amount = _OrderAmount * subAcnt->SeungSu;
+				request.Amount = _OrderAmount * subAcnt->SeungSu * _SeungSu;
 				if (parentAcnt) { // 부모 계좌의 정보를 넣어 준다.
 					request.AccountNo = parentAcnt->AccountNo;
 					request.Password = parentAcnt->Password;

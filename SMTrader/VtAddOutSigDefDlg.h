@@ -25,10 +25,8 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnBnClickedOk();
-	CEdit _EditDesc;
 	CEdit _EditSignal;
 	CEdit _EditStrategy;
-	CEdit _EditSymbol;
 private:
 	VtSignalDefinitionGrid* _SigDefGrid = nullptr;
 };

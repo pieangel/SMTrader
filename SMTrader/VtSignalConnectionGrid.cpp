@@ -420,17 +420,28 @@ int VtSignalConnectionGrid::OnDropList(long ID, int col, long row, long msg, lon
 		}
 	}
 	if (msg == UGCT_DROPLISTSELECT) {
-		VtOutSignalDefManager* outSigMgr = VtOutSignalDefManager::GetInstance();
+		CUGCell cell;
+		GetCell(col, row, &cell);
+		CString oldSigName;
+		oldSigName = cell.GetText();
+		SharedSystem sys = _SystemMap[row];
+
+		VtOutSystemOrderManager* outSysOrderMgr = VtOutSystemOrderManager::GetInstance();
+		// 먼저 기존 시그널을 없애 준다.
+		outSysOrderMgr->RemoveSystem(sys);
+
+		// 새로운 시그널을 등록해 준다.
 		CString * pString = (CString*)param;
 		std::string sigName = *pString;
+		VtOutSignalDefManager* outSigMgr = VtOutSignalDefManager::GetInstance();
 		SharedOutSigDef sig = outSigMgr->FindOutSigDef(sigName);
-		SharedSystem sys = _SystemMap[row];
 		if (sig && sys) {
 			sys->OutSignal(sig);
 			CUGCell cell;
 			GetCell(col, row, &cell);
 			cell.SetText(sig->SignalName.c_str());
 			QuickRedrawCell(col, row);
+			outSysOrderMgr->AddSystem(sys);
 		}
 	}
 	

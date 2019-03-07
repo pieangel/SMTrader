@@ -8,6 +8,7 @@
 #include "VtPosition.h"
 #include "VtOutSignalDef.h"
 #include "XFormatNumber.h"
+#include "VtFund.h"
 #include <array>
 #include <numeric>
 #include "Poco/NumberFormatter.h"
@@ -106,6 +107,13 @@ void VtTotalSignalGrid::RefreshOrders()
 
 	for (size_t i = 0; i < sysVec.size(); ++i) {
 		SharedSystem sys = sysVec[i];
+		if (sys->SysTargetType() == TargetType::RealAccount || sys->SysTargetType() == TargetType::SubAccount) {
+			if (sys->Account()) QuickSetText(0, i, sys->Account()->AccountNo.c_str());
+		}
+		else {
+			if (sys->Fund()) QuickSetText(0, i, sys->Fund()->Name.c_str());
+		}
+
 		VtPosition posi = sys->GetPosition();
 		posi.Position == VtPositionType::None ? QuickSetText(2, i, _T("없음")) : posi.Position == VtPositionType::Buy ? QuickSetText(2, i, _T("매수")) : QuickSetText(2, i, _T("매도"));
 		CString thVal;
@@ -154,8 +162,14 @@ void VtTotalSignalGrid::RefreshOrders()
 		}
 
 		if (posi.OpenQty != 0) {
-			posi.OpenQty > 0 ? QuickSetNumber(6, i, std::abs(posi.OpenQty)) : QuickSetNumber(7, i, 0);
-			posi.OpenQty < 0 ? QuickSetNumber(7, i, std::abs(posi.OpenQty)) : QuickSetNumber(6, i, 0);
+			if (posi.OpenQty > 0) {
+				QuickSetNumber(7, i, std::abs(posi.OpenQty));
+				QuickSetNumber(6, i, 0);
+			}
+			else if (posi.OpenQty < 0) {
+				QuickSetNumber(6, i, std::abs(posi.OpenQty));
+				QuickSetNumber(7, i, 0);
+			}
 		}
 		else {
 			QuickSetNumber(6, i, 0);
@@ -175,13 +189,15 @@ void VtTotalSignalGrid::InitGrid()
 	
 	for (size_t i = 0; i < sysVec.size(); ++i) {
 		SharedSystem sys = sysVec[i];
-		if (sys->Account()) QuickSetText(0, i, sys->Account()->AccountNo.c_str());
+		if (sys->SysTargetType() == TargetType::RealAccount || sys->SysTargetType() == TargetType::SubAccount) {
+			if (sys->Account()) QuickSetText(0, i, sys->Account()->AccountNo.c_str());
+		}
+		else {
+			if (sys->Fund()) QuickSetText(0, i, sys->Fund()->Name.c_str());
+		}
 		if (sys->Symbol()) QuickSetText(1, i, sys->Symbol()->ShortCode.c_str());
 		VtPosition posi = sys->GetPosition();
 		posi.Position == VtPositionType::None ? QuickSetText(2, i, _T("없음"))  : posi.Position == VtPositionType::Buy ? QuickSetText(2, i, _T("매수")) : QuickSetText(2, i, _T("매도"));
-		//QuickSetText(3, i, std::to_string(posi.AvgPrice).c_str());
-		//QuickSetText(4, i, std::to_string(posi.CurPrice).c_str());
-		//QuickSetText(5, i, std::to_string(posi.OpenProfitLoss).c_str());
 		CString thVal;
 		std::string temp;
 		if (sys->Symbol()) {
@@ -228,8 +244,14 @@ void VtTotalSignalGrid::InitGrid()
 		}
 
 		if (posi.OpenQty != 0) {
-			posi.OpenQty > 0 ? QuickSetNumber(6, i, std::abs(posi.OpenQty)) : QuickSetNumber(7, i, 0);
-			posi.OpenQty < 0 ? QuickSetNumber(7, i, std::abs(posi.OpenQty)) : QuickSetNumber(6, i, 0);
+			if (posi.OpenQty > 0) {
+				QuickSetNumber(7, i, std::abs(posi.OpenQty));
+				QuickSetNumber(6, i, 0);
+			}
+			else if (posi.OpenQty < 0) {
+				QuickSetNumber(6, i, std::abs(posi.OpenQty));
+				QuickSetNumber(7, i, 0);
+			}
 		}
 		else {
 			QuickSetNumber(6, i, 0);
