@@ -133,6 +133,7 @@ public:
 	/// <param name="fileName">액션이 일어난 파일 이름</param>
 	void OnFileChanged(DWORD action, CString fileName)
 	{
+		LOG_F(INFO, _T("OnFileChanged : 파일이름 : %s"), fileName);
 		const std::string filename = fileName;
 		std::string lastline;
 		std::ifstream fs;

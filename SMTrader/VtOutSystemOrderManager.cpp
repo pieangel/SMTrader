@@ -123,30 +123,34 @@ void VtOutSystemOrderManager::PutOrder(std::string sigName, int orderKind)
 			switch (orderKind)
 			{
 			case 1: // Buy
-				msg.Format(_T("매수\n"));
-				TRACE(msg);
+				//msg.Format(_T("신호이름 : %s, 신호 종류 : %d, 주문 : 매수\n"), sigName.c_str(), orderKind);
+				//TRACE(msg);
 				sys->PutEntranceOrder(VtPositionType::Buy);
+				LOG_F(INFO, _T("신호이름 : %s, 신호 종류 : %d, 주문 : 매수"), sigName.c_str(), orderKind);
 				break;
 			case 2: { // ExitLong -> Sell
 				VtPosition posi = sys->GetPosition();
 				if (std::abs(posi.OpenQty) > 0) {
 					sys->PutEntranceOrder(VtPositionType::Sell);
-					msg.Format(_T("매수청산\n"));
-					TRACE(msg);
+					//msg.Format(_T("신호이름 : %s, 신호 종류 : %d, 주문 : 매도\n"), sigName.c_str(), orderKind);
+					//TRACE(msg);
+					LOG_F(INFO, _T("신호이름 : %s, 신호 종류 : %d, 주문 : 매도"), sigName.c_str(), orderKind);
 				}
 			}
 				break;
 			case 3: // Sell
 				sys->PutEntranceOrder(VtPositionType::Sell);
-				msg.Format(_T("매도\n"));
-				TRACE(msg);
+				//msg.Format(_T("신호이름 : %s, 신호 종류 : %d, 주문 : 매도\n"), sigName.c_str(), orderKind);
+				//TRACE(msg);
+				LOG_F(INFO, _T("신호이름 : %s, 신호 종류 : %d, 주문 : 매도"), sigName.c_str(), orderKind);
 				break;
 			case 4: { // ExitShort -> Buy
 				VtPosition posi = sys->GetPosition();
 				if (std::abs(posi.OpenQty) > 0) {
 					sys->PutEntranceOrder(VtPositionType::Buy);
-					msg.Format(_T("매도청산\n"));
-					TRACE(msg);
+					//msg.Format(_T("신호이름 : %s, 신호 종류 : %d, 주문 : 매수\n"), sigName.c_str(), orderKind);
+					//TRACE(msg);
+					LOG_F(INFO, _T("신호이름 : %s, 신호 종류 : %d, 주문 : 매수"), sigName.c_str(), orderKind);
 				}
 			}
 				break;

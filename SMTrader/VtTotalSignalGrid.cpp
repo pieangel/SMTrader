@@ -114,6 +114,8 @@ void VtTotalSignalGrid::RefreshOrders()
 			if (sys->Fund()) QuickSetText(0, i, sys->Fund()->Name.c_str());
 		}
 
+		if (sys->Symbol()) QuickSetText(1, i, sys->Symbol()->ShortCode.c_str());
+
 		VtPosition posi = sys->GetPosition();
 		posi.Position == VtPositionType::None ? QuickSetText(2, i, _T("없음")) : posi.Position == VtPositionType::Buy ? QuickSetText(2, i, _T("매수")) : QuickSetText(2, i, _T("매도"));
 		CString thVal;

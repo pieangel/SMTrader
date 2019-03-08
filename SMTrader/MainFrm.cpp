@@ -727,9 +727,14 @@ void CMainFrame::OpenFundJango()
 
 void CMainFrame::CreateFileWatch()
 {
-	// TODO: 여기에 추가 초기화 작업을 추가합니다.
+	ZmConfigManager* configMgr = ZmConfigManager::GetInstance();
+	std::string section = _T("FILE_WATCH");
+	std::string name, value;
+	name = _T("path");
+	value = configMgr->getString(section, name);
+
 	_FildMonitor = new VtFileEventMonitor();
-	_FildMonitor->AddMonDir(_T("C:\\예스트레이더\\Spot\\Export"), true);
+	_FildMonitor->AddMonDir(value.c_str(), true);
 	//_FildMonitor->AddMonDir(_T("C:\\WRFutures\\YesGlobalPro\\YesLang"), true);
 	//_FildMonitor->AddMonDir(_T("C:\\WRFutures\\YesGlobalPro\\Spot\\Export"), true);
 	_FildMonitor->Start();

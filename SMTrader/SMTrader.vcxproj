@@ -605,6 +605,7 @@
     <ClInclude Include="VtTrUs2.h" />
     <ClInclude Include="VtTrUs3.h" />
     <ClInclude Include="VtUniqueChartID.h" />
+    <ClInclude Include="VtUniqueOrderID.h" />
     <ClInclude Include="VtUsComp.h" />
     <ClInclude Include="VtUsdEntConfigGrid.h" />
     <ClInclude Include="VtUsdStrategyConfigDlg.h" />
@@ -1006,6 +1007,7 @@
     <ClCompile Include="VtTrUs2.cpp" />
     <ClCompile Include="VtTrUs3.cpp" />
     <ClCompile Include="VtUniqueChartID.cpp" />
+    <ClCompile Include="VtUniqueOrderID.cpp" />
     <ClCompile Include="VtUsComp.cpp" />
     <ClCompile Include="VtUsdEntConfigGrid.cpp" />
     <ClCompile Include="VtUsdStrategyConfigDlg.cpp" />

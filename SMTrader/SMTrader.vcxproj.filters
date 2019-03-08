@@ -1435,6 +1435,7 @@
     <ClInclude Include="VtSystemOrderConfig.h">
       <Filter>System</Filter>
     </ClInclude>
+    <ClInclude Include="VtUniqueOrderID.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ChildFrm.cpp">
@@ -2586,6 +2587,7 @@
     <ClCompile Include="VtSystemOrderConfig.cpp">
       <Filter>System</Filter>
     </ClCompile>
+    <ClCompile Include="VtUniqueOrderID.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="SMTrader.rc">

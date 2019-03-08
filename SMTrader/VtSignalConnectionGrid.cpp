@@ -425,23 +425,27 @@ int VtSignalConnectionGrid::OnDropList(long ID, int col, long row, long msg, lon
 		CString oldSigName;
 		oldSigName = cell.GetText();
 		SharedSystem sys = _SystemMap[row];
+		if (!sys)
+			return TRUE;
 
 		VtOutSystemOrderManager* outSysOrderMgr = VtOutSystemOrderManager::GetInstance();
 		// 먼저 기존 시그널을 없애 준다.
-		outSysOrderMgr->RemoveSystem(sys);
+		if (sys->Enable())
+			outSysOrderMgr->RemoveSystem(sys);
 
 		// 새로운 시그널을 등록해 준다.
 		CString * pString = (CString*)param;
 		std::string sigName = *pString;
 		VtOutSignalDefManager* outSigMgr = VtOutSignalDefManager::GetInstance();
 		SharedOutSigDef sig = outSigMgr->FindOutSigDef(sigName);
-		if (sig && sys) {
+		if (sig) {
 			sys->OutSignal(sig);
 			CUGCell cell;
 			GetCell(col, row, &cell);
 			cell.SetText(sig->SignalName.c_str());
 			QuickRedrawCell(col, row);
-			outSysOrderMgr->AddSystem(sys);
+			if (sys->Enable())
+				outSysOrderMgr->AddSystem(sys);
 		}
 	}
 	

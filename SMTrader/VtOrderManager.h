@@ -17,7 +17,7 @@
 #include <map>
 #include "VtOrder.h"
 #include "Global/VtDefine.h"
-#include "Drawing/VtUniqueID.h"
+#include "VtUniqueOrderID.h"
 #include <mutex>
 #include <vector>
 #include "VtOrderEvent.h"
@@ -74,12 +74,11 @@ public:
 	int GetOrderRequestID()
 	{
 		std::lock_guard<std::mutex> lock(m_);
-		return IDMaker.Id();
+		return VtUniqueOrderID::GetID();
 	}
 	/// <summary>
 	/// 주문요청 아이디 생성기
 	/// </summary>
-	VtUniqueID IDMaker;
 	VtOrderManager();
 	virtual ~VtOrderManager();
 	/// <summary>
