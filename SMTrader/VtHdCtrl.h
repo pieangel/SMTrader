@@ -97,7 +97,8 @@ public:
 	}
 
 private:
-	void OnChartData(CString& sTrCode, LONG& nRqID);
+	void OnReceiveChartData(CString& sTrCode, LONG& nRqID);
+	virtual void OnChartData(CString& sTrCode, LONG& nRqID);
 
 	void OnNewOrderHd(CString& sTrCode, LONG& nRqID);
 	void OnModifyOrderHd(CString& sTrCode, LONG& nRqID);

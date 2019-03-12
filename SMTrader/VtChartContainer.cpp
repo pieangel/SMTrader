@@ -198,6 +198,7 @@ void VtChartContainer::OnReceiveChartData(VtChartData* data)
 {
 	if (!data)
 		return;
+	SetDateTime(data);
 	_FavGrid.OnReceiveChartData(data->SymbolCode());
 }
 
@@ -1761,4 +1762,18 @@ void VtChartContainer::ChangeSystem(VtSystem* newSystem)
 {
 	if (_ActiveChartWnd)
 		_ActiveChartWnd->ChangeSystem(newSystem);
+}
+
+void VtChartContainer::SetDateTime(VtChartData* chartData)
+{
+	if (!chartData)
+		return;
+
+	for (int i = 0; i < chartData->DataCount(); ++i) {
+		auto key = chartData->DateTime.data()[i];
+		_DateTimeSet.insert(key);
+	}
+
+	int k = 0; 
+	k = k + 1;
 }

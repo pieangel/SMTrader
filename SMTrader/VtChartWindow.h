@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <set>
 #include <locale.h>
 #include "VtUniqueChartID.h"
 #include "afxbutton.h"
@@ -80,6 +81,7 @@ public:
 	void InsertIndex(CMFCPropertyGridProperty* prop);
 	void CallTest();
 	void OnReceiveChartData(VtChartData* data);
+	void SyncDateTime(VtChartData* data);
 	void OnReceiveQuoteHd(VtSymbol* sym);
 	void OnReceiveRefData(VtChartData* data);
 	void OnReceiveRealtimeData(std::string exc, std::string shortCode, double krwClose, double usdClose = 0);
@@ -118,6 +120,7 @@ private:
 
 	VtChartContainer* _ParentView = nullptr;
 	VtAttachDirection _AttachDirection;
+	std::set<std::pair<int, int>> _DateTimeSet;
 public:
 	afx_msg LRESULT OnChartDataUpdated(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnChartDataReceived(WPARAM wParam, LPARAM lParam);

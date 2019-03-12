@@ -26,7 +26,6 @@ protected:
 public:
 	afx_msg void OnBnClickedOk();
 	CEdit _EditSignal;
-	CEdit _EditStrategy;
 private:
 	VtSignalDefinitionGrid* _SigDefGrid = nullptr;
 };

@@ -441,6 +441,90 @@ void VtHdCtrl::UnregisterAccount(CString accountNo)
 	int nResult = m_CommAgent.CommRemoveJumunChe(strUserId, strAcctNo);
 }
 
+void VtHdCtrl::OnReceiveChartData(CString& sTrCode, LONG& nRqID)
+{
+	VtChartData* chartData = nullptr;
+	VtChartDataManager* chartDataMgr = VtChartDataManager::GetInstance();
+	auto it = _ChartDataRequestMap.find(nRqID);
+	if (it != _ChartDataRequestMap.end()) { // 차트데이터 요청 맵에서 찾아 본다.
+		chartData = chartDataMgr->Find(it->second);
+		_ChartDataRequestMap.erase(it);
+	}
+
+	if (!chartData)
+		return;
+
+	CString strPrevKey = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "이전키");
+
+	int nRepeatCnt = 0;
+	if (chartData->Domestic())
+		nRepeatCnt = m_CommAgent.CommGetRepeatCnt(sTrCode, -1, "OutRec2");
+	else
+		nRepeatCnt = m_CommAgent.CommGetRepeatCnt(sTrCode, -1, "OutRec1");
+	int savedIndex = ChartDataSize - 1;
+	// 먼저 키를 모두 삭제한다.
+	chartData->InputDateTimeMap.clear();
+	// Received the chart data first.
+	auto timeKey = std::make_pair(0, 0);
+	for (int i = 0; i < nRepeatCnt; i++) {
+		CString strDate;
+		CString key(_T(""));
+		CString strTime;
+		if (chartData->Domestic()) {
+			strDate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "날짜시간");
+			if (chartData->ChartType() == VtChartType::MIN)
+				strDate.Append(_T("00"));
+			else
+				strDate.Append(_T("000000"));
+			key = _T("OutRec2");
+			strTime = strDate.Right(6);
+			CString strDate2 = strDate.Left(8);
+			timeKey = std::make_pair(_ttoi(strDate2), _ttoi(strTime));
+		}
+		else {
+			strDate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "국내일자");
+			strTime = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "국내시간");
+			strDate.Append(strTime);
+			key = _T("OutRec1");
+			timeKey = std::make_pair(_ttoi(strDate), _ttoi(strTime));
+		}
+		if (strDate.GetLength() == 0) {
+			break;
+		}
+		CString strOpen = m_CommAgent.CommGetData(sTrCode, -1, key, i, "시가");
+		CString strHigh = m_CommAgent.CommGetData(sTrCode, -1, key, i, "고가");
+		CString strLow = m_CommAgent.CommGetData(sTrCode, -1, key, i, "저가");
+		CString strClose = m_CommAgent.CommGetData(sTrCode, -1, key, i, "종가");
+		CString strVol;
+		if (chartData->Domestic())
+			strVol = m_CommAgent.CommGetData(sTrCode, -1, key, i, "거래량");
+		else
+			strVol = m_CommAgent.CommGetData(sTrCode, -1, key, i, "체결량");
+
+		savedIndex = ChartDataSize - 1 - i;
+		
+		if (strHigh.GetLength() != 0)
+			chartData->InputChartData.High[savedIndex] = std::stod((LPCTSTR)strHigh) / std::pow(10, chartData->Decimal());
+		if (strLow.GetLength() != 0)
+			chartData->InputChartData.Low[savedIndex] = std::stod((LPCTSTR)strLow) / std::pow(10, chartData->Decimal());
+		if (strOpen.GetLength() != 0)
+			chartData->InputChartData.Open[savedIndex] = std::stod((LPCTSTR)strOpen) / std::pow(10, chartData->Decimal());
+		if (strClose.GetLength() != 0)
+			chartData->InputChartData.Close[savedIndex] = std::stod((LPCTSTR)strClose) / std::pow(10, chartData->Decimal());
+		if (strVol.GetLength() != 0)
+			chartData->InputChartData.Volume[savedIndex] = std::stod((LPCTSTR)strVol);
+
+		std::pair<VtDate, VtTime> dateTime = VtChartData::GetDateTime(strDate);
+		chartData->InputChartData.Date[savedIndex] = dateTime.first;
+		chartData->InputChartData.Time[savedIndex] = dateTime.second;
+		chartData->InputChartData.DateTime[savedIndex] = Chart::chartTime(dateTime.first.year, dateTime.first.month, dateTime.first.day, dateTime.second.hour, dateTime.second.min, dateTime.second.sec);
+
+		chartData->InputDateTimeMap[timeKey] = savedIndex;
+	}
+	chartData->FilledCount(ChartDataSize);
+	chartDataMgr->OnReceiveChartData(chartData);
+}
+
 void VtHdCtrl::OnChartData(CString& sTrCode, LONG& nRqID)
 {
 	VtChartData* chartData = nullptr;
@@ -467,7 +551,10 @@ void VtHdCtrl::OnChartData(CString& sTrCode, LONG& nRqID)
 	int realCount = nRepeatCnt;
 	int lastSavedIndex = nRepeatCnt - 1;
 	int savedIndex = lastSavedIndex;
+	// 먼저 키를 모두 삭제한다.
+	chartData->InputDateTimeMap.clear();
 	// Received the chart data first.
+	auto timeKey = std::make_pair(0, 0);
 	for (int i = 0; i < nRepeatCnt; i++) {
 		CString strDate;
 		CString key(_T(""));
@@ -479,12 +566,16 @@ void VtHdCtrl::OnChartData(CString& sTrCode, LONG& nRqID)
 			else
 				strDate.Append(_T("000000"));
 			key = _T("OutRec2");
+			strTime = strDate.Right(6);
+			CString strDate2 = strDate.Left(8);
+			timeKey = std::make_pair(_ttoi(strDate2), _ttoi(strTime));
 		}
 		else {
 			strDate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "국내일자");
 			strTime = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "국내시간");
 			strDate.Append(strTime);
 			key = _T("OutRec1");
+			timeKey = std::make_pair(_ttoi(strDate), _ttoi(strTime));
 		}
 		if (strDate.GetLength() == 0) {
 			if (foundIndex == nRepeatCnt)
@@ -510,42 +601,45 @@ void VtHdCtrl::OnChartData(CString& sTrCode, LONG& nRqID)
 			firstTimeInfo = timeInfo;
 		}
 
-		chartData->TempChartData.TimeInfo[savedIndex] = timeInfo;
-		if (lastTimeInfo == chartData->TempChartData.TimeInfo[savedIndex]) {
+		chartData->InputChartData.TimeInfo[savedIndex] = timeInfo;
+		if (lastTimeInfo == chartData->InputChartData.TimeInfo[savedIndex]) {
 			foundIndex = savedIndex;
 		}
 		if (strHigh.GetLength() != 0)
-			chartData->TempChartData.High[savedIndex] = std::stod((LPCTSTR)strHigh) / std::pow(10, chartData->Decimal());
+			chartData->InputChartData.High[savedIndex] = std::stod((LPCTSTR)strHigh) / std::pow(10, chartData->Decimal());
 		if (strLow.GetLength() != 0)
-			chartData->TempChartData.Low[savedIndex] = std::stod((LPCTSTR)strLow) / std::pow(10, chartData->Decimal());
+			chartData->InputChartData.Low[savedIndex] = std::stod((LPCTSTR)strLow) / std::pow(10, chartData->Decimal());
 		if (strOpen.GetLength() != 0)
-			chartData->TempChartData.Open[savedIndex] = std::stod((LPCTSTR)strOpen) / std::pow(10, chartData->Decimal());
+			chartData->InputChartData.Open[savedIndex] = std::stod((LPCTSTR)strOpen) / std::pow(10, chartData->Decimal());
 		if (strClose.GetLength() != 0)
-			chartData->TempChartData.Close[savedIndex] = std::stod((LPCTSTR)strClose) / std::pow(10, chartData->Decimal());
+			chartData->InputChartData.Close[savedIndex] = std::stod((LPCTSTR)strClose) / std::pow(10, chartData->Decimal());
 		if (strVol.GetLength() != 0)
-			chartData->TempChartData.Volume[savedIndex] = std::stod((LPCTSTR)strVol);
+			chartData->InputChartData.Volume[savedIndex] = std::stod((LPCTSTR)strVol);
 
 		std::pair<VtDate, VtTime> dateTime = VtChartData::GetDateTime(strDate);
-		chartData->TempChartData.Date[savedIndex] = dateTime.first;
-		chartData->TempChartData.Time[savedIndex] = dateTime.second;
-		chartData->TempChartData.DateTime[savedIndex] = Chart::chartTime(dateTime.first.year, dateTime.first.month, dateTime.first.day, dateTime.second.hour, dateTime.second.min, dateTime.second.sec);
+		chartData->InputChartData.Date[savedIndex] = dateTime.first;
+		chartData->InputChartData.Time[savedIndex] = dateTime.second;
+		chartData->InputChartData.DateTime[savedIndex] = Chart::chartTime(dateTime.first.year, dateTime.first.month, dateTime.first.day, dateTime.second.hour, dateTime.second.min, dateTime.second.sec);
 
+		chartData->InputDateTimeMap[timeKey] = savedIndex;
 		CString strData;
 		strData.Format(_T("savedIndex = %d, index = %d, %s,%s,%s,%s,%s,%s,%s \n"), savedIndex, i, strDate, strTime, strOpen, strHigh, strLow, strClose, strVol);
 		TRACE(strData);
+
+		//LOG_F(INFO, _T("code %s, datetime =%s, savedIndex = %d"), chartData->SymbolCode().c_str(), strDate, savedIndex);
 	}
 
 	if (nRepeatCnt != realCount) {
 		for (int p = 0; p < realCount; p++) {
-			chartData->TempChartData.TimeInfo[p] = chartData->TempChartData.TimeInfo[lastSavedIndex + p];
-			chartData->TempChartData.High[p] = chartData->TempChartData.High[lastSavedIndex + p];
-			chartData->TempChartData.Low[p] = chartData->TempChartData.Low[lastSavedIndex + p];
-			chartData->TempChartData.Open[p] = chartData->TempChartData.Open[lastSavedIndex + p];
-			chartData->TempChartData.Close[p] = chartData->TempChartData.Close[lastSavedIndex + p];
-			chartData->TempChartData.Volume[p] = chartData->TempChartData.Volume[lastSavedIndex + p];
-			chartData->TempChartData.Date[p] = chartData->TempChartData.Date[lastSavedIndex + p];
-			chartData->TempChartData.Time[p] = chartData->TempChartData.Time[lastSavedIndex + p];
-			chartData->TempChartData.DateTime[p] = chartData->TempChartData.DateTime[lastSavedIndex + p];
+			chartData->InputChartData.TimeInfo[p] = chartData->InputChartData.TimeInfo[lastSavedIndex + p];
+			chartData->InputChartData.High[p] = chartData->InputChartData.High[lastSavedIndex + p];
+			chartData->InputChartData.Low[p] = chartData->InputChartData.Low[lastSavedIndex + p];
+			chartData->InputChartData.Open[p] = chartData->InputChartData.Open[lastSavedIndex + p];
+			chartData->InputChartData.Close[p] = chartData->InputChartData.Close[lastSavedIndex + p];
+			chartData->InputChartData.Volume[p] = chartData->InputChartData.Volume[lastSavedIndex + p];
+			chartData->InputChartData.Date[p] = chartData->InputChartData.Date[lastSavedIndex + p];
+			chartData->InputChartData.Time[p] = chartData->InputChartData.Time[lastSavedIndex + p];
+			chartData->InputChartData.DateTime[p] = chartData->InputChartData.DateTime[lastSavedIndex + p];
 		}
 		// Reset the filled count of chart data
 		chartData->FilledCount(0);

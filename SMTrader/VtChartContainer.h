@@ -128,4 +128,8 @@ public:
 	afx_msg void OnNcDestroy();
 	void InitSystem();
 	void ChangeSystem(VtSystem* newSystem);
+
+private:
+	std::set<double> _DateTimeSet;
+	void SetDateTime(VtChartData* chartData);
 };

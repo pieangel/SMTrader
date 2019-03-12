@@ -123,16 +123,11 @@ void VtSignalDefinitionGrid::OnMouseLeaveFromMainGrid()
 	_OldSelRow = -2;
 }
 
-int VtSignalDefinitionGrid::OnCanViewMove(int oldcol, long oldrow, int newcol, long newrow)
-{
-	return 0;
-}
-
 void VtSignalDefinitionGrid::SetColTitle()
 {
 	CUGCell cell;
-	LPCTSTR title[4] = { "신호", "포지션", "발생장소", "설명" };
-	int colWidth[4] = { 80, 110, 50, 114 };
+	LPCTSTR title[4] = { "신호차트", "포지션", "발생장소", "설명" };
+	int colWidth[4] = { 100, 90, 50, 114 };
 
 
 	for (int i = 0; i < _ColCount; i++) {

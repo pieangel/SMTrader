@@ -29,11 +29,11 @@ void VtOutSignalDefManager::RemoveOutSignalDef(std::string name)
 void VtOutSignalDefManager::InitDefaultOutSignalDefs()
 {
 	SharedOutSigDef outSig(nullptr);
-	for (int i = 0; i < 5; ++i) {
+	for (int i = 0; i < 20; ++i) {
 		outSig = std::make_shared<VtOutSignalDef>();
-		outSig->SignalName = _T("OS_CLI");
+		outSig->SignalName = _T("T");
 		outSig->SignalName.append(std::to_string(i + 1));
-		outSig->Desc = _T("OS_CLI");
+		outSig->Desc = _T("");
 		outSig->Desc.append(std::to_string(i + 1));
 		_SignalDefVec.push_back(outSig);
 	}

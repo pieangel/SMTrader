@@ -13,7 +13,6 @@ public:
 
 	virtual void OnSetup();
 	virtual void OnDClicked(int col, long row, RECT *rect, POINT *point, BOOL processed);
-	virtual int  OnCanViewMove(int oldcol, long oldrow, int newcol, long newrow);
 	virtual void OnLClicked(int col, long row, int updn, RECT *rect, POINT *point, int processed);
 	virtual void OnRClicked(int col, long row, int updn, RECT *rect, POINT *point, int processed);
 	virtual void OnMouseMove(int col, long row, POINT *point, UINT nFlags, BOOL processed = 0);

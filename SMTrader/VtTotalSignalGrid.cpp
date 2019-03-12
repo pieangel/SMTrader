@@ -64,7 +64,7 @@ int VtTotalSignalGrid::OnCanViewMove(int oldcol, long oldrow, int newcol, long n
 void VtTotalSignalGrid::SetColTitle()
 {
 	CUGCell cell;
-	LPCTSTR title[9] = { "계좌번호", "종목", "포지션", "평균단가", "현재가", "평가손익", "매도주문", "매수주문", "신호" };
+	LPCTSTR title[9] = { "계좌번호", "종목", "포지션", "평균단가", "현재가", "평가손익", "매도주문", "매수주문", "신호차트" };
 	int colWidth[9] = { 80, 110, 50, 80, 80, 80, 80, 80, 80 };
 
 

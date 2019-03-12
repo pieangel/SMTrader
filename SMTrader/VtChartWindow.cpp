@@ -81,6 +81,8 @@
 #include "VtRealtimeRegisterManager.h"
 #include "VtHdCtrl.h"
 #include "VtSystemProperty.h"
+#include <algorithm>
+#include <iterator>
 using namespace convert;
 using Poco::NumberFormatter;
 
@@ -222,6 +224,10 @@ void VtChartWindow::CallTest()
 
 void VtChartWindow::OnReceiveChartData(VtChartData* data)
 {
+	if (!data)
+		return;
+	SyncDateTime(data);
+
 	VtChartDataManager* dataMgr = VtChartDataManager::GetInstance();
 	dataMgr->FindDataBorderQueue(data, data->TimeInfo.data());
 	if (_System)
@@ -233,6 +239,67 @@ void VtChartWindow::OnReceiveChartData(VtChartData* data)
 	if (_ParentView)
 	{
 		_ParentView->OnReceiveChartData(data);
+	}
+	
+}
+
+void VtChartWindow::SyncDateTime(VtChartData* data)
+{
+	if (!data)
+		return;
+
+	// 새로 추가된 데이타임 키만 복사해 준다.
+	for (auto it = data->InputDateTimeMap.begin(); it != data->InputDateTimeMap.end(); ++it) {
+		_DateTimeSet.insert(it->first);
+	}
+
+	// 키가 차트 전체 데이터 갯수를 넘으면 앞에 있는 키를 제거해 준다.
+	int count = _DateTimeSet.size() - ChartDataSize;
+	if (count > 0) {
+		auto it = _DateTimeSet.begin();
+		int curCount = 0;
+		while (curCount < count) {
+			_DateTimeSet.erase(it++);
+			curCount++;
+		}
+	}
+
+	ChartDataItemMap newDataMap;
+	// 기존 데이터를 복사해 온다. 데이타임 키에 없는 값들은 값없음으로 표시한다.
+	for (auto rit = _DateTimeSet.rbegin(); rit != _DateTimeSet.rend(); ++rit) {
+		auto key = *rit;
+		VtChartDataItem item;
+
+		// 현재 차트에서 날짜를 찾으면 값을 복사해 온다.
+		auto chart_itr = data->SyncDateTimeMap.find(key);
+		if (chart_itr !=  data->SyncDateTimeMap.end()) {
+			// 기존데이터를 불러온다.
+			item = data->GetChartData(chart_itr->second);
+			// 기존 인덱스를 가져온다.
+			item.Index = chart_itr->second;
+		}
+		// 새데이터 맵에 넣어준다.
+		newDataMap[key] = item;
+	}
+	// 새로운 데이터를 복사해 온다.
+	for (auto it = data->InputDateTimeMap.rbegin(); it != data->InputDateTimeMap.rend(); ++it) {
+		VtChartDataItem item;
+
+		// 현재 차트에서 날짜를 찾으면 루푸를 나간다.
+		auto chart_itr = data->SyncDateTimeMap.find(it->first);
+		item = data->GetInputChartData(chart_itr->second);
+		if (chart_itr != data->SyncDateTimeMap.end()) {
+			break;
+		}
+		newDataMap[it->first] = item;
+	}
+
+	data->SyncDateTimeMap.clear();
+	// 데이타임싱크맵을 새로만들고 싱크된 새로운 데이터를 넣어준다.
+	int i = 0;
+	for (auto it = newDataMap.begin(); it != newDataMap.end(); ++it) {
+		data->SyncDateTimeMap[it->first] = i;
+		data->SetChartData(i, it->second);
 	}
 }
 
@@ -1301,11 +1368,11 @@ void VtChartWindow::SetDefaultRefChartData()
 	VtChartDataRequest req;
 
 	std::vector<std::string> symList;
-	symList.push_back(_T("ESH19"));
-	symList.push_back(_T("NQH19"));
-	symList.push_back(_T("CNZ18"));
-	symList.push_back(_T("NKH19"));
-	symList.push_back(_T("HSIZ18"));
+	symList.push_back(_T("ESM19"));
+	symList.push_back(_T("NQM19"));
+	symList.push_back(_T("CNH19"));
+	symList.push_back(_T("NKM19"));
+	symList.push_back(_T("HSIH19"));
 
 	for (int i = 0; i < symList.size(); ++i)
 	{

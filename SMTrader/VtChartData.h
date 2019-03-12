@@ -5,7 +5,9 @@
 #include <map>
 #include <vector>
 #include <queue>
+#include <set>
 #include "Xml/pugixml.hpp"
+#include "chartdir.h"
 class VtChartWindow;
 class VtSystem;
 class VtSymbol;
@@ -21,6 +23,21 @@ struct TempData
 	std::array<VtTime, ChartDataSize> Time;
 	std::array<double, ChartDataSize> DateTime;
 };
+
+struct VtChartDataItem
+{
+	int Index = -1;
+	bool Exist = false;
+	double High = Chart::NoValue;
+	double Low = Chart::NoValue;
+	double Open = Chart::NoValue;
+	double Close = Chart::NoValue;
+	double Volume = Chart::NoValue;
+	VtDate Date;
+	VtTime Time;
+	double DateTime;
+};
+
 
 struct ChartDataSet
 {
@@ -42,12 +59,14 @@ struct DataBorder
 	VtTime EndTime;
 };
 
+typedef std::map<std::pair<int, int>, VtChartDataItem> ChartDataItemMap;
+
 class VtChartData
 {
 public:
 	VtChartData();
 	~VtChartData();
-	TempData TempChartData;
+	TempData InputChartData;
 
 	std::queue<DataBorder> BorderQ;
 	std::string _ChartID;
@@ -62,6 +81,9 @@ public:
 	std::array<VtDate, ChartDataSize> Date;
 	std::array<VtTime, ChartDataSize> Time;
 	std::array<double, ChartDataSize> DateTime;
+	std::map<std::pair<int, int>, int> InputDateTimeMap;
+	std::set<std::pair<int, int>> DateTimeSet;
+	std::map<std::pair<int, int>, int> SyncDateTimeMap;
 
 	void Reset();
 	void ShiftLeft(int count);
@@ -155,7 +177,11 @@ public:
 	std::string Initial() const { return _Initial; }
 	void Initial(std::string val) { _Initial = val; }
 	std::vector<double>& GetDataArray(std::string dataName);
+	VtChartDataItem GetChartData(int index);
+	VtChartDataItem GetInputChartData(int index);
+	void SetChartData(int index, VtChartDataItem item);
 private:
+	
 	void InitChartData();
 	std::map<std::string, std::vector<double>> _DataCol;
 	/// <summary>

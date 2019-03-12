@@ -237,15 +237,15 @@ void VtChartData::CopyData(int rcvCnt, int foundIndex)
 		int startId = _FilledCount <= 0 ? 0 : Id[ChartDataSize - 1];
 		for (int i = 0; i < rcvCnt; i++) {
 			Id[dstIndex + i] = startId + i;
-			High[dstIndex + i] = TempChartData.High[i];
-			Low[dstIndex + i] = TempChartData.Low[i];
-			Open[dstIndex + i] = TempChartData.Open[i];
-			Close[dstIndex + i] = TempChartData.Close[i];
-			Volume[dstIndex + i] = TempChartData.Volume[i];
-			TimeInfo[dstIndex + i] = TempChartData.TimeInfo[i];
-			Date[dstIndex + i] = TempChartData.Date[i];
-			Time[dstIndex + i] = TempChartData.Time[i];
-			DateTime[dstIndex + i] = TempChartData.DateTime[i];
+			High[dstIndex + i] = InputChartData.High[i];
+			Low[dstIndex + i] = InputChartData.Low[i];
+			Open[dstIndex + i] = InputChartData.Open[i];
+			Close[dstIndex + i] = InputChartData.Close[i];
+			Volume[dstIndex + i] = InputChartData.Volume[i];
+			TimeInfo[dstIndex + i] = InputChartData.TimeInfo[i];
+			Date[dstIndex + i] = InputChartData.Date[i];
+			Time[dstIndex + i] = InputChartData.Time[i];
+			DateTime[dstIndex + i] = InputChartData.DateTime[i];
 
 			std::vector<double>& highArray = _DataCol[_T("high")];
 			highArray.data()[dstIndex + i] = High[dstIndex + i];
@@ -281,15 +281,15 @@ void VtChartData::CopyData(int rcvCnt, int foundIndex)
 		int startId = _FilledCount <= 0 ? 0 : (Id[_FilledCount - 1] + 1);
 		for (int i = srcIndex, j = 0; i < rcvCnt; i++, j++) {
 			Id[dstIndex + j] = startId + j;
-			High[dstIndex + j] = TempChartData.High[i];
-			Low[dstIndex + j] = TempChartData.Low[i];
-			Open[dstIndex + j] = TempChartData.Open[i];
-			Close[dstIndex + j] = TempChartData.Close[i];
-			Volume[dstIndex + j] = TempChartData.Volume[i];
-			TimeInfo[dstIndex + j] = TempChartData.TimeInfo[i];
-			Date[dstIndex + j] = TempChartData.Date[i];
-			Time[dstIndex + j] = TempChartData.Time[i];
-			DateTime[dstIndex + j] = TempChartData.DateTime[i];
+			High[dstIndex + j] = InputChartData.High[i];
+			Low[dstIndex + j] = InputChartData.Low[i];
+			Open[dstIndex + j] = InputChartData.Open[i];
+			Close[dstIndex + j] = InputChartData.Close[i];
+			Volume[dstIndex + j] = InputChartData.Volume[i];
+			TimeInfo[dstIndex + j] = InputChartData.TimeInfo[i];
+			Date[dstIndex + j] = InputChartData.Date[i];
+			Time[dstIndex + j] = InputChartData.Time[i];
+			DateTime[dstIndex + j] = InputChartData.DateTime[i];
 		}
 	}
 	_FilledCount = (totalCnt > ChartDataSize) ? ChartDataSize : totalCnt;
@@ -318,9 +318,8 @@ void VtChartData::OnReceiveChartData(VtChartData* data)
 		return;
 	// For the real time value.
 	if (_FilledCount > 0)
-		_RealTimeClose = Close[_FilledCount - 1];
-	for (auto it = _ChartMap.begin(); it != _ChartMap.end(); ++it)
-	{
+		_RealTimeClose = InputChartData.Close[ChartDataSize - 1];
+	for (auto it = _ChartMap.begin(); it != _ChartMap.end(); ++it) {
 		VtChartWindow* wnd = it->second;
 		wnd->OnReceiveChartData(this);
 	}
@@ -458,6 +457,42 @@ std::string VtChartData::LoadFromXml(pugi::xml_node& node)
 std::vector<double>& VtChartData::GetDataArray(std::string dataName)
 {
 	return _DataCol[dataName];
+}
+
+VtChartDataItem VtChartData::GetChartData(int index)
+{
+	VtChartDataItem item;
+	item.Open = _DataCol[_T("open")].at(index);
+	item.High = _DataCol[_T("high")].at(index);
+	item.Low = _DataCol[_T("low")].at(index);
+	item.Close = _DataCol[_T("close")].at(index);
+	item.Volume = _DataCol[_T("volume")].at(index);
+	item.DateTime = _DataCol[_T("datetime")].at(index);
+
+	return item;
+}
+
+VtChartDataItem VtChartData::GetInputChartData(int index)
+{
+	VtChartDataItem item;
+	item.Open = InputChartData.Open.at(index);
+	item.High = InputChartData.High.at(index);
+	item.Low = InputChartData.Low.at(index);
+	item.Close = InputChartData.Close.at(index);
+	item.Volume = InputChartData.Volume.at(index);
+	item.DateTime = InputChartData.DateTime.at(index);
+
+	return item;
+}
+
+void VtChartData::SetChartData(int index, VtChartDataItem item)
+{
+	_DataCol[_T("open")][index] = item.Open;
+	_DataCol[_T("high")][index] = item.High;
+	_DataCol[_T("low")][index] = item.Low;
+	_DataCol[_T("close")][index] = item.Close;
+	_DataCol[_T("volume")][index] = item.Volume;
+	_DataCol[_T("datetime")][index] = item.DateTime;
 }
 
 /*

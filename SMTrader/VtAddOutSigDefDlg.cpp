@@ -29,7 +29,6 @@ void VtAddOutSigDefDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_EDIT_SIGNAL, _EditSignal);
-	DDX_Control(pDX, IDC_EDIT_STRATEGY, _EditStrategy);
 }
 
 
@@ -47,7 +46,6 @@ void VtAddOutSigDefDlg::OnBnClickedOk()
 	SharedOutSigDef sig = std::make_shared<VtOutSignalDef>();
 	CString strDesc, strSymbol, strSignal, strStrategy;
 	_EditSignal.GetWindowText(strSignal);
-	_EditStrategy.GetWindowText(strStrategy);
 	sig->SignalName = (LPCTSTR)strSignal;
 	sig->SymbolCode = (LPCTSTR)strSymbol;
 	sig->StrategyName = (LPCTSTR)strStrategy;

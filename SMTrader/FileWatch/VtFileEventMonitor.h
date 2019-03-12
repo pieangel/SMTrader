@@ -133,7 +133,10 @@ public:
 	/// <param name="fileName">액션이 일어난 파일 이름</param>
 	void OnFileChanged(DWORD action, CString fileName)
 	{
-		LOG_F(INFO, _T("OnFileChanged : 파일이름 : %s"), fileName);
+		LOG_F(INFO, _T("OnFileChanged : action = %s, 파일이름 : %s"), ExplainAction(action), fileName);
+		// 파일 변경 이벤트가 아니면 반응하지 않는다.
+		if (action != FILE_ACTION_MODIFIED)
+			return;
 		const std::string filename = fileName;
 		std::string lastline;
 		std::ifstream fs;
@@ -226,21 +229,21 @@ private:
 	/// </summary>
 	/// <param name="dwAction"></param>
 	/// <returns></returns>
-	LPCWSTR ExplainAction(DWORD dwAction)
+	LPCTSTR ExplainAction(DWORD dwAction)
 	{
 		switch (dwAction) {
 		case FILE_ACTION_ADDED:
-			return L"[Add]";
+			return _T("[Add]");
 		case FILE_ACTION_REMOVED:
-			return L"[Delete]";
+			return _T("[Delete]");
 		case FILE_ACTION_MODIFIED:
-			return L"[Modified]";
+			return _T("[Modified]");
 		case FILE_ACTION_RENAMED_OLD_NAME:
-			return L"[Renamed From]";
+			return _T("[Renamed From]");
 		case FILE_ACTION_RENAMED_NEW_NAME:
-			return L"[Renamed To]";
+			return _T("[Renamed To]");
 		default:
-			return L"[BAD DATA]";
+			return _T("[BAD DATA]");
 		}
 	}
 

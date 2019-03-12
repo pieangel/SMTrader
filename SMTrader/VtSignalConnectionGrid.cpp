@@ -160,7 +160,7 @@ void VtSignalConnectionGrid::OnMouseLeaveFromMainGrid()
 void VtSignalConnectionGrid::SetColTitle()
 {
 	CUGCell cell;
-	LPCTSTR title[5] = { "실행", "계좌번호", "종목", "신호", "승수" };
+	LPCTSTR title[5] = { "실행", "계좌번호", "종목", "신호차트", "승수" };
 	int colWidth[5] = { 25, 98, 90, 80, 60 };
 
 
