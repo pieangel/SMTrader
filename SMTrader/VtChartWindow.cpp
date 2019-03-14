@@ -83,6 +83,7 @@
 #include "VtSystemProperty.h"
 #include <algorithm>
 #include <iterator>
+#include "VtProductCategoryManager.h"
 using namespace convert;
 using Poco::NumberFormatter;
 
@@ -1384,13 +1385,13 @@ void VtChartWindow::DrawChart(CChartViewer* a_pChartViewer, int mode)
 
 void VtChartWindow::SetDefaultChartData()
 {
-	VtRealtimeRegisterManager* realMgr = VtRealtimeRegisterManager::GetInstance();
-	VtChartDataRequest req;
-	VtSymbolManager* symMgr = VtSymbolManager::GetInstance();
-	VtSymbol* sym = symMgr->FindSymbol(_T("101P3000"));
+	VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();
+	// Kospi200 총호가 수량과 건수
+	VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
 	if (!sym)
 		return;
-
+	VtRealtimeRegisterManager* realMgr = VtRealtimeRegisterManager::GetInstance();
+	VtChartDataRequest req;
 	req.chartType = VtChartType::MIN;
 	req.productCode = sym->ShortCode;
 	req.mainChartType = VtMainChartType::ClosePrice;

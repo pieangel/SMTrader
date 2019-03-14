@@ -575,6 +575,9 @@ void CMainFrame::OnShowWindow(BOOL bShow, UINT nStatus)
 			name = _T("savepwd");
 			value = configMgr->getString(section, name);
 
+			VtAccountManager* acntMgr = VtAccountManager::GetInstance();
+			acntMgr->FileterAccount();
+
 			VtAccountPasswordDlg dlg;
 			if (value.length() > 0 && (!saveMgr->IsAccountFileExist() || value.compare(_T("false")) == 0))
 				dlg.FromServer(true);

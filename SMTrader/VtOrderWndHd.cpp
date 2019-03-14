@@ -1374,14 +1374,12 @@ void VtOrderWndHd::OnCbnSelchangeComboAccountHd()
 	6. 포지션 정보를 설정해 준다.
 	7. 주문창 이벤트 정보를 등록해 준다.
 	*/
-	if (_OrderConfigMgr->Type() == 0)
-	{
+	if (_OrderConfigMgr->Type() == 0) {
 		// 기존 주문 실시간 등록 해제
 		if (_Account)
 			UnregisterRealtimeAccount(_Account);
 		int curSel = _ComboAcnt.GetCurSel();
-		if (curSel != -1)
-		{
+		if (curSel != -1) {
 			VtAccount* acnt = (VtAccount*)_ComboAcnt.GetItemDataPtr(curSel);
 			if (!acnt)
 				return;
@@ -1392,8 +1390,7 @@ void VtOrderWndHd::OnCbnSelchangeComboAccountHd()
 
 			// Register the new account to the Event Map.
 			RegisterRealtimeAccount(acnt);
-			for (auto it = _CenterWndVector.begin(); it != _CenterWndVector.end(); ++it)
-			{
+			for (auto it = _CenterWndVector.begin(); it != _CenterWndVector.end(); ++it) {
 				VtOrderCenterWndHd* centerWnd = *it;
 				centerWnd->ChangeAccount(_OrderConfigMgr->Account());
 			}
@@ -1401,20 +1398,16 @@ void VtOrderWndHd::OnCbnSelchangeComboAccountHd()
 			acnt->GetAccountInfoNFee(1);
 		}
 	}
-	else
-	{
-		if (_OrderConfigMgr->Fund())
-		{
+	else {
+		if (_OrderConfigMgr->Fund()) {
 			std::set<VtAccount*> parendAcntSet = _OrderConfigMgr->Fund()->GetParentAccountSet();
-			for (auto it = parendAcntSet.begin(); it != parendAcntSet.end(); ++it)
-			{
+			for (auto it = parendAcntSet.begin(); it != parendAcntSet.end(); ++it) {
 				VtAccount* acnt = *it;
 				UnregisterRealtimeAccount(acnt);
 			}
 		}
 		int curSel = _ComboAcnt.GetCurSel();
-		if (curSel != -1)
-		{
+		if (curSel != -1) {
 			VtFund* fund = (VtFund*)_ComboAcnt.GetItemDataPtr(curSel);
 			if (!fund)
 				return;
@@ -1425,21 +1418,13 @@ void VtOrderWndHd::OnCbnSelchangeComboAccountHd()
 
 			// Register the new account to the Event Map.
 			std::set<VtAccount*> parendAcntSet = _OrderConfigMgr->Fund()->GetParentAccountSet();
-			for (auto it = parendAcntSet.begin(); it != parendAcntSet.end(); ++it)
-			{
+			for (auto it = parendAcntSet.begin(); it != parendAcntSet.end(); ++it) {
 				VtAccount* parentAcnt = *it;
 				RegisterRealtimeAccount(parentAcnt);
 			}
-			for (auto it = _CenterWndVector.begin(); it != _CenterWndVector.end(); ++it)
-			{
+			for (auto it = _CenterWndVector.begin(); it != _CenterWndVector.end(); ++it) {
 				VtOrderCenterWndHd* centerWnd = *it;
 				centerWnd->ChangeFund(_OrderConfigMgr->Fund());
-			}
-
-			for (auto it = parendAcntSet.begin(); it != parendAcntSet.end(); ++it)
-			{
-				VtAccount* parentAcnt = *it;
-				//parentAcnt->GetAccountInfoNFee(1);
 			}
 		}
 	}

@@ -175,7 +175,6 @@ void HdSymbolFutureGrid::InitGrid()
 	if (!_OrderConfigMgr)
 		return;
 
-
 	VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();
 	int i = 0;
 	CUGCell cell;

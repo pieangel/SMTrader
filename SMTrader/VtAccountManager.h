@@ -61,6 +61,7 @@ public:
 
 	void Save(simple::file_ostream<same_endian_type>& ss);
 	void Load(simple::file_istream<same_endian_type>& ss);
+	void FileterAccount();
 private:
 	VtAccount* _ActiveAccount = nullptr;
 };

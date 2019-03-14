@@ -724,13 +724,14 @@ void HdSymbolOptionGrid::OnSymbolMaster(VtSymbol* sym)
 
 void HdSymbolOptionGrid::ResetRemainCells()
 {
-	for (auto it = _RemainPos.begin(); it != _RemainPos.end(); ++it)
-	{
+	for (auto it = _RemainPos.begin(); it != _RemainPos.end(); ++it) {
 		VtCellPos pos = *it;
 		if (pos.Col == 0)
 			QuickSetBackColor(pos.Col, pos.Row, RGB(252, 226, 228));
 		else
 			QuickSetBackColor(pos.Col, pos.Row, RGB(218, 226, 245));
+
+		QuickSetText(pos.Col, pos.Row, _T(""));
 	}
 }
 

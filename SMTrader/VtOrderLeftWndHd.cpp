@@ -248,6 +248,8 @@ void VtOrderLeftWndHd::OnOrderFilled(VtOrder* order)
 
 void VtOrderLeftWndHd::OnReceiveAccountInfo()
 {
+	_SymbolFutureGrid.InitGrid();
+	_SymbolOptionGrid.InitGrid();
 	_AssetGrid.OnReceiveAccountInfo();
 	_ProfitLossGrid.OnReceiveAccountInfo();
 }

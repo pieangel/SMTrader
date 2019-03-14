@@ -8,6 +8,7 @@
 #include "RemainOrderWnd.h"
 #include "VtOrderDialogManager.h"
 #include "VtSubAccountManager.h"
+#include "VtGlobal.h"
 
 using Poco::Delegate;
 
@@ -172,5 +173,25 @@ void VtAccountManager::Load(simple::file_istream<same_endian_type>& ss)
 // 		}
 
 		AddAccount(acnt);
+	}
+}
+
+void VtAccountManager::FileterAccount()
+{
+	VtGlobal* global = VtGlobal::GetInstance();
+
+	// 실계좌에 없는 것들은 지워준다.
+	for (auto it = AccountMap.cbegin(); it != AccountMap.cend(); )
+	{
+		auto key = global->AcntList.find(it->first);
+		VtAccount* delAcnt = it->second;
+		if (key == global->AcntList.end()) { // 실계좌에 없으면 지워준다.
+			AccountMap.erase(it++);
+			delete delAcnt;
+		}
+		else {
+			delAcnt->Enable(true);
+			++it;
+		}
 	}
 }
