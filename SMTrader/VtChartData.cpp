@@ -299,14 +299,15 @@ void VtChartData::OnReceiveQuoteHd(VtSymbol* sym)
 {
 	if (!sym)
 		return;
-	if (_FilledCount > 0)
-	{
-		Close[_FilledCount - 1] = sym->Quote.intClose/std::pow(10, sym->IntDecimal);
-		_RealTimeClose = Close[_FilledCount - 1];
+	if (_Filled) {
+		double close = sym->Quote.intClose/std::pow(10, sym->IntDecimal);
+		_RealTimeClose = close;
+		VtChartDataItem item = GetChartData(ChartDataSize - 1);
+		item.Close = close;
+		SetChartData(ChartDataSize - 1, item);
 	}
 	// broad cast to all the chart windows using this data.
-	for (auto it = _ChartMap.begin(); it != _ChartMap.end(); ++it)
-	{
+	for (auto it = _ChartMap.begin(); it != _ChartMap.end(); ++it) {
 		VtChartWindow* wnd = it->second;
 		wnd->OnReceiveQuoteHd(sym);
 	}
@@ -493,6 +494,38 @@ void VtChartData::SetChartData(int index, VtChartDataItem item)
 	_DataCol[_T("close")][index] = item.Close;
 	_DataCol[_T("volume")][index] = item.Volume;
 	_DataCol[_T("datetime")][index] = item.DateTime;
+}
+
+void VtChartData::SetFirstData()
+{
+	if (InputDateTimeMap.size() == 0)
+		return;
+	// 먼저 초기화를 진행한다.
+	for (int i = 0; i < ChartDataSize; ++i) {
+		int index = i;
+		VtChartDataItem item;
+		SetChartData(index, item);
+	}
+
+	for (auto it = InputDateTimeMap.begin(); it != InputDateTimeMap.end(); ++it) {
+		int index = it->second;
+		VtChartDataItem item = GetInputChartData(index);
+		SetChartData(index, item);
+		SyncDateTimeMap[it->first] = index;
+	}
+}
+
+void VtChartData::OnReceiveFirstChartData(VtChartData* data)
+{
+	if (!data || data != this)
+		return;
+	// For the real time value.
+	if (_FilledCount > 0)
+		_RealTimeClose = InputChartData.Close[ChartDataSize - 1];
+	for (auto it = _ChartMap.begin(); it != _ChartMap.end(); ++it) {
+		VtChartWindow* wnd = it->second;
+		wnd->OnReceiveFirstChartData(this);
+	}
 }
 
 /*

@@ -87,17 +87,50 @@ VtTime VtGlobal::GetTime(int time)
 	if (time == 0) {
 		return result;
 	}
-	int hourMin = time / 100;
-	int sec = time % (hourMin * 100);
-	int hour = hourMin / 100;
-	int min = hourMin % (hour * 100);
+	if (time < 99) {
+		result.hour = 0;
+		result.min = 0;
+		result.sec = time;
+		result.mil = 0;
 
-	result.hour = hour;
-	result.min = min;
-	result.sec = sec;
-	result.mil = 0;
+		return result;
+	}
+	else if (time < 999) {
+		int min = time / 100;
+		int sec = time % 100;
 
-	return result;
+		result.hour = 0;
+		result.min = min;
+		result.sec = sec;
+		result.mil = 0;
+
+		return result;
+	}
+	else if (time < 9999) {
+		int min = time / 100;
+		int sec = time % 100;
+		int hour = 0;
+
+		result.hour = hour;
+		result.min = min;
+		result.sec = sec;
+		result.mil = 0;
+
+		return result;
+	}
+	else {
+		int hourMin = time / 100;
+		int sec = time % (hourMin * 100);
+		int hour = hourMin / 100;
+		int min = hourMin % (hour * 100);
+
+		result.hour = hour;
+		result.min = min;
+		result.sec = sec;
+		result.mil = 0;
+
+		return result;
+	}
 }
 
 int VtGlobal::GetTime(VtTime time)

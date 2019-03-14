@@ -10,6 +10,7 @@
 #include <list>
 #include "VtSymbol.h"
 #include "VtChartDataCollector.h"
+#include "VtGlobal.h"
 
 using namespace std::chrono;
 VtChartDataManager::VtChartDataManager()
@@ -181,9 +182,10 @@ void VtChartDataManager::AddChartDataRequest(int interval, VtChartData* chartDat
 	auto it = _RequestMap.find(dataKey);
 	if (it != _RequestMap.end())
 		return;
-
+	VtTime curTime = VtGlobal::GetLocalTime();
+	int waitTime = 60 - curTime.sec;
 	// Add to the timer.
-	auto id = _Timer.add(seconds(1), std::bind(&VtChartData::OnTimer, chartData), seconds(interval));
+	auto id = _Timer.add(seconds(waitTime), std::bind(&VtChartData::OnTimer, chartData), seconds(chartData->Cycle() * 60));
 	// Add to the request map.
 	_RequestMap[chartData->GetChartDataKey()] = id;
 }
@@ -242,6 +244,13 @@ void VtChartDataManager::OnReceiveChartData(VtChartData* data)
 	if (!data)
 		return;
 	data->OnReceiveChartData(data);
+}
+
+void VtChartDataManager::OnReceiveFirstChartData(VtChartData* data)
+{
+	if (!data)
+		return;
+	data->OnReceiveFirstChartData(data);
 }
 
 void VtChartDataManager::OnTimer()

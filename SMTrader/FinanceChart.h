@@ -397,8 +397,8 @@ public:
         m_otherMonthFormat = "{value|mm}";
         m_firstDayFormat = "<*font=bold*>{value|mm/dd}";
         m_otherDayFormat = "{value|mm/dd}";
-        m_firstHourFormat = "<*font=bold*>{value|mm/dd\nhh:nna}";
-        m_otherHourFormat = "{value|hh:nna}";
+        m_firstHourFormat = "<*font=bold*>{value|mm/dd\nhh:nn}";
+        m_otherHourFormat = "{value|hh:nn}";
 		m_firstMinFormat = "<*font=bold*>{value|hh:nn}";
 		m_otherMinFormat = "{value|nn}";
         m_timeLabelSpacing = 50;
@@ -870,11 +870,11 @@ public:
 			} else if ((secondsBetweenTicks >= 3600) || ((secondsBetweenTicks > 30 * 60) & (timeRangeInSeconds >= 3600))) {
 				//hourly ticks
 				a->setMultiFormat(Chart::StartOfDayFilter(), m_firstDayFormat.c_str(),
-					Chart::StartOfHourFilter(1, 0.5), m_otherHourFormat.c_str(), tickStep);
+					Chart::StartOfHourFilter(12, 0.5), m_otherHourFormat.c_str(), tickStep);
 			} else {
                 //minutely ticks
                 a->setMultiFormat(Chart::StartOfHourFilter(1, 0.5), m_firstHourFormat.c_str(),
-                    Chart::StartOfMinuteFilter(1, 0.5), m_otherMinFormat.c_str(), tickStep);
+                    Chart::StartOfMinuteFilter(10, 0.5), m_otherMinFormat.c_str(), tickStep);
             }
 
         }

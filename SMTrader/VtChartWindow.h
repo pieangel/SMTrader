@@ -90,7 +90,9 @@ public:
 	void UnRegisterData(VtChartData* data);
 	void MainChartType(VtMainChartType val);
 	void UseMainAxis(bool use);
+	void OnReceiveFirstChartData(VtChartData* data);
 public:
+	std::vector<VtChartData*> _ChartDataVec;
 	CChartViewer m_ChartViewer;
 	CSSplitter* ParentSplit = nullptr;
 	void RecalcLayout();

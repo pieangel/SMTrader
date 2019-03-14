@@ -72,7 +72,7 @@ BOOL HdAccountPLDlg::OnInitDialog()
 	CRect rcWnd;
 	GetWindowRect(rcWnd);
 	SetWindowPos(nullptr, 0, 0, 210, rcWnd.Height(), SWP_NOMOVE);
-	_ComboAccount.SetDroppedWidth(150);
+	_ComboAccount.SetDroppedWidth(250);
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // EXCEPTION: OCX Property Pages should return FALSE
 }

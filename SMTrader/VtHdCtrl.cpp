@@ -484,9 +484,9 @@ void VtHdCtrl::OnReceiveChartData(CString& sTrCode, LONG& nRqID)
 		else {
 			strDate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "국내일자");
 			strTime = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "국내시간");
+			timeKey = std::make_pair(_ttoi(strDate), _ttoi(strTime));
 			strDate.Append(strTime);
 			key = _T("OutRec1");
-			timeKey = std::make_pair(_ttoi(strDate), _ttoi(strTime));
 		}
 		if (strDate.GetLength() == 0) {
 			break;
@@ -521,7 +521,13 @@ void VtHdCtrl::OnReceiveChartData(CString& sTrCode, LONG& nRqID)
 
 		chartData->InputDateTimeMap[timeKey] = savedIndex;
 	}
-	chartData->FilledCount(ChartDataSize);
+	if (chartData->GetDataCount() == 0) {
+		chartData->SetFirstData();
+		chartData->FilledCount(ChartDataSize);
+		chartData->Filled(true);
+		chartDataMgr->OnReceiveFirstChartData(chartData);
+		return;
+	}
 	chartDataMgr->OnReceiveChartData(chartData);
 }
 
@@ -3929,7 +3935,8 @@ void VtHdCtrl::OnDataRecv(CString sTrCode, LONG nRqID)
 	}
 	else if (sTrCode == DefChartData || sTrCode == DefAbChartData)
 	{
-		OnChartData(sTrCode, nRqID);
+		//OnChartData(sTrCode, nRqID);
+		OnReceiveChartData(sTrCode, nRqID);
 	}
 	else if (sTrCode == DefDailyProfitLoss)
 	{

@@ -37,6 +37,7 @@ public:
 	void RemoveChartDataRequest(VtChartData* chartData);
 	void OnReceiveQuoteHd(VtSymbol* sym);
 	void OnReceiveChartData(VtChartData* data);
+	void OnReceiveFirstChartData(VtChartData* data);
 
 	void OnTimer();
 

@@ -180,6 +180,8 @@ public:
 	VtChartDataItem GetChartData(int index);
 	VtChartDataItem GetInputChartData(int index);
 	void SetChartData(int index, VtChartDataItem item);
+	void SetFirstData();
+	void OnReceiveFirstChartData(VtChartData* data);
 private:
 	
 	void InitChartData();

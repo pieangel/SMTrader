@@ -245,8 +245,15 @@ void VtChartWindow::OnReceiveChartData(VtChartData* data)
 
 void VtChartWindow::SyncDateTime(VtChartData* data)
 {
-	if (!data)
+	if (!data || data->InputDateTimeMap.size() == 0 || data->SyncDateTimeMap.size() == 0)
 		return;
+
+	// 데이타임셋이 비어 있을 때는 먼저 채운다.
+	if (_DateTimeSet.size() == 0) {
+		for (auto it = data->SyncDateTimeMap.begin(); it != data->SyncDateTimeMap.end(); ++it) {
+			_DateTimeSet.insert(it->first);
+		}
+	}
 
 	// 새로 추가된 데이타임 키만 복사해 준다.
 	for (auto it = data->InputDateTimeMap.begin(); it != data->InputDateTimeMap.end(); ++it) {
@@ -265,6 +272,7 @@ void VtChartWindow::SyncDateTime(VtChartData* data)
 	}
 
 	ChartDataItemMap newDataMap;
+	int addedCnt = 0; // 새롭게 추가된 데이터의 갯수
 	// 기존 데이터를 복사해 온다. 데이타임 키에 없는 값들은 값없음으로 표시한다.
 	for (auto rit = _DateTimeSet.rbegin(); rit != _DateTimeSet.rend(); ++rit) {
 		auto key = *rit;
@@ -278,28 +286,41 @@ void VtChartWindow::SyncDateTime(VtChartData* data)
 			// 기존 인덱스를 가져온다.
 			item.Index = chart_itr->second;
 		}
+		else {
+			VtDate date = VtGlobal::GetDate(key.first);
+			VtTime time = VtGlobal::GetTime(key.second);
+			item.Date = date;
+			item.Time = time;
+			item.DateTime = Chart::chartTime(date.year, date.month, date.day, time.hour, time.min, time.sec);
+			addedCnt++;
+		}
 		// 새데이터 맵에 넣어준다.
 		newDataMap[key] = item;
 	}
+
+	// 싱크맵이 만들어지지 않았거나 추가된것이 없다면 아무일도 하지 않는다.
+	if (data->SyncDateTimeMap.size() == 0 || addedCnt == 0)
+		return;
+
 	// 새로운 데이터를 복사해 온다.
 	for (auto it = data->InputDateTimeMap.rbegin(); it != data->InputDateTimeMap.rend(); ++it) {
-		VtChartDataItem item;
-
+		VtChartDataItem item = data->GetInputChartData(it->second);
+		item.Index = it->second;
+		newDataMap[it->first] = item;
 		// 현재 차트에서 날짜를 찾으면 루푸를 나간다.
 		auto chart_itr = data->SyncDateTimeMap.find(it->first);
-		item = data->GetInputChartData(chart_itr->second);
 		if (chart_itr != data->SyncDateTimeMap.end()) {
 			break;
 		}
-		newDataMap[it->first] = item;
 	}
-
+	// 기존 데이타임 싱크맵을 삭제한다.
 	data->SyncDateTimeMap.clear();
 	// 데이타임싱크맵을 새로만들고 싱크된 새로운 데이터를 넣어준다.
-	int i = 0;
+	int i = ChartDataSize - newDataMap.size();
 	for (auto it = newDataMap.begin(); it != newDataMap.end(); ++it) {
 		data->SyncDateTimeMap[it->first] = i;
 		data->SetChartData(i, it->second);
+		i++;
 	}
 }
 
@@ -633,6 +654,34 @@ void VtChartWindow::MainChartType(VtMainChartType val)
 void VtChartWindow::UseMainAxis(bool use)
 {
 	//_ChartFrm->UseMainAxis(use);
+}
+
+void VtChartWindow::OnReceiveFirstChartData(VtChartData* data)
+{
+	if (!data)
+		return;
+	// 새로 추가된 데이타임 키만 복사해 준다.
+	for (auto it = data->InputDateTimeMap.begin(); it != data->InputDateTimeMap.end(); ++it) {
+		_DateTimeSet.insert(it->first);
+	}
+
+	// 키가 차트 전체 데이터 갯수를 넘으면 앞에 있는 키를 제거해 준다.
+	int count = _DateTimeSet.size() - ChartDataSize;
+	if (count > 0) {
+		auto it = _DateTimeSet.begin();
+		int curCount = 0;
+		while (curCount < count) {
+			_DateTimeSet.erase(it++);
+			curCount++;
+		}
+	}
+
+	for (auto it = _ChartDataVec.begin(); it != _ChartDataVec.end(); ++it) {
+		VtChartData* curData = *it;
+		if (data != curData) {
+			SyncDateTime(curData);
+		}
+	}
 }
 
 //
@@ -1186,12 +1235,19 @@ void VtChartWindow::DrawChart(CChartViewer* a_pChartViewer, int mode)
 		timeStamps = DoubleArray(_Data->DateTime.data() + startIndex, noOfPoints);
 	}
 	*/
-	timeStamps = DoubleArray(_Data->DateTime.data() + startIndex, noOfPoints);
-	DoubleArray highData = DoubleArray(_Data->High.data() + startIndex, noOfPoints);
-	DoubleArray lowData = DoubleArray(_Data->Low.data() + startIndex, noOfPoints);
-	DoubleArray openData = DoubleArray(_Data->Open.data() + startIndex, noOfPoints);
-	DoubleArray closeData = DoubleArray(_Data->Close.data() + startIndex, noOfPoints);
-	DoubleArray volData = DoubleArray(_Data->Volume.data() + startIndex, noOfPoints);
+	std::vector<double>& datetime_vec = _Data->GetDataArray(_T("datetime"));
+	std::vector<double>& open_vec = _Data->GetDataArray(_T("open"));
+	std::vector<double>& high_vec = _Data->GetDataArray(_T("high"));
+	std::vector<double>& low_vec = _Data->GetDataArray(_T("low"));
+	std::vector<double>& close_vec = _Data->GetDataArray(_T("close"));
+	std::vector<double>& volume_vec = _Data->GetDataArray(_T("volume"));
+
+	timeStamps = DoubleArray(datetime_vec.data() + startIndex, noOfPoints);
+	DoubleArray highData = DoubleArray(high_vec.data() + startIndex, noOfPoints);
+	DoubleArray lowData = DoubleArray(low_vec.data() + startIndex, noOfPoints);
+	DoubleArray openData = DoubleArray(open_vec.data() + startIndex, noOfPoints);
+	DoubleArray closeData = DoubleArray(close_vec.data() + startIndex, noOfPoints);
+	DoubleArray volData = DoubleArray(volume_vec.data() + startIndex, noOfPoints);
 
 	ArrayMath minArray(lowData);
 	ArrayMath maxArray(highData);
@@ -1354,6 +1410,7 @@ void VtChartWindow::SetDefaultChartData()
 	VtChartDataManager* chartDataMgr = VtChartDataManager::GetInstance();
 	VtChartData* chartData = chartDataMgr->Add(req);
 	SetChartData(chartData);
+	_ChartDataVec.push_back(chartData);
 
 	realMgr->RegisterProduct(req.productCode);
 }
@@ -1426,6 +1483,7 @@ void VtChartWindow::SetDefaultRefChartData()
 		_ChartDataReqVector.push_back(req);
 		chartData = chartDataMgr->Add(req);
 		AddCompareData(interval * (i + 1), chartData);
+		_ChartDataVec.push_back(chartData);
 	}
 }
 
@@ -3075,10 +3133,15 @@ void VtChartWindow::DrawRefChart(std::vector<VtLayerInfo>& layerList)
 
 		Axis* leftAxis = nullptr;
 
-		DoubleArray highData = DoubleArray(chartData->High.data() + startIndex, _NoOfPoints);
-		DoubleArray lowData = DoubleArray(chartData->Low.data() + startIndex, _NoOfPoints);
-		DoubleArray openData = DoubleArray(chartData->Open.data() + startIndex, _NoOfPoints);
-		DoubleArray closeData = DoubleArray(chartData->Close.data() + startIndex, _NoOfPoints);
+		std::vector<double>& open_vec = chartData->GetDataArray(_T("open"));
+		std::vector<double>& high_vec = chartData->GetDataArray(_T("high"));
+		std::vector<double>& low_vec = chartData->GetDataArray(_T("low"));
+		std::vector<double>& close_vec = chartData->GetDataArray(_T("close"));
+
+		DoubleArray highData = DoubleArray(high_vec.data() + startIndex, _NoOfPoints);
+		DoubleArray lowData = DoubleArray(low_vec.data() + startIndex, _NoOfPoints);
+		DoubleArray openData = DoubleArray(open_vec.data() + startIndex, _NoOfPoints);
+		DoubleArray closeData = DoubleArray(close_vec.data() + startIndex, _NoOfPoints);
 
 		// Add a line layer to for the third data set using blue (0000cc) color, with a line width of 2
 		// pixels. Bind the layer to the third y-axis.

@@ -214,7 +214,7 @@ BOOL VtFundMiniJango::OnInitDialog()
 	GetWindowRect(rcWnd);
 	SetWindowPos(nullptr, 0, 0, 215, rcWnd.Height(), SWP_NOMOVE);
 
-	_ComboFund.SetDroppedWidth(150);
+	_ComboFund.SetDroppedWidth(250);
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // EXCEPTION: OCX Property Pages should return FALSE
 }
