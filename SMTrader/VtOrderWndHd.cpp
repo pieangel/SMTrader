@@ -1428,6 +1428,10 @@ void VtOrderWndHd::OnCbnSelchangeComboAccountHd()
 			}
 		}
 	}
+
+	if (_LeftWnd) {
+		_LeftWnd.OnAccountChanged();
+	}
 }
 
 

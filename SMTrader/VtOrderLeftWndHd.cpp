@@ -248,8 +248,6 @@ void VtOrderLeftWndHd::OnOrderFilled(VtOrder* order)
 
 void VtOrderLeftWndHd::OnReceiveAccountInfo()
 {
-	_SymbolFutureGrid.InitGrid();
-	_SymbolOptionGrid.InitGrid();
 	_AssetGrid.OnReceiveAccountInfo();
 	_ProfitLossGrid.OnReceiveAccountInfo();
 }
@@ -273,6 +271,12 @@ void VtOrderLeftWndHd::OnResizeWnd()
 		_SymbolOptionGrid.GetWindowRect(rcGrid);
 		_SymbolOptionGrid.SetWindowPos(nullptr, 0, 0, rcGrid.Width(), rcWnd.Height() - (rcGrid.top - rcWnd.top), SWP_NOMOVE);
 	}
+}
+
+void VtOrderLeftWndHd::OnAccountChanged()
+{
+	_SymbolFutureGrid.InitGrid();
+	_SymbolOptionGrid.InitGrid();
 }
 
 void VtOrderLeftWndHd::OnOrderEvent(VtOrder* order)

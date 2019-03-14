@@ -230,17 +230,13 @@ BOOL CSMTraderApp::InitInstance()
 	EnableTaskbarInteraction();
 
 	// 챠트 OCX 파일 등록 처리
-	TCHAR iniFileName[500];
+	TCHAR iniFileName[500] = { 0 };
 
 	GetModuleFileName(NULL, iniFileName, MAX_PATH);
-	CString strFileName;
-	CString strExeName = "SMTrader.exe";
-	strFileName.Format("%s", iniFileName);
-	int nDel = strExeName.GetLength();
-	int nFind = strFileName.Find("SMTrader.exe");
-	strFileName.Delete(nFind, nDel);
-	strFileName = strFileName += "HDFCommAgent.ocx";
-	RegisterOCX(strFileName);
+	CString path = iniFileName;
+	CString fileName = path.Left(path.ReverseFind('\\') + 1);
+	fileName = fileName += "HDFCommAgent.ocx";
+	RegisterOCX(fileName);
 
 
 	// RichEdit 컨트롤을 사용하려면  AfxInitRichEdit2()가 있어야 합니다.	
