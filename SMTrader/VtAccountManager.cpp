@@ -190,6 +190,7 @@ void VtAccountManager::FileterAccount()
 			delete delAcnt;
 		}
 		else {
+			delAcnt->CreateDefaultSubAccount();
 			delAcnt->Enable(true);
 			++it;
 		}

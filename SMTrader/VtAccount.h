@@ -40,6 +40,7 @@ public:
 	bool Enable() const { return _Enable; }
 	void Enable(bool val) { _Enable = val; }
 public:
+	bool hasValidPassword();
 	VtPosition* FindAdd(std::string symbolCode);
 	VtPosition* FindPosition(std::string symbolCode);
 	VtPosition* FindAdd(VtOrder* order);
@@ -118,6 +119,7 @@ private:
 	std::vector<VtAccount*> _SubAccountList;
 	bool _Prime = false;
 public:
+	void CreateDefaultSubAccount();
 	VtAccount* CreateSubAccount(std::string acntNo, std::string acntName, bool prime = false);
 	void RemoveSubAccount(std::string acntNo);
 	VtAccount* FindSubAccount(std::string acntNo);

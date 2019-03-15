@@ -101,6 +101,7 @@ void VtOrderWndHd::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_STATIC_ACNT, _StaticAcnt);
 	DDX_Control(pDX, IDC_STATIC_ACNT_NAME, _StaticAcntName);
 	DDX_Control(pDX, IDC_BTN_EDIT_FUND, _BtnFundEditor);
+	DDX_Control(pDX, IDC_EDIT_PWD, _EditPwd);
 }
 
 
@@ -163,6 +164,7 @@ BEGIN_MESSAGE_MAP(VtOrderWndHd, CDialog)
 	ON_WM_MOUSEMOVE()
 	ON_WM_MOUSELEAVE()
 	ON_WM_MOUSEHOVER()
+	ON_EN_CHANGE(IDC_EDIT_PWD, &VtOrderWndHd::OnEnChangeEditPwd)
 END_MESSAGE_MAP()
 
 
@@ -749,9 +751,11 @@ void VtOrderWndHd::ShowHideCtrl()
 			if (centerWnd->ShowTickWnd()) {
 				if (_OrderConfigMgr->Type() == 0) {
 					_BtnGetAcntInfo.ShowWindow(SW_SHOW);
+					_EditPwd.ShowWindow(SW_SHOW);
 					_BtnFundEditor.ShowWindow(SW_HIDE);
 				}
 				else {
+					_EditPwd.ShowWindow(SW_HIDE);
 					_BtnGetAcntInfo.ShowWindow(SW_HIDE);
 					_BtnFundEditor.ShowWindow(SW_SHOW);
 				}
@@ -769,10 +773,12 @@ void VtOrderWndHd::ShowHideCtrl()
 			_BtnDelWnd.ShowWindow(SW_SHOW);
 			if (centerWnd->ShowTickWnd()) {
 				if (_OrderConfigMgr->Type() == 0) {
+					_EditPwd.ShowWindow(SW_SHOW);
 					_BtnFundEditor.ShowWindow(SW_HIDE);
 					_BtnGetAcntInfo.ShowWindow(SW_SHOW);
 				}
 				else {
+					_EditPwd.ShowWindow(SW_HIDE);
 					_BtnFundEditor.ShowWindow(SW_SHOW);
 					_BtnGetAcntInfo.ShowWindow(SW_HIDE);
 				}
@@ -791,10 +797,12 @@ void VtOrderWndHd::ShowHideCtrl()
 			_BtnAddWnd.ShowWindow(SW_SHOW);
 			_BtnDelWnd.ShowWindow(SW_SHOW);
 			if (_OrderConfigMgr->Type() == 0) {
+				_EditPwd.ShowWindow(SW_SHOW);
 				_BtnGetAcntInfo.ShowWindow(SW_SHOW);
 				_BtnFundEditor.ShowWindow(SW_HIDE);
 			}
 			else {
+				_EditPwd.ShowWindow(SW_HIDE);
 				_BtnGetAcntInfo.ShowWindow(SW_HIDE);
 				_BtnFundEditor.ShowWindow(SW_SHOW);
 			}
@@ -806,10 +814,12 @@ void VtOrderWndHd::ShowHideCtrl()
 		_BtnAddWnd.ShowWindow(SW_SHOW);
 		_BtnDelWnd.ShowWindow(SW_SHOW);
 		if (_OrderConfigMgr->Type() == 0) {
+			_EditPwd.ShowWindow(SW_SHOW);
 			_BtnGetAcntInfo.ShowWindow(SW_SHOW);
 			_BtnFundEditor.ShowWindow(SW_HIDE);
 		}
 		else {
+			_EditPwd.ShowWindow(SW_HIDE);
 			_BtnGetAcntInfo.ShowWindow(SW_HIDE);
 			_BtnFundEditor.ShowWindow(SW_SHOW);
 		}
@@ -1061,6 +1071,9 @@ void VtOrderWndHd::InitAccount()
 		_StaticAcntName.SetWindowText(_OrderConfigMgr->Account()->AccountName.c_str());
 		_OrderConfigMgr->_HdLeftWnd->RefreshProfitLoss();
 		_OrderConfigMgr->_HdLeftWnd->RefreshAsset();
+		CString pwd;
+		pwd.Format(_T("%s"), _OrderConfigMgr->Account()->Password.c_str());
+		_EditPwd.SetWindowText(pwd);
 	}
 }
 
@@ -1275,6 +1288,8 @@ void VtOrderWndHd::SaveControlPos()
 	_LayoutMgr->AddWindow(_T("주문창추가버튼"), IDC_BTN_ADDWND, GetClientArea(IDC_BTN_ADDWND));
 	_LayoutMgr->AddWindow(_T("오른쪽창보이기버튼"), IDC_BTN_SHOWRIGHT, GetClientArea(IDC_BTN_SHOWRIGHT));
 	_LayoutMgr->AddWindow(_T("펀드편집창버튼"), IDC_BTN_EDIT_FUND, GetClientArea(IDC_BTN_EDIT_FUND));
+	_LayoutMgr->AddWindow(_T("비밀번호입력창"), IDC_EDIT_PWD, GetClientArea(IDC_EDIT_PWD));
+
 }
 
 CRect VtOrderWndHd::GetClientArea(int resourceID)
@@ -1388,14 +1403,15 @@ void VtOrderWndHd::OnCbnSelchangeComboAccountHd()
 			_OrderConfigMgr->Account(acnt);
 			_StaticAcntName.SetWindowText(_OrderConfigMgr->Account()->AccountName.c_str());
 
-			// Register the new account to the Event Map.
-			RegisterRealtimeAccount(acnt);
 			for (auto it = _CenterWndVector.begin(); it != _CenterWndVector.end(); ++it) {
 				VtOrderCenterWndHd* centerWnd = *it;
 				centerWnd->ChangeAccount(_OrderConfigMgr->Account());
 			}
-
-			acnt->GetAccountInfoNFee(1);
+			if (acnt->AccountLevel() == 0 && acnt->hasValidPassword()) {
+				// Register the new account to the Event Map.
+				RegisterRealtimeAccount(acnt);
+				acnt->GetAccountInfoNFee(1);
+			}
 		}
 	}
 	else {
@@ -1449,7 +1465,7 @@ void VtOrderWndHd::OnBnClickedBtnGetAcntInfo()
 	if (curSel != -1)
 	{
 		VtAccount* acnt = (VtAccount*)_ComboAcnt.GetItemDataPtr(curSel);
-		if (acnt)
+		if (acnt && acnt->AccountLevel() == 0 && acnt->hasValidPassword())
 			acnt->GetAccountProfitLossDirect();
 	}
 }
@@ -1665,6 +1681,7 @@ void VtOrderWndHd::CalcLayout()
 	CRect& rcAcntLable = _LayoutMgr->GetRect(IDC_STATIC_ACNT);
 	CRect& rcAcntCombo = _LayoutMgr->GetRect(IDC_COMBO_ACCOUNT_HD);
 	CRect& rcRefreshAcnt = _LayoutMgr->GetRect(IDC_BTN_GET_ACNT_INFO);
+	CRect& rcEditPwd = _LayoutMgr->GetRect(IDC_EDIT_PWD);
 	CRect& rcAcntName = _LayoutMgr->GetRect(IDC_STATIC_ACNT_NAME);
 	CRect& rcFundEdit = _LayoutMgr->GetRect(IDC_BTN_EDIT_FUND);
 
@@ -1693,25 +1710,39 @@ void VtOrderWndHd::CalcLayout()
 	ctrlHeight = rcAcntCombo.Height();
 	rcAcntCombo.left = rcAcntLable.right;
 	rcAcntCombo.right = rcAcntCombo.left + ctrlWidth;
-	rcAcntCombo.top = 0;
+	rcAcntCombo.top = 2;
 	rcAcntCombo.bottom = rcAcntCombo.top + ctrlHeight;
 
-	ctrlWidth = rcRefreshAcnt.Width();
-	ctrlHeight = rcRefreshAcnt.Height();
-	rcRefreshAcnt.left = rcAcntCombo.right;
-	rcRefreshAcnt.right = rcRefreshAcnt.left + ctrlWidth;
-	rcRefreshAcnt.top = 0;
-	rcRefreshAcnt.bottom = rcRefreshAcnt.top + ctrlHeight;
+	if (_OrderConfigMgr->Type() == 0) {
+		int editWidth = rcEditPwd.Width();
+		int editHeight = rcEditPwd.Height();
+		rcEditPwd.left = rcAcntCombo.right;
+		rcEditPwd.right = rcEditPwd.left + editWidth;
+		rcEditPwd.top = 2;
+		rcEditPwd.bottom = rcEditPwd.top + editHeight;
 
-	ctrlWidth = rcAcntName.Width();
-	ctrlHeight = rcAcntName.Height();
-	if (_OrderConfigMgr->Type() == 0)
+		ctrlWidth = rcRefreshAcnt.Width();
+		ctrlHeight = rcRefreshAcnt.Height();
+		rcRefreshAcnt.left = rcEditPwd.right;
+		rcRefreshAcnt.right = rcRefreshAcnt.left + ctrlWidth;
+		rcRefreshAcnt.top = 0;
+		rcRefreshAcnt.bottom = rcRefreshAcnt.top + ctrlHeight;
+
+		ctrlWidth = rcAcntName.Width();
+		ctrlHeight = rcAcntName.Height();
 		rcAcntName.left = rcRefreshAcnt.right;
-	else
+		rcAcntName.right = rcAcntName.left + ctrlWidth;
+		rcAcntName.top = staticY;
+		rcAcntName.bottom = rcAcntName.top + ctrlHeight;
+	}
+	else {
+		ctrlWidth = rcAcntName.Width();
+		ctrlHeight = rcAcntName.Height();
 		rcAcntName.left = rcAcntCombo.right;
-	rcAcntName.right = rcAcntName.left + ctrlWidth;
-	rcAcntName.top = staticY;
-	rcAcntName.bottom = rcAcntName.top + ctrlHeight;
+		rcAcntName.right = rcAcntName.left + ctrlWidth;
+		rcAcntName.top = staticY;
+		rcAcntName.bottom = rcAcntName.top + ctrlHeight;
+	}
 
 	int gap = 2;
 	ctrlWidth = rcShowRight.Width();
@@ -1898,3 +1929,21 @@ BOOL VtOrderWndHd::PreTranslateMessage(MSG* pMsg)
 	return CDialog::PreTranslateMessage(pMsg);
 }
 */
+
+
+void VtOrderWndHd::OnEnChangeEditPwd()
+{
+	// TODO:  If this is a RICHEDIT control, the control will not
+	// send this notification unless you override the CDialog::OnInitDialog()
+	// function and call CRichEditCtrl().SetEventMask()
+	// with the ENM_CHANGE flag ORed into the mask.
+
+	// TODO:  Add your control notification handler code here
+	if (_EditPwd.GetSafeHwnd()) {
+		CString pwd;
+		_EditPwd.GetWindowText(pwd);
+		if (_OrderConfigMgr && _OrderConfigMgr->Account()) {
+			_OrderConfigMgr->Account()->Password = (LPCTSTR)pwd;
+		}
+	}
+}

@@ -152,7 +152,8 @@ void HdAccountPLDlg::InitAccount()
 	{
 		_ComboAccount.SetCurSel(selAcnt);
 		_Account = (VtAccount*)_ComboAccount.GetItemDataPtr(selAcnt);
-		_Account->GetAccountInfoNFee(1);
+		if (_Account->hasValidPassword())
+			_Account->GetAccountInfoNFee(1);
 	}
 }
 
@@ -241,7 +242,8 @@ void HdAccountPLDlg::OnCbnSelchangeComboAccount()
 		_AccountGrid.ClearValues();
 		_ProductGrid.ClearValues();
 		VtAccount* acnt = (VtAccount*)_ComboAccount.GetItemDataPtr(curSel);
-		acnt->GetApiCustomerProfitLoss();
+		if (acnt && acnt->AccountLevel() == 0 && acnt->hasValidPassword())
+			acnt->GetApiCustomerProfitLoss();
 		_Account = acnt;
 	}
 }

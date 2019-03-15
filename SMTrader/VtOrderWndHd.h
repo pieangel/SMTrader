@@ -232,4 +232,7 @@ protected:
 //public:
 //	virtual BOOL PreTranslateMessage(MSG* pMsg);
 
+public:
+	CEdit _EditPwd;
+	afx_msg void OnEnChangeEditPwd();
 };

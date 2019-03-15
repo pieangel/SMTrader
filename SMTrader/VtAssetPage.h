@@ -1,7 +1,7 @@
 #pragma once
 #include "VtAccountAssetGrid.h"
 #include "afxwin.h"
-
+#include "ShadeButtonST.h"
 // VtAssetPage dialog
 class VtAccount;
 class VtAssetPage : public CDialogEx
@@ -32,4 +32,8 @@ public:
 	afx_msg void OnBnClickedBtnSearch();
 	afx_msg void OnCbnSelchangeComboAccount();
 	void OnReceiveAccountInfo();
+	afx_msg void OnBnClickedBtnCommit();
+	CShadeButtonST _BtnCommit;
+	CShadeButtonST _BtnSearch;
+	CEdit _EditPwd;
 };

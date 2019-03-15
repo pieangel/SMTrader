@@ -65,10 +65,10 @@ public:
 	}
 	void GetSymbolCode();
 	void GetSymbolMaster();
-	void GetDeposit();
-	void GetCustomProfitLoss();
-	void GetOutstanding();
-	void GetAcceptedHistory();
+	int GetDeposit();
+	int GetCustomProfitLoss();
+	int GetOutstanding();
+	int GetAcceptedHistory();
 	void AddTaskList(std::vector<std::pair<std::string, HdTaskArg>>& argVec);
 private:
 	ReceivedComplete* _RecvComp;

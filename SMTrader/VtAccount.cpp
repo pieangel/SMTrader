@@ -17,6 +17,17 @@
 #include "VtTotalOrderManager.h"
 #include "VtHdClient.h"
 
+bool VtAccount::hasValidPassword()
+{
+	std::string pwd = Password;
+	if (!pwd.empty() || pwd.length() == 4) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
 VtPosition* VtAccount::FindAdd(std::string symbolCode)
 {
 	if (symbolCode.length() == 0)
@@ -128,11 +139,7 @@ void VtAccount::Load(simple::file_istream<same_endian_type>& ss)
 		}
 		else
 		{
-			std::string acntNo = AccountNo;
-			acntNo.append(_T("_1"));
-			VtAccount* subAcnt = CreateSubAccount(acntNo, AccountName, true);
-			subAcnt->ParentAccount(this);
-			subAcntMgr->AddAccount(subAcnt);
+			CreateDefaultSubAccount();
 		}
 	}
 }
@@ -551,6 +558,22 @@ std::pair<bool, int> VtAccount::GetRemainCount(std::string symCode)
 		return std::make_pair(false, 0);
 	else
 		return std::make_pair(true, posi->OpenQty);
+}
+
+void VtAccount::CreateDefaultSubAccount()
+{
+	VtSubAccountManager* subAcntMgr = VtSubAccountManager::GetInstance();
+	std::string acntNo = AccountNo;
+	acntNo.append(_T("_1"));
+	VtAccount* legSubAcnt = FindSubAccount(acntNo);
+	if (!legSubAcnt) {
+		VtAccount* subAcnt = CreateSubAccount(acntNo, AccountName, true);
+		subAcnt->ParentAccount(this);
+		subAcntMgr->AddAccount(subAcnt);
+	}
+	else {
+		legSubAcnt->Prime(true);
+	}
 }
 
 VtAccount* VtAccount::CreateSubAccount(std::string acntNo, std::string acntName, bool prime)

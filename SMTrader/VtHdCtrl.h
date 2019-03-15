@@ -97,6 +97,7 @@ public:
 	}
 
 private:
+	bool CheckPassword(HdOrderRequest& request);
 	void OnReceiveChartData(CString& sTrCode, LONG& nRqID);
 	virtual void OnChartData(CString& sTrCode, LONG& nRqID);
 

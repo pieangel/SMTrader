@@ -27,12 +27,16 @@ void VtAssetPage::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_COMBO_ACCOUNT, _ComboAccount);
+	DDX_Control(pDX, IDC_BTN_COMMIT, _BtnCommit);
+	DDX_Control(pDX, IDC_BTN_SEARCH, _BtnSearch);
+	DDX_Control(pDX, IDC_EDIT_PWD, _EditPwd);
 }
 
 
 BEGIN_MESSAGE_MAP(VtAssetPage, CDialogEx)
 	ON_BN_CLICKED(IDC_BTN_SEARCH, &VtAssetPage::OnBnClickedBtnSearch)
 	ON_CBN_SELCHANGE(IDC_COMBO_ACCOUNT, &VtAssetPage::OnCbnSelchangeComboAccount)
+	ON_BN_CLICKED(IDC_BTN_COMMIT, &VtAssetPage::OnBnClickedBtnCommit)
 END_MESSAGE_MAP()
 
 
@@ -61,7 +65,12 @@ void VtAssetPage::InitAccount()
 	if (selAcnt != -1) {
 		_ComboAccount.SetCurSel(selAcnt);
 		_Account = (VtAccount*)_ComboAccount.GetItemDataPtr(selAcnt);
-		_Account->GetAccountProfitLossDirect();
+		if (_Account->hasValidPassword()) {
+			_Account->GetAccountProfitLossDirect();
+			CString pwd;
+			pwd.Format(_T("%s"), _Account->Password.c_str());
+			_EditPwd.SetWindowText(pwd);
+		}
 	}
 
 	_ComboAccount.SetDroppedWidth(210);
@@ -70,6 +79,13 @@ void VtAssetPage::InitAccount()
 BOOL VtAssetPage::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
+
+	_BtnCommit.SetShade(SHS_HSHADE, 8, 20, 5, RGB(55, 55, 255));
+	_BtnCommit.DrawFlatFocus(TRUE);
+
+	_BtnSearch.SetShade(SHS_HSHADE, 8, 20, 5, RGB(55, 55, 255));
+	_BtnSearch.DrawFlatFocus(TRUE);
+
 	InitAccount();
 	_AssetGrid.AssetPage(this);
 	// TODO:  Add extra initialization here
@@ -82,8 +98,10 @@ BOOL VtAssetPage::OnInitDialog()
 void VtAssetPage::OnBnClickedBtnSearch()
 {
 	// TODO: Add your control notification handler code here
-	if (_Account)
-		_Account->GetAccountProfitLossDirect();
+	if (_Account) {
+		if (_Account->hasValidPassword())
+			_Account->GetAccountProfitLossDirect();
+	}
 }
 
 
@@ -94,7 +112,8 @@ void VtAssetPage::OnCbnSelchangeComboAccount()
 	if (curSel != -1)
 	{
 		VtAccount* acnt = (VtAccount*)_ComboAccount.GetItemDataPtr(curSel);
-		acnt->GetAccountProfitLossDirect();
+		if (acnt->hasValidPassword())
+			acnt->GetAccountProfitLossDirect();
 		_Account = acnt;
 	}
 }
@@ -102,4 +121,11 @@ void VtAssetPage::OnCbnSelchangeComboAccount()
 void VtAssetPage::OnReceiveAccountInfo()
 {
 	_AssetGrid.InitGrid();
+}
+
+
+void VtAssetPage::OnBnClickedBtnCommit()
+{
+	if (_Account && _Account->hasValidPassword())
+		_Account->GetAccountInfoNFee(1);
 }

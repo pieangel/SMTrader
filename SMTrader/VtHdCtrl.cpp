@@ -441,6 +441,17 @@ void VtHdCtrl::UnregisterAccount(CString accountNo)
 	int nResult = m_CommAgent.CommRemoveJumunChe(strUserId, strAcctNo);
 }
 
+bool VtHdCtrl::CheckPassword(HdOrderRequest& request)
+{
+	if (!request.Password.empty() && request.Password.length() == 4) {
+		return true;
+	}
+	else {
+		AfxMessageBox(_T("비번이 없습니다. 주문할수 없습니다."));
+		return false;
+	}
+}
+
 void VtHdCtrl::OnReceiveChartData(CString& sTrCode, LONG& nRqID)
 {
 	VtChartData* chartData = nullptr;
@@ -1687,16 +1698,12 @@ void VtHdCtrl::OnFilledHistoryTable(CString& sTrCode, LONG& nRqID)
 		if (acnt)
 		{
 			acnt->TempFee += _ttoi(strFee.TrimRight());
-			//acnt->TempTradePL += _ttoi(strTradePL.TrimRight());
-			//acnt->TempPurePL += _ttoi(strPurePL.TrimRight());
 		}
 	}
 
 	if (acnt)
 	{
 		acnt->Fee = acnt->TempFee;
-		//acnt->TradePL = acnt->TempTradePL;
-		//acnt->TotalPL = acnt->TempPurePL;
 		acnt->TempPurePL = 0;
 		acnt->TempTradePL = 0;
 		acnt->TempFee = 0.0;
@@ -1790,6 +1797,15 @@ void VtHdCtrl::OnApiCustomerProfitLoss(CString& sTrCode, LONG& nRqID)
 	CString strMsg = strData9 + strData10 + strData8 + _T("\n");
 	//TRACE(strMsg);
 
+// 	if (acnt)
+// 	{
+// 		acnt->Fee = acnt->TempFee;
+// 		acnt->TempPurePL = 0;
+// 		acnt->TempTradePL = 0;
+// 		acnt->TempFee = 0.0;
+// 		acnt->SumOpenPL();
+// 	}
+
 	VtSymbolManager* symMgr = VtSymbolManager::GetInstance();
 	VtAccountManager* acntMgr = VtAccountManager::GetInstance();
 	HdTaskArg arg = FindRequest(nRqID);
@@ -1811,7 +1827,7 @@ void VtHdCtrl::OnApiCustomerProfitLoss(CString& sTrCode, LONG& nRqID)
 			acnt->Add_mgn = _ttoi(strData4.TrimRight());
 
 			//acnt->UpdateRemain();
-
+			double fee = 0.0;
 			int nRepeatCnt = m_CommAgent.CommGetRepeatCnt(sTrCode, -1, "OutRec2");
 			for (int i = 0; i < nRepeatCnt; i++)
 			{
@@ -1822,12 +1838,15 @@ void VtHdCtrl::OnApiCustomerProfitLoss(CString& sTrCode, LONG& nRqID)
 				CString strCurPrice = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "현재가");
 				CString strProfit = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "매매손익");
 				CString strFee = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "수수료");
+				fee += _ttof(strFee);
 				CString strTotalProfit = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "총손익");
 				CString strMoney = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "장부금액");
 				CString strOpenProfit = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "평가금액");
 				CString strSettle = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "청산가능수량");
 				VtSymbol* sym = symMgr->FindHdSymbol((LPCTSTR)strCode.TrimRight());
 			}
+
+			acnt->Fee = fee;
 		}
 		HdTaskEventArgs eventArg;
 		eventArg.TaskType = HdTaskType::HdApiCustomerProfitLoss;
@@ -1850,6 +1869,27 @@ void VtHdCtrl::OnApiCustomerProfitLoss(CString& sTrCode, LONG& nRqID)
 			acnt->Trst_mgn = _ttoi(strData4.TrimRight());
 			acnt->Mnt_mgn = _ttoi(strData4.TrimRight());
 			acnt->Add_mgn = _ttoi(strData4.TrimRight());
+
+			double fee = 0.0;
+			int nRepeatCnt = m_CommAgent.CommGetRepeatCnt(sTrCode, -1, "OutRec2");
+			for (int i = 0; i < nRepeatCnt; i++)
+			{
+				CString strCode = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "종목코드");
+				CString strPos = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "매매구분");
+				CString strRemain = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "잔고수량");
+				CString strUnitPrice = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "장부단가");
+				CString strCurPrice = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "현재가");
+				CString strProfit = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "매매손익");
+				CString strFee = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "수수료");
+				fee += _ttof(strFee);
+				CString strTotalProfit = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "총손익");
+				CString strMoney = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "장부금액");
+				CString strOpenProfit = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "평가금액");
+				CString strSettle = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "청산가능수량");
+				VtSymbol* sym = symMgr->FindHdSymbol((LPCTSTR)strCode.TrimRight());
+			}
+
+			acnt->Fee = fee;
 
 			HdTaskEventArgs eventArg;
 			eventArg.TaskType = HdTaskType::HdAccountFeeInfoStep1;
@@ -3634,6 +3674,9 @@ void VtHdCtrl::SendOrder(HdOrderRequest request)
 
 void VtHdCtrl::PutOrder(HdOrderRequest&& request)
 {
+	if (!CheckPassword(request))
+		return;
+
 	std::string orderString;
 	std::string temp;
 	temp = PadRight(request.AccountNo, ' ', 11);
@@ -3698,6 +3741,9 @@ void VtHdCtrl::PutOrder(HdOrderRequest&& request)
 
 void VtHdCtrl::ChangeOrder(HdOrderRequest&& request)
 {
+	if (!CheckPassword(request))
+		return;
+
 	std::string orderString;
 	std::string temp;
 	temp = PadRight(request.AccountNo, ' ', 11);
@@ -3762,6 +3808,9 @@ void VtHdCtrl::ChangeOrder(HdOrderRequest&& request)
 
 void VtHdCtrl::CancelOrder(HdOrderRequest&& request)
 {
+	if (!CheckPassword(request))
+		return;
+
 	std::string orderString;
 	std::string temp;
 	temp = PadRight(request.AccountNo, ' ', 11);

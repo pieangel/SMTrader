@@ -44,7 +44,11 @@ void HdScheduler::OnTaskCompleted(HdTaskEventArgs& arg)
 			SetTaskInfo(_T("GetSymbolMaster"), remCnt);
 		}
 		if (!_ReceivedBatchInfo && remCnt == 0){
-			GetDeposit();
+			if (GetDeposit() == 0) {
+				HdTaskEventArgs eventArg;
+				eventArg.TaskType = HdTaskType::HdDeposit;
+				OnTaskCompleted(eventArg);
+			}
 		}
 	}
 	break;
@@ -54,21 +58,33 @@ void HdScheduler::OnTaskCompleted(HdTaskEventArgs& arg)
 			SetTaskInfo(_T("GetDeposit"), remCnt);
 		}
 		if (!_ReceivedBatchInfo && remCnt == 0) {
-			GetCustomProfitLoss();
+			if (GetCustomProfitLoss() == 0) {
+				HdTaskEventArgs eventArg;
+				eventArg.TaskType = HdTaskType::HdApiCustomerProfitLoss;
+				OnTaskCompleted(eventArg);
+			}
 		}
 	}
 	break;
 	case HdTaskType::HdApiCustomerProfitLoss: { // 계좌별, 종목별 손익을 가져온다.
 		int remCnt = RemoveRequest(HdTaskType::HdApiCustomerProfitLoss, arg.RequestId);
 		if (!_ReceivedBatchInfo && remCnt == 0) {
-			GetOutstanding();
+			if (GetOutstanding() == 0) {
+				HdTaskEventArgs eventArg;
+				eventArg.TaskType = HdTaskType::HdOutstanding;
+				OnTaskCompleted(eventArg);
+			}
 		}
 	}
 	break;
 	case HdTaskType::HdOutstanding: { // 종목별 잔고를 가져온다.
 		int remCnt = RemoveRequest(HdTaskType::HdOutstanding, arg.RequestId);
 		if (!_ReceivedBatchInfo && remCnt == 0) {
-			GetAcceptedHistory();
+			if (GetAcceptedHistory() == 0) {
+				HdTaskEventArgs eventArg;
+				eventArg.TaskType = HdTaskType::HdAcceptedHistory;
+				OnTaskCompleted(eventArg);
+			}
 		}
 	}
 	break;
@@ -101,13 +117,11 @@ void HdScheduler::AddTask(HdTaskArg&& taskArg)
 
 void HdScheduler::ProcessTask()
 {
-	while (true) 
-	{
+	while (true)  {
 		if (!_Available) { continue; }
 		_Available = false;
 		HdTaskArg taskArg = _TaskQueue.pop();
-		if (taskArg.Type == HdTaskType::HdTaskComplete)
-		{
+		if (taskArg.Type == HdTaskType::HdTaskComplete) {
 			break;
 		}
 		ExecTask(std::move(taskArg));
@@ -297,6 +311,12 @@ int HdScheduler::AddRequest(HdTaskType reqType, int reqId)
 	}
 }
 
+/// <summary>
+/// 더이상 제거할 목록이 없거나 아무것도 없다면 0을 반환한다.
+/// </summary>
+/// <param name="reqType"></param>
+/// <param name="reqId"></param>
+/// <returns></returns>
 int HdScheduler::RemoveRequest(HdTaskType reqType, int reqId)
 {
 	auto it = RequestMap.find(reqType);
@@ -309,7 +329,7 @@ int HdScheduler::RemoveRequest(HdTaskType reqType, int reqId)
 		return rq.size();
 	}
 
-	return -1;
+	return 0;
 }
 
 void HdScheduler::GetSymbolCode()
@@ -342,13 +362,19 @@ void HdScheduler::GetSymbolMaster()
 	AddTaskList(taskInfo.argVec);
 }
 
-void HdScheduler::GetDeposit()
+int HdScheduler::GetDeposit()
 {
 	VtAccountManager* acntMgr = VtAccountManager::GetInstance();
-	int i = 0;
+	int i = 0, realCnt = 0;
 	for (auto it = acntMgr->AccountMap.begin(); it != acntMgr->AccountMap.end(); ++it) {
-		AddRequest(HdTaskType::HdDeposit, i++);
+		VtAccount* acnt = it->second;
+		if (acnt->hasValidPassword()) {
+			realCnt++;
+			AddRequest(HdTaskType::HdDeposit, i++);
+		}
 	}
+	if (realCnt == 0)
+		return realCnt;
 
 	HdTaskInfo taskInfo;
 	for (auto it = acntMgr->AccountMap.begin(); it != acntMgr->AccountMap.end(); ++it) {
@@ -364,16 +390,26 @@ void HdScheduler::GetDeposit()
 		_ProgressDlg->SetTaskInfo(taskInfo);
 	}
 	AddTaskList(taskInfo.argVec);
+
+	return realCnt;
 }
 
-void HdScheduler::GetCustomProfitLoss()
+int HdScheduler::GetCustomProfitLoss()
 {
 	VtAccountManager* acntMgr = VtAccountManager::GetInstance();
 	HdTaskInfo taskInfo;
-	int i = 0;
+	int i = 0, realCnt = 0;
 	for (auto it = acntMgr->AccountMap.begin(); it != acntMgr->AccountMap.end(); ++it) {
-		AddRequest(HdTaskType::HdApiCustomerProfitLoss, i++);
+		VtAccount* acnt = it->second;
+		if (acnt->hasValidPassword()) {
+			realCnt++;
+			AddRequest(HdTaskType::HdApiCustomerProfitLoss, i++);
+		}
 	}
+
+	if (realCnt == 0)
+		return realCnt;
+
 	for (auto it = acntMgr->AccountMap.begin(); it != acntMgr->AccountMap.end(); ++it) {
 		VtAccount* acnt = it->second;
 		acnt->GetApiCustomerProfitLoss(taskInfo.argVec);
@@ -387,15 +423,24 @@ void HdScheduler::GetCustomProfitLoss()
 		_ProgressDlg->SetTaskInfo(taskInfo);
 	}
 	AddTaskList(taskInfo.argVec);
+
+	return realCnt;
 }
 
-void HdScheduler::GetOutstanding()
+int HdScheduler::GetOutstanding()
 {
 	VtAccountManager* acntMgr = VtAccountManager::GetInstance();
-	int i = 0;
+	int i = 0, realCnt = 0;
 	for (auto it = acntMgr->AccountMap.begin(); it != acntMgr->AccountMap.end(); ++it) {
-		AddRequest(HdTaskType::HdOutstanding, i++);
+		VtAccount* acnt = it->second;
+		if (acnt->hasValidPassword()) {
+			realCnt++;
+			AddRequest(HdTaskType::HdOutstanding, i++);
+		}
 	}
+
+	if (realCnt == 0)
+		return realCnt;
 
 	HdTaskInfo taskInfo;
 	for (auto it = acntMgr->AccountMap.begin(); it != acntMgr->AccountMap.end(); ++it) {
@@ -411,15 +456,24 @@ void HdScheduler::GetOutstanding()
 		_ProgressDlg->SetTaskInfo(taskInfo);
 	}
 	AddTaskList(taskInfo.argVec);
+
+	return realCnt;
 }
 
-void HdScheduler::GetAcceptedHistory()
+int HdScheduler::GetAcceptedHistory()
 {
 	VtAccountManager* acntMgr = VtAccountManager::GetInstance();
-	int i = 0;
+	int i = 0, realCnt = 0;
 	for (auto it = acntMgr->AccountMap.begin(); it != acntMgr->AccountMap.end(); ++it) {
-		AddRequest(HdTaskType::HdAcceptedHistory, i++);
+		VtAccount* acnt = it->second;
+		if (acnt->hasValidPassword()) {
+			realCnt++;
+			AddRequest(HdTaskType::HdAcceptedHistory, i++);
+		}
 	}
+
+	if (realCnt == 0)
+		return realCnt;
 
 	HdTaskInfo taskInfo;
 	for (auto it = acntMgr->AccountMap.begin(); it != acntMgr->AccountMap.end(); ++it) {
@@ -435,6 +489,8 @@ void HdScheduler::GetAcceptedHistory()
 		_ProgressDlg->SetTaskInfo(taskInfo);
 	}
 	AddTaskList(taskInfo.argVec);
+
+	return realCnt;
 }
 
 void HdScheduler::AddTaskList(std::vector<std::pair<std::string, HdTaskArg>>& argVec)
