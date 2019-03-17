@@ -354,8 +354,8 @@ void VtSaveManager::SaveLoginInfo(std::string fileName, std::string id, std::str
 		std::string appPath;
 		appPath = configMgr->GetAppPath();
 		appPath.append(_T("\\"));
-		appPath.append(VtGlobal::LoginUserID);
-		appPath.append(_T("\\"));
+		//appPath.append(VtGlobal::LoginUserID);
+		//appPath.append(_T("\\"));
 		appPath.append(fileName);
 		simple::file_ostream<same_endian_type> outfile(appPath.c_str());
 
@@ -380,8 +380,8 @@ void VtSaveManager::LoadLoginInfo(std::string fileName, std::string& id, std::st
 		std::string appPath;
 		appPath = configMgr->GetAppPath();
 		appPath.append(_T("\\"));
-		appPath.append(VtGlobal::LoginUserID);
-		appPath.append(_T("\\"));
+		//appPath.append(VtGlobal::LoginUserID);
+		//appPath.append(_T("\\"));
 		appPath.append(fileName);
 
 		filesystem::path path1(appPath);
