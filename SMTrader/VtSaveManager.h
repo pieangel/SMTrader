@@ -31,6 +31,7 @@ public:
 	void LoadOutSystems(std::string fileName);
 	void SaveOutSignal(std::string fileName);
 	void LoadOutSignal(std::string fileName);
+	void CreateUserDirectory();
 	std::vector<VtSymbol*>& GetSymbolVector()
 	{
 		return _SymbolVector;

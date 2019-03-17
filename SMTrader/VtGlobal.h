@@ -89,6 +89,7 @@ public:
 	static VtDate GetLocalDate();
 	static int GetDate(VtDate date);
 	static int GetTime(VtTime time);
+	static std::string LoginUserID;
 	std::map<std::string, VtAccount*> AcntList;
 	/// <summary>
 	/// 영업 시작시간

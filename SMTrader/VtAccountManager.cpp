@@ -196,3 +196,15 @@ void VtAccountManager::FileterAccount()
 		}
 	}
 }
+
+std::vector<std::string> VtAccountManager::GetEmptyPasswordAccountList()
+{
+	std::vector<std::string> empty_list;
+	for (auto it = AccountMap.cbegin(); it != AccountMap.cend(); ++it) {
+		VtAccount* acnt = it->second;
+		if (!acnt->hasValidPassword())
+			empty_list.push_back(acnt->AccountNo);
+	}
+
+	return empty_list;
+}

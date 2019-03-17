@@ -20,7 +20,7 @@
 bool VtAccount::hasValidPassword()
 {
 	std::string pwd = Password;
-	if (!pwd.empty() || pwd.length() == 4) {
+	if (!pwd.empty() && pwd.length() == 4) {
 		return true;
 	}
 	else {

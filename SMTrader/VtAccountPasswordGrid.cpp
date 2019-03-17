@@ -64,10 +64,19 @@ void VtAccountPasswordGrid::OnSetup()
 
 void VtAccountPasswordGrid::OnDClicked(int col, long row, RECT *rect, POINT *point, BOOL processed)
 {
+	//CUGCell cell;
+	//GetCellIndirect(col, row, &cell);
+
+	//StartEdit();
+}
+
+void VtAccountPasswordGrid::OnLClicked(int col, long row, int updn, RECT *rect, POINT *point, int processed)
+{
 	CUGCell cell;
 	GetCellIndirect(col, row, &cell);
-
-	StartEdit();
+	if (updn == FALSE) {
+		StartEdit();
+	}
 }
 
 void VtAccountPasswordGrid::OnSetCell(int col, long row, CUGCell *cell)

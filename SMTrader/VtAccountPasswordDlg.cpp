@@ -9,6 +9,8 @@
 #include "VtAccount.h"
 #include "VtSaveManager.h"
 #include "ZmConfigManager.h"
+#include <vector>
+#include <string>
 
 // VtAccountPasswordDlg dialog
 
@@ -86,7 +88,22 @@ void VtAccountPasswordDlg::OnBnClickedCheckShowPwd()
 
 void VtAccountPasswordDlg::OnBnClickedBtnClose()
 {
-	// TODO: Add your control notification handler code here
+	VtAccountManager* acntMgr = VtAccountManager::GetInstance();
+	std::vector<std::string> empty_list = acntMgr->GetEmptyPasswordAccountList();
+	if (empty_list.size() > 0) {
+		CString msg;
+		msg.Append(_T("아래 계좌에 비밀번호가 정상적으로 입력되지 않았습니다.\n아래 계좌는 주문이 정상적으로 이루어지지 않습니다. \n정상적인 주문을 원하면 비밀번호를 입력하십시오.\n\n"));
+		for (auto it = empty_list.begin(); it != empty_list.end(); ++it) {
+			msg.Append(_T("계좌번호 : "));
+			msg.Append((*it).c_str());
+			msg.Append(_T("\n"));
+		}
+		msg.Append(_T("\n이대로 진행하시겠습니까?"));
+		int Ret = AfxMessageBox(msg, MB_YESNO);
+		if (Ret == IDNO)
+			return;
+	}
+
 	EndDialog(IDOK);
 }
 

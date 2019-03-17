@@ -133,7 +133,7 @@ CMainFrame::CMainFrame()
 	VtLogManager* logMgr = VtLogManager::GetInstance();
 	logMgr->InitLog();
 
-	LoadSettings();
+	//LoadSettings();
 }
 
 CMainFrame::~CMainFrame()
@@ -567,6 +567,10 @@ void CMainFrame::OnShowWindow(BOOL bShow, UINT nStatus)
 		VtSaveManager* saveMgr = VtSaveManager::GetInstance();
 		int Res = loginDlg.DoModal();
 		if (Res == IDOK) {
+
+			VtGlobal::LoginUserID = loginDlg.id;
+			saveMgr->CreateUserDirectory();
+			LoadSettings();
 			saveMgr->SaveLoginInfo(_T("SmTrader.cfg"), (LPCTSTR)loginDlg.id, (LPCTSTR)loginDlg.pwd, (LPCTSTR)loginDlg.cert, loginDlg.Save);
 
 			ZmConfigManager* configMgr = ZmConfigManager::GetInstance();
@@ -584,6 +588,7 @@ void CMainFrame::OnShowWindow(BOOL bShow, UINT nStatus)
 			else
 				dlg.FromServer(false);
 			dlg.DoModal();
+
 			section = _T("RUN_INFO");
 			VtGlobal* global = VtGlobal::GetInstance();
 			name = _T("open_hour");
@@ -751,12 +756,12 @@ bool CMainFrame::ClearAllResources()
 	std::vector<std::string> msgList = totalOrderMgr->GetUnsettledList();
 	if (totalOrderMgr->GetUnsettledCount() > 0) {
 		CString msg;
-		msg.Append(_T("다음과 같은 주문이 남아 있습니다.!\n"));
+		msg.Append(_T("다음과 같은 주문이 남아 있습니다.!\n\n"));
 		for (auto it = msgList.begin(); it != msgList.end(); ++it) {
 			msg.Append((*it).c_str());
 			msg.Append(_T("\n"));
 		}
-		msg.Append(_T("이대로 종료하시겠습니까?"));
+		msg.Append(_T("\n이대로 종료하시겠습니까?"));
 		int Ret = AfxMessageBox(msg, MB_YESNO);
 		if (Ret == IDNO)
 			return false;
@@ -839,7 +844,6 @@ void CMainFrame::SaveSettings()
 	saveMgr->SaveSystems(_T("systemlist.dat"));
 	saveMgr->SaveOutSignal(_T("outsignal.dat"));
 	saveMgr->SaveOutSystems(_T("outsystemlist.dat"));
-	saveMgr->SaveTotal(_T("smtrader.sav"), this);
 }
 
 void CMainFrame::LoadSettings()

@@ -2,6 +2,7 @@
 #include "Global/TemplateSingleton.h"
 #include <string>
 #include <map>
+#include <vector>
 #include "VtAccountEvent.h"
 #include "Poco/BasicEvent.h"
 #include "SimpleBinStream.h"
@@ -62,6 +63,7 @@ public:
 	void Save(simple::file_ostream<same_endian_type>& ss);
 	void Load(simple::file_istream<same_endian_type>& ss);
 	void FileterAccount();
+	std::vector<std::string> GetEmptyPasswordAccountList();
 private:
 	VtAccount* _ActiveAccount = nullptr;
 };

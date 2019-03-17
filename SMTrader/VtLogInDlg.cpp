@@ -243,6 +243,7 @@ void VtLogInDlg::OnBnClickedBtnLogin()
 			break;
 		}
 		AfxMessageBox(msg);
+		CDialogEx::OnCancel();
 		return;
 	}
 	CDialogEx::OnOK();

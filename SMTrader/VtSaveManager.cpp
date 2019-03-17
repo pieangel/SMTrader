@@ -21,6 +21,7 @@
 #include "VtSystemGroupManager.h"
 #include "VtStrategyWndManager.h"
 #include "VtOutSystemManager.h"
+#include "VtGlobal.h"
 
 using namespace std;
 using same_endian_type = std::is_same<simple::LittleEndian, simple::LittleEndian>;
@@ -45,6 +46,8 @@ void VtSaveManager::SaveOrders(std::string fileName)
 	std::string appPath;
 	appPath = configMgr->GetAppPath();
 	appPath.append(_T("\\"));
+	appPath.append(VtGlobal::LoginUserID);
+	appPath.append(_T("\\"));
 	appPath.append(fileName);
 
 	if (!fexists(appPath)) {
@@ -61,6 +64,8 @@ void VtSaveManager::SaveFundList(std::string fileName)
 	ZmConfigManager* configMgr = ZmConfigManager::GetInstance();
 	std::string appPath;
 	appPath = configMgr->GetAppPath();
+	appPath.append(_T("\\"));
+	appPath.append(VtGlobal::LoginUserID);
 	appPath.append(_T("\\"));
 	appPath.append(fileName);	
 
@@ -82,6 +87,8 @@ void VtSaveManager::LoadFundList(std::string fileName)
 	ZmConfigManager* configMgr = ZmConfigManager::GetInstance();
 	std::string appPath;
 	appPath = configMgr->GetAppPath();
+	appPath.append(_T("\\"));
+	appPath.append(VtGlobal::LoginUserID);
 	appPath.append(_T("\\"));
 	appPath.append(fileName);
 
@@ -114,6 +121,8 @@ void VtSaveManager::SaveAccountList(std::string fileName)
 	std::string appPath;
 	appPath = configMgr->GetAppPath();
 	appPath.append(_T("\\"));
+	appPath.append(VtGlobal::LoginUserID);
+	appPath.append(_T("\\"));
 	appPath.append(fileName);
 	simple::file_ostream<same_endian_type> outfile(appPath.c_str());
 
@@ -135,6 +144,8 @@ void VtSaveManager::LoadAccountList(std::string fileName)
 		ZmConfigManager* configMgr = ZmConfigManager::GetInstance();
 		std::string appPath;
 		appPath = configMgr->GetAppPath();
+		appPath.append(_T("\\"));
+		appPath.append(VtGlobal::LoginUserID);
 		appPath.append(_T("\\"));
 		appPath.append(fileName);
 
@@ -162,6 +173,8 @@ void VtSaveManager::SaveOrderWndList(std::string fileName, CMainFrame* mainFrm)
 		ZmConfigManager* configMgr = ZmConfigManager::GetInstance();
 		std::string appPath;
 		appPath = configMgr->GetAppPath();
+		appPath.append(_T("\\"));
+		appPath.append(VtGlobal::LoginUserID);
 		appPath.append(_T("\\"));
 		appPath.append(fileName);
 		simple::file_ostream<same_endian_type> outfile(appPath.c_str());
@@ -206,6 +219,8 @@ void VtSaveManager::LoadOrderWndList(std::string fileName, CMainFrame* mainFrm)
 	std::string appPath;
 	appPath = configMgr->GetAppPath();
 	appPath.append(_T("\\"));
+	appPath.append(VtGlobal::LoginUserID);
+	appPath.append(_T("\\"));
 	appPath.append(fileName);
 
 	filesystem::path path1(appPath);
@@ -244,6 +259,8 @@ void VtSaveManager::SaveDialogList(std::string fileName, CMainFrame* mainFrm)
 	std::string appPath;
 	appPath = configMgr->GetAppPath();
 	appPath.append(_T("\\"));
+	appPath.append(VtGlobal::LoginUserID);
+	appPath.append(_T("\\"));
 	appPath.append(fileName);
 	simple::file_ostream<same_endian_type> outfile(appPath.c_str());
 
@@ -265,6 +282,8 @@ void VtSaveManager::LoadDialogList(std::string fileName, CMainFrame* mainFrm)
 		std::string appPath;
 		appPath = configMgr->GetAppPath();
 		appPath.append(_T("\\"));
+		appPath.append(VtGlobal::LoginUserID);
+		appPath.append(_T("\\"));
 		appPath.append(fileName);
 
 		simple::file_istream<same_endian_type> in(appPath.c_str());
@@ -285,6 +304,8 @@ void VtSaveManager::SaveTotal(std::string fileName, CMainFrame* mainFrm)
 	ZmConfigManager* configMgr = ZmConfigManager::GetInstance();
 	std::string appPath;
 	appPath = configMgr->GetAppPath();
+	appPath.append(_T("\\"));
+	appPath.append(VtGlobal::LoginUserID);
 	appPath.append(_T("\\"));
 
 	std::string dirName = appPath;
@@ -333,6 +354,8 @@ void VtSaveManager::SaveLoginInfo(std::string fileName, std::string id, std::str
 		std::string appPath;
 		appPath = configMgr->GetAppPath();
 		appPath.append(_T("\\"));
+		appPath.append(VtGlobal::LoginUserID);
+		appPath.append(_T("\\"));
 		appPath.append(fileName);
 		simple::file_ostream<same_endian_type> outfile(appPath.c_str());
 
@@ -356,6 +379,8 @@ void VtSaveManager::LoadLoginInfo(std::string fileName, std::string& id, std::st
 		ZmConfigManager* configMgr = ZmConfigManager::GetInstance();
 		std::string appPath;
 		appPath = configMgr->GetAppPath();
+		appPath.append(_T("\\"));
+		appPath.append(VtGlobal::LoginUserID);
 		appPath.append(_T("\\"));
 		appPath.append(fileName);
 
@@ -388,6 +413,8 @@ void VtSaveManager::SaveSystems(std::string fileName)
 		std::string appPath;
 		appPath = configMgr->GetAppPath();
 		appPath.append(_T("\\"));
+		appPath.append(VtGlobal::LoginUserID);
+		appPath.append(_T("\\"));
 		appPath.append(fileName);
 
 		filesystem::path path1(appPath);
@@ -416,6 +443,8 @@ void VtSaveManager::LoadSystems(std::string fileName)
 		ZmConfigManager* configMgr = ZmConfigManager::GetInstance();
 		std::string appPath;
 		appPath = configMgr->GetAppPath();
+		appPath.append(_T("\\"));
+		appPath.append(VtGlobal::LoginUserID);
 		appPath.append(_T("\\"));
 		appPath.append(fileName);
 
@@ -447,6 +476,8 @@ void VtSaveManager::SaveOutSystems(std::string fileName)
 		std::string appPath;
 		appPath = configMgr->GetAppPath();
 		appPath.append(_T("\\"));
+		appPath.append(VtGlobal::LoginUserID);
+		appPath.append(_T("\\"));
 		appPath.append(fileName);
 
 		filesystem::path path1(appPath);
@@ -475,6 +506,8 @@ void VtSaveManager::LoadOutSystems(std::string fileName)
 		ZmConfigManager* configMgr = ZmConfigManager::GetInstance();
 		std::string appPath;
 		appPath = configMgr->GetAppPath();
+		appPath.append(_T("\\"));
+		appPath.append(VtGlobal::LoginUserID);
 		appPath.append(_T("\\"));
 		appPath.append(fileName);
 
@@ -510,11 +543,26 @@ void VtSaveManager::LoadOutSignal(std::string fileName)
 
 }
 
+void VtSaveManager::CreateUserDirectory()
+{
+	ZmConfigManager* configMgr = ZmConfigManager::GetInstance();
+	std::string appPath;
+	appPath = configMgr->GetAppPath();
+	appPath.append(_T("\\"));
+	appPath.append(VtGlobal::LoginUserID);
+	filesystem::path path1(appPath);
+	if (!path1.exists()) { // 디렉토리가 존재하지 않을 경우
+		filesystem::create_directory(path1);
+	}
+}
+
 bool VtSaveManager::IsAccountFileExist()
 {
 	ZmConfigManager* configMgr = ZmConfigManager::GetInstance();
 	std::string appPath;
 	appPath = configMgr->GetAppPath();
+	appPath.append(_T("\\"));
+	appPath.append(VtGlobal::LoginUserID);
 	appPath.append(_T("\\"));
 	appPath.append(_T("accountlist.dat"));
 

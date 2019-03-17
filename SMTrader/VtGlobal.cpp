@@ -18,6 +18,7 @@ COLORREF VtGlobal::MainTextColor = RGB(0, 0, 0);
 VtTime VtGlobal::OpenTime;
 VtTime VtGlobal::CloseTime;
 VtStrategyToolWnd* VtGlobal::StrategyToolWnd = nullptr;
+std::string VtGlobal::LoginUserID;
 
 std::pair<int, int> VtGlobal::GetScaleFact()
 {

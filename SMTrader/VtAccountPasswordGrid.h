@@ -14,7 +14,7 @@ public:
 
 	virtual void OnSetup();
 	virtual void OnDClicked(int col, long row, RECT *rect, POINT *point, BOOL processed);
-
+	virtual void OnLClicked(int col, long row, int updn, RECT *rect, POINT *point, int processed);
 
 	//SetCell notification
 	virtual void OnSetCell(int col, long row, CUGCell *cell);
