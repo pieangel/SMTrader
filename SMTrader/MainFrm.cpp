@@ -549,6 +549,11 @@ void CMainFrame::OnClose()
 	if (!ClearAllResources())
 		return;
 
+	VtDate date = VtGlobal::GetLocalDate();
+	VtTime time = VtGlobal::GetLocalTime();
+	CString msg;
+	msg.Format(_T("%d년 %d월 %d일 %d시 %d분 %d초에 종료합니다."), date.year, date.month, date.day, time.hour, time.min, time.sec);
+	AfxMessageBox(msg, MB_ICONEXCLAMATION);
 	CMDIFrameWndEx::OnClose();
 }
 
