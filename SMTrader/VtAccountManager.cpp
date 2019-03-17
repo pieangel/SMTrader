@@ -162,30 +162,30 @@ void VtAccountManager::Load(simple::file_istream<same_endian_type>& ss)
 	{
 		VtAccount* acnt = new VtAccount();
 		acnt->Load(ss);
-
-// 		if (acnt->GetSubAccountCount() == 0)
-// 		{
-// 			std::string acntNo = acnt->AccountNo;
-// 			acntNo.append(_T("_1"));
-// 			VtAccount* sub = acnt->CreateSubAccount(acntNo, acnt->AccountName, true);
-// 			VtSubAccountManager* subAcntMgr = VtSubAccountManager::GetInstance();
-// 			subAcntMgr->AddAccount(sub);
-// 		}
-
 		AddAccount(acnt);
 	}
 }
 
 void VtAccountManager::FileterAccount()
 {
-	VtGlobal* global = VtGlobal::GetInstance();
-
+	if (AccountMap.size() == 0) {
+		for (auto it = ServerAccountMap.begin(); it != ServerAccountMap.end(); ++it) {
+			VtAccount* acnt = new VtAccount();
+			acnt->AccountNo = it->second.account_no;
+			acnt->AccountName = it->second.account_name;
+			acnt->Type = it->second.account_type;
+			acnt->Enable(true);
+			acnt->CreateDefaultSubAccount();
+			AddAccount(acnt);
+		}
+		return;
+	}
 	// 실계좌에 없는 것들은 지워준다.
 	for (auto it = AccountMap.cbegin(); it != AccountMap.cend(); )
 	{
-		auto key = global->AcntList.find(it->first);
+		auto key = ServerAccountMap.find(it->first);
 		VtAccount* delAcnt = it->second;
-		if (key == global->AcntList.end()) { // 실계좌에 없으면 지워준다.
+		if (key == ServerAccountMap.end()) { // 실계좌에 없으면 지워준다.
 			AccountMap.erase(it++);
 			delete delAcnt;
 		}

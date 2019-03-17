@@ -4184,18 +4184,11 @@ void VtHdCtrl::OnDataRecv(CString sTrCode, LONG nRqID)
 			//WriteLog(strMsg);
 			//TRACE(strMsg);
 			if (strAcctGb.Compare(_T("9")) == 0) {
-				VtGlobal* global = VtGlobal::GetInstance();
-				VtAccount* acnt = acntMgr->FindAccount((LPCTSTR)strAcctNo.TrimRight());
-				if (!acnt) {
-					acnt = new VtAccount();
-					acnt->AccountNo = (LPCTSTR)strAcctNo.TrimRight();
-					acnt->AccountName = (LPCTSTR)strAcctNm.TrimRight();
-					acnt->Password = _T("");
-					acnt->Type = _ttoi(strAcctGb);
-					acntMgr->AddAccount(acnt);
-				}
-				acnt->Enable(true);
-				global->AcntList[acnt->AccountNo] = acnt;
+				VtAccountInfo acnt_info;
+				acnt_info.account_no = (LPCTSTR)strAcctNo.TrimRight();
+				acnt_info.account_name = (LPCTSTR)strAcctNm.TrimRight();
+				acnt_info.account_type = _ttoi(strAcctGb);
+				acntMgr->ServerAccountMap[acnt_info.account_no] = acnt_info;
 			}
 
 		}

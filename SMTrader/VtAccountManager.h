@@ -3,6 +3,7 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <set>
 #include "VtAccountEvent.h"
 #include "Poco/BasicEvent.h"
 #include "SimpleBinStream.h"
@@ -10,9 +11,13 @@ using same_endian_type = std::is_same<simple::LittleEndian, simple::LittleEndian
 using Poco::BasicEvent;
 
 class VtAccount;
-class VtAccountInfo;
 struct VtOrder;
 
+struct VtAccountInfo {
+	std::string account_no;
+	std::string account_name;
+	int account_type;
+};
 
 class VtAccountManager : public TemplateSingleton<VtAccountManager>
 {
@@ -64,6 +69,8 @@ public:
 	void Load(simple::file_istream<same_endian_type>& ss);
 	void FileterAccount();
 	std::vector<std::string> GetEmptyPasswordAccountList();
+	std::set<std::string> ServerAccountSet;
+	std::map<std::string, VtAccountInfo> ServerAccountMap;
 private:
 	VtAccount* _ActiveAccount = nullptr;
 };

@@ -244,16 +244,9 @@ void VtAccountPasswordGrid::QuickRedrawCell(int col, long row)
 
 void VtAccountPasswordGrid::InitGrid()
 {
-	if (_FromServer) {
-		VtGlobal* global = VtGlobal::GetInstance();
-		std::map<std::string, VtAccount*>& acntMap = global->AcntList;
-		InitGrid(acntMap);
-	}
-	else {
-		VtAccountManager* acntMgr = VtAccountManager::GetInstance();
-		std::map<std::string, VtAccount*>& acntMap = acntMgr->GetAccountMap();
-		InitGrid(acntMap);
-	}
+	VtAccountManager* acntMgr = VtAccountManager::GetInstance();
+	std::map<std::string, VtAccount*>& acntMap = acntMgr->GetAccountMap();
+	InitGrid(acntMap);
 }
 
 void VtAccountPasswordGrid::InitGrid(std::map<std::string, VtAccount*>& acntMap)
