@@ -131,6 +131,9 @@
     <Filter Include="Fund">
       <UniqueIdentifier>{aae79731-e602-4676-9c84-a9c2c625012b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Crypt">
+      <UniqueIdentifier>{e33dd40f-c037-4e74-b1f2-e9e824a5c1a5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -1437,6 +1440,9 @@
     </ClInclude>
     <ClInclude Include="VtUniqueOrderID.h">
       <Filter>Order</Filter>
+    </ClInclude>
+    <ClInclude Include="cryptor.hpp">
+      <Filter>Crypt</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

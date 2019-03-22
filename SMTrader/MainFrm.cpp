@@ -103,6 +103,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CMDIFrameWndEx)
 	ON_COMMAND(ID_STRATEGY_TOOLBAR, &CMainFrame::OnStrategyToolbar)
 	ON_WM_TIMER()
 	ON_COMMAND(ID_AUTO_SIGNAL_CONNECT, &CMainFrame::OnAutoSignalConnect)
+	ON_COMMAND(ID_SAVE_CURRENT_SCREEN, &CMainFrame::OnSaveCurrentScreen)
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -989,4 +990,10 @@ void CMainFrame::OnAutoSignalConnect()
 	VtAutoSignalManagerDialog* dlg = new VtAutoSignalManagerDialog();
 	dlg->Create(IDD_SYS_AUTO_CONNECT, this);
 	dlg->ShowWindow(SW_SHOW);
+}
+
+
+void CMainFrame::OnSaveCurrentScreen()
+{
+	SaveSettings();
 }

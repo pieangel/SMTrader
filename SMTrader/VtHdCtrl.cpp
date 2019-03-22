@@ -781,7 +781,7 @@ void VtHdCtrl::OnNewOrderHd(CString& sTrCode, LONG& nRqID)
 
 	OnSubAccountOrder(VtOrderEvent::PutNew, strSubAcntNo, strFundName, order, prevState);
 
-	LOG_F(INFO, _T("신규주문서버확인 : 원요청번호 %d, 선물사 요청번호 = %d, 종목이름 = %s, 주문 번호 = %s, 계좌번호 = %s, 서브계좌번호 = %s, 펀드 이름 = %s, 주문종류 = %s, 주문갯수 = %s, 요청 타입 = %d"), oriReqNo, nRqID, strSeries, strOrdNo, strAcctNo, strSubAcntNo, strFundName, strPosition.Compare(_T("1")) == 0 ? _T("매수") : _T("매도"), strAmount, order->RequestType);
+	LOG_F(INFO, _T("신규주문서버확인 : 주문가격 = %s, 원요청번호 %d, 선물사 요청번호 = %d, 종목이름 = %s, 주문 번호 = %s, 계좌번호 = %s, 서브계좌번호 = %s, 펀드 이름 = %s, 주문종류 = %s, 주문갯수 = %s, 요청 타입 = %d"), strPrice, oriReqNo, nRqID, strSeries, strOrdNo, strAcctNo, strSubAcntNo, strFundName, strPosition.Compare(_T("1")) == 0 ? _T("매수") : _T("매도"), strAmount, order->RequestType);
 }
 
 void VtHdCtrl::OnModifyOrderHd(CString& sTrCode, LONG& nRqID)
@@ -886,7 +886,7 @@ void VtHdCtrl::OnModifyOrderHd(CString& sTrCode, LONG& nRqID)
 
 	OnSubAccountOrder(VtOrderEvent::Modified, strSubAcntNo, strFundName, order, prevState);
 
-	LOG_F(INFO, _T("정정주문서버확인 : 원요청번호 %d, 선물사 요청번호 = %d, 종목이름 = %s, 주문 번호 = %s, 계좌번호 = %s, 서브계좌번호 = %s, 펀드 이름 = %s, 주문종류 = %s, 주문갯수 = %s, 요청 타입 = %d"), oriReqNo, nRqID, strSeries, strOrdNo, strAcctNo, strSubAcntNo, strFundName, strPosition.Compare(_T("1")) == 0 ? _T("매수") : _T("매도"), strAmount, order->RequestType);
+	LOG_F(INFO, _T("정정주문서버확인 : 주문가격 = %s, 원요청번호 %d, 선물사 요청번호 = %d, 종목이름 = %s, 주문 번호 = %s, 계좌번호 = %s, 서브계좌번호 = %s, 펀드 이름 = %s, 주문종류 = %s, 주문갯수 = %s, 요청 타입 = %d"), strPrice, oriReqNo, nRqID, strSeries, strOrdNo, strAcctNo, strSubAcntNo, strFundName, strPosition.Compare(_T("1")) == 0 ? _T("매수") : _T("매도"), strAmount, order->RequestType);
 }
 
 void VtHdCtrl::OnCancelOrderHd(CString& sTrCode, LONG& nRqID)
@@ -989,7 +989,7 @@ void VtHdCtrl::OnCancelOrderHd(CString& sTrCode, LONG& nRqID)
 
 	OnSubAccountOrder(VtOrderEvent::Cancelled, strSubAcntNo, strFundName, order, prevState);
 
-	LOG_F(INFO, _T("취소주문서버확인 : 원요청번호 %d, 선물사 요청번호 = %d, 종목이름 = %s, 주문 번호 = %s, 계좌번호 = %s, 서브계좌번호 = %s, 펀드 이름 = %s, 주문종류 = %s, 주문갯수 = %s, 요청 타입 = %d"), oriReqNo, nRqID, strSeries, strOrdNo, strAcctNo, strSubAcntNo, strFundName, strPosition.Compare(_T("1")) == 0 ? _T("매수") : _T("매도"), strAmount, order->RequestType);
+	LOG_F(INFO, _T("취소주문서버확인 : 주문가격 = %s, 원요청번호 %d, 선물사 요청번호 = %d, 종목이름 = %s, 주문 번호 = %s, 계좌번호 = %s, 서브계좌번호 = %s, 펀드 이름 = %s, 주문종류 = %s, 주문갯수 = %s, 요청 타입 = %d"), strPrice, oriReqNo, nRqID, strSeries, strOrdNo, strAcctNo, strSubAcntNo, strFundName, strPosition.Compare(_T("1")) == 0 ? _T("매수") : _T("매도"), strAmount, order->RequestType);
 }
 
 void VtHdCtrl::OnReceiveRealTimeValue(std::string symCode)
@@ -1205,7 +1205,7 @@ void VtHdCtrl::OnOrderAcceptedHd(CString& strKey, LONG& nRealType)
 
 	OnSubAccountOrder(VtOrderEvent::Accepted, strSubAcntNo, strFundName, order, prevState);
 
-	LOG_F(INFO, _T("거래소 접수 : 원요청번호 %d, 선물사 요청번호 = %d, 종목이름 = %s, 주문 번호 = %s, 계좌번호 = %s, 서브계좌번호 = %s, 펀드 이름 = %s, 주문종류 = %s, 주문갯수 = %s, 요청 타입 = %d"), oriReqNo, nRealType, strSeries, strOrdNo, strAcctNo, strSubAcntNo, strFundName, strPosition.Compare(_T("1")) == 0 ? _T("매수") : _T("매도"), strAmount, order->RequestType);
+	LOG_F(INFO, _T("거래소 접수 : 주문가격 = %s, 원요청번호 %d, 선물사 요청번호 = %d, 종목이름 = %s, 주문 번호 = %s, 계좌번호 = %s, 서브계좌번호 = %s, 펀드 이름 = %s, 주문종류 = %s, 주문갯수 = %s, 요청 타입 = %d"), strPrice, oriReqNo, nRealType, strSeries, strOrdNo, strAcctNo, strSubAcntNo, strFundName, strPosition.Compare(_T("1")) == 0 ? _T("매수") : _T("매도"), strAmount, order->RequestType);
 }
 
 void VtHdCtrl::OnOrderUnfilledHd(VtOrder* order)
@@ -1348,7 +1348,7 @@ void VtHdCtrl::OnOrderUnfilledHd(CString& strKey, LONG& nRealType)
 
 	OnSubAccountOrder(VtOrderEvent::Unfilled, strSubAcntNo, strFundName, order, prevState);
 
-	LOG_F(INFO, _T("미체결 수신 : 원요청번호 %d, 선물사 요청번호 = %d, 종목이름 = %s, 주문 번호 = %s, 계좌번호 = %s, 서브계좌번호 = %s, 펀드 이름 = %s, 주문종류 = %s, 주문갯수 = %s, 요청 타입 = %d"), oriReqNo, nRealType, strSeries, strOrdNo, strAcctNo, strSubAcntNo, strFundName, strPosition.Compare(_T("1")) == 0 ? _T("매수") : _T("매도"), strAmount, order->RequestType);
+	LOG_F(INFO, _T("미체결 수신 : 주문가격 = %s, 원요청번호 %d, 선물사 요청번호 = %d, 종목이름 = %s, 주문 번호 = %s, 계좌번호 = %s, 서브계좌번호 = %s, 펀드 이름 = %s, 주문종류 = %s, 주문갯수 = %s, 요청 타입 = %d"), strPrice, oriReqNo, nRealType, strSeries, strOrdNo, strAcctNo, strSubAcntNo, strFundName, strPosition.Compare(_T("1")) == 0 ? _T("매수") : _T("매도"), strAmount, order->RequestType);
 
 }
 
@@ -1475,7 +1475,7 @@ void VtHdCtrl::OnOrderFilledHd(CString& strKey, LONG& nRealType)
 
 	//TRACE(strMsg);
 
-	LOG_F(INFO, _T("체결 확인 : 원요청번호 %d, 선물사 요청번호 = %d, 종목이름 = %s, 주문 번호 = %s, 계좌번호 = %s, 서브계좌번호 = %s, 펀드 이름 = %s, 주문종류 = %s, 체결갯수 = %s, 요청 타입 = %d"), oriReqNo, nRealType, strSeries, strOrdNo, strAcctNo, strSubAcntNo, strFundName, strPosition.Compare(_T("1")) == 0 ? _T("매수") : _T("매도"), strFillAmount, order->RequestType);
+	LOG_F(INFO, _T("체결 확인 : 체결가격 = %s, 원요청번호 %d, 선물사 요청번호 = %d, 종목이름 = %s, 주문 번호 = %s, 계좌번호 = %s, 서브계좌번호 = %s, 펀드 이름 = %s, 주문종류 = %s, 체결갯수 = %s, 요청 타입 = %d"), strFillPrice, oriReqNo, nRealType, strSeries, strOrdNo, strAcctNo, strSubAcntNo, strFundName, strPosition.Compare(_T("1")) == 0 ? _T("매수") : _T("매도"), strFillAmount, order->RequestType);
 
 	// 주문 수량과 체결수량이 같을 때만 목록에서 없애 준다.
 	if (order->amount == order->filledQty)
@@ -2254,7 +2254,8 @@ void VtHdCtrl::OnSymbolMaster(CString& sTrCode, LONG& nRqID)
 	CString strUpRate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "등락률");
 
 	LOG_F(INFO, _T("종목코드 = %s"), strData001);
-	//TRACE(_T("\n"));
+	TRACE(strData001);
+	TRACE(_T("\n"));
 	std::string code = sym->ShortCode.substr(0, 3);
 	HdProductInfo* prdtInfo = symMgr->FindProductInfo(code);
 	if (prdtInfo) {
@@ -2774,6 +2775,8 @@ void VtHdCtrl::OnRealFutureQuote(CString& strKey, LONG& nRealType)
 	CString strTime = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "체결시간");
 	CString strVolume = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "체결량");
 	CString strUpdown = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "체결구분");
+	CString msg;
+	
 
 	VtSymbolManager* symMgr = VtSymbolManager::GetInstance();
 	VtSymbol* sym = symMgr->FindSymbol((LPCTSTR)strSeries.Trim());
@@ -2858,6 +2861,9 @@ void VtHdCtrl::OnRealFutureQuote(CString& strKey, LONG& nRealType)
 
 	CMainFrame* mainFrm = (CMainFrame*)AfxGetMainWnd();
 	mainFrm->OnReceiveQuoteHd(sym);
+
+	msg.Format(_T("code = %s, current = %s\n"), strSeries, strData051);
+	TRACE(msg);
 }
 
 void VtHdCtrl::OnRealOptionQuote(CString& strKey, LONG& nRealType)

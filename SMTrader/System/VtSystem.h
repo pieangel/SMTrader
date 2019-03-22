@@ -248,6 +248,7 @@ public:
 	void OrderTick(int val) { _OrderTick = val; }
 	bool PutEntranceOrder(VtPositionType position);
 	bool PutLiqOrder(VtPosition* posi);
+	std::pair<int, int> GetOrderPrice();
 protected:
 	int GetOrderPrice(VtPositionType position);
 	int FindDateIndex(double date, std::vector<double>& dateArray);

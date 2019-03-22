@@ -22,6 +22,7 @@
 #include "VtStrategyWndManager.h"
 #include "VtOutSystemManager.h"
 #include "VtGlobal.h"
+#include "cryptor.hpp"
 
 using namespace std;
 using same_endian_type = std::is_same<simple::LittleEndian, simple::LittleEndian>;
@@ -359,9 +360,13 @@ void VtSaveManager::SaveLoginInfo(std::string fileName, std::string id, std::str
 		appPath.append(fileName);
 		simple::file_ostream<same_endian_type> outfile(appPath.c_str());
 
-		outfile << id;
-		outfile << pwd;
-		outfile << cert;
+		auto enc_id = cryptor::encrypt(move(id));
+		auto enc_pwd = cryptor::encrypt(move(pwd));
+		auto enc_cert = cryptor::encrypt(move(cert));
+
+		outfile << enc_id;
+		outfile << enc_pwd;
+		outfile << enc_cert;
 		outfile << save;
 
 		outfile.flush();
@@ -393,12 +398,15 @@ void VtSaveManager::LoadLoginInfo(std::string fileName, std::string& id, std::st
 		simple::file_istream<same_endian_type> in(appPath.c_str());
 		if (in.file_length() == 0)
 			return;
-
-		
-		in >> id;
-		in >> pwd;
-		in >> cert;
+		std::string dec_id, dec_pwd, dec_cert;
+		in >> dec_id;
+		in >> dec_pwd;
+		in >> dec_cert;
 		in >> save;
+
+		id = cryptor::decrypt(dec_id);
+		pwd = cryptor::decrypt(dec_pwd);
+		cert = cryptor::decrypt(dec_cert);
 	}
 	catch (std::exception& e) {
 		std::string error = e.what();

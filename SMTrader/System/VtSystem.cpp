@@ -1090,6 +1090,9 @@ bool VtSystem::PutEntranceOrder(VtPositionType position)
 	int orderPrice = GetOrderPrice(position);
 	if (orderPrice < 0) return false;
 
+	if (_Symbol)
+		LOG_F(INFO, _T("시스템 주문 : 현재가 =%d, 주문가 = %d"), _Symbol->Quote.intClose, orderPrice);
+
 	PutOrder(orderPrice, position, _PriceType);
 	_LatestEntPrice = _Symbol->Quote.intClose;
 	return true;
@@ -1196,6 +1199,16 @@ int VtSystem::GetOrderPrice(VtPositionType position)
 	return price;
 }
 
+std::pair<int, int> VtSystem::GetOrderPrice()
+{
+	std::pair<int, int> result;
+	if (!_Symbol) {
+		return std::make_pair(0, 0);
+	}
+
+	return std::make_pair(_Symbol->Quote.intClose, 0);
+}
+
 int VtSystem::FindDateIndex(double date, std::vector<double>& dateArray)
 {
 	for (int i = dateArray.size() - 1; i >= 0; --i) {
@@ -1210,7 +1223,6 @@ void VtSystem::PutOrder(int price, VtPositionType position, VtPriceType priceTyp
 {
 	if (!_Symbol)
 		return;
-	LOG_F(INFO, _T("PutOrder : price = %d"), price);
 
 	VtOrderManagerSelector* orderMgrSelector = VtOrderManagerSelector::GetInstance();
 	if (_SysTargetType == TargetType::RealAccount || _SysTargetType == TargetType::SubAccount) { // 실계좌나 서브 계좌 일 때

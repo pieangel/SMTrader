@@ -205,6 +205,7 @@
     <ClInclude Include="CmdWaitDlg.h" />
     <ClInclude Include="conversion.hpp" />
     <ClInclude Include="cpptime.h" />
+    <ClInclude Include="cryptor.hpp" />
     <ClInclude Include="DeferPos.h" />
     <ClInclude Include="delegate.h" />
     <ClInclude Include="Drawing\VtBaseTracker.h" />

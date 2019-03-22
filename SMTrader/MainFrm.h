@@ -116,6 +116,7 @@ public:
 	afx_msg void OnSettimeToServer();
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	afx_msg void OnAutoSignalConnect();
+	afx_msg void OnSaveCurrentScreen();
 };
 
 
