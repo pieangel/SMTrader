@@ -4,7 +4,7 @@
 #include "VtSignalDefinitionGrid.h"
 
 // VtAutoSignalManagerDialog dialog
-const int RefTimer = 0x00000012;
+const int RefTimer = 0x00000010;
 class VtAutoSignalManagerDialog : public CDialogEx
 {
 	DECLARE_DYNAMIC(VtAutoSignalManagerDialog)

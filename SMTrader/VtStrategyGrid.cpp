@@ -294,3 +294,26 @@ void VtStrategyGrid::UpdateDialog(VtSystem* sys)
 	VtStrategyWndManager* stgWndMgr = VtStrategyWndManager::GetInstance();
 	stgWndMgr->UpdateDialog(sys);
 }
+
+void VtStrategyGrid::UpdatePosition()
+{
+	for (auto it = _SystemObjectMap.begin(); it != _SystemObjectMap.end(); ++it) {
+		auto item = it->second;
+		int row = item.first;
+		VtSystem* sys = item.second;
+
+		if (sys->PositionState.Find(_T("매수")) >= 0) {
+			QuickSetTextColor(0, row, RGB(255, 255, 255));
+			QuickSetBackColor(0, row, RGB(240, 51, 58));
+		}
+		else if (sys->PositionState.Find(_T("매도")) >= 0) {
+			QuickSetTextColor(0, row, RGB(255, 255, 255));
+			QuickSetBackColor(0, row, RGB(19, 137, 255));
+		}
+		else {
+			QuickSetTextColor(0, row, RGB(0, 0, 0));
+			QuickSetBackColor(0, row, RGB(255, 255, 255));
+		}
+		QuickRedrawCell(0, row);
+	}
+}

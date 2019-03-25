@@ -1383,8 +1383,10 @@ bool VtSystem::LiqudAll()
 
 		if (!posi || posi->OpenQty == 0 || posi->Position == VtPositionType::None)
 			return false;
-
+		// 쓰레드 2개에서 동시에 청산이 나올 가망성이 있어서 방어 코드를 넣음
+		_LiqMutex.lock();
 		PutLiqOrder(posi);
+		_LiqMutex.unlock();
 
 		_ProfitLoss = 0.0;
 		_MaxProfit = 0.0;
@@ -1400,8 +1402,10 @@ bool VtSystem::LiqudAll()
 
 			if (!posi || posi->OpenQty == 0 || posi->Position == VtPositionType::None)
 				continue;
-
+			// 쓰레드 2개에서 동시에 청산이 나올 가망성이 있어서 방어 코드를 넣음
+			_LiqMutex.lock();
 			PutLiqOrder(posi);
+			_LiqMutex.unlock();
 		}
 
 		_ProfitLoss = 0.0;

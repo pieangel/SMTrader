@@ -16,11 +16,12 @@
 #include "VtFundManager.h"
 #include "VtTotalOrderManager.h"
 #include "VtHdClient.h"
+#include "cryptor.hpp"
 
 bool VtAccount::hasValidPassword()
 {
 	std::string pwd = Password;
-	if (!pwd.empty() && pwd.length() == 4) {
+	if (!pwd.empty()) {
 		return true;
 	}
 	else {
@@ -103,7 +104,12 @@ void VtAccount::ResetPosition(std::string symCode)
 
 void VtAccount::Save(simple::file_ostream<same_endian_type>& ss)
 {
-	ss << ParentAccountNo << AccountName << AccountNo << Password << SeungSu << Ratio << _AccountLevel << _Prime;
+	auto enc_ParentAccountNo = cryptor::encrypt(ParentAccountNo);
+	auto enc_AccountName = cryptor::encrypt(AccountName);
+	auto enc_AccountNo = cryptor::encrypt(AccountNo);
+	auto enc_Password = cryptor::encrypt(Password);
+
+	ss << enc_ParentAccountNo << enc_AccountName << enc_AccountNo << enc_Password << SeungSu << Ratio << _AccountLevel << _Prime;
 	if (_AccountLevel == 0)
 	{
 		ss << (int)_SubAccountList.size();
@@ -118,7 +124,18 @@ void VtAccount::Save(simple::file_ostream<same_endian_type>& ss)
 void VtAccount::Load(simple::file_istream<same_endian_type>& ss)
 {
 	VtSubAccountManager* subAcntMgr = VtSubAccountManager::GetInstance();
-	ss >> ParentAccountNo >> AccountName >> AccountNo >> Password >> SeungSu >> Ratio >> _AccountLevel >> _Prime;
+	std::string dec_ParentAccountNo, dec_AccountName, dec_AccountNo, dec_Password;
+	ss >> dec_ParentAccountNo;
+	ss >> dec_AccountName;
+	ss >> dec_AccountNo;
+	ss >> dec_Password;
+
+	ParentAccountNo = cryptor::decrypt(dec_ParentAccountNo);
+	AccountName = cryptor::decrypt(dec_AccountName);
+	AccountNo = cryptor::decrypt(dec_AccountNo);
+	Password = cryptor::decrypt(dec_Password);
+
+	ss >> SeungSu >> Ratio >> _AccountLevel >> _Prime;
 	if (_AccountLevel == 0)
 	{
 		int count = 0;

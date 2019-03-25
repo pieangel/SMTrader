@@ -6,6 +6,7 @@
 using same_endian_type = std::is_same<simple::LittleEndian, simple::LittleEndian>;
 using Poco::BasicEvent;
 // VtStrategyToolWnd dialog
+const int PosiTimer = 0x00000011;
 class VtSystem;
 class VtStrategyToolWnd : public CDialogEx
 {
@@ -38,4 +39,5 @@ public:
 	void UpdateSystem(VtSystem* sys, bool enable);
 	virtual BOOL OnInitDialog();
 	afx_msg void OnClose();
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
 };

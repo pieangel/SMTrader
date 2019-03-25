@@ -48,6 +48,7 @@ public:
 	void UpdateSystem(int row, bool enable);
 	void UpdateSystem(VtSystem* sys, bool enable);
 	void UpdateDialog(VtSystem* sys);
+	void UpdatePosition();
 private:
 	VtStrategyToolWnd* _ToolWnd;
 };

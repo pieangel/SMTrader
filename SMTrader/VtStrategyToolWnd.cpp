@@ -34,6 +34,7 @@ void VtStrategyToolWnd::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(VtStrategyToolWnd, CDialogEx)
 	ON_WM_CLOSE()
+	ON_WM_TIMER()
 END_MESSAGE_MAP()
 
 
@@ -83,6 +84,8 @@ BOOL VtStrategyToolWnd::OnInitDialog()
 
 	VtGlobal::StrategyToolWnd = this;
 
+	SetTimer(PosiTimer, 100, NULL);
+
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // EXCEPTION: OCX Property Pages should return FALSE
 }
@@ -90,6 +93,7 @@ BOOL VtStrategyToolWnd::OnInitDialog()
 
 void VtStrategyToolWnd::OnClose()
 {
+	KillTimer(PosiTimer);
 	_GridCtrl.DisableAllSystems();
 	// TODO: Add your message handler code here and/or call default
 	CDialogEx::OnClose();
@@ -100,4 +104,14 @@ void VtStrategyToolWnd::OnClose()
 	arg.eventType = HdWindowEventType::Closed;
 	FireWindowEvent(std::move(arg));
 	VtGlobal::StrategyToolWnd = nullptr;
+}
+
+
+void VtStrategyToolWnd::OnTimer(UINT_PTR nIDEvent)
+{
+	if (nIDEvent == PosiTimer) {
+		_GridCtrl.UpdatePosition();
+	}
+
+	CDialogEx::OnTimer(nIDEvent);
 }

@@ -10,7 +10,7 @@
 #include "VtProgressDlg.h"
 #include "VtMainToolbar.h"
 
-const int SysLiqTimer = 0x00000010;
+const int SysLiqTimer = 0x00000009;
 class VtSymbol;
 class VtChartContainer;
 class VtFileEventMonitor;

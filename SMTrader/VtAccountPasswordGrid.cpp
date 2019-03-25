@@ -195,6 +195,7 @@ int VtAccountPasswordGrid::OnEditFinish(int col, long row, CWnd *edit, LPCTSTR s
 	if (item.first) {
 		std::string& pwd = item.second;
 		pwd = (LPCTSTR)tempStr;
+		item.first->Password = pwd;
 	}
 	return TRUE;
 }

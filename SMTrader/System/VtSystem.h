@@ -11,6 +11,7 @@
 #include "../SimpleBinStream.h"
 #include "../VtSystemDef.h"
 #include "../VtOutSignalDefManager.h"
+#include <mutex>
 using same_endian_type = std::is_same<simple::LittleEndian, simple::LittleEndian>;
 class VtSignal;
 class VtChartData;
@@ -250,6 +251,7 @@ public:
 	bool PutLiqOrder(VtPosition* posi);
 	std::pair<int, int> GetOrderPrice();
 protected:
+	std::mutex _LiqMutex;
 	int GetOrderPrice(VtPositionType position);
 	int FindDateIndex(double date, std::vector<double>& dateArray);
 	bool LiqudAll();

@@ -360,9 +360,6 @@ void VtOrderManager::PutOrder(HdOrderRequest&& request)
 {
 	VtHdClient* client = VtHdClient::GetInstance();
 	client->PutOrder(std::move(request));
-	//VtOrderQueueManager* orderQMgr = VtOrderQueueManager::GetInstance();
-	//orderQMgr->AddOrderRequest(std::move(request));
-	//orderQMgr->Ready(true);
 }
 
 void VtOrderManager::ChangeOrder(VtOrder* oldOrder, double newValue)
@@ -1342,10 +1339,9 @@ void VtOrderManager::OnOrderFilledHd(VtOrder* order)
 {
 	if (!order)
 		return;
-	VtOrder* exOrder = FindOrder(order->orderNo);
+	VtTotalOrderManager* totalOrderMgr = VtTotalOrderManager::GetInstance();
 	// 주문 목록에서 찾아서 없을 때는 외부 주문으로 간주하고 주문목록에 추가해 준다.
-	if (!exOrder) {
-		VtTotalOrderManager* totalOrderMgr = VtTotalOrderManager::GetInstance();
+	if (!FindOrder(order->orderNo)) {
 		AddOrder(order);
 		totalOrderMgr->AddOrder(order);
 	}
