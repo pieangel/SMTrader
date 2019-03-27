@@ -1209,6 +1209,14 @@ std::pair<int, int> VtSystem::GetOrderPrice()
 	return std::make_pair(_Symbol->Quote.intClose, 0);
 }
 
+void VtSystem::RegisterRealtimeSymbolEvent()
+{
+	VtRealtimeRegisterManager* realtimeRegiMgr = VtRealtimeRegisterManager::GetInstance();
+	if (_Symbol) {
+		realtimeRegiMgr->RegisterProduct(_Symbol->ShortCode);
+	}
+}
+
 int VtSystem::FindDateIndex(double date, std::vector<double>& dateArray)
 {
 	for (int i = dateArray.size() - 1; i >= 0; --i) {

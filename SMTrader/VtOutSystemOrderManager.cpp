@@ -22,7 +22,7 @@ void VtOutSystemOrderManager::AddSystem(SharedSystem sys)
 {
 	if (!sys)
 		return;
-
+	sys->RegisterRealtimeSymbolEvent();
 	_SystemVec.push_back(sys);
 	AddSignalOrder(sys);
 }

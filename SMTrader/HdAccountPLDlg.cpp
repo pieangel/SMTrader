@@ -111,50 +111,41 @@ void HdAccountPLDlg::InitAccount()
 	_ComboAccount.ResetContent();
 	VtGlobal* global = VtGlobal::GetInstance();
 	VtAccountManager* acntMgr = VtAccountManager::GetInstance();
-	int selAcnt = 0;
-	std::string acntName;
 	
-	for (auto it = acntMgr->AccountMap.begin(); it != acntMgr->AccountMap.end(); ++it)
-	{
+	std::string acntName;
+	std::map<std::string, int> comboMap;
+	for (auto it = acntMgr->AccountMap.begin(); it != acntMgr->AccountMap.end(); ++it) {
 		VtAccount* acnt = it->second;
 		acntName = acnt->AccountNo;
 		acntName.append(_T(" "));
 		acntName.append(acnt->AccountName);
 		int index = _ComboAccount.AddString(acntName.c_str());
 		_ComboAccount.SetItemDataPtr(index, acnt);
-		if (index == 0)
-		{
-			selAcnt = index;
-		}
-
-		if (acnt->AccountLevel() == 0)
-		{
+		comboMap[acnt->AccountNo] = index;
+		if (acnt->AccountLevel() == 0) {
 			std::vector<VtAccount*>& subAcntList = acnt->GetSubAccountList();
-			for (auto it = subAcntList.begin(); it != subAcntList.end(); ++it)
-			{
+			for (auto it = subAcntList.begin(); it != subAcntList.end(); ++it) {
 				VtAccount* subAcnt = *it;
 				acntName = subAcnt->AccountNo;
 				acntName.append(_T(" "));
 				acntName.append(subAcnt->AccountName);
 				index = _ComboAccount.AddString(acntName.c_str());
 				_ComboAccount.SetItemDataPtr(index, subAcnt);
-				if (_DefaultAccount.compare(subAcnt->AccountNo) == 0) { // 정해진 계좌가 있으면 선택
-					selAcnt = index;
-				}
+				comboMap[subAcnt->AccountNo] = index;
 			}
-		}
-		if (_DefaultAccount.compare(acnt->AccountNo) == 0) { // 정해진 계좌가 있으면 선택
-			selAcnt = index;
 		}
 	}
 	
-	if (selAcnt != -1)
-	{
-		_ComboAccount.SetCurSel(selAcnt);
-		_Account = (VtAccount*)_ComboAccount.GetItemDataPtr(selAcnt);
-		if (_Account->hasValidPassword())
-			_Account->GetAccountInfoNFee(1);
-	}
+	if (comboMap.size() == 0)
+		return;
+	
+	int selAcnt = 0;
+	auto it = comboMap.find(_DefaultAccount);
+	it == comboMap.end() ? selAcnt = 0 : selAcnt = it->second;
+	_ComboAccount.SetCurSel(selAcnt);
+	_Account = (VtAccount*)_ComboAccount.GetItemDataPtr(selAcnt);
+	if (_Account->hasValidPassword())
+		_Account->GetAccountInfoNFee(1);
 }
 
 

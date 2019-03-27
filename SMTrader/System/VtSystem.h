@@ -250,6 +250,7 @@ public:
 	bool PutEntranceOrder(VtPositionType position);
 	bool PutLiqOrder(VtPosition* posi);
 	std::pair<int, int> GetOrderPrice();
+	void RegisterRealtimeSymbolEvent();
 protected:
 	std::mutex _LiqMutex;
 	int GetOrderPrice(VtPositionType position);
