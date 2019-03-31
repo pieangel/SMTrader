@@ -179,7 +179,23 @@ void VtAccountManager::FileterAccount()
 			AddAccount(acnt);
 		}
 		return;
+	} 
+	else { // 새로 추가된 계좌들을 찾아서 생성해 준다.
+		for (auto it = ServerAccountMap.begin(); it != ServerAccountMap.end(); ++it) {
+			auto ito = AccountMap.find(it->second.account_no);
+			if (ito == AccountMap.end()) { // 기존 계좌에 없는 경우는 새로 생성해서 추가해 준다.
+				VtAccount* acnt = new VtAccount();
+				acnt->AccountNo = it->second.account_no;
+				acnt->AccountName = it->second.account_name;
+				acnt->Type = it->second.account_type;
+				acnt->Enable(true);
+				acnt->CreateDefaultSubAccount();
+				AddAccount(acnt);
+			}
+		}
 	}
+	
+	
 	// 실계좌에 없는 것들은 지워준다.
 	for (auto it = AccountMap.cbegin(); it != AccountMap.cend(); )
 	{

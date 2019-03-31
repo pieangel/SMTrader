@@ -251,6 +251,7 @@ private:
 	/// </summary>
 	VtAccount* _CurAccount = nullptr;
 	std::mutex m_;
+	std::mutex _OrderMutex;
 	/// <summary>
 	/// 체결된 주문을 처리함.
 	/// </summary>

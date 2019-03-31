@@ -359,7 +359,9 @@ void VtOrderManager::PutOrder(int chartId, VtOrderCmd cmd, int qty, double price
 void VtOrderManager::PutOrder(HdOrderRequest&& request)
 {
 	VtHdClient* client = VtHdClient::GetInstance();
+	_OrderMutex.lock();
 	client->PutOrder(std::move(request));
+	_OrderMutex.unlock();
 }
 
 void VtOrderManager::ChangeOrder(VtOrder* oldOrder, double newValue)

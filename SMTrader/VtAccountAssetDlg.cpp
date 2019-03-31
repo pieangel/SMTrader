@@ -44,7 +44,7 @@ END_MESSAGE_MAP()
 
 
 void VtAccountAssetDlg::Save(simple::file_ostream<same_endian_type>& ss)
-{
+{#Â÷Â÷
 	CRect rcWnd;
 	GetWindowRect(rcWnd);
 	ss << rcWnd.left << rcWnd.top << rcWnd.right << rcWnd.bottom;
