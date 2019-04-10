@@ -40,6 +40,7 @@ void VtOrderGridConfig::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_CHECK_SHOW_PLCONFIGWND, _CheckShowPLConfigWnd);
 	DDX_Control(pDX, IDC_CHECK_SHOW_STOPCOL, _CheckShowStopCol);
 	DDX_Control(pDX, IDC_CHECK_SHOW_TICKWND, _CheckShowTickWnd);
+	DDX_Control(pDX, IDC_CHECK_FILTER_HOGA, _CheckFilterHoga);
 }
 
 
@@ -56,6 +57,7 @@ BEGIN_MESSAGE_MAP(VtOrderGridConfig, CDialogEx)
 	ON_BN_CLICKED(IDC_CHECK_SHOW_COUNTCOL, &VtOrderGridConfig::OnBnClickedCheckShowCountcol)
 	ON_EN_CHANGE(IDC_EDIT_TICK_COUNT, &VtOrderGridConfig::OnEnChangeEditTickCount)
 	ON_EN_CHANGE(IDC_EDIT_CELL_HEIGHT, &VtOrderGridConfig::OnEnChangeEditCellHeight)
+	ON_BN_CLICKED(IDC_CHECK_FILTER_HOGA, &VtOrderGridConfig::OnBnClickedCheckFilterHoga)
 END_MESSAGE_MAP()
 
 
@@ -268,6 +270,14 @@ BOOL VtOrderGridConfig::OnInitDialog()
 	else {
 		((CButton*)GetDlgItem(IDC_CHECK_SHOW_PLCONFIGWND))->SetCheck(BST_UNCHECKED);
 	}
+
+	if (_CenterWnd->UseHogaSiseFilter()) {
+		_CheckFilterHoga.SetCheck(BST_CHECKED);
+	}
+	else {
+		_CheckFilterHoga.SetCheck(BST_UNCHECKED);
+	}
+
 	// TODO:  Add extra initialization here
 	CString text;
 	text.Format(_T("%d"), _CenterWnd->GetCellHeight());
@@ -304,4 +314,17 @@ void VtOrderGridConfig::OnEnChangeEditCellHeight()
 	// with the ENM_CHANGE flag ORed into the mask.
 
 	// TODO:  Add your control notification handler code here
+}
+
+
+void VtOrderGridConfig::OnBnClickedCheckFilterHoga()
+{
+	if (!_CenterWnd)
+		return;
+	bool flag = false;
+	if (_CheckFilterHoga.GetCheck() == BST_CHECKED)
+		flag = true;
+	else
+		flag = false;
+	_CenterWnd->UseHogaSiseFilter(flag);
 }

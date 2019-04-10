@@ -61,6 +61,9 @@ public:
 	std::map<int, VtOrder*> GetRemainMap() {
 		return RemainMap;
 	}
+
+	void RefreshAcceptedOrders();
+	void RefreshAcceptedOrder(int orderNo);
 private:
 	// ¿‹∞Ì ¡÷πÆ ∏ 
 	std::map<int, VtOrder*> RemainMap;

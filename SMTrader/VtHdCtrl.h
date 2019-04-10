@@ -233,4 +233,9 @@ private:
 	bool _Blocked = false;
 	//VtChartDataCollector* _DataCollector;
 	void HandleRealData(std::string symCode, int time, int value);
+	/// <summary>
+	/// 주문에 오류가 생겼을 때 주문목록의 상태를 갱신해 준다.
+	/// 특히 정정이나 취소시 이미 체결된 주문이 있을 때 그 목록을 없애 준다.
+	/// </summary>
+	void RefreshAcceptedOrderByError(int reqId);
 };

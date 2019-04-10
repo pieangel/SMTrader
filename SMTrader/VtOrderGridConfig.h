@@ -51,4 +51,6 @@ public:
 	CButton _CheckShowTickWnd;
 	afx_msg void OnEnChangeEditTickCount();
 	afx_msg void OnEnChangeEditCellHeight();
+	afx_msg void OnBnClickedCheckFilterHoga();
+	CButton _CheckFilterHoga;
 };

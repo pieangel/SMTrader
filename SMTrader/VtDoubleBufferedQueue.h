@@ -9,7 +9,7 @@ public:
 	//
 	// Constructor - construct a queue with the given buffer size
 	//
-	VtDoubleBufferedQueue(int bufferSize = 100) :
+	VtDoubleBufferedQueue(int bufferSize = 1000) :
 		bufferLen(0), bufferSize(bufferSize)
 	{
 		buffer0 = buffer = new T[bufferSize];
@@ -32,6 +32,8 @@ public:
 	{
 		std::lock_guard<std::mutex> lock(_mtx);
 		bool canWrite = bufferLen < bufferSize;
+		if (buffer[bufferLen] == datum)
+			return false;
 		if (canWrite) buffer[bufferLen++] = datum;
 		return canWrite;
 	}

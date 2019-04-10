@@ -142,6 +142,7 @@
 #define IDD_SYS_ORDER                   353
 #define IDD_CHART_PROPERTY              354
 #define IDD_ASSET_CONTAINER             355
+#define IDD_SYS_LOG                     356
 #define IDD_REGISTER_USER               357
 #define IDD_ASSET                       358
 #define IDD_LOGIN                       359
@@ -494,8 +495,10 @@
 #define IDC_BTN_FV4                     1034
 #define IDC_RADIO_ATPRICE               1034
 #define IDC_BTN_FV5                     1035
+#define IDC_STATIC_LOG                  1035
 #define IDC_BTN_FV8                     1036
 #define IDC_CHECK_CUT_PROFIT            1036
+#define IDC_CHECK_FILTER_HOGA           1036
 #define IDC_BTN_FV6                     1037
 #define IDC_CHECK_CUT_LOSS              1037
 #define IDC_BTN_FV7                     1038
@@ -665,9 +668,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        355
+#define _APS_NEXT_RESOURCE_VALUE        358
 #define _APS_NEXT_COMMAND_VALUE         32797
-#define _APS_NEXT_CONTROL_VALUE         1035
+#define _APS_NEXT_CONTROL_VALUE         1037
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif

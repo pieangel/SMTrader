@@ -503,7 +503,6 @@ void VtOrderManager::AddPreOrder(VtOrder* order)
 
 void VtOrderManager::AddAccepted(VtOrder* order)
 {
-	//AcceptedList.push_back(order);
 	if (!order)
 		return;
 
@@ -1271,8 +1270,7 @@ void VtOrderManager::OnOrderReceivedHd(VtOrder* order)
 	if (!order)
 		return;
 	VtOrder* exOrder = FindOrder(order->orderNo);
-	if (!exOrder)
-	{
+	if (!exOrder) {
 		AddOrder(order);
 		order->state = VtOrderState::OrderReceived;
 	}
@@ -1284,46 +1282,55 @@ void VtOrderManager::OnOrderAcceptedHd(VtOrder* order)
 {
 	if (!order)
 		return;
+	// 주문목록에 주문이 없다면 외부 주문이다.
 	VtOrder* exOrder = FindOrder(order->orderNo);
 	VtTotalOrderManager* totalOrderMgr = VtTotalOrderManager::GetInstance();
+	// 주문 목록에 주문이 없는 경우는 주문 목록에 추가해 준다.
 	if (!exOrder) {
 		AddOrder(order);
 		totalOrderMgr->AddOrder(order);
 	}
-	else {
-		totalOrderMgr->AddOrder(exOrder);
-	}
-	
+
 	VtProductOrderManager* prdtOrderMgr = _ProductOrderManagerSelector->FindAdd(order->shortCode);
 	// 한번이라도 주문이 나왔다는 것을 표시해 준다.
 	prdtOrderMgr->Init(true);
-	if (order->orderType == VtOrderType::Change) {
-		// 주문상태를 접수로 변경
-		order->state = VtOrderState::Accepted;
+	if (order->orderType == VtOrderType::Change) { // 정정 주문
 		// 상품별 주문 관리자의 접수 주문 목록에서 제거한다.
 		prdtOrderMgr->RemoveAcceptedOrder(order->oriOrderNo);
 		// 상품별 주문 관리자의 접수 주문 목록에 추가한다.
-		prdtOrderMgr->AddAccepted(order);
+		if (order->state != VtOrderState::Filled) { // 혹시 모를 주문 역전을 대비해서 이미 체결된 주문은 추가하지 않는다.
+			// 개별 상품 접수주문에 추가
+			prdtOrderMgr->AddAccepted(order);
+			// 전체 접수주문에 추가
+			AddAccepted(order);
+			// 주문 상태 변경
+			order->state = VtOrderState::Accepted;
+		}
 		// 기존 주문은 제거한다.
 		RemoveAccepted(order->oriOrderNo);
-		// 접수 주문에 추가한다.
-		AddAccepted(order);
-	} else if (order->orderType == VtOrderType::Cancel) {
+	} else if (order->orderType == VtOrderType::Cancel) { // 취소 주문
 		// 기존 주문은 제거한다.
 		RemoveAccepted(order->oriOrderNo);
 		// 상품별 주문 관리자의 접수 주문 목록에서 제거한다.
 		prdtOrderMgr->RemoveAcceptedOrder(order->oriOrderNo);
-	} else {
-		// 이 단계가 최종 접수된 상태이다.
-		if (order->modifiedOrderCount == 0) {
-			// 주문상태를 접수로 변경
+		// 주문상태를 접수로 변경
+		if (order->state != VtOrderState::Filled) // 혹시 모를 주문 역전을 대비해서 이미 체결된 주문은 추가하지 않는다.
 			order->state = VtOrderState::Accepted;
+	} else { // 신규주문일때
+		// 이 단계가 최종 접수된 상태이다.
+		if (order->modifiedOrderCount == 0) { // 신규 주문만 이 값을 가진다.
 			// 상품별 주문 관리자의 접수 주문 목록에 추가한다.
-			prdtOrderMgr->AddAccepted(order);
+			if (order->state != VtOrderState::Filled) {// 혹시 모를 주문 역전을 대비해서 이미 체결된 주문은 추가하지 않는다.
+				// 개별 상품 접수주문에 추가									   
+				prdtOrderMgr->AddAccepted(order);
+				// 전체 접수주문에 추가
+				AddAccepted(order);
+				// 주문 상태 변경
+				order->state = VtOrderState::Accepted;
+			}				
 			// 기존 주문은 제거한다.
 			RemoveAccepted(order->oriOrderNo);
-			// 접수 주문에 추가한다.
-			AddAccepted(order);
+
 		}
 	}
 }
@@ -1423,6 +1430,35 @@ int VtOrderManager::GetAcceptedCount()
 bool VtOrderManager::GetInit()
 {
 	return _ProductOrderManagerSelector->GetInit();
+}
+
+void VtOrderManager::RefreshAcceptedOrders(std::string symCode)
+{
+	for (auto it = AcceptedMap.cbegin(); it != AcceptedMap.cend();) {
+		VtOrder* order = it->second;
+		if (order->state == VtOrderState::Filled ||
+			order->state == VtOrderState::Settled) {
+			AcceptedMap.erase(it++);  
+		}
+		else {
+			++it;
+		}
+	}
+
+	VtProductOrderManager* prdtOrderMgr = FindAddProductOrderManager(symCode);
+	prdtOrderMgr->RefreshAcceptedOrders();
+}
+
+void VtOrderManager::RefreshAcceptedOrder(int orderNo)
+{
+	auto it = AcceptedMap.find(orderNo);
+	if (it != AcceptedMap.end()) {
+		VtOrder* order = it->second;
+		if (order->state == VtOrderState::Filled ||
+			order->state == VtOrderState::Settled) {
+			AcceptedMap.erase(it);
+		}
+	}
 }
 
 VtProductOrderManager* VtOrderManager::GetProductOrderManager(std::string symbolCode)

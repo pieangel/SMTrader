@@ -54,6 +54,7 @@
 #include "VtOutSystemManager.h"
 #include "VtOutSignalDefManager.h"
 #include "VtOutSystemOrderManager.h"
+#include "VtSystemLogDlg.h"
 extern TApplicationFont g_Font;
 
 #ifdef _DEBUG
@@ -143,6 +144,8 @@ CMainFrame::~CMainFrame()
 		delete _FildMonitor;
 		_FildMonitor = nullptr;
 	}
+
+	ResetSysLogDlg();
 }
 
 int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
@@ -685,6 +688,8 @@ void CMainFrame::OnReceiveComplete()
 		saveMgr->LoadOrderWndList(_T("orderwndlist.dat"), this);
 
 		SetTimer(SysLiqTimer, 10000, NULL);
+
+		_LoadComplete = true;
 	}
 }
 
@@ -737,7 +742,6 @@ void CMainFrame::OpenFundJango()
 	fundPLDlg->Create(IDD_MINI_JANGO_FUND, this);
 	fundPLDlg->ShowWindow(SW_SHOW);
 }
-
 
 void CMainFrame::CreateFileWatch()
 {
@@ -830,6 +834,48 @@ bool CMainFrame::ClearAllResources()
 	return true;
 }
 
+void CMainFrame::UpdateSysLog()
+{
+	if (!GetSafeHwnd())
+		return;
+	CRect rcWnd;
+	if (!_SysLogDlg) {
+		_SysLogDlg = new VtSystemLogDlg();
+		_SysLogDlg->MainFrm = this;
+		_SysLogDlg->Create(IDD_SYS_LOG, this);
+		_SysLogDlg->GetWindowRect(rcWnd);
+		int width = rcWnd.Width();
+		int height = rcWnd.Height();
+		rcWnd.left = 0;
+		rcWnd.top = 0;
+		rcWnd.right = rcWnd.left + width;
+		rcWnd.bottom = rcWnd.top + height;
+		_SysLogDlg->MoveWindow(rcWnd);
+		_SysLogDlg->ShowWindow(SW_SHOW);
+	}
+	else {
+		_SysLogDlg->ShowWindow(SW_SHOW);
+		_SysLogDlg->GetWindowRect(rcWnd);
+		int width = rcWnd.Width();
+		int height = rcWnd.Height();
+		rcWnd.left = 0;
+		rcWnd.top = 0;
+		rcWnd.right = rcWnd.left + width;
+		rcWnd.bottom = rcWnd.top + height;
+		_SysLogDlg->MoveWindow(rcWnd);
+		_SysLogDlg->RefreshGrid();
+	}
+}
+
+void CMainFrame::ResetSysLogDlg()
+{
+// 	if (_SysLogDlg) {
+// 		_SysLogDlg->DestroyWindow();
+// 		delete _SysLogDlg;
+// 		_SysLogDlg = nullptr;
+// 	}
+}
+
 void CMainFrame::GetSymbolCode()
 {
 	LOG_F(INFO, _T("GetSymbolCode was called!"));
@@ -843,6 +889,11 @@ void CMainFrame::GetSymbolCode()
 
 void CMainFrame::SaveSettings()
 {
+	// 완벽하게 환경이 로드되지 않았다면 이 과정을 수행하지 않는다.
+	// 오류로 인해서 프로그램이 종료되는 것을 방지하기 위함이다.
+	if (!_LoadComplete)
+		return;
+
 	VtSaveManager* saveMgr = VtSaveManager::GetInstance();
 	saveMgr->SaveFundList(_T("fundlist.dat"));
 	saveMgr->SaveAccountList(_T("accountlist.dat"));
@@ -864,7 +915,7 @@ void CMainFrame::LoadSettings()
 
 void CMainFrame::OnServerMsg()
 {
-
+	UpdateSysLog();
 }
 
 void CMainFrame::OnOpenSavedScreen()

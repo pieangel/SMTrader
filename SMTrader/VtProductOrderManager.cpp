@@ -452,6 +452,32 @@ void VtProductOrderManager::RegisterOrderPosition(VtOrder* order, VtPosition* po
 	}
 }
 
+void VtProductOrderManager::RefreshAcceptedOrders()
+{
+	for (auto it = AcceptedMap.cbegin(); it != AcceptedMap.cend();) {
+		VtOrder* order = it->second;
+		if (order->state == VtOrderState::Filled ||
+			order->state == VtOrderState::Settled) {
+			AcceptedMap.erase(it++);
+		}
+		else {
+			++it;
+		}
+	}
+}
+
+void VtProductOrderManager::RefreshAcceptedOrder(int orderNo)
+{
+	auto it = AcceptedMap.find(orderNo);
+	if (it != AcceptedMap.end()) {
+		VtOrder* order = it->second;
+		if (order->state == VtOrderState::Filled ||
+			order->state == VtOrderState::Settled) {
+			AcceptedMap.erase(it);
+		}
+	}
+}
+
 void VtProductOrderManager::ResetPositionValue(VtPosition* posi)
 {
 	if (!posi)

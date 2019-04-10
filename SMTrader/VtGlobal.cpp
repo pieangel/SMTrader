@@ -18,7 +18,32 @@ COLORREF VtGlobal::MainTextColor = RGB(0, 0, 0);
 VtTime VtGlobal::OpenTime;
 VtTime VtGlobal::CloseTime;
 VtStrategyToolWnd* VtGlobal::StrategyToolWnd = nullptr;
+size_t VtGlobal::_MaxLog = 200;
+std::list<VtSysLog> VtGlobal::_SysLogList;
+
+void VtGlobal::PushLog(VtSysLog&& log)
+{
+	_SysLogList.push_front(log);
+	if (_SysLogList.size() > _MaxLog)
+		_SysLogList.pop_back();
+}
+
 std::string VtGlobal::LoginUserID;
+
+std::string VtGlobal::GetDateTime()
+{
+	time_t rawtime;
+	struct tm * timeinfo;
+	char buffer[80];
+
+	time(&rawtime);
+	timeinfo = localtime(&rawtime);
+
+	strftime(buffer, sizeof(buffer), "%d-%m-%Y %H:%M:%S", timeinfo);
+	std::string str(buffer);
+
+	return str;
+}
 
 std::pair<int, int> VtGlobal::GetScaleFact()
 {

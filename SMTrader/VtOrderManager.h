@@ -374,6 +374,8 @@ public:
 	void CalcTotalProfitLoss(VtSymbol* symbol);
 	int GetAcceptedCount();
 	bool GetInit();
+	void RefreshAcceptedOrders(std::string symCode);
+	void RefreshAcceptedOrder(int orderNo);
 public:
 	//VtProductOrderManagerSelector* ProductOrderManagerSelector() const { return _ProductOrderManagerSelector; }
 	//void ProductOrderManagerSelector(VtProductOrderManagerSelector* val) { _ProductOrderManagerSelector = val; }

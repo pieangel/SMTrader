@@ -127,5 +127,5 @@ void VtAssetPage::OnReceiveAccountInfo()
 void VtAssetPage::OnBnClickedBtnCommit()
 {
 	if (_Account && _Account->hasValidPassword())
-		_Account->GetAccountInfoNFee(1);
+		_Account->GetAsset();
 }

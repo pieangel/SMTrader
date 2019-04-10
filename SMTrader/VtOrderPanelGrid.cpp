@@ -37,9 +37,8 @@
 #include "VtCutManager.h"
 #include "VtGlobal.h"
 #include "XFormatNumber.h"
+#include <algorithm> 
 
-using namespace std;
-using namespace std::chrono;
 
 using Poco::trim;
 using Poco::NumberFormatter;
@@ -171,7 +170,10 @@ void VtOrderPanelGrid::OnSetup()
 	ShowUpperCtrls();
 	EnableMenu(TRUE);
 
-	SetTimer(RefreshTimer, 100, NULL);
+	//SetTimer(RefreshTimer, 1, NULL);
+	_LastAddedTime = high_resolution_clock::now();
+	_HogaTime = high_resolution_clock::now();
+	_QuoteTime = high_resolution_clock::now();
 }
 
 void VtOrderPanelGrid::PutOrder(CString price, VtPositionType posi)
@@ -1555,6 +1557,7 @@ void VtOrderPanelGrid::OnGridWheel(int oldCenter, int newCenter)
 	ChangeCenter(oldCenter, newCenter);
 	
 	DrawMovingRect(_MMCol, _MMRow);
+
 }
 
 void VtOrderPanelGrid::SetOrderInfo()
@@ -2323,6 +2326,19 @@ void VtOrderPanelGrid::SetPositionInfo(CellPosMap& refreshMap)
 			ShowPosition(refreshMap, nullptr, sym);
 		else
 			ShowPosition(refreshMap, &posi, sym);
+	}
+}
+
+void VtOrderPanelGrid::RefreshGrid()
+{
+	int count;
+	int *packets;
+	if ((count = _RefreshBuf.get(&packets)) <= 0) {
+		return;
+	}
+
+	for (int i = 0; i < count; i++) {
+		RefreshInfo2(packets[i]);
 	}
 }
 
@@ -3491,6 +3507,138 @@ int VtOrderPanelGrid::FindNearestCellRow(VtPosition* posi)
 void VtOrderPanelGrid::PutOrderByRemain(int price)
 {
 
+}
+
+void VtOrderPanelGrid::RefreshInfo()
+{
+	for (int i = 0; i < 10; i++) {
+		RefreshInfo(4);
+	}
+}
+
+void VtOrderPanelGrid::RefreshInfo(int type)
+{
+	CString msg;
+
+	if (_ShowingCells)
+		return;
+	_ShowingCells = true;
+	
+	switch (type)
+	{
+	case 1:
+		UpdateFilled();
+		break;
+	case 2:
+		UpdateAccepted();
+		break;
+	case 3:
+		UpdateUnfilled();
+		break;
+	case 4:
+		UpdateQuote();
+		break;
+	case 5:
+		UpdateHoga();
+		break;
+	default:
+		break;
+	}
+	
+	_ShowingCells = false;
+}
+
+void VtOrderPanelGrid::RefreshInfo2(int type)
+{
+	switch (type)
+	{
+	case 1:
+		UpdateFilled();
+		break;
+	case 2:
+		UpdateAccepted();
+		break;
+	case 3:
+		UpdateUnfilled();
+		break;
+	case 4:
+		UpdateQuote();
+		break;
+	case 5:
+		UpdateHoga();
+		break;
+	default:
+		break;
+	}
+}
+
+void VtOrderPanelGrid::UpdateHoga()
+{
+	CellPosMap refreshMap;
+	ClearOldCloseLine(refreshMap);
+	ClearOldHogas(refreshMap);
+	ClearTotalHoga(refreshMap);
+	ClearOldOrders(refreshMap);
+	SetHogaInfo(refreshMap);
+	SetCloseLine(refreshMap);
+	SetOrderInfo(refreshMap);
+	ShowTotalOrder(refreshMap);
+	ShowTotalHoga(refreshMap);
+	RefreshCells(refreshMap);
+}
+
+void VtOrderPanelGrid::UpdateQuote()
+{
+	CellPosMap refreshMap;
+	ClearOldQuotes(refreshMap);
+	ClearOldOrders(refreshMap);
+
+	if (_CenterWnd->FixedCenter())
+		ShowCenterValueByFixed(refreshMap);
+	else
+		RefreshCenterValue(refreshMap);
+
+	SetQuoteInfo(refreshMap);
+	SetPositionInfo(refreshMap);
+	SetOrderInfo(refreshMap);
+
+	ShowTotalOrder(refreshMap);
+	ShowTotalHoga(refreshMap);
+
+	RefreshCells(refreshMap);
+}
+
+void VtOrderPanelGrid::UpdateAccepted()
+{
+	CellPosMap refreshMap;
+	ClearOldOrders(refreshMap);
+	SetOrderInfo(refreshMap);
+	ShowTotalOrder(refreshMap);
+	RefreshCells(refreshMap);
+}
+
+void VtOrderPanelGrid::UpdateFilled()
+{
+	CellPosMap refreshMap;
+
+	ClearOldOrders(refreshMap);
+	SetOrderInfo(refreshMap);
+
+	ClearOldPosition(refreshMap);
+	SetPositionInfo(refreshMap);
+	ShowTotalOrder(refreshMap);
+	ClearOldStopOrders(refreshMap);
+	SetStopOrderInfo(refreshMap);
+	RefreshCells(refreshMap);
+}
+
+void VtOrderPanelGrid::UpdateUnfilled()
+{
+	CellPosMap refreshMap;
+	ClearOldOrders(refreshMap);
+	SetOrderInfo(refreshMap);
+	ShowTotalOrder(refreshMap);
+	RefreshCells(refreshMap);
 }
 
 void VtOrderPanelGrid::SetHogaInfo(VtHoga* hoga)
@@ -4916,17 +5064,14 @@ void VtOrderPanelGrid::SetSelect(int col, int row)
 void VtOrderPanelGrid::ShowSelect(int col, int row)
 {
 	RedrawCell(_OldSelectedCol, _OldSelectedRow);
-	if (row >= _StartRowForValue && row <= _EndRowForValue)
-	{
+	if (row >= _StartRowForValue && row <= _EndRowForValue) {
 		GetCellRect(col, row, &rcSelected);
 		SetClickRect(&rcSelected);
 		RedrawCell(col, row);
 	}
-	else
-	{
+	else {
 		SetClickRect(nullptr);
-		if (_OldSelectedRow != -1)
-		{
+		if (_OldSelectedRow != -1) {
 			RedrawCell(_OldSelectedCol, _OldSelectedRow);
 		}
 	}
@@ -6948,26 +7093,17 @@ void VtOrderPanelGrid::ShowCenterValueByFixed(CellPosMap& refreshMap)
 
 void VtOrderPanelGrid::OnReceiveHoga(VtSymbol* sym)
 {
-// 	if (!sym)
-// 		return;
-// 	if (_CenterWnd && _CenterWnd->FixedCenter())
-// 		OnReceiveQuote(sym);
-// 
-// 	if (_ShowingCells)
-// 		return;
-// 	_ShowingCells = true;
-// 	CellPosMap refreshMap;
-// 	ClearOldCloseLine(refreshMap);
-// 	ClearOldHogas(refreshMap);
-// 	ClearTotalHoga(refreshMap);
-// 	ClearOldOrders(refreshMap);
-// 	SetHogaInfo(refreshMap);
-// 	SetCloseLine(refreshMap);
-// 	SetOrderInfo(refreshMap);
-// 	ShowTotalOrder(refreshMap);
-// 	ShowTotalHoga(refreshMap);
-// 	RefreshCells(refreshMap);
-// 	_ShowingCells = false;
+	auto start = high_resolution_clock::now();
+
+	auto duration = duration_cast<microseconds>(start - _HogaTime);
+
+	if (_CenterWnd->UseHogaSiseFilter() && duration.count() < DelayTime) {
+		return;
+	}
+
+	_HogaTime = start;
+
+	RefreshInfo(5);
 }
 
 void VtOrderPanelGrid::OnReceiveHoga()
@@ -6989,30 +7125,18 @@ void VtOrderPanelGrid::OnReceiveQuote(VtSymbol* sym)
 	CheckProfitLossTouchHd(sym->Quote.intClose);
 	// 스탑 주문이 종가에 닿았는지 검사한다.
 	CheckStopTouchedHd(sym->Quote.intClose);
-		
-// 	if (_ShowingCells)
-// 		return;
-// 	_ShowingCells = true;
 
-// 	CellPosMap refreshMap;
-// 	ClearOldQuotes(refreshMap);
-// 	ClearOldOrders(refreshMap);
-// 
-// 	if (_CenterWnd->FixedCenter())
-// 		ShowCenterValueByFixed(refreshMap);
-// 	else
-// 		RefreshCenterValue(refreshMap);
-// 
-// 	SetQuoteInfo(refreshMap);
-// 	SetPositionInfo(refreshMap);
-// 	SetOrderInfo(refreshMap);
-// 
-// 	ShowTotalOrder(refreshMap);
-// 	ShowTotalHoga(refreshMap);
-// 
-// 	RefreshCells(refreshMap);
-// 
-// 	_ShowingCells = false;
+	auto start = high_resolution_clock::now();
+
+	auto duration = duration_cast<microseconds>(start - _QuoteTime);
+
+	if (_CenterWnd->UseHogaSiseFilter() && duration.count() < DelayTime) {
+		return;
+	}
+
+	_QuoteTime = start;
+
+	RefreshInfo(4);
 }
 
 void VtOrderPanelGrid::OnReceiveQuote()
@@ -7043,7 +7167,6 @@ void VtOrderPanelGrid::OnSymbolMaster(VtSymbol* sym)
 	SetHogaInfo(refreshMap);
 
 	SetOrderInfo(refreshMap);
-	//ShowOrderInfo(refreshMap);
 
 	SetStopOrderInfo(refreshMap);
 	SetCloseLine(refreshMap);
@@ -7066,24 +7189,12 @@ void VtOrderPanelGrid::OnOrderReceivedHd(VtOrder* order)
 
 void VtOrderPanelGrid::OnOrderAcceptedHd(VtOrder* order)
 {
-	_ShowingCells = true;
-	CellPosMap refreshMap;
-	ClearOldOrders(refreshMap);
-	SetOrderInfo(refreshMap);
-	ShowTotalOrder(refreshMap);
-	RefreshCells(refreshMap);
-	_ShowingCells = false;
+	RefreshInfo(2);
 }
 
 void VtOrderPanelGrid::OnOrderUnfilledHd(VtOrder* order)
 {
-	/*
-	CellPosMap refreshMap;
-	ClearOldOrders(refreshMap);
-	SetOrderInfo(refreshMap);
-	ShowTotalOrder(refreshMap);
-	RefreshCells(refreshMap);
-	*/
+	RefreshInfo(3);
 }
 
 // 익절과 손절은 체결시 스탑주문으로만 나간다.
@@ -7093,20 +7204,8 @@ void VtOrderPanelGrid::OnOrderFilledHd(VtOrder* order)
 {
 	if (!order)
 		return;
-	_ShowingCells = true;
-	CellPosMap refreshMap;
-
-	ClearOldOrders(refreshMap);
-	SetOrderInfo(refreshMap);
-
-	ClearOldPosition(refreshMap);
-	SetPositionInfo(refreshMap);
-	ShowTotalOrder(refreshMap);
-	_CutMgr->AddStopOrderForFilled(_CenterWnd->Symbol(), order);
-	ClearOldStopOrders(refreshMap);
-	SetStopOrderInfo(refreshMap);
-	RefreshCells(refreshMap);
-	_ShowingCells = false;
+ 	_CutMgr->AddStopOrderForFilled(_CenterWnd->Symbol(), order);
+	RefreshInfo(1);
 }
 
 void VtOrderPanelGrid::SetOrderConfigMgr(VtOrderConfigManager* val)
@@ -7125,24 +7224,7 @@ void VtOrderPanelGrid::OnTimer(UINT_PTR nIDEvent)
 	if (!_CenterWnd || !_CenterWnd->Symbol())
 		return;
 	if (nIDEvent == RefreshTimer) {
-		if (_ShowingCells)
-			return;
-
-		CellPosMap refreshMap;
-		ClearOldValues(refreshMap);
-		if (_CenterWnd->FixedCenter())
- 			ShowCenterValueByFixed(refreshMap);
- 		else
- 			RefreshCenterValue(refreshMap);
-		SetQuoteInfo(refreshMap);
-		SetPositionInfo(refreshMap);
-		SetHogaInfo(refreshMap);
-		SetOrderInfo(refreshMap);
-		SetStopOrderInfo(refreshMap);
-		SetCloseLine(refreshMap);
-
-		ShowTotalHoga(refreshMap);
-		RefreshCells(refreshMap);
+		RefreshInfo();
 	}
 	VtGrid::OnTimer(nIDEvent);
 }
@@ -7150,4 +7232,10 @@ void VtOrderPanelGrid::OnTimer(UINT_PTR nIDEvent)
 void VtOrderPanelGrid::StopTimer()
 {
 	KillTimer(RefreshTimer);
+}
+
+void VtOrderPanelGrid::AddRefresh(int data)
+{
+	_RefreshBuf.put(data);
+	//SetTimer(RefreshTimer, 1, NULL);
 }

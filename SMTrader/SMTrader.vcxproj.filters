@@ -1444,6 +1444,15 @@
     <ClInclude Include="cryptor.hpp">
       <Filter>Crypt</Filter>
     </ClInclude>
+    <ClInclude Include="VtSystemLogDlg.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="VtSysLogGrid.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="VtRefreshManager.h">
+      <Filter>OrderWindow</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ChildFrm.cpp">
@@ -2597,6 +2606,15 @@
     </ClCompile>
     <ClCompile Include="VtUniqueOrderID.cpp">
       <Filter>Order</Filter>
+    </ClCompile>
+    <ClCompile Include="VtSystemLogDlg.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="VtSysLogGrid.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="VtRefreshManager.cpp">
+      <Filter>OrderWindow</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

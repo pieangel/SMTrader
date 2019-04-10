@@ -59,6 +59,7 @@ private:
 template <typename T>
 void VtQueue<T>::Clear()
 {
+	std::unique_lock<std::mutex> mlock(mutex_);
 	std::queue<T> empty;
 	std::swap(queue_, empty);
 }

@@ -3,9 +3,17 @@
 #include <map>
 #include <string>
 #include <tuple>
+#include <list>
 #include "Global/TemplateSingleton.h"
 #include "Global/VtDefine.h"
 #include "VtIndexDefine.h"
+#include <ctime>
+
+struct VtSysLog {
+	std::string LogTime;
+	int ErrorCode;
+	std::string LogText;
+};
 
 class VtSymbolSelector;
 class VtSymbol;
@@ -90,6 +98,7 @@ public:
 	static int GetDate(VtDate date);
 	static int GetTime(VtTime time);
 	static std::string LoginUserID;
+	static std::string GetDateTime();
 	
 	/// <summary>
 	/// 영업 시작시간
@@ -100,6 +109,10 @@ public:
 	/// </summary>
 	static VtTime CloseTime;
 	static VtStrategyToolWnd* StrategyToolWnd;
+	static void PushLog(VtSysLog&& log);
+	static std::list<VtSysLog>& GetSysLogList() {
+		return _SysLogList;
+	}
 private:
 
 	VtExchangeName _SeLExcIndex;
@@ -114,6 +127,7 @@ private:
 	cWaitDialog* _WaitDlg = nullptr;
 	bool _Waiting = false;
 	VtServerType _ServerType;
-
+	static std::list<VtSysLog> _SysLogList;
+	static size_t _MaxLog;
 };
 

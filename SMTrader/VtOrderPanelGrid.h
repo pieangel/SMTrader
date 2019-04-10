@@ -10,6 +10,11 @@
 #include "UGrid/CellTypes/UGCTOrder.h"
 #include "VtOrderConfigManager.h"
 #include "Global/VtDefine.h"
+#include "VtDoubleBufferedQueue.h"
+
+#include <chrono> 
+using namespace std;
+using namespace std::chrono;
 
 #define BUTTON_SET_CENTER 123
 #define BUTTON_SELL 124
@@ -46,7 +51,7 @@ enum class VtOrderGridCol {
 	QUANTITY,
 	CENTER
 };
-
+const int DelayTime = 15000; // micro second
 const int RefreshTimer = 0x00000007;
 typedef std::map<VtCellPos, VtCellPos> CellPosMap;
 class VtOrderConfigManager;
@@ -158,6 +163,9 @@ public:
 	void InitButtonCol();
 	void ResetByCenterRow();
 private:
+	std::chrono::time_point<std::chrono::steady_clock> _LastAddedTime;
+	std::chrono::time_point<std::chrono::steady_clock> _HogaTime;
+	std::chrono::time_point<std::chrono::steady_clock> _QuoteTime;
 	std::vector<COLORREF> BuyColor;
 	std::vector<COLORREF> SellColor;
 	std::map<VtOrderGridCol, int> _GridColMap;
@@ -296,6 +304,7 @@ private:
 	void SetOrderArea(int endRow);
 	void ShowCloseLine();
 public:
+	void RefreshGrid();
 	void RefreshOrderPosition();
 	void ResizeGrid(int height);
 	void InitInfo();
@@ -442,6 +451,10 @@ public:
 	void ApplyProfitLossForPosition();
 	int ShowHideOrderGrid(std::vector<bool>& colOptions);
 	void StopTimer();
+	void AddRefresh(int data);
+	void RefreshInfo();
+	void RefreshInfo(int type);
+	void RefreshInfo2(int type);
 private:
 	bool _ShowingQuoteHoga;
 	int _OldOrderWidth;
@@ -471,6 +484,12 @@ private:
 	*/
 	VtCutManager* _CutMgr;
 	void PutOrderByRemain(int price);
+	VtDoubleBufferedQueue<int> _RefreshBuf;
+	void UpdateHoga();
+	void UpdateQuote();
+	void UpdateAccepted();
+	void UpdateFilled();
+	void UpdateUnfilled();
 public:
 	DECLARE_MESSAGE_MAP()
 	afx_msg void OnTimer(UINT_PTR nIDEvent);

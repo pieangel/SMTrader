@@ -379,7 +379,8 @@ int HdScheduler::GetDeposit()
 	HdTaskInfo taskInfo;
 	for (auto it = acntMgr->AccountMap.begin(); it != acntMgr->AccountMap.end(); ++it) {
 		VtAccount* acnt = it->second;
-		acnt->GetDeposit(taskInfo.argVec);
+		if (acnt->hasValidPassword())
+			acnt->GetDeposit(taskInfo.argVec);
 	}
 
 	taskInfo.TaskName = _T("예탁금 정보를 가져오는 중입니다.");
@@ -412,7 +413,8 @@ int HdScheduler::GetCustomProfitLoss()
 
 	for (auto it = acntMgr->AccountMap.begin(); it != acntMgr->AccountMap.end(); ++it) {
 		VtAccount* acnt = it->second;
-		acnt->GetApiCustomerProfitLoss(taskInfo.argVec);
+		if (acnt->hasValidPassword())
+			acnt->GetApiCustomerProfitLoss(taskInfo.argVec);
 	}
 
 	taskInfo.TaskName = _T("손익정보를 가져오는 중입니다.");
@@ -445,7 +447,8 @@ int HdScheduler::GetOutstanding()
 	HdTaskInfo taskInfo;
 	for (auto it = acntMgr->AccountMap.begin(); it != acntMgr->AccountMap.end(); ++it) {
 		VtAccount* acnt = it->second;
-		acnt->GetOutstanding(taskInfo.argVec);
+		if (acnt->hasValidPassword())
+			acnt->GetOutstanding(taskInfo.argVec);
 	}
 
 	taskInfo.TaskName = _T("잔고정보를 가져오는 중입니다.");
@@ -478,7 +481,8 @@ int HdScheduler::GetAcceptedHistory()
 	HdTaskInfo taskInfo;
 	for (auto it = acntMgr->AccountMap.begin(); it != acntMgr->AccountMap.end(); ++it) {
 		VtAccount* acnt = it->second;
-		acnt->GetAcceptedHistory(taskInfo.argVec);
+		if (acnt->hasValidPassword())
+			acnt->GetAcceptedHistory(taskInfo.argVec);
 	}
 
 	taskInfo.TaskName = _T("미체결 정보를 가져오는 중입니다.");

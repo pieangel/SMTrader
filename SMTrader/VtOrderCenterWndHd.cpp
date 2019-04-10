@@ -34,6 +34,7 @@
 #include "VtCutManager.h"
 #include <map>
 #include "VtLayoutManager.h"
+
 using Poco::NumberParser;
 
 extern TApplicationFont g_Font;
@@ -88,6 +89,10 @@ VtOrderCenterWndHd::VtOrderCenterWndHd(CWnd* pParent )
 
 VtOrderCenterWndHd::~VtOrderCenterWndHd()
 {
+	if (_RefreshManager) {
+		delete _RefreshManager;
+		_RefreshManager = nullptr;
+	}
 	if (_ConfigDlg) {
 		_ConfigDlg->DestroyWindow();
 		delete _ConfigDlg;
@@ -219,6 +224,11 @@ int VtOrderCenterWndHd::GetCenterWndCount()
 		return -1;
 }
 
+void VtOrderCenterWndHd::UpdateGrid()
+{
+	PostMessage(WM_REFRESH_GRID, 0, 0);
+}
+
 void VtOrderCenterWndHd::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
@@ -281,6 +291,7 @@ BEGIN_MESSAGE_MAP(VtOrderCenterWndHd, CDialogEx)
 	ON_BN_CLICKED(IDC_BTN_REMAIN_FUND, &VtOrderCenterWndHd::OnBnClickedBtnRemainFund)
 	ON_WM_CTLCOLOR()
 	ON_WM_LBUTTONDOWN()
+	ON_MESSAGE(WM_REFRESH_GRID, &VtOrderCenterWndHd::OnRefreshGrid)
 END_MESSAGE_MAP()
 
 
@@ -579,8 +590,9 @@ void VtOrderCenterWndHd::OnReceiveQuote(VtSymbol* sym)
 
 void VtOrderCenterWndHd::OnSymbolMaster(VtSymbol* sym)
 {
-	if (_OrderPanelGrid.GetSafeHwnd())
+	if (_OrderPanelGrid.GetSafeHwnd()) {
 		_OrderPanelGrid.OnSymbolMaster(sym);
+	}
 }
 
 void VtOrderCenterWndHd::OnReceiveMsg(CString msg)
@@ -597,6 +609,10 @@ void VtOrderCenterWndHd::OnReceiveMsgWithReqId(int id, CString msg)
 
 void VtOrderCenterWndHd::OnClose()
 {
+	if (_RefreshManager) {
+		_RefreshManager->SetReady(true);
+		_RefreshManager->AddTask(-1);
+	}
 	_OrderPanelGrid.StopTimer();
 	// TODO: Add your message handler code here and/or call default
 	CDialogEx::OnClose();
@@ -1404,7 +1420,6 @@ void VtOrderCenterWndHd::OnBnClickedButtonSetting()
 	if (_ParentDlg) {
 		_ParentDlg->SetActiveCenterWnd(this);
 	}
-	// TODO: Add your control notification handler code here
 	ClearConfigDlg();
 	VtOrderGridConfig* grid = new VtOrderGridConfig();
 	grid->CenterWnd(this);
@@ -2057,4 +2072,15 @@ void VtOrderCenterWndHd::OnLButtonDown(UINT nFlags, CPoint point)
 		_ParentDlg->SetActiveCenterWnd(this);
 	}
 	CDialogEx::OnLButtonDown(nFlags, point);
+}
+
+LRESULT VtOrderCenterWndHd::OnRefreshGrid(WPARAM wParam, LPARAM lParam)
+{
+	UNREFERENCED_PARAMETER(wParam);
+	UNREFERENCED_PARAMETER(lParam);
+
+	//_OrderPanelGrid.RefreshGrid();
+	_OrderPanelGrid.RefreshInfo();
+
+	return 0;
 }

@@ -312,6 +312,8 @@ struct VtOrder
 	bool EnableProfitCut = false;
 	void Save(simple::file_ostream<same_endian_type>& ss);
 	void Load(simple::file_istream<same_endian_type>& ss);
+	// 선물사에서 받은 주문요청 번호 - 이것으로 본래 요청 정보를 식별한다.
+	int HtsOrderReqID = -1;
 };
 
 struct VtPosition;
@@ -335,7 +337,7 @@ struct HdOrderRequest
 	//주문수량05주문 수량(ex:"1    ")
 	int Amount;
 	// 정정이나 취소시 원 주문 번호
-	int OrderNo;
+	int OrderNo = -1;
 	// 서브 계좌 번호
 	std::string SubAccountNo = _T("";)
 	// 주문요청 아이디
@@ -370,6 +372,8 @@ struct HdOrderRequest
 	// 청산 주문 요청을 받으면 잔고 목록에서 즉시 제거된다. 
 	// 왜냐하면 손절 익절 영향을 받지 않기 위해서 이다.
 	int LiqReqOrderNo = -1;
+	// 선물사에서 받은 주문요청 번호 - 이것으로 본래 요청 정보를 식별한다.
+	int HtsOrderReqID = -1;
 };
 
 struct VtRealtimeOrder

@@ -560,6 +560,7 @@
     <ClInclude Include="VtRealtimeRegisterManager.h" />
     <ClInclude Include="VtRealtimeTickQuoteGrid.h" />
     <ClInclude Include="VtReferenceChart.h" />
+    <ClInclude Include="VtRefreshManager.h" />
     <ClInclude Include="VtRemainOrderGrid.h" />
     <ClInclude Include="VtRobo1Stress.h" />
     <ClInclude Include="VtRsiIndex.h" />
@@ -586,11 +587,13 @@
     <ClInclude Include="VtSymbolMasterGrid.h" />
     <ClInclude Include="VtSymbolSelector.h" />
     <ClInclude Include="VtSysArgGrid.h" />
+    <ClInclude Include="VtSysLogGrid.h" />
     <ClInclude Include="VtSystemArg.h" />
     <ClInclude Include="VtSystemArgGroup.h" />
     <ClInclude Include="VtSystemDef.h" />
     <ClInclude Include="VtSystemGroup.h" />
     <ClInclude Include="VtSystemGroupManager.h" />
+    <ClInclude Include="VtSystemLogDlg.h" />
     <ClInclude Include="VtSystemOrderConfig.h" />
     <ClInclude Include="VtSystemProperty.h" />
     <ClInclude Include="VtSystemSetDlg.h" />
@@ -967,6 +970,7 @@
     <ClCompile Include="VtRealtimeRegisterManager.cpp" />
     <ClCompile Include="VtRealtimeTickQuoteGrid.cpp" />
     <ClCompile Include="VtReferenceChart.cpp" />
+    <ClCompile Include="VtRefreshManager.cpp" />
     <ClCompile Include="VtRemainOrderGrid.cpp" />
     <ClCompile Include="VtRobo1Stress.cpp" />
     <ClCompile Include="VtRsiIndex.cpp" />
@@ -992,9 +996,11 @@
     <ClCompile Include="VtSymbolMasterGrid.cpp" />
     <ClCompile Include="VtSymbolSelector.cpp" />
     <ClCompile Include="VtSysArgGrid.cpp" />
+    <ClCompile Include="VtSysLogGrid.cpp" />
     <ClCompile Include="VtSystemArgGroup.cpp" />
     <ClCompile Include="VtSystemGroup.cpp" />
     <ClCompile Include="VtSystemGroupManager.cpp" />
+    <ClCompile Include="VtSystemLogDlg.cpp" />
     <ClCompile Include="VtSystemOrderConfig.cpp" />
     <ClCompile Include="VtSystemProperty.cpp" />
     <ClCompile Include="VtSystemSetDlg.cpp" />

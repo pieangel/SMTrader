@@ -13,6 +13,8 @@
 #include "VtCutManager.h"
 #include "VtConfigGrid.h"
 #include "ShadeButtonST.h"
+#include "VtRefreshManager.h"
+#include <thread>
 using same_endian_type = std::is_same<simple::LittleEndian, simple::LittleEndian>;
 //#include "ResizableLib/ResizableDialog.h"
 // VtOrderCenterHd dialog
@@ -31,6 +33,7 @@ class VtLayoutManager;
 const int ConfigHeight = 94;
 const int ConfigWidth = 480;
 const int TickWndWidth = 155;
+class VtRefreshManager;
 class VtOrderCenterWndHd : public CDialogEx
 {
 	DECLARE_DYNAMIC(VtOrderCenterWndHd)
@@ -100,6 +103,9 @@ public:
 	VtOrderWndHd* ParentDlg() const { return _ParentDlg; }
 	void ParentDlg(VtOrderWndHd* val) { _ParentDlg = val; }
 	int GetCenterWndCount();
+	void UpdateGrid();
+	bool UseHogaSiseFilter() const { return _UseHogaSiseFilter; }
+	void UseHogaSiseFilter(bool val) { _UseHogaSiseFilter = val; }
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
@@ -133,6 +139,7 @@ private:
 	CBrush _BrushBackSel;
 	bool _ShowOrderCountArea = true;
 	CBrush _BrushBackNor;
+	bool _UseHogaSiseFilter = true;
 public:
 	void RecalControls();
 	int GetMaxWidthForMode();
@@ -302,6 +309,7 @@ public:
 		return _OrderGridColOption;
 	}
 private:
+	VtRefreshManager* _RefreshManager = nullptr;
 	bool _Unregistered = false;
 	//VtCutManager* _CutMgr;
 	// 남은 잔고 만큼 주문을 낸다.
@@ -333,4 +341,5 @@ private:
 public:
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+	afx_msg LRESULT OnRefreshGrid(WPARAM wParam, LPARAM lParam);
 };

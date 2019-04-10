@@ -5,6 +5,7 @@
 #include "afxwin.h"
 #include "afxcmn.h"
 #include <vector>
+#include "VtRefreshManager.h"
 // CVtOrderCenterWnd dialog
 class VtProductOrderManager;
 struct VtRealtimeHoga;
@@ -44,7 +45,6 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	virtual BOOL OnInitDialog();
-
 private:
 	int _StartProductIndex = 0;
 	VtOrderPanelGrid _OrderPanelGrid;
@@ -128,6 +128,7 @@ public:
 	void OnSymbolClicked(VtSymbol* symbol, int src, VtSymbolSelector* srdWnd);
 private:
 	VtSymbolSelector* _SymSelector = nullptr;
+	VtRefreshManager* _RefreshManger = nullptr;
 public:
 	void ChangeFocus();
 	afx_msg void OnBnClickedBtnFavorite();
@@ -160,6 +161,7 @@ public:
 public:
 	void SetFavorite(int index, VtSymbol* sym);
 	afx_msg void OnBnClickedBtnRightExtend();
+	afx_msg LRESULT OnRefreshGrid(WPARAM wParam, LPARAM lParam);
 	CButton _BtnLeftExtend;
 	CButton _BtnRightExtend;
 };

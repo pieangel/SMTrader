@@ -14,6 +14,7 @@ const int SysLiqTimer = 0x00000009;
 class VtSymbol;
 class VtChartContainer;
 class VtFileEventMonitor;
+class VtSystemLogDlg;
 class CMainFrame : public CMDIFrameWndEx
 {
 	DECLARE_DYNAMIC(CMainFrame)
@@ -72,10 +73,13 @@ public:
 	void OpenFundOrder();
 	void OpenAcntJango();
 	void OpenFundJango();
+	void UpdateSysLog();
 private:
+	VtSystemLogDlg* _SysLogDlg = nullptr;
 	bool _Init = false;
 	bool bCreating = false;
 	bool _OrderWndCreated = false;
+	bool _LoadComplete = false;
 	bool _AccountsInfoReceived = false;
 	VtProgressDlg* ProgressDlg = nullptr;
 	VtMainToolbar _MainToolbar;
@@ -86,6 +90,7 @@ private:
 	void CreateFileWatch();
 	bool ClearAllResources();
 public:
+	void ResetSysLogDlg();
 	void GetSymbolCode();
 	void SaveSettings();
 	void LoadSettings();

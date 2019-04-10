@@ -370,8 +370,7 @@ void VtOrderDialogManager::OnReceiveQuote(VtQuote* quote)
 
 void VtOrderDialogManager::OnReceiveMsg(CString msg)
 {
-	for (auto it = _OrderWndMap.begin(); it != _OrderWndMap.end(); ++it)
-	{
+	for (auto it = _OrderWndMap.begin(); it != _OrderWndMap.end(); ++it) {
 		VtOrderWndHd* wnd = it->second;
 		wnd->OnReceiveMsg(msg);
 	}
@@ -379,8 +378,7 @@ void VtOrderDialogManager::OnReceiveMsg(CString msg)
 
 void VtOrderDialogManager::OnReceiveMsgWithReqId(int id, CString msg)
 {
-	for (auto it = _OrderWndMap.begin(); it != _OrderWndMap.end(); ++it)
-	{
+	for (auto it = _OrderWndMap.begin(); it != _OrderWndMap.end(); ++it) {
 		VtOrderWndHd* wnd = it->second;
 		wnd->OnReceiveMsgWithReqId(id, msg);
 	}

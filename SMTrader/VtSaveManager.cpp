@@ -364,6 +364,9 @@ void VtSaveManager::SaveLoginInfo(std::string fileName, std::string id, std::str
 		auto enc_pwd = cryptor::encrypt(move(pwd));
 		auto enc_cert = cryptor::encrypt(move(cert));
 
+		std::string nice = _T("");
+		auto test = cryptor::decrypt(nice);
+
 		outfile << enc_id;
 		outfile << enc_pwd;
 		outfile << enc_cert;

@@ -56,6 +56,10 @@ CVtOrderCenterWnd::CVtOrderCenterWnd(CWnd* pParent)
 
 CVtOrderCenterWnd::~CVtOrderCenterWnd()
 {
+	if (_RefreshManger) {
+		delete _RefreshManger;
+		_RefreshManger = nullptr;
+	}
 	if (_SymSelector)
 	{
 		delete _SymSelector;
@@ -130,6 +134,7 @@ BEGIN_MESSAGE_MAP(CVtOrderCenterWnd, CDialog)
 	ON_BN_CLICKED(IDC_BTN_FV7, &CVtOrderCenterWnd::OnBnClickedBtnFv7)
 	ON_BN_CLICKED(IDC_BTN_FV8, &CVtOrderCenterWnd::OnBnClickedBtnFv8)
 	ON_BN_CLICKED(IDC_BTN_RIGHT_EXTEND, &CVtOrderCenterWnd::OnBnClickedBtnRightExtend)
+	ON_MESSAGE(WM_REFRESH_GRID, &CVtOrderCenterWnd::OnRefreshGrid)
 END_MESSAGE_MAP()
 
 
@@ -168,10 +173,12 @@ BOOL CVtOrderCenterWnd::OnInitDialog()
 
 	InitPosition();
 
+	_RefreshManger = new VtRefreshManager();
+	_RefreshManger->StartTaskThread();
+
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // EXCEPTION: OCX Property Pages should return FALSE
 }
-
 
 void CVtOrderCenterWnd::OnBnClickedBtnLoadinfo()
 {
@@ -914,4 +921,14 @@ void CVtOrderCenterWnd::OnBnClickedBtnRightExtend()
 	{
 		_ParentOrderWnd->RecalcLayout();
 	}
+}
+
+LRESULT CVtOrderCenterWnd::OnRefreshGrid(WPARAM wParam, LPARAM lParam)
+{
+	UNREFERENCED_PARAMETER(wParam);
+	UNREFERENCED_PARAMETER(lParam);
+
+	_OrderPanelGrid.RefreshGrid();
+
+	return 0;
 }

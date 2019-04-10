@@ -34,8 +34,14 @@ public:
 	void SectionCount(int val) { _SectionCount = val; }
 	int SubSectionCount() const { return _SubSectionCount; }
 	void SubSectionCount(int val) { _SubSectionCount = val; }
-	bool Available() const { return _Available; }
-	void Available(bool val) { _Available = val; }
+	bool Available() const
+	{ 
+		return _Available; 
+	}
+	void Available(bool val) 
+	{ 
+		_Available = val; 
+	}
 	void ClearTasks();
 	VtProgressDlg* ProgressDlg() const { return _ProgressDlg; }
 	void ProgressDlg(VtProgressDlg* val) { _ProgressDlg = val; }

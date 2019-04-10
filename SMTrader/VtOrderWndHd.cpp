@@ -30,6 +30,7 @@
 #include <vector>
 #include "VtLayoutManager.h"
 #include <libloaderapi.h>
+#include <map>
 using Poco::Delegate;
 
 
@@ -1027,9 +1028,10 @@ void VtOrderWndHd::InitAccount()
 		return;
 
 	_StaticAcnt.SetWindowText(_T("계좌"));
+	std::map<std::string, std::pair<int, VtAccount*>> comboMap;
 
 	VtAccountManager* acntMgr = VtAccountManager::GetInstance();
-	int selAcnt = 0, index = 0;
+	int selAcnt = -1, index = 0;
 	std::string acntName;
 	for (auto it = acntMgr->AccountMap.begin(); it != acntMgr->AccountMap.end(); ++it) {
 		VtAccount* acnt = it->second;
@@ -1037,13 +1039,8 @@ void VtOrderWndHd::InitAccount()
 		acntName.append(_T(" "));
 		acntName.append(acnt->AccountName);
 		index = _ComboAcnt.AddString(acntName.c_str());
+		comboMap[acnt->AccountNo] = std::make_pair(index, acnt);
 		_ComboAcnt.SetItemDataPtr(index, acnt);
-		if (index == 0) {
-			selAcnt = index;
-			if (_OrderConfigMgr) {
-				_OrderConfigMgr->Account(acnt);
-			}
-		}
 		if (acnt->AccountLevel() == 0) {
 			std::vector<VtAccount*>& subAcntList = acnt->GetSubAccountList();
 			for (auto it = subAcntList.begin(); it != subAcntList.end(); ++it) {
@@ -1052,20 +1049,25 @@ void VtOrderWndHd::InitAccount()
 				acntName.append(_T(" "));
 				acntName.append(subAcnt->AccountName);
 				index = _ComboAcnt.AddString(acntName.c_str());
+				comboMap[subAcnt->AccountNo] = std::make_pair(index, subAcnt);
 				_ComboAcnt.SetItemDataPtr(index, subAcnt);
-				if (_DefaultAccountNo.compare(subAcnt->AccountNo) == 0) { // 정해진 계좌가 있으면 선택
-					selAcnt = index;
-					_OrderConfigMgr->Account(subAcnt);
-				}
+				
 			}
-		}
-
-		if (_DefaultAccountNo.compare(acnt->AccountNo) == 0) { // 정해진 계좌가 있으면 선택
-			selAcnt = index;
-			_OrderConfigMgr->Account(acnt);
 		}
 	}
 
+	if (comboMap.size() == 0)
+		return;
+	auto it = comboMap.find(_DefaultAccountNo);
+	if (it != comboMap.end()) {
+		selAcnt = it->second.first;
+		_OrderConfigMgr->Account(it->second.second);
+	}
+	else {
+		selAcnt = 0;
+		VtAccount* acnt = (VtAccount*)_ComboAcnt.GetItemDataPtr(selAcnt);
+		_OrderConfigMgr->Account(acnt);
+	}
 	_ComboAcnt.SetCurSel(selAcnt);
 	if (_OrderConfigMgr->Account()) {
 		_StaticAcntName.SetWindowText(_OrderConfigMgr->Account()->AccountName.c_str());
