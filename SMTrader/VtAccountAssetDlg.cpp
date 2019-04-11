@@ -48,12 +48,21 @@ void VtAccountAssetDlg::Save(simple::file_ostream<same_endian_type>& ss)
 	CRect rcWnd;
 	GetWindowRect(rcWnd);
 	ss << rcWnd.left << rcWnd.top << rcWnd.right << rcWnd.bottom;
+	if (_AssetPage.GetSafeHwnd() && _AssetPage.Account()) {
+		ss << _AssetPage.Account()->AccountNo;
+	}
+	else {
+		ss << _T("untitled");
+	}
 }
 
 void VtAccountAssetDlg::Load(simple::file_istream<same_endian_type>& ss)
 {
 	CRect rcWnd;
 	ss >> rcWnd.left >> rcWnd.top >> rcWnd.right >> rcWnd.bottom;
+	std::string acntNo;
+	ss >> acntNo;
+	SetAccount(acntNo);
 	MoveWindow(rcWnd);
 	ShowWindow(SW_SHOW);
 }
@@ -149,5 +158,12 @@ void VtAccountAssetDlg::OnReceiveAccountInfo()
 	if (_AssetPage.GetSafeHwnd())
 	{
 		_AssetPage.OnReceiveAccountInfo();
+	}
+}
+
+void VtAccountAssetDlg::SetAccount(std::string acntNo)
+{
+	if (_AssetPage.GetSafeHwnd()) {
+		_AssetPage.SetAccount(acntNo);
 	}
 }

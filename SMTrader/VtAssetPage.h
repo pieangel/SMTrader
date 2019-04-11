@@ -2,6 +2,8 @@
 #include "VtAccountAssetGrid.h"
 #include "afxwin.h"
 #include "ShadeButtonST.h"
+#include <string>
+#include <map>
 // VtAssetPage dialog
 class VtAccount;
 class VtAssetPage : public CDialogEx
@@ -18,9 +20,11 @@ public:
 #endif
 	VtAccount* Account() const { return _Account; }
 	void Account(VtAccount* val) { _Account = val; }
+	void SetAccount(std::string acntNo);
 private:
 	VtAccountAssetGrid _AssetGrid;
 	VtAccount* _Account = nullptr;
+	std::map<std::string, std::pair<int, VtAccount*>> _ComboMap;
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 

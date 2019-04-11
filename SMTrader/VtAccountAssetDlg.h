@@ -45,4 +45,5 @@ public:
 	afx_msg void OnTcnSelchangeTabAccountAsset(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnClose();
 	void OnReceiveAccountInfo();
+	void SetAccount(std::string acntNo);
 };

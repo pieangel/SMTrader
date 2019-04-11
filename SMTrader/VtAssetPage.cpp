@@ -23,6 +23,15 @@ VtAssetPage::~VtAssetPage()
 {
 }
 
+void VtAssetPage::SetAccount(std::string acntNo)
+{
+	auto it = _ComboMap.find(acntNo);
+	if (it != _ComboMap.end()) {
+		_ComboAccount.SetCurSel(it->second.first);
+		_Account = it->second.second;
+	}
+}
+
 void VtAssetPage::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
@@ -55,6 +64,7 @@ void VtAssetPage::InitAccount()
 		acntName.append(_T(" "));
 		acntName.append(acnt->AccountName);
 		int index = _ComboAccount.AddString(acntName.c_str());
+		_ComboMap[acnt->AccountNo] = std::make_pair(index, acnt);
 		_ComboAccount.SetItemDataPtr(index, acnt);
 		if (index == 0)
 		{
