@@ -1425,6 +1425,12 @@ void VtOrderPanelGrid::OnDrawFocusRect(CDC *dc, RECT *rect)
 */
 void VtOrderPanelGrid::OnKeyDown(UINT *vcKey, BOOL processed)
 {
+	/*
+	for (int i = 0; i < 10000; ++i) {
+		if (_CenterWnd)
+			OnReceiveHoga(_CenterWnd->Symbol());
+	}
+	*/
 	if (*vcKey == VK_UP)
 		MoveCurrentRow(UG_PAGEUP);
 
@@ -3511,14 +3517,40 @@ void VtOrderPanelGrid::PutOrderByRemain(int price)
 
 void VtOrderPanelGrid::RefreshInfo()
 {
-	for (int i = 0; i < 10; i++) {
-		RefreshInfo(4);
-	}
+	CString msg;
+	// Get starting timepoint 
+	auto start = high_resolution_clock::now();
+
+	CellPosMap refreshMap;
+	ClearOldCloseLine(refreshMap);
+	ClearOldHogas(refreshMap);
+	ClearTotalHoga(refreshMap);
+	ClearOldOrders(refreshMap);
+	SetHogaInfo(refreshMap);
+	SetCloseLine(refreshMap);
+	SetOrderInfo(refreshMap);
+	ShowTotalOrder(refreshMap);
+	ShowTotalHoga(refreshMap);
+	RefreshCells(refreshMap);
+
+	// Get ending timepoint 
+	auto stop = high_resolution_clock::now();
+
+	// Get duration. Substart timepoints to  
+	// get durarion. To cast it to proper unit 
+	// use duration cast method 
+	auto duration = duration_cast<microseconds>(stop - start);
+
+	msg.Format(_T("RefreshInfo type :: elapsed time :: microsecond = %d\n"), duration.count());
+	TRACE(msg);
 }
 
 void VtOrderPanelGrid::RefreshInfo(int type)
 {
 	CString msg;
+
+	// Get starting timepoint 
+	auto start = high_resolution_clock::now();
 
 	if (_ShowingCells)
 		return;
@@ -3546,6 +3578,17 @@ void VtOrderPanelGrid::RefreshInfo(int type)
 	}
 	
 	_ShowingCells = false;
+
+	// Get ending timepoint 
+	auto stop = high_resolution_clock::now();
+
+	// Get duration. Substart timepoints to  
+	// get durarion. To cast it to proper unit 
+	// use duration cast method 
+	auto duration = duration_cast<microseconds>(stop - start);
+
+	msg.Format(_T("RefreshInfo type :: elapsed time :: microsecond = %d\n"), duration.count());
+	TRACE(msg);
 }
 
 void VtOrderPanelGrid::RefreshInfo2(int type)
@@ -3639,6 +3682,22 @@ void VtOrderPanelGrid::UpdateUnfilled()
 	SetOrderInfo(refreshMap);
 	ShowTotalOrder(refreshMap);
 	RefreshCells(refreshMap);
+}
+
+void VtOrderPanelGrid::StartTimer()
+{
+	SetTimer(RefreshTimer, _TimerInternal, NULL);
+}
+
+void VtOrderPanelGrid::CommitRefresh(int type)
+{
+	// 화면 갱신 타이머가 동작 중일때
+	if (!_IsRefreshTimerWorking) {
+		for(int i = 0; i < _MaxRefreshQSize; ++i)
+			_RefreshQ.push(type);
+		_IsRefreshTimerWorking = true;
+		StartTimer();
+	}
 }
 
 void VtOrderPanelGrid::SetHogaInfo(VtHoga* hoga)
@@ -6292,7 +6351,7 @@ void VtOrderPanelGrid::CheckProfitLossTouchHd(int intClose)
 	std::map<int, HdOrderRequest*>& profitLossMap = _CutMgr->GetStopOrderMap();
 	for (auto it = profitLossMap.begin(); it != profitLossMap.end(); ++it) {
 		HdOrderRequest* stop = it->second;
-		LOG_F(INFO, _T("CheckProfitLossTouchHd : 손절익절가격 %d"), stop->Price);
+		//LOG_F(INFO, _T("CheckProfitLossTouchHd : 손절익절가격 %d"), stop->Price);
 		if (stop->Price == intClose) { // 종가와 일치하는 경우
 			if (stop->Position == VtPositionType::Buy) { // 매수 포지션인 경우
 				stop->Price = VtSymbolManager::GetNextValue(stop->Price, stop->slip, sym);
@@ -7097,13 +7156,14 @@ void VtOrderPanelGrid::OnReceiveHoga(VtSymbol* sym)
 
 	auto duration = duration_cast<microseconds>(start - _HogaTime);
 
-	if (_CenterWnd->UseHogaSiseFilter() && duration.count() < DelayTime) {
-		return;
-	}
-
 	_HogaTime = start;
 
-	RefreshInfo(5);
+	if (_CenterWnd->UseHogaSiseFilter() && duration.count() < DelayTime) {
+		CommitRefresh(5);
+	}
+	else {
+		RefreshInfo(5);
+	}
 }
 
 void VtOrderPanelGrid::OnReceiveHoga()
@@ -7130,13 +7190,14 @@ void VtOrderPanelGrid::OnReceiveQuote(VtSymbol* sym)
 
 	auto duration = duration_cast<microseconds>(start - _QuoteTime);
 
-	if (_CenterWnd->UseHogaSiseFilter() && duration.count() < DelayTime) {
-		return;
-	}
-
 	_QuoteTime = start;
 
-	RefreshInfo(4);
+	if (_CenterWnd->UseHogaSiseFilter() && duration.count() < DelayTime) {
+		CommitRefresh(4);
+	}
+	else {
+		RefreshInfo(4);
+	}
 }
 
 void VtOrderPanelGrid::OnReceiveQuote()
@@ -7224,7 +7285,14 @@ void VtOrderPanelGrid::OnTimer(UINT_PTR nIDEvent)
 	if (!_CenterWnd || !_CenterWnd->Symbol())
 		return;
 	if (nIDEvent == RefreshTimer) {
-		RefreshInfo();
+		if (_RefreshQ.size() == 0) {
+			_IsRefreshTimerWorking = false;
+			StopTimer();
+		}
+		else {
+			_RefreshQ.pop();
+			RefreshInfo();
+		}
 	}
 	VtGrid::OnTimer(nIDEvent);
 }

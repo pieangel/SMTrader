@@ -379,13 +379,7 @@ void VtUsIn1::OnTimer()
 	if (!CheckEntranceBar())
 		return;
 	// 청산 시간에 따른 청산 - 조건없이 무조건 청산한다.
-	if (_CurPosition != VtPositionType::None) {
-		if (LiqByEndTime()) {
-			_CurPosition = VtPositionType::None;
-			_LastEntryDailyIndex = -1;
-			return;
-		}
-	}
+	
 	// 포지션에 따른 청산
 	// 매수일 때 청산 조건 확인
 	if (_CurPosition == VtPositionType::Buy) {

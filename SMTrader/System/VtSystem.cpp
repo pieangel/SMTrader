@@ -124,6 +124,7 @@ void VtSystem::OnRegularTimer()
 	// 청산 시간에 따른 청산 - 조건없이 무조건 청산한다.
 	if (_CurPosition != VtPositionType::None) {
 		if (LiqByEndTime()) {
+			// 여기서 현재 포지션 상태를 설정해 추가로 주문이 나가지 않게 한다.
 			_CurPosition = VtPositionType::None;
 			_LastEntryDailyIndex = -1;
 			LOG_F(INFO, _T("청산시간에 따른 청산성공"));
@@ -1091,26 +1092,35 @@ bool VtSystem::PutEntranceOrder(VtPositionType position)
 	if (orderPrice < 0) return false;
 
 	if (_Symbol)
-		LOG_F(INFO, _T("시스템 주문 : 현재가 =%d, 주문가 = %d"), _Symbol->Quote.intClose, orderPrice);
-
-	PutOrder(orderPrice, position, _PriceType);
-	_LatestEntPrice = _Symbol->Quote.intClose;
+		LOG_F(INFO, _T("PutEntranceOrder :: 시스템 주문 : 현재가 =%d, 주문가 = %d"), _Symbol->Quote.intClose, orderPrice);
+	try
+	{
+		PutOrder(orderPrice, position, _PriceType);
+		_LatestEntPrice = _Symbol->Quote.intClose;
+	}
+	catch (std::exception& e)
+	{
+		LOG_F(INFO, _T("Error :: PutEntranceOrder msg = %s"), e.what());
+		return false;
+	}
 	return true;
 }
 
 bool VtSystem::PutLiqOrder(VtPosition* posi)
 {
+	// 시스템 자체 청산과 타이머에 의한 청산이 겹칠때를 방지하기 위한 코드
+	std::unique_lock<std::mutex> lck(_LiqMutex);
+
 	if (!posi || _CurPosition == VtPositionType::None)
 		return false;
 
 	VtPositionType position = VtPositionType::None;
-	// 여기서 현재 포지션 상태를 설정해 추가로 주문이 나가지 않게 한다.
 	_CurPosition == VtPositionType::Buy ? position = VtPositionType::Sell : position = VtPositionType::Buy;
 	int orderPrice = GetOrderPrice(position);
 	if (orderPrice < 0)
 		return false;
 
-	LOG_F(INFO, _T("PutOrder : openQty = %d"), posi->OpenQty);
+	LOG_F(INFO, _T("청산 주문 : 계좌 %s, 잔고 = %d"), posi->AccountNo.c_str(), posi->OpenQty);
 	VtAccount* acnt = nullptr;
 	VtAccountManager* acntMgr = VtAccountManager::GetInstance();
 	acnt = acntMgr->FindAccount(posi->AccountNo);
@@ -1122,58 +1132,65 @@ bool VtSystem::PutLiqOrder(VtPosition* posi)
 	if (!acnt) // 계좌가 없는 경우 아무일도 하지 않음.
 		return false;
 
-	VtOrderManagerSelector* orderMgrSelector = VtOrderManagerSelector::GetInstance();
-	VtOrderManager* orderMgr = orderMgrSelector->FindAddOrderManager(acnt->AccountNo);
+	try
+	{
+		VtOrderManagerSelector* orderMgrSelector = VtOrderManagerSelector::GetInstance();
+		VtOrderManager* orderMgr = orderMgrSelector->FindAddOrderManager(acnt->AccountNo);
 
-	HdOrderRequest request;
-	request.Amount = std::abs(posi->OpenQty);
-	if (acnt->AccountLevel() == 0) { // 본계좌 일 때
-		request.AccountNo = acnt->AccountNo;
-		request.Password = acnt->Password;
-	}
-	else { // 서브 계좌 일 때
-		VtAccount* parentAcnt = acnt->ParentAccount();
-		if (parentAcnt) { // 부모 계좌가 있는지 확인 한다.
-			request.AccountNo = parentAcnt->AccountNo;
-			request.Password = parentAcnt->Password;
+		HdOrderRequest request;
+		request.Amount = std::abs(posi->OpenQty);
+		if (acnt->AccountLevel() == 0) { // 본계좌 일 때
+			request.AccountNo = acnt->AccountNo;
+			request.Password = acnt->Password;
 		}
-		else return false;
-	}
-	request.SymbolCode = _Symbol->ShortCode;
-	request.FillCondition = _FillCondition;
+		else { // 서브 계좌 일 때
+			VtAccount* parentAcnt = acnt->ParentAccount();
+			if (parentAcnt) { // 부모 계좌가 있는지 확인 한다.
+				request.AccountNo = parentAcnt->AccountNo;
+				request.Password = parentAcnt->Password;
+			}
+			else return false;
+		}
+		request.SymbolCode = _Symbol->ShortCode;
+		request.FillCondition = _FillCondition;
 
-	request.PriceType = _PriceType;
-	request.Price = orderPrice;
+		request.PriceType = _PriceType;
+		request.Price = orderPrice;
 
-	if (posi->Position == VtPositionType::Buy) { // 매수 청산인 경우
-		request.Position = VtPositionType::Sell;
-	}
-	else if (posi->Position == VtPositionType::Sell) { // 매도 청산인 경우
-		request.Position = VtPositionType::Buy;
-	}
+		if (posi->Position == VtPositionType::Buy) { // 매수 청산인 경우
+			request.Position = VtPositionType::Sell;
+		}
+		else if (posi->Position == VtPositionType::Sell) { // 매도 청산인 경우
+			request.Position = VtPositionType::Buy;
+		}
 
-	request.RequestId = orderMgr->GetOrderRequestID();
-	request.SourceId = (long)this;
+		request.RequestId = orderMgr->GetOrderRequestID();
+		request.SourceId = (long)this;
 
-	if (acnt->AccountLevel() == 0) { // 본계좌 인 경우
-		request.SubAccountNo = _T("");
-		request.FundName = _T("");
-	}
-	else { // 서브 계좌인 경우
-		request.SubAccountNo = acnt->AccountNo;
-		if (acnt->Fund())
-			request.FundName = acnt->Fund()->Name;
-		else
+		if (acnt->AccountLevel() == 0) { // 본계좌 인 경우
+			request.SubAccountNo = _T("");
 			request.FundName = _T("");
+		}
+		else { // 서브 계좌인 경우
+			request.SubAccountNo = acnt->AccountNo;
+			if (acnt->Fund())
+				request.FundName = acnt->Fund()->Name;
+			else
+				request.FundName = _T("");
+		}
+
+		request.orderType = VtOrderType::New;
+		// 정산 주문이냐 청산
+		// 0 : 일반 , 1 : 익절, 2 : 손절- 청산 주문일 때는 익절 손절이 활성화 되어 있어도 처리하지 않는다.
+		request.RequestType = 1;
+
+		orderMgr->PutOrder(std::move(request));
 	}
-
-	request.orderType = VtOrderType::New;
-	// 정산 주문이냐 청산
-	// 0 : 일반 , 1 : 익절, 2 : 손절- 청산 주문일 때는 익절 손절이 활성화 되어 있어도 처리하지 않는다.
-	request.RequestType = 1;
-
-	orderMgr->PutOrder(std::move(request));
-
+	catch (std::exception& e)
+	{
+		LOG_F(INFO, _T("Error :: PutLiqOrder msg = %s"), e.what());
+		return false;
+	}
 	return true;
 }
 
@@ -1235,6 +1252,7 @@ void VtSystem::PutOrder(int price, VtPositionType position, VtPriceType priceTyp
 	VtOrderManagerSelector* orderMgrSelector = VtOrderManagerSelector::GetInstance();
 	if (_SysTargetType == TargetType::RealAccount || _SysTargetType == TargetType::SubAccount) { // 실계좌나 서브 계좌 일 때
 		if (_Account) {
+			LOG_F(INFO, _T("시스템 계좌 주문 : 계좌 %s, 주문개수 = %d"), _Account->AccountNo.c_str(), _OrderAmount * _SeungSu);
 			VtOrderManager* orderMgr = orderMgrSelector->FindAddOrderManager(_Account->AccountNo);
 			HdOrderRequest request;
 			request.Price = price;
@@ -1276,6 +1294,7 @@ void VtSystem::PutOrder(int price, VtPositionType position, VtPriceType priceTyp
 				VtAccount* subAcnt = *it;
 				VtAccount* parentAcnt = subAcnt->ParentAccount();
 				VtOrderManager* orderMgr = orderMgrSelector->FindAddOrderManager(subAcnt->AccountNo);
+				LOG_F(INFO, _T("시스템 펀드 주문 : 펀드 =%s, 계좌 %s, 주문개수 = %d"), _Fund->Name.c_str(), subAcnt->AccountNo.c_str(), _OrderAmount * _SeungSu);
 
 				HdOrderRequest request;
 				request.Price = price;
@@ -1308,7 +1327,7 @@ void VtSystem::PutOrder(VtPosition* posi, int price, bool liqud /*= false*/)
 	if (!posi || posi->OpenQty == 0 || !_Symbol)
 		return;
 
-	LOG_F(INFO, _T("PutOrder : openQty = %d"), posi->OpenQty);
+	LOG_F(INFO, _T("청산 주문 : 계좌 %s, 잔고 = %d"), posi->AccountNo.c_str() ,posi->OpenQty);
 	VtAccount* acnt = nullptr;
 	VtAccountManager* acntMgr = VtAccountManager::GetInstance();
 	acnt = acntMgr->FindAccount(posi->AccountNo);
@@ -1391,10 +1410,8 @@ bool VtSystem::LiqudAll()
 
 		if (!posi || posi->OpenQty == 0 || posi->Position == VtPositionType::None)
 			return false;
-		// 쓰레드 2개에서 동시에 청산이 나올 가망성이 있어서 방어 코드를 넣음
-		//_LiqMutex.lock();
+
 		PutLiqOrder(posi);
-		//_LiqMutex.unlock();
 
 		_ProfitLoss = 0.0;
 		_MaxProfit = 0.0;
@@ -1410,10 +1427,7 @@ bool VtSystem::LiqudAll()
 
 			if (!posi || posi->OpenQty == 0 || posi->Position == VtPositionType::None)
 				continue;
-			// 쓰레드 2개에서 동시에 청산이 나올 가망성이 있어서 방어 코드를 넣음
-			//_LiqMutex.lock();
 			PutLiqOrder(posi);
-			//_LiqMutex.unlock();
 		}
 
 		_ProfitLoss = 0.0;

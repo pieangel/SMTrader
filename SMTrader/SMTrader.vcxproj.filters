@@ -134,6 +134,9 @@
     <Filter Include="Crypt">
       <UniqueIdentifier>{e33dd40f-c037-4e74-b1f2-e9e824a5c1a5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="db">
+      <UniqueIdentifier>{7cee4700-b4dd-4bce-8f0c-6e803c12d3b1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />

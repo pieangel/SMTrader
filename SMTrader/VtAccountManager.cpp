@@ -158,8 +158,7 @@ void VtAccountManager::Load(simple::file_istream<same_endian_type>& ss)
 {
 	int count;
 	ss >> count;
-	for (int i = 0; i < count; i++)
-	{
+	for (int i = 0; i < count; i++) {
 		VtAccount* acnt = new VtAccount();
 		acnt->Load(ss);
 		AddAccount(acnt);

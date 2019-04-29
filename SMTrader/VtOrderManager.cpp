@@ -358,10 +358,9 @@ void VtOrderManager::PutOrder(int chartId, VtOrderCmd cmd, int qty, double price
 
 void VtOrderManager::PutOrder(HdOrderRequest&& request)
 {
+	std::lock_guard<std::mutex> lock(_OrderMutex);
 	VtHdClient* client = VtHdClient::GetInstance();
-	_OrderMutex.lock();
 	client->PutOrder(std::move(request));
-	_OrderMutex.unlock();
 }
 
 void VtOrderManager::ChangeOrder(VtOrder* oldOrder, double newValue)
@@ -1212,8 +1211,7 @@ void VtOrderManager::HandleReverseConfirmModify(VtRealtimeOrder&& real)
 	VtOrder* order = FindOrder(real.oriOrderNo);
 	if (!order)
 		return;
-	else
-	{
+	else {
 		VtOrder* newOrder = nullptr; 
 		newOrder = CloneOrder(order);
 		newOrder->fullCode = real.fullCode;
@@ -1269,68 +1267,63 @@ void VtOrderManager::OnOrderReceivedHd(VtOrder* order)
 {
 	if (!order)
 		return;
-	VtOrder* exOrder = FindOrder(order->orderNo);
-	if (!exOrder) {
+	// 주문 목록에서 찾아서 없을 때는 외부 주문으로 간주하고 주문목록에 추가해 준다.
+	if (!FindOrder(order->orderNo)) {
 		AddOrder(order);
-		order->state = VtOrderState::OrderReceived;
 	}
-	else
-		exOrder->state = VtOrderState::OrderReceived;
+
+	VtTotalOrderManager* totalOrderMgr = VtTotalOrderManager::GetInstance();
+	totalOrderMgr->AddOrder(order);
 }
 
 void VtOrderManager::OnOrderAcceptedHd(VtOrder* order)
 {
 	if (!order)
 		return;
-	// 주문목록에 주문이 없다면 외부 주문이다.
-	VtOrder* exOrder = FindOrder(order->orderNo);
-	VtTotalOrderManager* totalOrderMgr = VtTotalOrderManager::GetInstance();
-	// 주문 목록에 주문이 없는 경우는 주문 목록에 추가해 준다.
-	if (!exOrder) {
+
+	// 주문 목록에서 찾아서 없을 때는 외부 주문으로 간주하고 주문목록에 추가해 준다.
+	if (!FindOrder(order->orderNo)) {
 		AddOrder(order);
-		totalOrderMgr->AddOrder(order);
 	}
 
+	VtTotalOrderManager* totalOrderMgr = VtTotalOrderManager::GetInstance();
+	totalOrderMgr->AddOrder(order);
+
 	VtProductOrderManager* prdtOrderMgr = _ProductOrderManagerSelector->FindAdd(order->shortCode);
+	
 	// 한번이라도 주문이 나왔다는 것을 표시해 준다.
 	prdtOrderMgr->Init(true);
-	if (order->orderType == VtOrderType::Change) { // 정정 주문
+
+	if (order->state == VtOrderState::Filled) {
 		// 상품별 주문 관리자의 접수 주문 목록에서 제거한다.
-		prdtOrderMgr->RemoveAcceptedOrder(order->oriOrderNo);
-		// 상품별 주문 관리자의 접수 주문 목록에 추가한다.
-		if (order->state != VtOrderState::Filled) { // 혹시 모를 주문 역전을 대비해서 이미 체결된 주문은 추가하지 않는다.
+		prdtOrderMgr->RemoveAcceptedOrder(order->orderNo);
+		// 접수 주문은 제거한다.
+		RemoveAccepted(order->orderNo);
+		// 정정이나 취소주문을 낸 원 주문도 제거한다.
+		RemoveAccepted(order->oriOrderNo);
+	} 
+	else {
+		if (order->orderType == VtOrderType::Change) { // 정정 주문
+			// 상품별 주문 관리자의 접수 주문 목록에서 원주문을 제거한다.
+			prdtOrderMgr->RemoveAcceptedOrder(order->oriOrderNo);
 			// 개별 상품 접수주문에 추가
 			prdtOrderMgr->AddAccepted(order);
 			// 전체 접수주문에 추가
 			AddAccepted(order);
-			// 주문 상태 변경
-			order->state = VtOrderState::Accepted;
-		}
-		// 기존 주문은 제거한다.
-		RemoveAccepted(order->oriOrderNo);
-	} else if (order->orderType == VtOrderType::Cancel) { // 취소 주문
-		// 기존 주문은 제거한다.
-		RemoveAccepted(order->oriOrderNo);
-		// 상품별 주문 관리자의 접수 주문 목록에서 제거한다.
-		prdtOrderMgr->RemoveAcceptedOrder(order->oriOrderNo);
-		// 주문상태를 접수로 변경
-		if (order->state != VtOrderState::Filled) // 혹시 모를 주문 역전을 대비해서 이미 체결된 주문은 추가하지 않는다.
-			order->state = VtOrderState::Accepted;
-	} else { // 신규주문일때
-		// 이 단계가 최종 접수된 상태이다.
-		if (order->modifiedOrderCount == 0) { // 신규 주문만 이 값을 가진다.
-			// 상품별 주문 관리자의 접수 주문 목록에 추가한다.
-			if (order->state != VtOrderState::Filled) {// 혹시 모를 주문 역전을 대비해서 이미 체결된 주문은 추가하지 않는다.
-				// 개별 상품 접수주문에 추가									   
-				prdtOrderMgr->AddAccepted(order);
-				// 전체 접수주문에 추가
-				AddAccepted(order);
-				// 주문 상태 변경
-				order->state = VtOrderState::Accepted;
-			}				
 			// 기존 주문은 제거한다.
 			RemoveAccepted(order->oriOrderNo);
-
+		}
+		else if (order->orderType == VtOrderType::Cancel) { // 취소 주문
+			// 기존 주문은 제거한다.
+			RemoveAccepted(order->oriOrderNo);
+			// 상품별 주문 관리자의 접수 주문 목록에서 제거한다.
+			prdtOrderMgr->RemoveAcceptedOrder(order->oriOrderNo);
+		}
+		else { // 신규주문일때
+			// 개별 상품 접수주문에 추가									   
+			prdtOrderMgr->AddAccepted(order);
+			// 전체 접수주문에 추가
+			AddAccepted(order);
 		}
 	}
 }
@@ -1348,12 +1341,13 @@ void VtOrderManager::OnOrderFilledHd(VtOrder* order)
 {
 	if (!order)
 		return;
-	VtTotalOrderManager* totalOrderMgr = VtTotalOrderManager::GetInstance();
 	// 주문 목록에서 찾아서 없을 때는 외부 주문으로 간주하고 주문목록에 추가해 준다.
 	if (!FindOrder(order->orderNo)) {
 		AddOrder(order);
-		totalOrderMgr->AddOrder(order);
 	}
+
+	VtTotalOrderManager* totalOrderMgr = VtTotalOrderManager::GetInstance();
+	totalOrderMgr->AddOrder(order);
 
 	// 개별 종목 평가손익을 계산해 준다.
 	VtProductOrderManager* prdtOrderMgr = _ProductOrderManagerSelector->FindAdd(order->shortCode);
@@ -1385,8 +1379,7 @@ void VtOrderManager::CalcTotalProfitLoss(VtOrder* order)
 
 	VtAccountManager* acntMgr = VtAccountManager::GetInstance();
 	VtAccount* acnt = acntMgr->FindAccount(order->AccountNo);
-	if (acnt)
-	{
+	if (acnt) {
 		acnt->SumOpenPL();
 	}
 }
@@ -1404,8 +1397,7 @@ void VtOrderManager::CalcTotalProfitLoss(VtSymbol* symbol)
 	acnt->SumOpenPL();
 
 	std::vector<VtAccount*>& acntList = acnt->GetSubAccountList();
-	for (auto it = acntList.begin(); it != acntList.end(); ++it)
-	{
+	for (auto it = acntList.begin(); it != acntList.end(); ++it) {
 		VtAccount* subAcnt = *it;
 		subAcnt->CalcOpenPL(symbol);
 		subAcnt->SumOpenPL();

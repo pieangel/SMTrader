@@ -736,8 +736,9 @@ void VtHdCtrl::OnNewOrderHd(CString& sTrCode, LONG& nRqID)
 	{
 		// 이 경우는 이미 주문이 있는 경우이다. 체결이 먼저 되었을 경우 이런 경우가 생길 수 있다. 
 		// 이 때는 주문의 상태가 체결인 경우는 이 과정을 진행 시키지 않는다.
-		if (order->state == VtOrderState::Filled)
-			return;
+		if (order->state == VtOrderState::Filled) {
+			LOG_F(INFO, _T("OnNewOrderHd 주문역전 :: 이미 체결된 주문입니다!"));
+		}
 	}
 	// 주문 요청 아이디 
 	order->HtsOrderReqID = nRqID;
@@ -784,6 +785,9 @@ void VtHdCtrl::OnNewOrderHd(CString& sTrCode, LONG& nRqID)
 	order->orderType = VtOrderType::New;
 	// 현재  주문 상태 저장
 	VtOrderState prevState = order->state;
+	// 체결이 아닐때만 설정한다.
+	if (order->state != VtOrderState::Filled)
+		order->state = VtOrderState::OrderReceived;
 
 	orderMgr->OnOrderReceivedHd(order);
 
@@ -901,10 +905,12 @@ void VtHdCtrl::OnModifyOrderHd(CString& sTrCode, LONG& nRqID)
 
 	// 주문 유형
 	order->orderType = VtOrderType::Change;
-	// 주문 상태
-	order->state = VtOrderState::OrderReceived;
 	// 주문 상태 저장 
 	VtOrderState prevState = order->state;
+	// 체결이 아닐때만 설정한다.
+	if (order->state != VtOrderState::Filled)
+		order->state = VtOrderState::OrderReceived;
+
 	orderMgr->OnOrderReceivedHd(order);
 
 	SendOrderMessage(VtOrderEvent::Modified, order);
@@ -1030,6 +1036,11 @@ void VtHdCtrl::OnCancelOrderHd(CString& sTrCode, LONG& nRqID)
 	order->orderType = VtOrderType::Cancel;
 	// 주문 상태 저장
 	VtOrderState prevState = order->state;
+
+	// 체결이 아닐때만 설정한다.
+	if (order->state != VtOrderState::Filled)
+		order->state = VtOrderState::OrderReceived;
+
 	orderMgr->OnOrderReceivedHd(order);
 
 	SendOrderMessage(VtOrderEvent::Cancelled, order);
@@ -1093,7 +1104,7 @@ void VtHdCtrl::OnOrderReceived(int reqId, VtOrder* order)
 {
 	if (!order)
 		return;
-	// 주문요청번호를 찾아 현재 받은 주문 번호와 매칭시켜 준다.
+	// 선물사 주문요청번호를 찾아 현재 받은 주문 번호와 매칭시켜 준다.
 	auto it = _OrderRequestMap.find(reqId);
 	if (it != _OrderRequestMap.end()) {
 		HdOrderRequest req = it->second;
@@ -1109,6 +1120,10 @@ void VtHdCtrl::OnOrderReceived(int reqId, VtOrder* order)
 		CString msg;
 		msg.Format(_T("주문타입 = %d, subacnt = %s, fundname = %s \n"), (int)req.orderType, req.SubAccountNo.c_str(), req.FundName.c_str());
 		//TRACE(msg);
+		LOG_F(INFO, _T("내부주문번호 수신 :: 원요청번호 = %d, 선물사요청번호 = %d, 주문번호 = %d, 원주문번호 = %d"), req.RequestId, reqId, order->orderNo, order->oriOrderNo);
+	}
+	else {
+		LOG_F(INFO, _T("내부주문번호 검색 오류 :: 원요청번호 = %d, 선물사요청번호 = %d, 주문번호 = %d, 원주문번호 = %d"), -1, reqId, order->orderNo, order->oriOrderNo);
 	}
 }
 
@@ -1173,7 +1188,7 @@ void VtHdCtrl::OnOrderAcceptedHd(CString& strKey, LONG& nRealType)
 
 	VtOrder* order = nullptr;
 	order = orderMgr->FindOrder(_ttoi(strOrdNo));
-	// 주문이 없는 경우는 외부 주문이다. 내부 주문은 이미 정보가 다 있다.
+	// 주문이 없는 경우는 외부 주문이나 내부주문중 아직 주문 번호가 도착하지 않은 주문이다.
 	if (!order) {
 		order = new VtOrder();
 	}
@@ -1195,7 +1210,8 @@ void VtHdCtrl::OnOrderAcceptedHd(CString& strKey, LONG& nRealType)
 		reqType = req.RequestType;
 	}
 	else {
-		LOG_F(INFO, _T("OnAccepted :: Unregistered Request id"));
+		// 선물사 서버에서 주문 번호를 받기전에 거래소에서 주문 접수 확인이 도착하는 경우이다.
+		LOG_F(INFO, _T("OnAccepted :: Unregistered Request id : 주문가격 = %s, 원요청번호 %d, 선물사 요청번호 = %d, 종목이름 = %s, 주문 번호 = %s, 원주문번호 = %s, 계좌번호 = %s, 서브계좌번호 = %s, 펀드 이름 = %s, 주문종류 = %s, 주문갯수 = %s, 요청 타입 = %d"), strPrice, oriReqNo, order->HtsOrderReqID, strSeries, strOrdNo, strOriOrderNo, strAcctNo, strSubAcntNo, strFundName, strPosition.Compare(_T("1")) == 0 ? _T("매수") : _T("매도"), strAmount, order->RequestType);
 	}
 
 	// 계좌 번호
@@ -1250,12 +1266,18 @@ void VtHdCtrl::OnOrderAcceptedHd(CString& strKey, LONG& nRealType)
 	}
 	// 주문 상태를 저장한다.
 	VtOrderState prevState = order->state;
+	// 이미 체결된 주문은 설정하지 않는다.
+	if (order->state != VtOrderState::Filled)
+		order->state = VtOrderState::Accepted;
+
 	// 주문 처리
 	orderMgr->OnOrderAcceptedHd(order);
 
 	SendOrderMessage(VtOrderEvent::Accepted, order);
 
 	OnSubAccountOrder(VtOrderEvent::Accepted, strSubAcntNo, strFundName, order, prevState);
+
+	LOG_F(INFO, _T("사용자정의 필드 = %s"), strCustom);
 
 	LOG_F(INFO, _T("거래소 접수 : 주문가격 = %s, 원요청번호 %d, 선물사 요청번호 = %d, 종목이름 = %s, 주문 번호 = %s, 원주문번호 = %s, 계좌번호 = %s, 서브계좌번호 = %s, 펀드 이름 = %s, 주문종류 = %s, 주문갯수 = %s, 요청 타입 = %d"), strPrice, oriReqNo, order->HtsOrderReqID, strSeries, strOrdNo, strOriOrderNo, strAcctNo, strSubAcntNo, strFundName, strPosition.Compare(_T("1")) == 0 ? _T("매수") : _T("매도"), strAmount, order->RequestType);
 }
@@ -1352,7 +1374,7 @@ void VtHdCtrl::OnOrderUnfilledHd(CString& strKey, LONG& nRealType)
 		//LOG_F(INFO, _T("OnUnfilled :: Req.Request id = %d, order string = %s"), req.RequestId, msg);
 	}
 	else {
-		LOG_F(INFO, _T("OnUnfilled :: Req.Request id = %d, order string = %s"));
+		LOG_F(INFO, _T("OnUnfilled :: 미체결 수신 : 주문가격 = %s, 원요청번호 %d, 선물사 요청번호 = %d, 종목이름 = %s, 주문 번호 = %s, 원주문 번호 = %s, 계좌번호 = %s, 서브계좌번호 = %s, 펀드 이름 = %s, 주문종류 = %s, 주문갯수 = %s, 요청 타입 = %d"), strPrice, oriReqNo, order->HtsOrderReqID, strSeries, strOrdNo, strOriOrderNo, strAcctNo, strSubAcntNo, strFundName, strPosition.Compare(_T("1")) == 0 ? _T("매수") : _T("매도"), strAmount, order->RequestType);
 	}
 	// 주문 계좌 번호
 	order->AccountNo = (LPCTSTR)strAcctNo;
@@ -1403,8 +1425,14 @@ void VtHdCtrl::OnOrderUnfilledHd(CString& strKey, LONG& nRealType)
 	int orderCnt = _ttoi(strAmount);
 	// 주문 상태를 저장함
 	VtOrderState prevState = order->state;
+	if (remainCnt == orderCnt) {
+		// 이미 체결된 주문은 설정하지 않는다.
+		if (order->state != VtOrderState::Filled)
+			order->state = VtOrderState::Accepted;
+	}
 	// 정정 주문 완료 상태 확인
 	if (remainCnt == 0 && modifyCnt == orderCnt) {
+		// 이미 체결된 주문은 설정하지 않는다.
 		if (order->state != VtOrderState::Filled)
 			order->state = VtOrderState::ConfirmModify;
 	}
@@ -1412,9 +1440,11 @@ void VtHdCtrl::OnOrderUnfilledHd(CString& strKey, LONG& nRealType)
 	if (remainCnt == 0 && cancelCnt == orderCnt) {
 		order->unacceptedQty = 0;
 		order->amount = 0;
+		// 이미 체결된 주문은 설정하지 않는다.
 		if (order->state != VtOrderState::Filled)
 			order->state = VtOrderState::ConfirmCancel;
 	}
+
 
 	orderMgr->OnOrderUnfilledHd(order);
 
@@ -1466,11 +1496,17 @@ void VtHdCtrl::OnOrderFilledHd(CString& strKey, LONG& nRealType)
 	// 체결된 시각
 	strFillTime.TrimRight();
 
-	CString strMsg;
-	strMsg.Format("OnOrderFilledHd 일반 >>>>>> 계좌번호[%s]주문번호[%s] 종목코드 %s, 체결가격 %s, 체결수량 %s,\n", strAcctNo, strOrdNo, strSeries, strFillPrice, strFillAmount);
-	//WriteLog(strMsg);
-	//strMsg.Format(_T("%s\n"), strCustom);
-	//TRACE(strMsg);
+	VtOrderManagerSelector* orderMgrSeledter = VtOrderManagerSelector::GetInstance();
+	VtOrderManager* orderMgr = orderMgrSeledter->FindAddOrderManager((LPCTSTR)strAcctNo);
+
+	VtOrder* order = nullptr;
+	// 주문이 있는지 찾아본다. 목록에 없으면 새로 생성해 준다.
+	order = orderMgr->FindOrder(_ttoi(strOrdNo));
+	// 주문이 주문 목록에 없는 경우는 외부 주문이거나 역전되어 오는 주문이다. 
+	if (!order) {
+		order = new VtOrder();
+	}
+
 	CString strFundName = _T("");
 	CString strSubAcntNo = _T("");
 	auto it = _ReceivedRequestMap.find(_ttoi(strOrdNo));
@@ -1488,19 +1524,10 @@ void VtHdCtrl::OnOrderFilledHd(CString& strKey, LONG& nRealType)
 		//TRACE(msg);
 	}
 	else {
-		LOG_F(INFO, _T("OnOrderFilledHd등록되지 않은 주문 요청 입니다!"));
+		LOG_F(INFO, _T("OnOrderFilledHd등록되지 않은 주문 요청 입니다! : 체결가격 = %s, 원요청번호 %d, 선물사 요청번호 = %d, 종목이름 = %s, 주문 번호 = %s, 계좌번호 = %s, 서브계좌번호 = %s, 펀드 이름 = %s, 주문종류 = %s, 체결갯수 = %s, 요청 타입 = %d"), strFillPrice, oriReqNo, order->HtsOrderReqID, strSeries, strOrdNo, strAcctNo, strSubAcntNo, strFundName, strPosition.Compare(_T("1")) == 0 ? _T("매수") : _T("매도"), strFillAmount, order->RequestType);
 	}
 
-	VtOrderManagerSelector* orderMgrSeledter = VtOrderManagerSelector::GetInstance();
-	VtOrderManager* orderMgr = orderMgrSeledter->FindAddOrderManager((LPCTSTR)strAcctNo);
-
-	VtOrder* order = nullptr;
-	// 주문이 있는지 찾아본다. 목록에 없으면 새로 생성해 준다.
-	order = orderMgr->FindOrder(_ttoi(strOrdNo));
-	// 주문이 주문 목록에 없는 경우는 외부 주문이거나 역전되어 오는 주문이다. 
-	if (!order) {
-		order = new VtOrder();
-	}
+	
 	// 주문 계좌 번호
 	order->AccountNo = (LPCTSTR)strAcctNo;
 	// 심볼 코드
@@ -1560,8 +1587,9 @@ void VtHdCtrl::OnOrderFilledHd(CString& strKey, LONG& nRealType)
 	LOG_F(INFO, _T("체결 확인 : 체결가격 = %s, 원요청번호 %d, 선물사 요청번호 = %d, 종목이름 = %s, 주문 번호 = %s, 계좌번호 = %s, 서브계좌번호 = %s, 펀드 이름 = %s, 주문종류 = %s, 체결갯수 = %s, 요청 타입 = %d"), strFillPrice, oriReqNo, order->HtsOrderReqID, strSeries, strOrdNo, strAcctNo, strSubAcntNo, strFundName, strPosition.Compare(_T("1")) == 0 ? _T("매수") : _T("매도"), strFillAmount, order->RequestType);
 
 	// 주문 수량과 체결수량이 같을 때만 목록에서 없애 준다.
-	if (order->amount == order->filledQty)
-		RemoveOrderRequest(order);
+	// 부분 체결시 문제가 되어 지우지 않기로 결정함.
+	//if (order->amount == order->filledQty)
+	//	RemoveOrderRequest(order);
 }
 
 void VtHdCtrl::AddRequest(int reqId, HdTaskType taskType)
@@ -1656,9 +1684,17 @@ void VtHdCtrl::RefreshAcceptedOrderByError(int reqId)
 	if (it != _OrderRequestMap.end()) {
 		HdOrderRequest req = it->second;
 		VtOrderManagerSelector* orderMgrSeledter = VtOrderManagerSelector::GetInstance();
-		VtOrderManager* orderMgr = orderMgrSeledter->FindAddOrderManager(req.AccountNo);
-		if (req.OrderNo != -1)
+		// 본계좌 주문 요청이었을 때
+		if (req.Type == 0) {
+			VtOrderManager* orderMgr = orderMgrSeledter->FindAddOrderManager(req.AccountNo);
 			orderMgr->RefreshAcceptedOrder(req.OrderNo);
+		}
+		else { // 서브계좌나 펀드 주문이었을 때
+			VtOrderManager* orderMgr = orderMgrSeledter->FindAddOrderManager(req.AccountNo);
+			orderMgr->RefreshAcceptedOrder(req.OrderNo);
+			orderMgr = orderMgrSeledter->FindAddOrderManager(req.SubAccountNo);
+			orderMgr->RefreshAcceptedOrder(req.OrderNo);
+		}
 	}
 }
 
@@ -2856,7 +2892,7 @@ void VtHdCtrl::OnRemain(CString& strKey, LONG& nRealType)
 			orderDlgMgr->OnRemain(posi);
 
 
-			LOG_F(INFO, _T("잔고 표시 >> 계좌번호 : %s, 종목코드 = %s, 포지션 = %s, 갯수 = %s"), strAccount, strSymbol, posi->Position == VtPositionType::Buy ? _T("매수") : _T("매도"), strRemainCount);
+			LOG_F(INFO, _T("잔고 표시 >> 계좌번호 : %s, 종목코드 = %s, 포지션 = %s, 갯수 = %s"), strAccount, strSymbol, _ttoi(strPosition) == 1 ? _T("매수") : _T("매도"), strRemainCount);
 		}
 	}
 }
@@ -3145,19 +3181,23 @@ void VtHdCtrl::OnSubAccountOrder(VtOrderEvent event, CString& strSubAcntNo, CStr
 	// 여기서 SubAccount 대한 처리를 한다.
 	// SubAccount 는 본계좌에 정보가 기록되고 또 따로 다른 주문관리자에서 관리가 된다.
 	if (strSubAcntNo.GetLength() > 0) {
-		LOG_F(INFO, _T("서브계좌 처리 : 주문상태 = %d, 주문번호 = %d, 원주문번호 = %d, 서브계좌 = %s, 펀드이름 = %s"), (int)prevState, parentOrder->orderNo, parentOrder->oriOrderNo, strSubAcntNo, strFundName);
-
+		
 		VtOrderManagerSelector* orderMgrSelecter = VtOrderManagerSelector::GetInstance();
 		VtOrderManager* subOrderMgr = orderMgrSelecter->FindAddOrderManager((LPCTSTR)strSubAcntNo);
+		// 부모의 주문 번호로 주문을 찾아 본다. 
+		// 없을 경우 복사해 준다. 있을 경우는 정보를 복사해 준다.
 		VtOrder* subAcntOrder = subOrderMgr->FindOrder(parentOrder->orderNo);
 		if (!subAcntOrder)
 			subAcntOrder = subOrderMgr->CloneOrder(parentOrder);
 		else
 			subOrderMgr->CopyOrder(parentOrder, subAcntOrder);
-
+		// 처리전 상태를 입력해 준다.
 		subAcntOrder->state = prevState;
+		// 서브계좌 번호를 넣어 준다.
 		subAcntOrder->AccountNo = strSubAcntNo;
+		// 부모계좌 번호를 넣어준다.
 		subAcntOrder->ParentAccountNo = parentOrder->AccountNo;
+		// 펀드 이름이 있으면 펀드 이름을 넣어 준다.
 		if (strFundName.GetLength() > 0) {
 			subAcntOrder->type = 2;
 			subAcntOrder->FundName = strFundName;
@@ -3172,18 +3212,38 @@ void VtHdCtrl::OnSubAccountOrder(VtOrderEvent event, CString& strSubAcntNo, CStr
 		case VtOrderEvent::Modified:
 		case VtOrderEvent::Cancelled: {
 			subOrderMgr->OnOrderReceivedHd(subAcntOrder);
+			// 이미 주문이 접수된 경우에는 접수 과정을 수행한다.
+			if (subAcntOrder->state == VtOrderState::Accepted) {
+				LOG_F(INFO, _T("서브계좌 처리 : 서버 주문 수신 역전 처리 >> 주문상태 = %d, 주문번호 = %d, 원주문번호 = %d, 서브계좌 = %s, 펀드이름 = %s"), (int)prevState, parentOrder->orderNo, parentOrder->oriOrderNo, strSubAcntNo, strFundName);
+				subOrderMgr->OnOrderAcceptedHd(subAcntOrder);
+			}
+			else {
+				LOG_F(INFO, _T("서브계좌 처리 : 주문도착 >> 주문상태 = %d, 주문번호 = %d, 원주문번호 = %d, 서브계좌 = %s, 펀드이름 = %s"), (int)prevState, parentOrder->orderNo, parentOrder->oriOrderNo, strSubAcntNo, strFundName);
+				// 주문 상태를 넣어 준다.
+				subAcntOrder->state = VtOrderState::OrderReceived;
+			}
 		}
 		break;
 		case VtOrderEvent::Accepted: {
+			LOG_F(INFO, _T("서브계좌 처리 : 주문접수확인 >> 주문상태 = %d, 주문번호 = %d, 원주문번호 = %d, 서브계좌 = %s, 펀드이름 = %s"), (int)prevState, parentOrder->orderNo, parentOrder->oriOrderNo, strSubAcntNo, strFundName);
 			subOrderMgr->OnOrderAcceptedHd(subAcntOrder);
+			// 주문 상태를 넣어 준다.
+			subAcntOrder->state = VtOrderState::Accepted;
 		}
 		break;
 		case VtOrderEvent::Unfilled: {
+			LOG_F(INFO, _T("서브계좌 처리 : 주문미체결 >> 주문상태 = %d, 주문번호 = %d, 원주문번호 = %d, 서브계좌 = %s, 펀드이름 = %s"), (int)prevState, parentOrder->orderNo, parentOrder->oriOrderNo, strSubAcntNo, strFundName);
 			subOrderMgr->OnOrderUnfilledHd(subAcntOrder);
+			// 주문 상태를 넣어 준다.
+			subAcntOrder->state = parentOrder->state;
 		}
 		break;
 		case VtOrderEvent::Filled: {
+			LOG_F(INFO, _T("서브계좌 처리 : 주문체결 >> 주문상태 = %d, 주문번호 = %d, 원주문번호 = %d, 서브계좌 = %s, 펀드이름 = %s"), (int)prevState, parentOrder->orderNo, parentOrder->oriOrderNo, strSubAcntNo, strFundName);
 			subOrderMgr->OnOrderFilledHd(subAcntOrder);
+			// 주문 상태를 넣어 준다.
+			if (subAcntOrder->state != VtOrderState::Settled)
+				subAcntOrder->state = VtOrderState::Filled;
 		}
 		break;
 		default:
@@ -5242,13 +5302,13 @@ void VtHdCtrl::OnGetMsgWithRqId(int nRqId, CString strCode, CString strMsg)
 	else {
 		LOG_F(INFO, _T("[요청번호 = %d, 코드번호 = %s][메시지 = %s]\n"), nRqId, strCode, strMsg);
 		// 주문요청 오류에 따른 접수 목록 업데이트
-		RefreshAcceptedOrderByError(nRqId);
+ 		RefreshAcceptedOrderByError(nRqId);
 		VtOrderDialogManager* orderDlgMgr = VtOrderDialogManager::GetInstance();
 		// 주문창을 업데이트 한다.
 		orderDlgMgr->OnReceiveMsgWithReqId(nRqId, strLog);
 	}
 
-	if (strCode.Compare(_T("00000")) != 0) {
+	if (_ttoi(strCode) != 0) {
 		if (strCode.Compare(_T("91012")) == 0 || 
 			strCode.Compare(_T("99992")) == 0) {
 			AfxMessageBox(strMsg);

@@ -687,7 +687,7 @@ void CMainFrame::OnReceiveComplete()
 		saveMgr->LoadOutSystems(_T("outsystemlist.dat"));
 		saveMgr->LoadOrderWndList(_T("orderwndlist.dat"), this);
 
-		SetTimer(SysLiqTimer, 10000, NULL);
+		SetTimer(SysLiqTimer, 5000, NULL);
 
 		_LoadComplete = true;
 	}

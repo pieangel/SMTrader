@@ -7,6 +7,6 @@ protected:
 public:
 	VtUniqueChartID();
 	~VtUniqueChartID();
-	int Id() const { return _id; }
+	int Id() { return _id++; }
 	void Id(int val) { _id = val; }
 };

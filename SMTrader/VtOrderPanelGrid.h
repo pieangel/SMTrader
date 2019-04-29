@@ -7,6 +7,7 @@
 #include <vector>
 #include <set>
 #include <map>
+#include <queue>
 #include "UGrid/CellTypes/UGCTOrder.h"
 #include "VtOrderConfigManager.h"
 #include "Global/VtDefine.h"
@@ -490,6 +491,12 @@ private:
 	void UpdateAccepted();
 	void UpdateFilled();
 	void UpdateUnfilled();
+	std::queue<int> _RefreshQ;
+	bool _IsRefreshTimerWorking = false;
+	void StartTimer();
+	int _TimerInternal = 5; // ms
+	void CommitRefresh(int type);
+	int _MaxRefreshQSize = 500;
 public:
 	DECLARE_MESSAGE_MAP()
 	afx_msg void OnTimer(UINT_PTR nIDEvent);

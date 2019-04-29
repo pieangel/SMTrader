@@ -95,19 +95,15 @@ void VtOrderManagerSelector::Load(simple::file_istream<same_endian_type>& ss)
 	VtAccountManager* acntMgr = VtAccountManager::GetInstance();
 	VtSubAccountManager* subAcntMgr = VtSubAccountManager::GetInstance();
 	VtAccount* acnt = nullptr;
-	for (int i = 0; i < count; ++i)
-	{
+	for (int i = 0; i < count; ++i) {
 		ss >> accountNo >> accountLevel;
-		if (accountLevel == 0)
-		{
+		if (accountLevel == 0) {
 			acnt = acntMgr->FindAccount(accountNo);
 		}
-		else
-		{
+		else {
 			acnt = subAcntMgr->FindAccount(accountNo);
 		}
-		if (acnt)
-		{
+		if (acnt) {
 			VtOrderManager* orderMgr = CreateOrderManager(acnt);
 			orderMgr->Load(ss);
 		}
