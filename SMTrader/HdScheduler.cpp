@@ -57,6 +57,7 @@ void HdScheduler::OnTaskCompleted(HdTaskEventArgs& arg)
 		if (_ProgressDlg) {
 			SetTaskInfo(_T("GetDeposit"), remCnt);
 		}
+		Sleep(700);
 		if (!_ReceivedBatchInfo && remCnt == 0) {
 			if (GetCustomProfitLoss() == 0) {
 				HdTaskEventArgs eventArg;
@@ -68,6 +69,7 @@ void HdScheduler::OnTaskCompleted(HdTaskEventArgs& arg)
 	break;
 	case HdTaskType::HdApiCustomerProfitLoss: { // 계좌별, 종목별 손익을 가져온다.
 		int remCnt = RemoveRequest(HdTaskType::HdApiCustomerProfitLoss, arg.RequestId);
+		Sleep(700);
 		if (!_ReceivedBatchInfo && remCnt == 0) {
 			if (GetOutstanding() == 0) {
 				HdTaskEventArgs eventArg;
@@ -79,6 +81,7 @@ void HdScheduler::OnTaskCompleted(HdTaskEventArgs& arg)
 	break;
 	case HdTaskType::HdOutstanding: { // 종목별 잔고를 가져온다.
 		int remCnt = RemoveRequest(HdTaskType::HdOutstanding, arg.RequestId);
+		Sleep(700);
 		if (!_ReceivedBatchInfo && remCnt == 0) {
 			if (GetAcceptedHistory() == 0) {
 				HdTaskEventArgs eventArg;
@@ -90,6 +93,7 @@ void HdScheduler::OnTaskCompleted(HdTaskEventArgs& arg)
 	break;
 	case HdTaskType::HdAcceptedHistory: { // 종목별 접수확인 목록을 가져온다.
 		int remCnt = RemoveRequest(HdTaskType::HdAcceptedHistory, arg.RequestId);
+		Sleep(700);
 		if (remCnt == 0) {
 			_ReceivedBatchInfo = true;
 			FinishGetData();

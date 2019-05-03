@@ -396,7 +396,7 @@ BOOL VtOrderConfigDlg::OnEraseBkgnd(CDC* pDC)
 {
 	//if (_CenterWnd->GetCenterWndCount() <= 1)
 	//	return FALSE;
-
+	/*
 	//CBrush brush;
 	if (_CenterWnd->Activated())
 		pDC->SelectObject(&_BrushBackSel);
@@ -413,6 +413,8 @@ BOOL VtOrderConfigDlg::OnEraseBkgnd(CDC* pDC)
 	else
 		pDC->FillRect(&rect, &_BrushBackNor);
 	return TRUE;
+	*/
+	return FALSE;
 }
 
 
@@ -428,7 +430,8 @@ void VtOrderConfigDlg::OnLButtonDown(UINT nFlags, CPoint point)
 
 HBRUSH VtOrderConfigDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 {
-
+	return CDialog::OnCtlColor(pDC, pWnd, nCtlColor);
+	/*
 	HBRUSH hBrush = NULL;
 	switch (nCtlColor)
 	{
@@ -458,4 +461,5 @@ HBRUSH VtOrderConfigDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 		break;
 	}
 	return hBrush;
+	*/
 }

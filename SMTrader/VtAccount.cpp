@@ -341,6 +341,7 @@ void VtAccount::GetOutstanding()
 
 void VtAccount::GetOutstanding(std::vector<std::pair<std::string, HdTaskArg>>& argList)
 {
+	Sleep(400);
 	HdScheduler* scheduler = HdScheduler::GetInstance();
 	HdTaskArg arg;
 	arg.Type = HdTaskType::HdOutstanding;

@@ -121,15 +121,15 @@ void VtSystem::OnTimer()
 
 void VtSystem::OnRegularTimer()
 {
-	// 청산 시간에 따른 청산 - 조건없이 무조건 청산한다.
-	if (_CurPosition != VtPositionType::None) {
-		if (LiqByEndTime()) {
-			// 여기서 현재 포지션 상태를 설정해 추가로 주문이 나가지 않게 한다.
-			_CurPosition = VtPositionType::None;
-			_LastEntryDailyIndex = -1;
-			LOG_F(INFO, _T("청산시간에 따른 청산성공"));
-			return;
-		}
+	if (_AllSettled)
+		return;
+	if (LiqByEndTime()) {
+		// 여기서 현재 포지션 상태를 설정해 추가로 주문이 나가지 않게 한다.
+		_CurPosition = VtPositionType::None;
+		_LastEntryDailyIndex = -1;
+		LOG_F(INFO, _T("청산시간에 따른 청산성공"));
+		_AllSettled = true;
+		return;
 	}
 }
 
@@ -149,6 +149,7 @@ bool VtSystem::LiqByEndTime()
 	int curTime = VtGlobal::GetTime(VtGlobal::GetLocalTime());
 	int liqTime = VtGlobal::GetTime(_LiqTime);
 	if (curTime >= liqTime) {
+		LOG_F(INFO, _T("청산시간에 따른 청산시도 : 현재 포지션 = %d, 현재 시간 = %d, 청산 시간 = %d"), _CurPosition, curTime, liqTime);
 		// 여기서 청산을 진행한다.
 		if (LiqudAll())
 			return true;

@@ -482,5 +482,6 @@ protected:
 	/// 지정가일 경우 주문틱
 	/// </summary>
 	int _OrderTick = 5;
+	bool _AllSettled = false;
 };
 

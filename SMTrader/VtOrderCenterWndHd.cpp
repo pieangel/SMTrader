@@ -179,6 +179,7 @@ void VtOrderCenterWndHd::OrderTypeSlip(int val)
 void VtOrderCenterWndHd::Activated(bool val)
 {
 	_Activated = val;
+	/*
 	CRect& rcGrid = _LayoutMgr->GetRect(IDC_STATIC_ORDER_PANEL);
 
 	
@@ -189,6 +190,36 @@ void VtOrderCenterWndHd::Activated(bool val)
 
 	if (_ConfigDlg) {
 		_ConfigDlg->Invalidate(TRUE);
+	}
+	*/
+	if (_Activated) {
+		_StaticProductName.SetTextColor(RGB(255, 255, 255));
+		_StaticProductName.SetColor(RGB(255, 0, 0));
+		_StaticProductName.SetGradientColor(RGB(255, 0, 0));
+		
+
+		_StaticProduct.SetTextColor(RGB(255, 255, 255));
+		_StaticProduct.SetColor(RGB(255, 0, 0));
+		_StaticProduct.SetGradientColor(RGB(255, 0, 0));
+
+	}
+	else {
+		_StaticProductName.SetTextColor(RGB(0, 0, 0));
+		_StaticProductName.SetColor(GetSysColor(COLOR_BTNFACE));
+		_StaticProductName.SetGradientColor(GetSysColor(COLOR_BTNFACE));
+
+		_StaticProduct.SetTextColor(RGB(0, 0, 0));
+		_StaticProduct.SetColor(GetSysColor(COLOR_BTNFACE));
+		_StaticProduct.SetGradientColor(GetSysColor(COLOR_BTNFACE));
+	}
+
+	_StaticProductName.Invalidate();
+	_StaticProduct.Invalidate();
+
+	if (_Symbol && _ParentDlg) {
+		CString title;
+		title.Format(_T("계좌주문창 : 종목 - %s"), _Symbol->Name.c_str());
+		_ParentDlg->SetWindowText(title);
 	}
 }
 
@@ -253,6 +284,7 @@ void VtOrderCenterWndHd::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_BTN_REMAIN_FUND, _BtnRemainFund);
 	DDX_Control(pDX, IDC_BTN_SEL_SYMBOL, _BtnSearch);
 	DDX_Control(pDX, IDC_BUTTON_SETTING, _BtnSettings);
+	DDX_Control(pDX, IDC_STATIC_PRODUCT, _StaticProduct);
 }
 
 
@@ -352,6 +384,29 @@ BOOL VtOrderCenterWndHd::OnInitDialog()
 	RepositionControl();
 	RepositionConfigWnd();
 	RepositionTickGrid();
+
+	_StaticProductName.SetTextColor(RGB(0, 0, 0));
+	_StaticProductName.SetColor(GetSysColor(COLOR_BTNFACE));
+	_StaticProductName.SetGradientColor(GetSysColor(COLOR_BTNFACE));
+	_StaticProductName.SetTextAlign(1);
+	_StaticProduct.SetTextColor(RGB(0, 0, 0));
+	_StaticProduct.SetColor(GetSysColor(COLOR_BTNFACE));
+	_StaticProduct.SetGradientColor(GetSysColor(COLOR_BTNFACE));
+	_StaticProduct.SetTextAlign(1);
+
+	/*
+	_StaticProductName.SetTextColor(RGB(255, 255, 255));
+	_StaticProductName.SetColor(RGB(255, 0, 0));
+	_StaticProductName.SetGradientColor(RGB(255, 0, 0));
+	_StaticProductName.SetTextAlign(0);
+	//_StaticProductName.SetLeftSpacing(0);
+
+	_StaticProduct.SetTextColor(RGB(255, 255, 255));
+	_StaticProduct.SetColor(RGB(255, 0, 0));
+	_StaticProduct.SetGradientColor(RGB(255, 0, 0));
+	_StaticProduct.SetTextAlign(0);
+	//_StaticProduct.SetLeftSpacing(0);
+	*/
 
 	std::vector<CShadeButtonST*> btnVec;
 	btnVec.push_back(&_BtnAmt1);
@@ -1359,7 +1414,7 @@ BOOL VtOrderCenterWndHd::OnEraseBkgnd(CDC* pDC)
 {
 	//if (_ParentDlg && _ParentDlg->GetCenterWndCount() == 1)
 	//	return FALSE;
-
+	/*
 	// 주문그리드 위치를 가져온다.
 	CRect& rcGrid = _LayoutMgr->GetRect(IDC_STATIC_ORDER_PANEL);
 
@@ -1376,7 +1431,10 @@ BOOL VtOrderCenterWndHd::OnEraseBkgnd(CDC* pDC)
 		pDC->FillRect(&rect, &_BrushBackSel);
 	else
 		pDC->FillRect(&rect, &_BrushBackNor);
+	
 	return TRUE;
+	*/
+	return FALSE;
 }
 
 
@@ -2033,6 +2091,8 @@ int VtOrderCenterWndHd::GetRemainWidth()
 
 HBRUSH VtOrderCenterWndHd::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 {
+	return CDialog::OnCtlColor(pDC, pWnd, nCtlColor);
+	/*
 	HBRUSH hBrush = NULL;
 	switch (nCtlColor)
 	{
@@ -2062,6 +2122,7 @@ HBRUSH VtOrderCenterWndHd::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 		break;
 	}
 	return hBrush;
+	*/
 }
 
 

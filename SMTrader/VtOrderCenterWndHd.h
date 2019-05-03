@@ -14,6 +14,7 @@
 #include "VtConfigGrid.h"
 #include "ShadeButtonST.h"
 #include "VtRefreshManager.h"
+#include "GradientStatic.h"
 #include <thread>
 using same_endian_type = std::is_same<simple::LittleEndian, simple::LittleEndian>;
 //#include "ResizableLib/ResizableDialog.h"
@@ -220,7 +221,8 @@ public:
 	CShadeButtonST _BtnRemain;
 	CShadeButtonST _BtnSearch;
 	CStatic _StaticMsg;
-	CStatic _StaticProductName;
+	CGradientStatic _StaticProductName;
+	CGradientStatic _StaticProduct;
 	CShadeButtonST _BtnAmt1;
 	CShadeButtonST _BtnAmt2;
 	CShadeButtonST _BtnAmt3;

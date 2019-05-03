@@ -2382,8 +2382,8 @@ void VtHdCtrl::OnSymbolMaster(CString& sTrCode, LONG& nRqID)
 	CString strUpRate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "등락률");
 
 	LOG_F(INFO, _T("종목코드 = %s"), strData001);
-	TRACE(strData001);
-	TRACE(_T("\n"));
+	//TRACE(strData001);
+	//TRACE(_T("\n"));
 	std::string code = sym->ShortCode.substr(0, 3);
 	HdProductInfo* prdtInfo = symMgr->FindProductInfo(code);
 	if (prdtInfo) {
@@ -5277,7 +5277,7 @@ void VtHdCtrl::OnGetMsg(CString strCode, CString strMsg)
 		orderDlgMgr->OnReceiveMsg(strLog);
 	}
 
-	TRACE(strLog);
+	//TRACE(strLog);
 	if (strCode.Compare(_T("-9998")) == 0) {
 		_ServerConnected = false;
 		AfxMessageBox(_T("서버와의 연결이 끊어졌습니다. 프로그램을 종료합니다."));
@@ -5291,6 +5291,10 @@ void VtHdCtrl::OnGetMsgWithRqId(int nRqId, CString strCode, CString strMsg)
 {
 	if (_Blocked)
 		return;
+
+	CString msg;
+	msg.Format(_T("nRqId = %d, strCode = %s, strMsg = %s\n"), nRqId, strCode, strMsg);
+	TRACE(msg);
 
 	CString strLog;
 	//strLog.Format("[요청번호 = %d, 코드번호 = %s][메시지 = %s]\n", nRqId, strCode, strMsg);
