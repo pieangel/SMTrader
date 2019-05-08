@@ -7213,6 +7213,8 @@ void VtOrderPanelGrid::OnSymbolMaster(VtSymbol* sym)
 	if (!sym || !_CenterWnd)
 		return;
 
+	_CloseRow = FindCenterRow();
+
 	CellPosMap refreshMap;
 
 	ClearOldQuotes(refreshMap);

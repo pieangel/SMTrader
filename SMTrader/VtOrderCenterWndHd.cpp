@@ -192,15 +192,22 @@ void VtOrderCenterWndHd::Activated(bool val)
 		_ConfigDlg->Invalidate(TRUE);
 	}
 	*/
+	if (_Symbol && _ParentDlg) {
+		SetProductName(_Symbol);
+		CString title;
+		title.Format(_T("계좌주문창 : 종목 - %s"), _Symbol->Name.c_str());
+		_ParentDlg->SetWindowText(title);
+	}
+
 	if (_Activated) {
 		_StaticProductName.SetTextColor(RGB(255, 255, 255));
-		_StaticProductName.SetColor(RGB(255, 0, 0));
-		_StaticProductName.SetGradientColor(RGB(255, 0, 0));
-		
+		_StaticProductName.SetColor(RGB(19, 137, 255));
+		_StaticProductName.SetGradientColor(RGB(19, 137, 255));
+
 
 		_StaticProduct.SetTextColor(RGB(255, 255, 255));
-		_StaticProduct.SetColor(RGB(255, 0, 0));
-		_StaticProduct.SetGradientColor(RGB(255, 0, 0));
+		_StaticProduct.SetColor(RGB(19, 137, 255));
+		_StaticProduct.SetGradientColor(RGB(19, 137, 255));
 
 	}
 	else {
@@ -215,12 +222,6 @@ void VtOrderCenterWndHd::Activated(bool val)
 
 	_StaticProductName.Invalidate();
 	_StaticProduct.Invalidate();
-
-	if (_Symbol && _ParentDlg) {
-		CString title;
-		title.Format(_T("계좌주문창 : 종목 - %s"), _Symbol->Name.c_str());
-		_ParentDlg->SetWindowText(title);
-	}
 }
 
 void VtOrderCenterWndHd::ResizeOrderGrid(int maxHeight)
@@ -308,7 +309,7 @@ BEGIN_MESSAGE_MAP(VtOrderCenterWndHd, CDialogEx)
 	ON_WM_PAINT()
 	//ON_NOTIFY(UDN_DELTAPOS, IDC_SPIN_EXPAND, &VtOrderCenterWndHd::OnDeltaposSpinExpand)
 	ON_STN_CLICKED(IDC_STATIC_MSG, &VtOrderCenterWndHd::OnStnClickedStaticMsg)
-	ON_WM_ERASEBKGND()
+	//ON_WM_ERASEBKGND()
 	ON_BN_CLICKED(IDC_STATIC_FILL_PL, &VtOrderCenterWndHd::OnBnClickedStaticFillPl)
 	ON_BN_CLICKED(IDC_BUTTON_SETTING, &VtOrderCenterWndHd::OnBnClickedButtonSetting)
 	ON_BN_CLICKED(IDC_BUTTON_PROFIT_LOSS, &VtOrderCenterWndHd::OnBnClickedButtonProfitLoss)
@@ -321,7 +322,7 @@ BEGIN_MESSAGE_MAP(VtOrderCenterWndHd, CDialogEx)
 	ON_NOTIFY(NM_RCLICK, IDC_BTN_ORDER_AMT6, OnRClicked)
 	ON_STN_CLICKED(IDC_STATIC_REAL_TICK, &VtOrderCenterWndHd::OnStnClickedStaticRealTick)
 	ON_BN_CLICKED(IDC_BTN_REMAIN_FUND, &VtOrderCenterWndHd::OnBnClickedBtnRemainFund)
-	ON_WM_CTLCOLOR()
+	//ON_WM_CTLCOLOR()
 	ON_WM_LBUTTONDOWN()
 	ON_MESSAGE(WM_REFRESH_GRID, &VtOrderCenterWndHd::OnRefreshGrid)
 END_MESSAGE_MAP()
@@ -632,7 +633,6 @@ void VtOrderCenterWndHd::OnReceiveQuote(VtSymbol* sym)
 {
 	if (!sym)
 		return;
-	SetProductName(sym);
 	_TickGrid.OnReceiveQuote(sym);
 	_OrderPanelGrid.OnReceiveQuote(sym);
 	_ProductRemainGrid.OnReceiveQuote(sym);
@@ -647,6 +647,7 @@ void VtOrderCenterWndHd::OnSymbolMaster(VtSymbol* sym)
 {
 	if (_OrderPanelGrid.GetSafeHwnd()) {
 		_OrderPanelGrid.OnSymbolMaster(sym);
+		SetProductName(sym);
 	}
 }
 
@@ -853,6 +854,7 @@ void VtOrderCenterWndHd::SetSymbol(VtSymbol* sym)
 		return;
 
 	_Symbol = sym;
+	SetProductName(_Symbol);
 	_ProductRemainGrid.SetSymbol(sym);
 
 	if (_OrderConfigMgr->OrderMgr())
@@ -1369,6 +1371,7 @@ void VtOrderCenterWndHd::SetProductName(VtSymbol* symbol)
 		return;
 
 	_StaticProductName.SetWindowText(symbol->Name.c_str());
+	_StaticProductName.Invalidate();
 }
 
 void VtOrderCenterWndHd::ChangeFocus()
@@ -1434,7 +1437,7 @@ BOOL VtOrderCenterWndHd::OnEraseBkgnd(CDC* pDC)
 	
 	return TRUE;
 	*/
-	return FALSE;
+	return TRUE;
 }
 
 
