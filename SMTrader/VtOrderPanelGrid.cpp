@@ -3542,7 +3542,7 @@ void VtOrderPanelGrid::RefreshInfo()
 	auto duration = duration_cast<microseconds>(stop - start);
 
 	msg.Format(_T("RefreshInfo type :: elapsed time :: microsecond = %d\n"), duration.count());
-	TRACE(msg);
+	//TRACE(msg);
 }
 
 void VtOrderPanelGrid::RefreshInfo(int type)
@@ -3588,7 +3588,7 @@ void VtOrderPanelGrid::RefreshInfo(int type)
 	auto duration = duration_cast<microseconds>(stop - start);
 
 	msg.Format(_T("RefreshInfo type :: elapsed time :: microsecond = %d\n"), duration.count());
-	TRACE(msg);
+	//TRACE(msg);
 }
 
 void VtOrderPanelGrid::RefreshInfo2(int type)

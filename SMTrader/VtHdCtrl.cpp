@@ -3834,6 +3834,7 @@ void VtHdCtrl::SendOrder(HdOrderRequest request)
 
 void VtHdCtrl::PutOrder(HdOrderRequest&& request)
 {
+	std::lock_guard<std::mutex> lock(m_);
 	if (!CheckPassword(request))
 		return;
 

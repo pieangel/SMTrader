@@ -7,6 +7,7 @@
 #include <set>
 #include <tuple>
 #include <vector>
+#include <mutex>
 #include "VtOrder.h"
 #include "VtChartDataRequest.h"
 #include "HdTaskArg.h"
@@ -238,4 +239,5 @@ private:
 	/// 특히 정정이나 취소시 이미 체결된 주문이 있을 때 그 목록을 없애 준다.
 	/// </summary>
 	void RefreshAcceptedOrderByError(int reqId);
+	std::mutex m_;
 };

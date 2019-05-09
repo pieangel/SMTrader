@@ -55,6 +55,8 @@
 #include "VtOutSignalDefManager.h"
 #include "VtOutSystemOrderManager.h"
 #include "VtSystemLogDlg.h"
+#include "System/VtSystem.h"
+#include "VtOutSystemOrderManager.h"
 extern TApplicationFont g_Font;
 
 #ifdef _DEBUG
@@ -543,6 +545,82 @@ void CMainFrame::OnLoginTest()
 {
 	VtLogInDlg dlg;
 	dlg.DoModal();
+	/*
+	// 주문 스트레스 테스트
+	std::thread threadObj2([] {
+		VtSystemManager* sysMgr = VtSystemManager::GetInstance();
+		VtSystem* sys = sysMgr->GetSystem(_T("KP_1A"));
+		std::string name = sys->Name();
+		try
+		{
+			for (int i = 0; i < 10000; i++) {
+				std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+				sys->PutEntranceOrder(VtPositionType::Sell);
+			}
+		}
+		catch (std::exception e)
+		{
+			AfxMessageBox(e.what());
+		}
+	});
+	
+	
+	
+	std::thread threadObj([] {
+		VtOutSystemManager* outSysMgr = VtOutSystemManager::GetInstance();
+		SharedSystemVec& sysMap = outSysMgr->GetSysMap();
+		for (int i = 0; i < 10000; i++) {
+			std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+			for (auto it = sysMap.begin(); it != sysMap.end(); ++it) {
+				VtSystem* shareSys = (*it).get();
+				std::string name = shareSys->Name();
+				shareSys->PutEntranceOrder(VtPositionType::Buy);
+			}
+		}
+	});
+
+	std::thread threadObj3([] {
+		VtSystemManager* sysMgr = VtSystemManager::GetInstance();
+		VtSystem* sys = sysMgr->GetSystem(_T("KP_1A"));
+		std::string name = sys->Name();
+		try
+		{
+			for (int i = 0; i < 10000; i++) {
+				std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+				sys->PutEntranceOrder(VtPositionType::Sell);
+			}
+		}
+		catch (std::exception e)
+		{
+			AfxMessageBox(e.what());
+		}
+	});
+
+	std::thread threadObj4([] {
+		VtOutSystemManager* outSysMgr = VtOutSystemManager::GetInstance();
+		SharedSystemVec& sysMap = outSysMgr->GetSysMap();
+		for (int i = 0; i < 10000; i++) {
+			std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+			for (auto it = sysMap.begin(); it != sysMap.end(); ++it) {
+				VtSystem* shareSys = (*it).get();
+				std::string name = shareSys->Name();
+				shareSys->PutEntranceOrder(VtPositionType::Buy);
+			}
+		}
+	});
+	threadObj.detach();
+	threadObj2.detach();
+	threadObj3.detach();
+	threadObj4.detach();
+	if (threadObj2.joinable())
+		threadObj2.join();
+	if (threadObj.joinable())
+		threadObj.join();
+	if (threadObj3.joinable())
+		threadObj3.join();
+	if (threadObj4.joinable())
+		threadObj4.join();
+	*/
 }
 
 
