@@ -304,6 +304,9 @@ void VtSystemManager::SetDataMap(VtChartData* chartData, VtSystem* system)
 
 void VtSystemManager::UpdateSystem(int index)
 {
+	if (_EditingSystem)
+		return;
+
 	for (auto it = _SystemVector.begin(); it != _SystemVector.end(); ++it) {
 		VtSystem* sys = *it;
 		if (sys->Enable()) {
@@ -314,6 +317,9 @@ void VtSystemManager::UpdateSystem(int index)
 
 void VtSystemManager::OnTimer()
 {
+	if (_EditingSystem)
+		return;
+
 	for (auto it = _SystemVector.begin(); it != _SystemVector.end(); ++it) {
 		VtSystem* sys = *it;
 		if (sys->Enable()) {
@@ -325,6 +331,9 @@ void VtSystemManager::OnTimer()
 
 void VtSystemManager::OnRegularTimer()
 {
+	if (_EditingSystem)
+		return;
+
 	for (auto it = _SystemVector.begin(); it != _SystemVector.end(); ++it) {
 		VtSystem* sys = *it;
 		if (sys->Enable()) {
@@ -365,26 +374,30 @@ void VtSystemManager::InitDataSources()
 
 void VtSystemManager::UpdateRealtimeArgs(VtChartData* chartData)
 {
-	if (!chartData)
+	if (!chartData || _EditingSystem)
 		return;
-	std::string symCode = chartData->SymbolCode().substr(0, 3);
-	VtSymbol* sym = _ArgMap[symCode];
+	std::string symCode = chartData->SymbolCode().substr(0, 8);
+	auto it = _ArgMap.find(symCode);
+	if (it == _ArgMap.end())
+		return;
+
+	VtSymbol* sym = it->second;
 	if (!sym)
 		return;
 
-	if (symCode.compare(_T("101")) == 0) {
+	if (symCode.find(_T("101")) != std::string::npos) {
 		Kbs = sym->Hoga.TotBuyQty;
 		Kas = sym->Hoga.TotSellQty;
 		Kbc = sym->Hoga.TotBuyNo;
 		Kac = sym->Hoga.TotSellNo;
 	} 
-	else if (symCode.compare(_T("106")) == 0) {
+	else if (symCode.find(_T("106")) != std::string::npos) {
 		Qbs = sym->Hoga.TotBuyQty;
 		Qas = sym->Hoga.TotSellQty;
 		Qbc = sym->Hoga.TotBuyNo;
 		Qac = sym->Hoga.TotSellNo;
 	}
-	else if (symCode.compare(_T("175")) == 0) {
+	else if (symCode.find(_T("175")) != std::string::npos) {
 		Ubs = sym->Hoga.TotBuyQty;
 		Uas = sym->Hoga.TotSellQty;
 		Ubc = sym->Hoga.TotBuyNo;
@@ -403,6 +416,39 @@ void VtSystemManager::RemoveSystemDialog(VtUsdStrategyConfigDlg* dlg)
 	if (it != _SysDlgMap.end()) {
 		_SysDlgMap.erase(it);
 	}
+}
+
+void VtSystemManager::ReplaceSymbol(VtSymbol* sym)
+{
+	if (!sym)
+		return;
+
+	_EditingSystem = true;
+	// 맵을 검색할때는 항상 find를 이용한다. 
+	// find를 이용하지 않으면 nullptr 객체가 추가된다.
+	// 이것은 매우 심각한 버그를 일으킨다.
+	std::string symCode = sym->ShortCode;
+	std::string prefix = symCode.substr(0, 3);
+
+	for (auto it = _ArgMap.begin(); it != _ArgMap.end(); ++it) {
+		VtSymbol* curSym = it->second;
+		if (curSym->ShortCode.find(prefix) != std::string::npos) {
+			_ArgMap.erase(it);
+			break;
+		}
+	}
+
+	sym->GetSymbolMaster();
+
+	_ArgMap[symCode] = sym;
+	InitDataSource(sym, 1);
+	InitDataSource(sym, 5);
+
+	CString msg;
+	msg.Format(_T("arg count = %d\n"), _ArgMap.size());
+	TRACE(msg);
+
+	_EditingSystem = false;
 }
 
 void VtSystemManager::InitDataSource(int cycle)
@@ -429,7 +475,7 @@ void VtSystemManager::InitDataSource(int cycle)
 		// 매수호가총건수
 		code = symCode + (_T("BHTC"));
 		AddDataSource(code, VtChartType::MIN, cycle);
-		_ArgMap[_T("101")] = sym;
+		_ArgMap[symCode] = sym;
 	}
 	// 코스닥 150 선눌지수와 건수
 	sym = prdtCatMgr->GetRecentFutureSymbol(_T("106F"));
@@ -452,7 +498,7 @@ void VtSystemManager::InitDataSource(int cycle)
 		// 매수호가총건수
 		code = symCode + (_T("BHTC"));
 		AddDataSource(code, VtChartType::MIN, cycle);
-		_ArgMap[_T("106")] = sym;
+		_ArgMap[symCode] = sym;
 	}
 
 	// 원달러 선물지수와 건수
@@ -476,6 +522,31 @@ void VtSystemManager::InitDataSource(int cycle)
 		// 매수호가총건수
 		code = symCode + (_T("BHTC"));
 		AddDataSource(code, VtChartType::MIN, cycle);
-		_ArgMap[_T("175")] = sym;
+		_ArgMap[symCode] = sym;
 	}
+}
+
+void VtSystemManager::InitDataSource(VtSymbol* sym, int cycle)
+{
+	if (!sym)
+		return;
+	VtRealtimeRegisterManager* realRegiMgr = VtRealtimeRegisterManager::GetInstance();
+	std::string symCode = sym->ShortCode;
+	// 실시간 데이터 등록
+	realRegiMgr->RegisterProduct(symCode);
+	// 주기 데이터 추가
+	VtChartData* data = AddDataSource(symCode, VtChartType::MIN, cycle);
+	data->RequestChartData();
+	// 매도호가총수량
+	std::string code = symCode + (_T("SHTQ"));
+	AddDataSource(code, VtChartType::MIN, cycle);
+	// 매수호가총수량
+	code = symCode + (_T("BHTQ"));
+	AddDataSource(code, VtChartType::MIN, cycle);
+	// 매도호가총건수
+	code = symCode + (_T("SHTC"));
+	AddDataSource(code, VtChartType::MIN, cycle);
+	// 매수호가총건수
+	code = symCode + (_T("BHTC"));
+	AddDataSource(code, VtChartType::MIN, cycle);
 }

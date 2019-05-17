@@ -3548,13 +3548,6 @@ void VtOrderPanelGrid::RefreshInfo()
 void VtOrderPanelGrid::RefreshInfo(int type)
 {
 	CString msg;
-
-	// Get starting timepoint 
-	auto start = high_resolution_clock::now();
-
-	if (_ShowingCells)
-		return;
-	_ShowingCells = true;
 	
 	switch (type)
 	{
@@ -3576,19 +3569,6 @@ void VtOrderPanelGrid::RefreshInfo(int type)
 	default:
 		break;
 	}
-	
-	_ShowingCells = false;
-
-	// Get ending timepoint 
-	auto stop = high_resolution_clock::now();
-
-	// Get duration. Substart timepoints to  
-	// get durarion. To cast it to proper unit 
-	// use duration cast method 
-	auto duration = duration_cast<microseconds>(stop - start);
-
-	msg.Format(_T("RefreshInfo type :: elapsed time :: microsecond = %d\n"), duration.count());
-	//TRACE(msg);
 }
 
 void VtOrderPanelGrid::RefreshInfo2(int type)

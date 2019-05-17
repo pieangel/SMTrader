@@ -5,6 +5,7 @@
 #include "VtSymbol.h"
 #include "HdScheduler.h"
 #include "VtProductSubSection.h"
+#include <algorithm>
 
 void VtProductCategoryManager::Begin()
 {
@@ -852,5 +853,37 @@ VtSymbol* VtProductCategoryManager::GetRecentFutureSymbol(std::string secName)
 	}
 
 	return nullptr;
+}
+
+VtSymbol* VtProductCategoryManager::GetNextFutureSymbol(std::string secName)
+{
+	VtProductSection* section = FindProductSection(secName);
+	if (section) {
+		if (section->SubSectionVector.size() > 0) {
+			VtProductSubSection* subSection = section->SubSectionVector.front();
+			if (subSection->_SymbolVector.size() >= 2) {
+				VtSymbol* sym = subSection->_SymbolVector[1];
+				return sym;
+			}
+		}
+	}
+
+	return nullptr;
+}
+
+std::vector<VtSymbol*> VtProductCategoryManager::GetSectionSymbolVector(std::string secName)
+{
+	std::vector<VtSymbol*> symVec;
+	VtProductSection* section = FindProductSection(secName);
+	if (section) {
+		if (section->SubSectionVector.size() > 0) {
+			VtProductSubSection* subSection = section->SubSectionVector.front();
+			if (subSection->_SymbolVector.size() > 0) {
+				symVec.assign(subSection->_SymbolVector.begin(), subSection->_SymbolVector.end());
+			}
+		}
+	}
+
+	return symVec;
 }
 

@@ -39,5 +39,8 @@ public:
 	/// <param name="secName">섹션 이름 : 예? 101F, 105F etc</param>
 	/// <returns></returns>
 	VtSymbol* GetRecentFutureSymbol(std::string secName);
+	VtSymbol* GetNextFutureSymbol(std::string secName);
+	std::vector<VtSymbol*> GetSectionSymbolVector(std::string secName);
+
 };
 

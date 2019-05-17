@@ -1456,6 +1456,7 @@
     <ClInclude Include="VtRefreshManager.h">
       <Filter>OrderWindow</Filter>
     </ClInclude>
+    <ClInclude Include="VtSystemSetMonthsDialog.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ChildFrm.cpp">
@@ -2619,6 +2620,7 @@
     <ClCompile Include="VtRefreshManager.cpp">
       <Filter>OrderWindow</Filter>
     </ClCompile>
+    <ClCompile Include="VtSystemSetMonthsDialog.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="SMTrader.rc">

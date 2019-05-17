@@ -122,6 +122,13 @@ public:
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	afx_msg void OnAutoSignalConnect();
 	afx_msg void OnSaveCurrentScreen();
+private:
+	void OrderStressTest();
+	void HogaStressTest();
+	void SiseStressTest();
+public:
+	afx_msg void OnSetSystemMonth();
+	afx_msg void OnSetSysmonth();
 };
 
 

@@ -57,6 +57,7 @@
 #include "VtSystemLogDlg.h"
 #include "System/VtSystem.h"
 #include "VtOutSystemOrderManager.h"
+#include "VtSystemSetMonthsDialog.h"
 extern TApplicationFont g_Font;
 
 #ifdef _DEBUG
@@ -107,6 +108,8 @@ BEGIN_MESSAGE_MAP(CMainFrame, CMDIFrameWndEx)
 	ON_WM_TIMER()
 	ON_COMMAND(ID_AUTO_SIGNAL_CONNECT, &CMainFrame::OnAutoSignalConnect)
 	ON_COMMAND(ID_SAVE_CURRENT_SCREEN, &CMainFrame::OnSaveCurrentScreen)
+	ON_COMMAND(ID_32797, &CMainFrame::OnSetSystemMonth)
+	ON_COMMAND(ID_SET_SYSMONTH, &CMainFrame::OnSetSysmonth)
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -543,84 +546,9 @@ void CMainFrame::OnSettingChange(UINT uFlags, LPCTSTR lpszSection)
 
 void CMainFrame::OnLoginTest()
 {
-	VtLogInDlg dlg;
-	dlg.DoModal();
-	/*
-	// 주문 스트레스 테스트
-	std::thread threadObj2([] {
-		VtSystemManager* sysMgr = VtSystemManager::GetInstance();
-		VtSystem* sys = sysMgr->GetSystem(_T("KP_1A"));
-		std::string name = sys->Name();
-		try
-		{
-			for (int i = 0; i < 10000; i++) {
-				std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-				sys->PutEntranceOrder(VtPositionType::Sell);
-			}
-		}
-		catch (std::exception e)
-		{
-			AfxMessageBox(e.what());
-		}
-	});
-	
-	
-	
-	std::thread threadObj([] {
-		VtOutSystemManager* outSysMgr = VtOutSystemManager::GetInstance();
-		SharedSystemVec& sysMap = outSysMgr->GetSysMap();
-		for (int i = 0; i < 10000; i++) {
-			std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-			for (auto it = sysMap.begin(); it != sysMap.end(); ++it) {
-				VtSystem* shareSys = (*it).get();
-				std::string name = shareSys->Name();
-				shareSys->PutEntranceOrder(VtPositionType::Buy);
-			}
-		}
-	});
-
-	std::thread threadObj3([] {
-		VtSystemManager* sysMgr = VtSystemManager::GetInstance();
-		VtSystem* sys = sysMgr->GetSystem(_T("KP_1A"));
-		std::string name = sys->Name();
-		try
-		{
-			for (int i = 0; i < 10000; i++) {
-				std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-				sys->PutEntranceOrder(VtPositionType::Sell);
-			}
-		}
-		catch (std::exception e)
-		{
-			AfxMessageBox(e.what());
-		}
-	});
-
-	std::thread threadObj4([] {
-		VtOutSystemManager* outSysMgr = VtOutSystemManager::GetInstance();
-		SharedSystemVec& sysMap = outSysMgr->GetSysMap();
-		for (int i = 0; i < 10000; i++) {
-			std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-			for (auto it = sysMap.begin(); it != sysMap.end(); ++it) {
-				VtSystem* shareSys = (*it).get();
-				std::string name = shareSys->Name();
-				shareSys->PutEntranceOrder(VtPositionType::Buy);
-			}
-		}
-	});
-	threadObj.detach();
-	threadObj2.detach();
-	threadObj3.detach();
-	threadObj4.detach();
-	if (threadObj2.joinable())
-		threadObj2.join();
-	if (threadObj.joinable())
-		threadObj.join();
-	if (threadObj3.joinable())
-		threadObj3.join();
-	if (threadObj4.joinable())
-		threadObj4.join();
-	*/
+	//VtLogInDlg dlg;
+	//dlg.DoModal();
+	SiseStressTest();
 }
 
 
@@ -1125,4 +1053,147 @@ void CMainFrame::OnAutoSignalConnect()
 void CMainFrame::OnSaveCurrentScreen()
 {
 	SaveSettings();
+}
+
+void CMainFrame::OrderStressTest()
+{
+	// 주문 스트레스 테스트
+	std::thread threadObj2([] {
+		VtSystemManager* sysMgr = VtSystemManager::GetInstance();
+		VtSystem* sys = sysMgr->GetSystem(_T("KP_1A"));
+		std::string name = sys->Name();
+		try
+		{
+			for (int i = 0; i < 10000; i++) {
+				std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+				sys->PutEntranceOrder(VtPositionType::Sell);
+			}
+		}
+		catch (std::exception e)
+		{
+			AfxMessageBox(e.what());
+		}
+	});
+
+
+
+	std::thread threadObj([] {
+		VtOutSystemManager* outSysMgr = VtOutSystemManager::GetInstance();
+		SharedSystemVec& sysMap = outSysMgr->GetSysMap();
+		for (int i = 0; i < 10000; i++) {
+			std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+			for (auto it = sysMap.begin(); it != sysMap.end(); ++it) {
+				VtSystem* shareSys = (*it).get();
+				std::string name = shareSys->Name();
+				shareSys->PutEntranceOrder(VtPositionType::Buy);
+			}
+		}
+	});
+
+	std::thread threadObj3([] {
+		VtSystemManager* sysMgr = VtSystemManager::GetInstance();
+		VtSystem* sys = sysMgr->GetSystem(_T("KP_1A"));
+		std::string name = sys->Name();
+		try
+		{
+			for (int i = 0; i < 10000; i++) {
+				std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+				sys->PutEntranceOrder(VtPositionType::Sell);
+			}
+		}
+		catch (std::exception e)
+		{
+			AfxMessageBox(e.what());
+		}
+	});
+
+	std::thread threadObj4([] {
+		VtOutSystemManager* outSysMgr = VtOutSystemManager::GetInstance();
+		SharedSystemVec& sysMap = outSysMgr->GetSysMap();
+		for (int i = 0; i < 10000; i++) {
+			std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+			for (auto it = sysMap.begin(); it != sysMap.end(); ++it) {
+				VtSystem* shareSys = (*it).get();
+				std::string name = shareSys->Name();
+				shareSys->PutEntranceOrder(VtPositionType::Buy);
+			}
+		}
+	});
+	threadObj.detach();
+	threadObj2.detach();
+	threadObj3.detach();
+	threadObj4.detach();
+	if (threadObj2.joinable())
+		threadObj2.join();
+	if (threadObj.joinable())
+		threadObj.join();
+	if (threadObj3.joinable())
+		threadObj3.join();
+	if (threadObj4.joinable())
+		threadObj4.join();
+}
+
+void CMainFrame::HogaStressTest()
+{
+	std::thread threadObj1([] {
+		VtOrderDialogManager* orderDlgMgr = VtOrderDialogManager::GetInstance();
+		VtSymbolManager* symMgr = VtSymbolManager::GetInstance();
+		VtSymbol* sym = symMgr->FindSymbol("101P6000");
+		if (sym)
+			orderDlgMgr->OnReceiveHoga(sym);
+	});
+
+	std::thread threadObj2([] {
+		VtOrderDialogManager* orderDlgMgr = VtOrderDialogManager::GetInstance();
+		VtSymbolManager* symMgr = VtSymbolManager::GetInstance();
+		VtSymbol* sym = symMgr->FindSymbol("301P6267");
+		//if (sym)
+		//	orderDlgMgr->OnReceiveHoga(sym);
+	});
+
+	std::thread threadObj3([] {
+		VtOrderDialogManager* orderDlgMgr = VtOrderDialogManager::GetInstance();
+		VtSymbolManager* symMgr = VtSymbolManager::GetInstance();
+		VtSymbol* sym = symMgr->FindSymbol("201P6272");
+		//if (sym)
+		//	orderDlgMgr->OnReceiveHoga(sym);
+	});
+
+	threadObj1.detach();
+	threadObj2.detach();
+	threadObj3.detach();
+	if (threadObj1.joinable())
+		threadObj1.join();
+	if (threadObj2.joinable())
+		threadObj2.join();
+	if (threadObj3.joinable())
+		threadObj3.join();
+}
+
+void CMainFrame::SiseStressTest()
+{
+	VtOrderDialogManager* orderDlgMgr = VtOrderDialogManager::GetInstance();
+	VtSymbolManager* symMgr = VtSymbolManager::GetInstance();
+	VtSymbol* sym = symMgr->FindSymbol("101P6000");
+	VtSymbol* sym2 = symMgr->FindSymbol("301P6272");
+	VtSymbol* sym3 = symMgr->FindSymbol("201P6272");
+
+	for (int i = 0; i < 10000; i++) {
+		orderDlgMgr->OnReceiveHoga(sym);
+		//orderDlgMgr->OnReceiveHoga(sym2);
+		//orderDlgMgr->OnReceiveHoga(sym3);
+	}
+}
+
+
+void CMainFrame::OnSetSystemMonth()
+{
+	
+}
+
+
+void CMainFrame::OnSetSysmonth()
+{
+	VtSystemSetMonthsDialog dlg;
+	dlg.DoModal();
 }

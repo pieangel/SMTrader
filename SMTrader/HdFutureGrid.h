@@ -24,7 +24,7 @@ public:
 
 	void SetColTitle();
 	int _ColCount = 3;
-	int _RowCount = 10;
+	int _RowCount = 20;
 	CFont _defFont;
 	CFont _titleFont;
 	void QuickRedrawCell(int col, long row);

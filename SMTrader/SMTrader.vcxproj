@@ -597,6 +597,7 @@
     <ClInclude Include="VtSystemOrderConfig.h" />
     <ClInclude Include="VtSystemProperty.h" />
     <ClInclude Include="VtSystemSetDlg.h" />
+    <ClInclude Include="VtSystemSetMonthsDialog.h" />
     <ClInclude Include="VtTaskArg.h" />
     <ClInclude Include="VtTaskEvent.h" />
     <ClInclude Include="VtTaskManager.h" />
@@ -1004,6 +1005,7 @@
     <ClCompile Include="VtSystemOrderConfig.cpp" />
     <ClCompile Include="VtSystemProperty.cpp" />
     <ClCompile Include="VtSystemSetDlg.cpp" />
+    <ClCompile Include="VtSystemSetMonthsDialog.cpp" />
     <ClCompile Include="VtTaskArg.cpp" />
     <ClCompile Include="VtTaskManager.cpp" />
     <ClCompile Include="VtTotalOrderManager.cpp" />

@@ -5295,7 +5295,7 @@ void VtHdCtrl::OnGetMsgWithRqId(int nRqId, CString strCode, CString strMsg)
 
 	CString msg;
 	msg.Format(_T("nRqId = %d, strCode = %s, strMsg = %s\n"), nRqId, strCode, strMsg);
-	TRACE(msg);
+	//TRACE(msg);
 
 	CString strLog;
 	//strLog.Format("[요청번호 = %d, 코드번호 = %s][메시지 = %s]\n", nRqId, strCode, strMsg);

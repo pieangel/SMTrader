@@ -147,6 +147,7 @@
 #define IDD_ASSET                       358
 #define IDD_LOGIN                       359
 #define IDD_ORDER_AVAILABLE             360
+#define IDD_SYS_SET_MONTH               361
 #define IDD_MESSAGE_BOARD               362
 #define IDD_ORDER_RIGHT_CANCEL_HD       363
 #define IDD_OPT_PAGE                    364
@@ -501,10 +502,13 @@
 #define IDC_CHECK_FILTER_HOGA           1036
 #define IDC_BTN_FV6                     1037
 #define IDC_CHECK_CUT_LOSS              1037
+#define IDC_COMBO_KP                    1037
 #define IDC_BTN_FV7                     1038
 #define IDC_EDIT_CUT_PROFIT             1038
+#define IDC_COMBO_KQ                    1038
 #define IDC_BUTTON_SETTING              1039
 #define IDC_BTN_FAVORITE                1039
+#define IDC_COMBO_UD                    1039
 #define IDC_BTN_LIQ_ALL                 1040
 #define IDC_BTN_REMAIN                  1040
 #define IDC_BTN_LIQ_SEL                 1041
@@ -663,14 +667,16 @@
 #define ID_AUTO_SIGNAL_CONNECT          32794
 #define ID_32795                        32795
 #define ID_SAVE_CURRENT_SCREEN          32796
+#define ID_32797                        32797
+#define ID_SET_SYSMONTH                 32798
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        358
-#define _APS_NEXT_COMMAND_VALUE         32797
-#define _APS_NEXT_CONTROL_VALUE         1037
+#define _APS_NEXT_RESOURCE_VALUE        363
+#define _APS_NEXT_COMMAND_VALUE         32799
+#define _APS_NEXT_CONTROL_VALUE         1038
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif
