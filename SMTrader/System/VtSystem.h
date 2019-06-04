@@ -12,6 +12,7 @@
 #include "../VtSystemDef.h"
 #include "../VtOutSignalDefManager.h"
 #include <mutex>
+#include <chrono>
 using same_endian_type = std::is_same<simple::LittleEndian, simple::LittleEndian>;
 class VtSignal;
 class VtChartData;
@@ -251,6 +252,10 @@ public:
 	bool PutLiqOrder(VtPosition* posi);
 	std::pair<int, int> GetOrderPrice();
 	void RegisterRealtimeSymbolEvent();
+	void RegisterLiqToScheduler();
+	std::string GetLiqTime();
+	std::chrono::system_clock::time_point LiqTimepoint;
+	int GetDailyIndexByChart();
 protected:
 	std::mutex _LiqMutex;
 	int GetOrderPrice(VtPositionType position);

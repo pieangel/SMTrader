@@ -536,6 +536,7 @@ void VtUsdStrategyConfigDlg::OnBnClickedBtnApply()
 	ligTime.hour = esTime.GetHour();
 	ligTime.min = esTime.GetMinute();
 	ligTime.sec = esTime.GetSecond();
+	_System->RegisterLiqToScheduler();
 
 	_System->EnableTrailStop(_EnableTrailStop);
 	_System->EnableLossCut(_EnableLossCut);

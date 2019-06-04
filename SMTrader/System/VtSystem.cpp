@@ -27,6 +27,8 @@
 #include "../VtTotalOrderManager.h"
 #include "../VtOutSignalDef.h"
 #include "../VtOutSignalDefManager.h"
+#include "../Util/VtTime.h"
+#include "../VtScheduler.h"
 
 VtSystem::VtSystem()
 {
@@ -148,16 +150,12 @@ bool VtSystem::LiqByEndTime()
 {
 	int curTime = VtGlobal::GetTime(VtGlobal::GetLocalTime());
 	int liqTime = VtGlobal::GetTime(_LiqTime);
-	if (curTime >= liqTime) {
-		LOG_F(INFO, _T("청산시간에 따른 청산시도 : 현재 포지션 = %d, 현재 시간 = %d, 청산 시간 = %d"), _CurPosition, curTime, liqTime);
-		// 여기서 청산을 진행한다.
-		if (LiqudAll())
-			return true;
-		else
-			return false;
-	}
-
-	return false;
+	LOG_F(INFO, _T("청산시간에 따른 청산시도 : 현재 포지션 = %d, 현재 시간 = %d, 청산 시간 = %d"), _CurPosition, curTime, liqTime);
+	// 여기서 청산을 진행한다.
+	if (LiqudAll())
+		return true;
+	else
+		return false;
 }
 
 bool VtSystem::LiqByEndTime(int index)
@@ -1195,6 +1193,58 @@ bool VtSystem::PutLiqOrder(VtPosition* posi)
 	return true;
 }
 
+void VtSystem::RegisterLiqToScheduler()
+{
+	std::string liqTime = GetLiqTime();
+
+	VtScheduler* sch = VtScheduler::GetInstance();
+	sch->RegisterSystemLiq(this, liqTime);
+}
+
+std::string VtSystem::GetLiqTime()
+{
+	struct tm t = VtTimeUtil::Now();
+	t.tm_hour = _LiqTime.hour;
+	t.tm_min = _LiqTime.min;
+	t.tm_sec = _LiqTime.sec;
+
+	std::stringstream buffer;
+
+	buffer << std::put_time(&t, "%H:%M:%S");
+
+	std::string liqTime = buffer.str();
+
+	return liqTime;
+}
+
+int VtSystem::GetDailyIndexByChart()
+{
+	if (!_Symbol)
+		return -1;
+
+	std::string dataKey = VtChartDataManager::MakeChartDataKey(_Symbol->ShortCode, VtChartType::MIN, _Cycle);
+	VtChartData* chartData = _RefDataMap[dataKey];
+	if (!chartData)
+		return -1;
+	std::vector<double>& dateArray = chartData->GetDataArray(_T("date"));
+	if (dateArray.size() == 0 || dateArray.size() == 1)
+		return -1;
+	int localDate = VtChartDataCollector::GetLocalDate();
+	if (dateArray[dateArray.size() - 1] < localDate)
+		return -1;
+
+	int dateIndex = 0;
+	for (size_t i = dateArray.size() - 1; i > 0; --i) {
+		double pre = dateArray[i - 1];
+		double cur = dateArray[i];
+		if (pre != cur)
+			break;
+		dateIndex++;
+	}
+
+	return dateIndex;
+}
+
 int VtSystem::GetOrderPrice(VtPositionType position)
 {
 	int price = -1;
@@ -1804,30 +1854,34 @@ int VtSystem::GetDailyIndex(int index)
 
 int VtSystem::GetDailyIndex()
 {
-	if (!_Symbol)
-		return -1;
+	time_t now;
+	struct tm begin;
+	//struct tm end;
 
-	std::string dataKey = VtChartDataManager::MakeChartDataKey(_Symbol->ShortCode, VtChartType::MIN, _Cycle);
-	VtChartData* chartData = _RefDataMap[dataKey];
-	if (!chartData)
-		return -1;
-	std::vector<double>& dateArray = chartData->GetDataArray(_T("date"));
-	if (dateArray.size() == 0 || dateArray.size() == 1)
-		return -1;
-	int localDate = VtChartDataCollector::GetLocalDate();
-	if (dateArray[dateArray.size() - 1] < localDate)
-		return -1;
+	double seconds;
 
-	int dateIndex = 0;
-	for (size_t i = dateArray.size() - 1; i > 0; --i) {
-		double pre = dateArray[i - 1];
-		double cur = dateArray[i];
-		if (pre != cur)
-			break;
-		dateIndex++;
-	}
+	time(&now);  /* get current time; same as: now = time(NULL)  */
 
-	return dateIndex;
+	begin = *localtime(&now);
+	//end = *localtime(&now);
+
+	begin.tm_hour = VtGlobal::OpenTime.hour; 
+	begin.tm_min = VtGlobal::OpenTime.min; 
+	begin.tm_sec = VtGlobal::OpenTime.sec;
+	//end.tm_hour = 9;
+	//end.tm_min = 5;
+	//end.tm_sec = 0;
+
+
+	//seconds = difftime(mktime(&end), mktime(&begin));
+	seconds = difftime(now, mktime(&begin));
+
+	double se = seconds;
+
+	int min = (int)(se / 60);
+
+	int barCount = (int)(min / this->Cycle());
+	return barCount;
 }
 
 void VtSystem::SystemGroup(VtSystemGroupType val)
@@ -2419,6 +2473,7 @@ void VtSystem::ReloadSystem(int startIndex, int endIndex)
 void VtSystem::InitArgs()
 {
 	ReadExtraArgs();
+	RegisterLiqToScheduler();
 }
 
 void VtSystem::SetDataMap(VtChartData* chartData)

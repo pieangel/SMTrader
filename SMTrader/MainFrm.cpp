@@ -58,6 +58,7 @@
 #include "System/VtSystem.h"
 #include "VtOutSystemOrderManager.h"
 #include "VtSystemSetMonthsDialog.h"
+#include "VtScheduler.h"
 extern TApplicationFont g_Font;
 
 #ifdef _DEBUG
@@ -766,6 +767,7 @@ void CMainFrame::CreateFileWatch()
 
 bool CMainFrame::ClearAllResources()
 {
+	VtScheduler::DestroyInstance();
 	HdScheduler* sch = HdScheduler::GetInstance();
 	sch->ClearTasks();
 	VtTotalOrderManager* totalOrderMgr = VtTotalOrderManager::GetInstance();
@@ -1033,10 +1035,10 @@ void CMainFrame::OnSettimeToServer()
 
 void CMainFrame::OnTimer(UINT_PTR nIDEvent)
 {
-	if (nIDEvent == SysLiqTimer) {
-		VtSystemManager* sysMgr = VtSystemManager::GetInstance();
-		sysMgr->OnRegularTimer();
-	}
+// 	if (nIDEvent == SysLiqTimer) {
+// 		VtSystemManager* sysMgr = VtSystemManager::GetInstance();
+// 		sysMgr->OnRegularTimer();
+// 	}
 
 	CMDIFrameWndEx::OnTimer(nIDEvent);
 }

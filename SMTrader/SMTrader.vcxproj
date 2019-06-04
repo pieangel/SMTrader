@@ -315,6 +315,11 @@
     <ClInclude Include="ResizableLib\ResizableVersion.h" />
     <ClInclude Include="ResizableLib\ResizableWndState.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="Scheduler\Cron.h" />
+    <ClInclude Include="Scheduler\ctpl.h" />
+    <ClInclude Include="Scheduler\ctpl_stl.h" />
+    <ClInclude Include="Scheduler\InterruptableSleep.h" />
+    <ClInclude Include="Scheduler\Scheduler.h" />
     <ClInclude Include="ShadeButtonST.h" />
     <ClInclude Include="SimpleBinStream.h" />
     <ClInclude Include="Skel\VtGrid.h" />
@@ -565,6 +570,7 @@
     <ClInclude Include="VtRobo1Stress.h" />
     <ClInclude Include="VtRsiIndex.h" />
     <ClInclude Include="VtSaveManager.h" />
+    <ClInclude Include="VtScheduler.h" />
     <ClInclude Include="VtSignalConnectionGrid.h" />
     <ClInclude Include="VtSignalDefinitionGrid.h" />
     <ClInclude Include="VtSimpleMaStress.h" />
@@ -976,6 +982,7 @@
     <ClCompile Include="VtRobo1Stress.cpp" />
     <ClCompile Include="VtRsiIndex.cpp" />
     <ClCompile Include="VtSaveManager.cpp" />
+    <ClCompile Include="VtScheduler.cpp" />
     <ClCompile Include="VtSignalConnectionGrid.cpp" />
     <ClCompile Include="VtSignalDefinitionGrid.cpp" />
     <ClCompile Include="VtSimpleMaStress.cpp" />

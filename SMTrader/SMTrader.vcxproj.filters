@@ -137,6 +137,9 @@
     <Filter Include="db">
       <UniqueIdentifier>{7cee4700-b4dd-4bce-8f0c-6e803c12d3b1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scheduler">
+      <UniqueIdentifier>{2545cac9-a75f-42de-af75-b30e3539b192}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -1456,7 +1459,27 @@
     <ClInclude Include="VtRefreshManager.h">
       <Filter>OrderWindow</Filter>
     </ClInclude>
-    <ClInclude Include="VtSystemSetMonthsDialog.h" />
+    <ClInclude Include="VtSystemSetMonthsDialog.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="Scheduler\Cron.h">
+      <Filter>Scheduler</Filter>
+    </ClInclude>
+    <ClInclude Include="Scheduler\InterruptableSleep.h">
+      <Filter>Scheduler</Filter>
+    </ClInclude>
+    <ClInclude Include="Scheduler\Scheduler.h">
+      <Filter>Scheduler</Filter>
+    </ClInclude>
+    <ClInclude Include="Scheduler\ctpl.h">
+      <Filter>Scheduler</Filter>
+    </ClInclude>
+    <ClInclude Include="Scheduler\ctpl_stl.h">
+      <Filter>Scheduler</Filter>
+    </ClInclude>
+    <ClInclude Include="VtScheduler.h">
+      <Filter>Scheduler</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ChildFrm.cpp">
@@ -2620,7 +2643,12 @@
     <ClCompile Include="VtRefreshManager.cpp">
       <Filter>OrderWindow</Filter>
     </ClCompile>
-    <ClCompile Include="VtSystemSetMonthsDialog.cpp" />
+    <ClCompile Include="VtSystemSetMonthsDialog.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="VtScheduler.cpp">
+      <Filter>Scheduler</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="SMTrader.rc">
