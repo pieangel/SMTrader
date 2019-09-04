@@ -283,7 +283,6 @@ BEGIN
         MENUITEM "미니잔고내역",                      ID_ORDER_BALANCE
         MENUITEM "주문리스트",                       ID_ORDER_LIST
         MENUITEM "스탑주문리스트",                     ID_ORDER_STOPLIST
-        MENUITEM "주문설정",                        ID_SET_ORDER
     END
     POPUP "차트"
     BEGIN
@@ -301,6 +300,7 @@ BEGIN
         MENUITEM "전략툴바",                        ID_STRATEGY_TOOLBAR
         MENUITEM "시스템자동연결",                     ID_AUTO_SIGNAL_CONNECT
         MENUITEM "시스템 월물설정",                    ID_SET_SYSMONTH
+        MENUITEM "시스템 주문설정",                    ID_SET_ORDER
     END
 END
 

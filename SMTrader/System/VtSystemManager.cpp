@@ -44,6 +44,10 @@
 #include "../VtKo3s.h"
 #include "../VtKo4b.h"
 using namespace std::chrono;
+
+VtPriceType VtSystemManager::PriceType = VtPriceType::Price;
+int VtSystemManager::OrderTick = 5;
+
 VtSystemManager::VtSystemManager()
 {
 	_CreatedSystemList = false;

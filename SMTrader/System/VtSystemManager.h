@@ -17,6 +17,9 @@ public:
 	VtSystemManager();
 	~VtSystemManager();
 
+	static VtPriceType PriceType;
+	static int OrderTick;
+
 	VtSystem* CreateSystem(VtSystemType systemType);
 	void AddSystem(std::string name, VtSystem* sys)
 	{

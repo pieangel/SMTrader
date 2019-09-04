@@ -1206,17 +1206,17 @@ void CMainFrame::OnSetSysmonth()
 void CMainFrame::OnSetOrder()
 {
 	VtSystemOrderConfig orderCfgDlg;
-	orderCfgDlg._PriceType = VtOutSystemManager::PriceType;
-	orderCfgDlg._OrderTick = VtOutSystemManager::OrderTick;
+	orderCfgDlg._PriceType = VtSystemManager::PriceType;
+	orderCfgDlg._OrderTick = VtSystemManager::OrderTick;
 	int result = orderCfgDlg.DoModal();
 	if (result == IDOK) {
-		VtOutSystemManager::PriceType = orderCfgDlg._PriceType;
-		VtOutSystemManager::OrderTick = orderCfgDlg._OrderTick;
+		VtSystemManager::PriceType = orderCfgDlg._PriceType;
+		VtSystemManager::OrderTick = orderCfgDlg._OrderTick;
 
-		VtOutSystemManager* outSysMgr = VtOutSystemManager::GetInstance();
-		SharedSystemVec& outSysMap = outSysMgr->GetSysMap();
-		for (auto it = outSysMap.begin(); it != outSysMap.end(); ++it) {
-			SharedSystem sys = *it;
+		VtSystemManager* sysMgr = VtSystemManager::GetInstance();
+		std::map<std::string, VtSystem*>& sysMap = sysMgr->GetSystemMap();
+		for (auto it = sysMap.begin(); it != sysMap.end(); ++it) {
+			VtSystem* sys = it->second;
 			sys->PriceType(orderCfgDlg._PriceType);
 			sys->OrderTick(orderCfgDlg._OrderTick);
 		}
