@@ -59,6 +59,7 @@
 #include "VtOutSystemOrderManager.h"
 #include "VtSystemSetMonthsDialog.h"
 #include "VtScheduler.h"
+#include "VtSystemOrderConfig.h"
 extern TApplicationFont g_Font;
 
 #ifdef _DEBUG
@@ -111,6 +112,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CMDIFrameWndEx)
 	ON_COMMAND(ID_SAVE_CURRENT_SCREEN, &CMainFrame::OnSaveCurrentScreen)
 	ON_COMMAND(ID_32797, &CMainFrame::OnSetSystemMonth)
 	ON_COMMAND(ID_SET_SYSMONTH, &CMainFrame::OnSetSysmonth)
+	ON_COMMAND(ID_SET_ORDER, &CMainFrame::OnSetOrder)
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -1198,4 +1200,25 @@ void CMainFrame::OnSetSysmonth()
 {
 	VtSystemSetMonthsDialog dlg;
 	dlg.DoModal();
+}
+
+
+void CMainFrame::OnSetOrder()
+{
+	VtSystemOrderConfig orderCfgDlg;
+	orderCfgDlg._PriceType = VtOutSystemManager::PriceType;
+	orderCfgDlg._OrderTick = VtOutSystemManager::OrderTick;
+	int result = orderCfgDlg.DoModal();
+	if (result == IDOK) {
+		VtOutSystemManager::PriceType = orderCfgDlg._PriceType;
+		VtOutSystemManager::OrderTick = orderCfgDlg._OrderTick;
+
+		VtOutSystemManager* outSysMgr = VtOutSystemManager::GetInstance();
+		SharedSystemVec& outSysMap = outSysMgr->GetSysMap();
+		for (auto it = outSysMap.begin(); it != outSysMap.end(); ++it) {
+			SharedSystem sys = *it;
+			sys->PriceType(orderCfgDlg._PriceType);
+			sys->OrderTick(orderCfgDlg._OrderTick);
+		}
+	}
 }

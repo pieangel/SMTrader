@@ -129,6 +129,7 @@ private:
 public:
 	afx_msg void OnSetSystemMonth();
 	afx_msg void OnSetSysmonth();
+	afx_msg void OnSetOrder();
 };
 
 
