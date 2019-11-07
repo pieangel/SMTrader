@@ -31,7 +31,10 @@ public:
 	void RemoveAllHd();
 	void RemoveBuyAllHd();
 	void RemoveSellAllHd();
+	int Slip() const { return _Slip; }
+	void Slip(int val) { _Slip = val; }
 private:
 	int _OrderID = 0;
+	int _Slip = 2;
 };
 

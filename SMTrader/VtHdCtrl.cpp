@@ -55,6 +55,8 @@
 #include "VtTotalOrderManager.h"
 #include "VtChartDataCollector.h"
 #include "Log/loguru.hpp"
+#include "VtStringUtil.h"
+#include "SmCallbackManager.h"
 using namespace std;
 
 using Poco::Delegate;
@@ -402,6 +404,18 @@ void VtHdCtrl::RegisterProduct(CString symCode)
 	else {
 		nRealType = 82;
 		nResult = m_CommAgent.CommSetBroad(strKey, nRealType);
+	}
+	static int tag = 0;
+	{
+		if (tag == 0) {
+			std::string code = "HSIX19";
+			std::string key = VtStringUtil::PadRight(code, ' ', 32);
+			int nRealType = 76; // 시세
+			m_CommAgent.CommSetBroad(key.c_str(), nRealType);
+			nRealType = 82; // 호가
+			m_CommAgent.CommSetBroad(key.c_str(), nRealType);
+			tag = 1;
+		}
 	}
 }
 
@@ -780,6 +794,11 @@ void VtHdCtrl::OnNewOrderHd(CString& sTrCode, LONG& nRqID)
 	{
 		order->priceType = VtPriceType::Market;
 	}
+
+
+	CString strKey = "700";
+	int     nRealType = 121;
+	int nResult = m_CommAgent.CommSetBroad(strKey, nRealType);
 
 	// 주문 타입 - 신규 주문
 	order->orderType = VtOrderType::New;
@@ -1272,6 +1291,8 @@ void VtHdCtrl::OnOrderAcceptedHd(CString& strKey, LONG& nRealType)
 
 	// 주문 처리
 	orderMgr->OnOrderAcceptedHd(order);
+	order->orderEvent = VtOrderEvent::Accepted;
+	SmCallbackManager::GetInstance()->OnOrderEvent(order);
 
 	SendOrderMessage(VtOrderEvent::Accepted, order);
 
@@ -1448,6 +1469,9 @@ void VtHdCtrl::OnOrderUnfilledHd(CString& strKey, LONG& nRealType)
 
 	orderMgr->OnOrderUnfilledHd(order);
 
+	order->orderEvent = VtOrderEvent::Unfilled;
+	SmCallbackManager::GetInstance()->OnOrderEvent(order);
+
 	SendOrderMessage(VtOrderEvent::Unfilled, order);
 
 	OnSubAccountOrder(VtOrderEvent::Unfilled, strSubAcntNo, strFundName, order, prevState);
@@ -1564,6 +1588,9 @@ void VtHdCtrl::OnOrderFilledHd(CString& strKey, LONG& nRealType)
 	order->state = VtOrderState::Filled;
 
 	orderMgr->OnOrderFilledHd(order);
+
+	order->orderEvent = VtOrderEvent::Filled;
+	SmCallbackManager::GetInstance()->OnOrderEvent(order);
 
 	HdWindowManager* wndMgr = HdWindowManager::GetInstance();
 	std::map<CWnd*, std::pair<HdWindowType, CWnd*>>& wndMap = wndMgr->GetWindowMap();
@@ -2650,6 +2677,8 @@ void VtHdCtrl::OnFutureHoga(CString& strKey, LONG& nRealType)
 	// 	code = symCode + _T("BHTC:5:1");
 	// 	dataCollector->OnReceiveData(code, _ttoi(strTime), sym->Hoga.TotBuyNo);
 
+	SmCallbackManager::GetInstance()->OnHogaEvent(sym);
+
 	OnReceiveHoga(_ttoi(strTime), sym);
 
 	orderDlgMgr->OnReceiveHoga(sym);
@@ -2897,6 +2926,17 @@ void VtHdCtrl::OnRemain(CString& strKey, LONG& nRealType)
 	}
 }
 
+void VtHdCtrl::OnRealPosition(CString& strKey, LONG& nRealType)
+{
+	CString strSeries = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "업종코드");
+	CString strTime = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "투자자코드");
+	CString strVolume = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매수수량");
+	CString strUpdown = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매도수량");
+
+	CString strData1 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "업종코드");
+	CString strData2 = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "투자자코드");
+}
+
 void VtHdCtrl::OnRealFutureQuote(CString& strKey, LONG& nRealType)
 {
 	CString strSeries = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "종목코드");
@@ -2952,6 +2992,9 @@ void VtHdCtrl::OnRealFutureQuote(CString& strKey, LONG& nRealType)
 	quoteItem.Decimal = sym->IntDecimal;
 
 	sym->Quote.QuoteItemQ.push_front(quoteItem);
+
+	SmCallbackManager* callbackMgr = SmCallbackManager::GetInstance();
+	callbackMgr->OnQuoteEvent(sym);
 
 	VtOrderManagerSelector* orderMgrSelector = VtOrderManagerSelector::GetInstance();
 	for (auto it = orderMgrSelector->_OrderManagerMap.begin(); it != orderMgrSelector->_OrderManagerMap.end(); ++it)
@@ -4772,6 +4815,12 @@ void VtHdCtrl::OnGetBroadData(CString strKey, LONG nRealType)
 	case 66:	// 옵션체결
 	{
 		OnRealOptionQuote(strKey, nRealType);
+	}
+	break;
+
+	case 121:
+	{
+		OnRealPosition(strKey, nRealType);
 	}
 	break;
 	/*

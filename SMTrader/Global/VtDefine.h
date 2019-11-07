@@ -76,6 +76,7 @@ enum class VtFilledCondition
 	Fak = 3
 };
 
+
 enum class VtOrderState
 {
 	None,
@@ -269,6 +270,7 @@ enum class VtSystemType
 
 enum class VtOrderEvent
 {
+	None,
 	PutNew,
 	Modified,
 	Cancelled,

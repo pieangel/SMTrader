@@ -152,6 +152,7 @@
 #define IDD_ORDER_RIGHT_CANCEL_HD       363
 #define IDD_OPT_PAGE                    364
 #define IDD_ACCOUNT_ASSET               365
+#define IDD_ORDER_PANEL                 366
 #define IDD_SUBACNT                     367
 #define IDD_FUND_EDITOR                 368
 #define IDD_FUND_DESIGNER               371
@@ -506,6 +507,7 @@
 #define IDC_BTN_FV7                     1038
 #define IDC_EDIT_CUT_PROFIT             1038
 #define IDC_COMBO_KQ                    1038
+#define IDC_ORDER_GRID                  1038
 #define IDC_BUTTON_SETTING              1039
 #define IDC_BTN_FAVORITE                1039
 #define IDC_COMBO_UD                    1039
@@ -523,6 +525,7 @@
 #define IDC_STATIC_ORDER_PANEL          1044
 #define IDC_STATIC_FUT_GRID             1044
 #define IDC_STATIC_OPT_GRID             1045
+#define IDC_CUSTOM1                     1045
 #define IDC_STATIC_PRODUCT_NAME         1046
 #define IDC_COMBO_FUT_MARKET            1046
 #define IDC_STATIC_PRODUCT_REMAIN       1047
@@ -671,14 +674,18 @@
 #define ID_SET_SYSMONTH                 32798
 #define ID_32799                        32799
 #define ID_SET_ORDER                    32800
+#define ID_32801                        32801
+#define ID_ORDER_PANEL                  32802
+#define ID_32803                        32803
+#define ID_ORDER_TEST                   32804
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        363
-#define _APS_NEXT_COMMAND_VALUE         32801
-#define _APS_NEXT_CONTROL_VALUE         1038
+#define _APS_NEXT_RESOURCE_VALUE        370
+#define _APS_NEXT_COMMAND_VALUE         32805
+#define _APS_NEXT_CONTROL_VALUE         1046
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif

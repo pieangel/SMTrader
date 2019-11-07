@@ -1310,13 +1310,14 @@ void VtOrderWndHd::ReposChildWindowsForward()
 		auto item = *it;
 		CWnd* wnd = std::get<0>(item);
 		CRect& rect = std::get<2>(item);
-		if (std::get<1>(item)) {
+		if (std::get<1>(item) && wnd->GetSafeHwnd()) {
 			wnd->ShowWindow(SW_SHOW);
 			wnd->SetWindowPos(nullptr, rect.left, rect.top, rect.Width(), rect.Height(), SWP_NOZORDER | SWP_FRAMECHANGED | SWP_DRAWFRAME);
 			wnd->Invalidate(FALSE);
 		}
 		else {
-			wnd->ShowWindow(SW_HIDE);
+			if (wnd->GetSafeHwnd())
+				wnd->ShowWindow(SW_HIDE);
 		}
 	}
 }

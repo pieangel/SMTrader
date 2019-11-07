@@ -266,6 +266,14 @@
     <ClInclude Include="Global\ZmStream.h" />
     <ClInclude Include="GradientStatic.h" />
     <ClInclude Include="GridButton.h" />
+    <ClInclude Include="Grid\CellRange.h" />
+    <ClInclude Include="Grid\GridCell.h" />
+    <ClInclude Include="Grid\GridCellBase.h" />
+    <ClInclude Include="Grid\GridCtrl.h" />
+    <ClInclude Include="Grid\GridDropTarget.h" />
+    <ClInclude Include="Grid\InPlaceEdit.h" />
+    <ClInclude Include="Grid\MemDC.h" />
+    <ClInclude Include="Grid\TitleTip.h" />
     <ClInclude Include="HdAccountPLDlg.h" />
     <ClInclude Include="HdAccountPLGrid.h" />
     <ClInclude Include="HdAssetGrid.h" />
@@ -323,6 +331,9 @@
     <ClInclude Include="ShadeButtonST.h" />
     <ClInclude Include="SimpleBinStream.h" />
     <ClInclude Include="Skel\VtGrid.h" />
+    <ClInclude Include="SmCallbackManager.h" />
+    <ClInclude Include="SmOrderGrid.h" />
+    <ClInclude Include="SmOrderPanel.h" />
     <ClInclude Include="SMTrader.h" />
     <ClInclude Include="SMTraderDoc.h" />
     <ClInclude Include="SMTraderView.h" />
@@ -696,6 +707,12 @@
     <ClCompile Include="Global\ZmStream.cpp" />
     <ClCompile Include="GradientStatic.cpp" />
     <ClCompile Include="GridButton.cpp" />
+    <ClCompile Include="Grid\GridCell.cpp" />
+    <ClCompile Include="Grid\GridCellBase.cpp" />
+    <ClCompile Include="Grid\GridCtrl.cpp" />
+    <ClCompile Include="Grid\GridDropTarget.cpp" />
+    <ClCompile Include="Grid\InPlaceEdit.cpp" />
+    <ClCompile Include="Grid\TitleTip.cpp" />
     <ClCompile Include="HdAccountPLDlg.cpp" />
     <ClCompile Include="HdAccountPLGrid.cpp" />
     <ClCompile Include="HdAssetGrid.cpp" />
@@ -744,6 +761,9 @@
     <ClCompile Include="ResizableLib\ResizableWndState.cpp" />
     <ClCompile Include="ShadeButtonST.cpp" />
     <ClCompile Include="Skel\VtGrid.cpp" />
+    <ClCompile Include="SmCallbackManager.cpp" />
+    <ClCompile Include="SmOrderGrid.cpp" />
+    <ClCompile Include="SmOrderPanel.cpp" />
     <ClCompile Include="SMTrader.cpp" />
     <ClCompile Include="SMTraderDoc.cpp" />
     <ClCompile Include="SMTraderView.cpp" />

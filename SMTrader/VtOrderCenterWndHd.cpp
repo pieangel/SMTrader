@@ -220,8 +220,10 @@ void VtOrderCenterWndHd::Activated(bool val)
 		_StaticProduct.SetGradientColor(GetSysColor(COLOR_BTNFACE));
 	}
 
-	_StaticProductName.Invalidate();
-	_StaticProduct.Invalidate();
+	if (_StaticProductName.GetSafeHwnd()) {
+		_StaticProductName.Invalidate();
+		_StaticProduct.Invalidate();
+	}
 }
 
 void VtOrderCenterWndHd::ResizeOrderGrid(int maxHeight)
@@ -325,6 +327,7 @@ BEGIN_MESSAGE_MAP(VtOrderCenterWndHd, CDialogEx)
 	//ON_WM_CTLCOLOR()
 	ON_WM_LBUTTONDOWN()
 	ON_MESSAGE(WM_REFRESH_GRID, &VtOrderCenterWndHd::OnRefreshGrid)
+	ON_WM_TIMER()
 END_MESSAGE_MAP()
 
 
@@ -333,7 +336,8 @@ END_MESSAGE_MAP()
 
 void VtOrderCenterWndHd::InitGridInfo()
 {
-	_OrderPanelGrid.InitInfo();
+	if (_OrderPanelGrid.GetSafeHwnd())
+		_OrderPanelGrid.InitInfo();
 }
 
 void VtOrderCenterWndHd::InitAll()
@@ -456,6 +460,8 @@ BOOL VtOrderCenterWndHd::OnInitDialog()
 	_TickGrid.CenterWnd(this);
 	ShowHideCtrl();
 	RepositionProductGrid();
+
+	SetTimer(1, 10, NULL);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // EXCEPTION: OCX Property Pages should return FALSE
@@ -653,14 +659,16 @@ void VtOrderCenterWndHd::OnSymbolMaster(VtSymbol* sym)
 
 void VtOrderCenterWndHd::OnReceiveMsg(CString msg)
 {
-	_StaticMsg.SetWindowText(msg);
+	if (_StaticMsg.GetSafeHwnd())
+		_StaticMsg.SetWindowText(msg);
 }
 
 void VtOrderCenterWndHd::OnReceiveMsgWithReqId(int id, CString msg)
 {
 	CString message;
 	message.Format(_T("Request ID : %d - %s"), id, msg);
-	_StaticMsg.SetWindowText(message);
+	if (_StaticMsg.GetSafeHwnd())
+		_StaticMsg.SetWindowText(message);
 }
 
 void VtOrderCenterWndHd::OnClose()
@@ -670,6 +678,7 @@ void VtOrderCenterWndHd::OnClose()
 		_RefreshManager->AddTask(-1);
 	}
 	_OrderPanelGrid.StopTimer();
+	KillTimer(1);
 	// TODO: Add your message handler code here and/or call default
 	CDialogEx::OnClose();
 }
@@ -1354,7 +1363,7 @@ void VtOrderCenterWndHd::ChangeSymbol(VtSymbol* newSymbol)
 
 void VtOrderCenterWndHd::AddSymbolToCombo(VtSymbol* symbol)
 {
-	if (!symbol)
+	if (!symbol || !_ComboSymbol.GetSafeHwnd())
 		return;
 	int index = _ComboSymbol.FindString(0, symbol->ShortCode.c_str());
 	if (index == -1)
@@ -1370,8 +1379,10 @@ void VtOrderCenterWndHd::SetProductName(VtSymbol* symbol)
 	if (!symbol)
 		return;
 
-	_StaticProductName.SetWindowText(symbol->Name.c_str());
-	_StaticProductName.Invalidate();
+	if (_StaticProductName.GetSafeHwnd()) {
+		_StaticProductName.SetWindowText(symbol->Name.c_str());
+		_StaticProductName.Invalidate();
+	}
 }
 
 void VtOrderCenterWndHd::ChangeFocus()
@@ -2147,4 +2158,16 @@ LRESULT VtOrderCenterWndHd::OnRefreshGrid(WPARAM wParam, LPARAM lParam)
 	_OrderPanelGrid.RefreshInfo();
 
 	return 0;
+}
+
+
+void VtOrderCenterWndHd::OnTimer(UINT_PTR nIDEvent)
+{
+	VtSymbol* sym = VtSymbolManager::GetInstance()->FindSymbol("101PC000");
+// 	if (sym) {
+// 		for(int i = 0; i < 1000; ++i)
+// 			OnReceiveQuote(sym);
+// 	}
+
+	CDialogEx::OnTimer(nIDEvent);
 }

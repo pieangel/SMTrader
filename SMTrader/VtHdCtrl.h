@@ -140,6 +140,7 @@ private:
 	void OnProductHoga(CString& sTrCode, LONG& nRqID);
 
 	void OnRemain(CString& strKey, LONG& nRealType);
+	void OnRealPosition(CString& strKey, LONG& nRealType);
 	void OnRealFutureQuote(CString& strKey, LONG& nRealType);
 	void OnRealOptionQuote(CString& strKey, LONG& nRealType);
 	void OnRealProductQuote(CString& strKey, LONG& nRealType);

@@ -283,11 +283,13 @@ BEGIN
         MENUITEM "미니잔고내역",                      ID_ORDER_BALANCE
         MENUITEM "주문리스트",                       ID_ORDER_LIST
         MENUITEM "스탑주문리스트",                     ID_ORDER_STOPLIST
+        MENUITEM "OrderPanel",                  ID_ORDER_PANEL
     END
     POPUP "차트"
     BEGIN
         MENUITEM "차트주문",                        ID_CHART_ORDER
         MENUITEM "스프레드차트",                      ID_CHART_SPREAD
+        MENUITEM "OrderPanel",                  ID_ORDER_TEST
     END
     POPUP "다계좌"
     BEGIN
@@ -946,7 +948,7 @@ BEGIN
     PUSHBUTTON      "",IDC_BTN_SEL_SYMBOL,103,0,13,12,BS_FLAT
     LTEXT           "상품이름",IDC_STATIC_PRODUCT_NAME,117,0,94,13,0,WS_EX_TRANSPARENT
     LTEXT           "종목 평가 손익 상황",IDC_STATIC_PRODUCT_REMAIN,0,28,258,25
-    LTEXT           "주문창",IDC_STATIC_ORDER_PANEL,0,69,320,376
+    LTEXT           "주문창",IDC_STATIC_ORDER_PANEL,0,69,320,376,WS_BORDER
     PUSHBUTTON      "설정",IDC_BUTTON_SETTING,1,14,23,14
     PUSHBUTTON      "잔고(0)",IDC_BTN_REMAIN,190,14,33,14
     PUSHBUTTON      "매수가능",IDC_BTN_AVAIL,321,6,34,14,NOT WS_VISIBLE
@@ -1459,6 +1461,14 @@ BEGIN
     COMBOBOX        IDC_COMBO_UD,59,36,90,221,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
 END
 
+IDD_ORDER_PANEL DIALOGEX 0, 0, 499, 570
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+CAPTION "주문현황"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    CONTROL         "Custom1",IDC_ORDER_GRID,"MFCGridCtrl",WS_TABSTOP,55,0,375,542
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -1875,6 +1885,11 @@ BEGIN
     IDD_SYS_SET_MONTH, DIALOG
     BEGIN
     END
+
+    IDD_ORDER_PANEL, DIALOG
+    BEGIN
+        RIGHTMARGIN, 498
+    END
 END
 #endif    // APSTUDIO_INVOKED
 
@@ -2135,6 +2150,11 @@ BEGIN
 END
 
 IDD_SYS_SET_MONTH AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_ORDER_PANEL AFX_DIALOG_LAYOUT
 BEGIN
     0
 END

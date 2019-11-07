@@ -15,6 +15,7 @@ class VtSymbol;
 class VtChartContainer;
 class VtFileEventMonitor;
 class VtSystemLogDlg;
+class SmOrderPanel;
 class CMainFrame : public CMDIFrameWndEx
 {
 	DECLARE_DYNAMIC(CMainFrame)
@@ -49,6 +50,7 @@ protected:  // 컨트롤 모음이 포함된 멤버입니다.
 	CClassView        m_wndClassView;
 	COutputWnd        m_wndOutput;
 	CPropertiesWnd    m_wndProperties;
+	SmOrderPanel*     _OrderPanel = nullptr;
 
 // 생성된 메시지 맵 함수
 protected:
@@ -130,6 +132,7 @@ public:
 	afx_msg void OnSetSystemMonth();
 	afx_msg void OnSetSysmonth();
 	afx_msg void OnSetOrder();
+	afx_msg void OnOrderTest();
 };
 
 

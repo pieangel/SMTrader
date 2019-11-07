@@ -83,6 +83,7 @@ struct VtOrderRequest
 	/// 스탑주문 타입 0 : 일반 , 1 : 자동익절 손절 스탑
 	/// </summary>
 	int stopType = 0;
+	VtOrderEvent orderEvent = VtOrderEvent::None;
 };
 
 
@@ -314,6 +315,7 @@ struct VtOrder
 	void Load(simple::file_istream<same_endian_type>& ss);
 	// 선물사에서 받은 주문요청 번호 - 이것으로 본래 요청 정보를 식별한다.
 	int HtsOrderReqID = -1;
+	VtOrderEvent orderEvent = VtOrderEvent::None;
 };
 
 struct VtPosition;

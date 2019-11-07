@@ -60,6 +60,10 @@
 #include "VtSystemSetMonthsDialog.h"
 #include "VtScheduler.h"
 #include "VtSystemOrderConfig.h"
+#include "SmOrderPanel.h"
+#include "SmCallbackManager.h"
+
+
 extern TApplicationFont g_Font;
 
 #ifdef _DEBUG
@@ -113,6 +117,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CMDIFrameWndEx)
 	ON_COMMAND(ID_32797, &CMainFrame::OnSetSystemMonth)
 	ON_COMMAND(ID_SET_SYSMONTH, &CMainFrame::OnSetSysmonth)
 	ON_COMMAND(ID_SET_ORDER, &CMainFrame::OnSetOrder)
+	ON_COMMAND(ID_ORDER_TEST, &CMainFrame::OnOrderTest)
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -557,6 +562,10 @@ void CMainFrame::OnLoginTest()
 
 void CMainFrame::OnClose()
 {
+	if (_OrderPanel) {
+		delete _OrderPanel;
+		_OrderPanel = nullptr;
+	}
 	KillTimer(SysLiqTimer);
 	SaveSettings();
 	if (!ClearAllResources())
@@ -769,6 +778,7 @@ void CMainFrame::CreateFileWatch()
 
 bool CMainFrame::ClearAllResources()
 {
+	SmCallbackManager::DestroyInstance();
 	VtScheduler::DestroyInstance();
 	HdScheduler* sch = HdScheduler::GetInstance();
 	sch->ClearTasks();
@@ -848,33 +858,41 @@ void CMainFrame::UpdateSysLog()
 {
 	if (!GetSafeHwnd())
 		return;
-	CRect rcWnd;
-	if (!_SysLogDlg) {
-		_SysLogDlg = new VtSystemLogDlg();
-		_SysLogDlg->MainFrm = this;
-		_SysLogDlg->Create(IDD_SYS_LOG, this);
-		_SysLogDlg->GetWindowRect(rcWnd);
-		int width = rcWnd.Width();
-		int height = rcWnd.Height();
-		rcWnd.left = 0;
-		rcWnd.top = 0;
-		rcWnd.right = rcWnd.left + width;
-		rcWnd.bottom = rcWnd.top + height;
-		_SysLogDlg->MoveWindow(rcWnd);
-		_SysLogDlg->ShowWindow(SW_SHOW);
+	try
+	{
+		CRect rcWnd;
+		if (!_SysLogDlg) {
+			_SysLogDlg = new VtSystemLogDlg();
+			_SysLogDlg->MainFrm = this;
+			_SysLogDlg->Create(IDD_SYS_LOG, this);
+			_SysLogDlg->GetWindowRect(rcWnd);
+			int width = rcWnd.Width();
+			int height = rcWnd.Height();
+			rcWnd.left = 0;
+			rcWnd.top = 0;
+			rcWnd.right = rcWnd.left + width;
+			rcWnd.bottom = rcWnd.top + height;
+			_SysLogDlg->MoveWindow(rcWnd);
+			_SysLogDlg->ShowWindow(SW_SHOW);
+		}
+		else {
+			_SysLogDlg->ShowWindow(SW_SHOW);
+			_SysLogDlg->GetWindowRect(rcWnd);
+			int width = rcWnd.Width();
+			int height = rcWnd.Height();
+			rcWnd.left = 0;
+			rcWnd.top = 0;
+			rcWnd.right = rcWnd.left + width;
+			rcWnd.bottom = rcWnd.top + height;
+			_SysLogDlg->MoveWindow(rcWnd);
+			_SysLogDlg->RefreshGrid();
+		}
 	}
-	else {
-		_SysLogDlg->ShowWindow(SW_SHOW);
-		_SysLogDlg->GetWindowRect(rcWnd);
-		int width = rcWnd.Width();
-		int height = rcWnd.Height();
-		rcWnd.left = 0;
-		rcWnd.top = 0;
-		rcWnd.right = rcWnd.left + width;
-		rcWnd.bottom = rcWnd.top + height;
-		_SysLogDlg->MoveWindow(rcWnd);
-		_SysLogDlg->RefreshGrid();
+	catch (const std::exception& e)
+	{
+		std::string error = e.what();
 	}
+	
 }
 
 void CMainFrame::ResetSysLogDlg()
@@ -1221,4 +1239,12 @@ void CMainFrame::OnSetOrder()
 			sys->OrderTick(orderCfgDlg._OrderTick);
 		}
 	}
+}
+
+
+void CMainFrame::OnOrderTest()
+{
+	_OrderPanel = new SmOrderPanel();
+	_OrderPanel->Create(IDD_ORDER_PANEL, this);
+	_OrderPanel->ShowWindow(SW_SHOW);
 }
