@@ -190,23 +190,25 @@ void SmOrderGrid::Init()
 	// 정렬버튼 등록
 	RegisterButton(1, 0, CenterCol, RGB(0, 255, 255));
 	MergeCells(1, CenterCol - 2, 1, CenterCol - 1);
+	MergeCells(_EndRowForValue + 2, CenterCol - 2, _EndRowForValue + 2, CenterCol - 1);
 	// 시장가 매도 
 	RegisterButton(2, 1, CenterCol - 2, RGB(0, 255, 255), "시장가매도");
 	// 시장가  
 	RegisterButton(3, 1, CenterCol, RGB(0, 255, 255), "시장가");
 	MergeCells(1, CenterCol + 1, 1, CenterCol + 2);
+	MergeCells(_EndRowForValue + 2, CenterCol + 1, _EndRowForValue + 2, CenterCol + 2);
 	// 시장가 매수 
 	RegisterButton(4, 1, CenterCol + 1, RGB(0, 255, 255), "시장가매수");
 	// 매도스탑 취소 
-	RegisterButton(5, _EndRowForValue + 2, CenterCol - 4, RGB(0, 255, 255), "매도STOP취소");
+	RegisterButton(5, _EndRowForValue + 2, CenterCol - 4, RGB(0, 255, 255), "ST취소");
 	// 매도주문 취소 
-	RegisterButton(6, _EndRowForValue + 2, CenterCol - 3, RGB(0, 255, 255), "매도주문취소");
+	RegisterButton(6, _EndRowForValue + 2, CenterCol - 3, RGB(0, 255, 255), "일괄취소");
 	// 모든주문 취소
-	RegisterButton(7, _EndRowForValue + 2, CenterCol, RGB(0, 255, 255), "전체주문취소");
+	RegisterButton(7, _EndRowForValue + 2, CenterCol, RGB(0, 255, 255), "전체취소");
 	// 매수주문취소
-	RegisterButton(8, _EndRowForValue + 2, CenterCol + 3, RGB(0, 255, 255), "매수주문취소");
+	RegisterButton(8, _EndRowForValue + 2, CenterCol + 3, RGB(0, 255, 255), "일괄취소");
 	// 매수스탑 취소
-	RegisterButton(9, _EndRowForValue + 2, CenterCol + 4, RGB(0, 255, 255), "매수STOP취소");
+	RegisterButton(9, _EndRowForValue + 2, CenterCol + 4, RGB(0, 255, 255), "ST취소");
 
 	_StopOrderMgr = new VtStopOrderManager();
 	SetFont(&_defFont);
@@ -1050,6 +1052,9 @@ void SmOrderGrid::OnLButtonDown(UINT nFlags, CPoint point)
 	else {
 		if (nButtonID == 2) {
 			AfxMessageBox("시장가매도");
+		}
+		else {
+			AfxMessageBox("버튼이 눌렸습니다.");
 		}
 	}
 }

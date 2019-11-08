@@ -275,7 +275,6 @@ BOOL CGridCellBase::Draw(CDC* pDC, int nRow, int nCol, CRect rect,  BOOL bEraseB
         }
         else
         {
-			/*
             CPen lightpen(PS_SOLID, 1,  ::GetSysColor(COLOR_3DHIGHLIGHT)),
                 darkpen(PS_SOLID,  1, ::GetSysColor(COLOR_3DDKSHADOW)),
                 *pOldPen = pDC->GetCurrentPen();
@@ -291,7 +290,6 @@ BOOL CGridCellBase::Draw(CDC* pDC, int nRow, int nCol, CRect rect,  BOOL bEraseB
             pDC->LineTo(rect.left, rect.bottom);
             pDC->SelectObject(pOldPen);
             rect.DeflateRect(1,1);
-			*/
         }
     }
 
@@ -424,7 +422,8 @@ BOOL CGridCellBase::Draw(CDC* pDC, int nRow, int nCol, CRect rect,  BOOL bEraseB
 
 	DrawOrder(pDC, rect);
 
-	// 셀 경계선을 그린다.
+	// 셀 경계선을 그린다. 고정 셀이 아닌경우만 그린다.
+	if (!IsFixed())
 	{
 		CPen lightpen(PS_SOLID, 1, ::GetSysColor(COLOR_3DHIGHLIGHT)),
 			darkpen(PS_SOLID, 1, ::GetSysColor(COLOR_3DDKSHADOW)),
