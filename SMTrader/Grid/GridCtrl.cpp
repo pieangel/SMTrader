@@ -1656,7 +1656,7 @@ void CGridCtrl::OnDraw(CDC* pDC)
             rect.right = rect.left + GetColumnWidth(col)-1;
 
             pCell = GetCell(row, col);
-            if (pCell)
+            if (pCell && !pCell->GetMerged())
 			{
 				pCell->SetCoords(row,col);
                 pCell->Draw(pDC, row, col, rect, FALSE);
@@ -1743,7 +1743,7 @@ void CGridCtrl::OnDraw(CDC* pDC)
     for (row = minVisibleRow; row <= maxVisibleRow; row++)
     {
         if (GetRowHeight(row) <= 0) continue;
-
+		CRect temRect(rect);
         rect.top = rect.bottom+1;
         rect.bottom = rect.top + GetRowHeight(row)-1;
 
@@ -1768,11 +1768,26 @@ void CGridCtrl::OnDraw(CDC* pDC)
 
             pCell = GetCell(row, col);
             // TRACE(_T("Cell %d,%d type: %s\n"), row, col, pCell->GetRuntimeClass()->m_lpszClassName);
-            if (pCell)
+            if (pCell && pCell->GetMerged() != 1)
 			{
-				pCell->SetCoords(row,col);
-                pCell->Draw(pDC, row, col, rect, FALSE);
-			}
+				if (pCell->GetMerged() != 2) { // 일반 셀을 그림
+					pCell->SetCoords(row, col);
+					pCell->Draw(pDC, row, col, rect, FALSE);
+				}
+				else { // 병합한 셀을 그림
+					temRect.top = rect.top;
+					temRect.left = rect.left;
+					int row_sum = 0;
+					for (int r = pCell->MergeStartRow(); r <= pCell->MergeEndRow(); ++r)
+						row_sum += GetRowHeight(r);
+					int col_sum = 0;
+					for (int c = pCell->MergeStartCol(); c <= pCell->MergeEndCol(); ++c)
+						col_sum += GetColumnWidth(c);
+					temRect.right = temRect.left + col_sum - 1;
+					temRect.bottom = temRect.top + row_sum - 1;
+					pCell->Draw(pDC, row, col, temRect, FALSE);
+				}
+			} 
         }
     }
 
@@ -1790,8 +1805,8 @@ void CGridCtrl::OnDraw(CDC* pDC)
             if (GetColumnWidth(col) <= 0) continue;
 
             x += GetColumnWidth(col);
-            pDC->MoveTo(x-1, nFixedRowHeight);
-            pDC->LineTo(x-1, VisRect.bottom);
+            //pDC->MoveTo(x-1, nFixedRowHeight);
+            //pDC->LineTo(x-1, VisRect.bottom);
         }
     }
 
@@ -1804,8 +1819,8 @@ void CGridCtrl::OnDraw(CDC* pDC)
             if (GetRowHeight(row) <= 0) continue;
 
             y += GetRowHeight(row);
-			pDC->MoveTo(nFixedColWidth, y - 1);
-			pDC->LineTo(VisRect.right, y - 1);
+			//pDC->MoveTo(nFixedColWidth, y - 1);
+			//pDC->LineTo(VisRect.right, y - 1);
         }
     }
 
@@ -4452,6 +4467,77 @@ bool CGridCtrl::NotVirtualCompare(int c1, int c2)
 	return ! CGridCtrl::m_This->m_pfnVirtualCompare(c1, c2);
 }
 
+int CGridCtrl::FindButtonID(int row, int col)
+{
+	auto it = _ButtonMap.find(std::make_pair(row, col));
+	if (it != _ButtonMap.end()) {
+		return it->second;
+	}
+
+	return -1;
+}
+
+void CGridCtrl::RegisterButton(int id, int row, int col)
+{
+	CGridCellBase* pCell = GetCell(row, col);
+	if (!pCell)
+		return;
+	pCell->Style(2);
+	pCell->SetFormat(DT_CENTER | DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX);
+	// 병합된 셀일때는 모든 셀을 다 등록해 준다.
+	if (pCell->GetMerged() == 2) {
+		for (int r = pCell->MergeStartRow(); r <= pCell->MergeEndRow(); ++r)
+			for (int c = pCell->MergeStartCol(); c <= pCell->MergeEndCol(); ++c) {
+				_ButtonMap[std::make_pair(r, c)] = id;
+			}
+	}
+	else {
+		_ButtonMap[std::make_pair(row, col)] = id;
+	}
+}
+
+void CGridCtrl::RegisterButton(int id, int row, int col, COLORREF color)
+{
+	CGridCellBase* pCell = GetCell(row, col);
+	if (!pCell)
+		return;
+	pCell->SetBackClr(color);
+	pCell->Style(2);
+	pCell->SetFormat(DT_CENTER | DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX);
+	// 병합된 셀일때는 모든 셀을 다 등록해 준다.
+	if (pCell->GetMerged() == 2) {
+		for (int r = pCell->MergeStartRow(); r <= pCell->MergeEndRow(); ++r)
+			for (int c = pCell->MergeStartCol(); c <= pCell->MergeEndCol(); ++c) {
+				_ButtonMap[std::make_pair(r, c)] = id;
+			}
+	}
+	else {
+		_ButtonMap[std::make_pair(row, col)] = id;
+	}
+}
+
+void CGridCtrl::RegisterButton(int id, int row, int col, COLORREF color, LPCTSTR title)
+{
+	CGridCellBase* pCell = GetCell(row, col);
+	if (!pCell)
+		return;
+	pCell->SetBackClr(color);
+	pCell->Style(2);
+	pCell->SetFormat(DT_CENTER | DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX);
+	pCell->SetText(title);
+	
+	// 병합된 셀일때는 모든 셀을 다 등록해 준다.
+	if (pCell->GetMerged() == 2) {
+		for (int r = pCell->MergeStartRow(); r <= pCell->MergeEndRow(); ++r)
+			for (int c = pCell->MergeStartCol(); c <= pCell->MergeEndCol(); ++c) {
+				_ButtonMap[std::make_pair(r, c)] = id;
+			}
+	}
+	else {
+		_ButtonMap[std::make_pair(row, col)] = id;
+	}
+}
+
 void CGridCtrl::DrawArrow(int type, CDC* pdc, POINT p0, POINT p1, int head_length, int head_width)
 {
 	CBrush brush1;   // Must initialize!
@@ -5943,7 +6029,7 @@ void CGridCtrl::OnMouseMove(UINT /*nFlags*/, CPoint point)
                       m_MouseMode==MOUSE_SELECT_COL ||
                       m_MouseMode==MOUSE_SELECT_ROW)
                     {
-                        SetFocusCell(idCurrentCell);
+                        //SetFocusCell(idCurrentCell);
                     }
                 }
                 break;
@@ -6183,7 +6269,9 @@ void CGridCtrl::OnLButtonDown(UINT nFlags, CPoint point)
     // (If the user moves the mouse, then dragging occurs)
     else if (IsCellSelected(m_LeftClickDownCell))
     {
-        SetFocusCell(m_LeftClickDownCell.row, m_LeftClickDownCell.col);
+		// 버튼이 아닐때만 선택하게 한다.
+		if (FindButtonID(m_LeftClickDownCell.row, m_LeftClickDownCell.col) > 0)
+			SetFocusCell(m_LeftClickDownCell.row, m_LeftClickDownCell.col);
 
         // If control is pressed then unselect the cell or row (depending on the list mode)
         if (nFlags & MK_CONTROL)
@@ -6206,7 +6294,9 @@ void CGridCtrl::OnLButtonDown(UINT nFlags, CPoint point)
 		if (m_LeftClickDownCell.row >= GetFixedRowCount() && 
 			m_LeftClickDownCell.col >= GetFixedColumnCount())
 		{
-            SetFocusCell(m_LeftClickDownCell.row, m_LeftClickDownCell.col);
+			// 버튼이 아닐때만 선택하게 한다.
+			if (FindButtonID(m_LeftClickDownCell.row, m_LeftClickDownCell.col) > 0)
+				SetFocusCell(m_LeftClickDownCell.row, m_LeftClickDownCell.col);
 		}
 		else
 			SetFocusCell(-1, -1);
@@ -7685,4 +7775,25 @@ BOOL CGridCtrl::PreCreateWindow(CREATESTRUCT& cs)
 	cs.dwExStyle &= ~WS_VSCROLL;
 
 	return CWnd::PreCreateWindow(cs);
+}
+
+void CGridCtrl::MergeCells(int start_row, int start_col, int end_row, int end_col)
+{
+	for (int i = start_row; i <= end_row; ++i) {
+		for (int j = start_col; j <= end_col; ++j) {
+			CGridCellBase* pCell = GetCell(i, j);
+			if (pCell) {
+				if (i == start_row && j == start_col) {
+					pCell->SetMerged(2);
+					pCell->MergeStartRow(start_row);
+					pCell->MergeEndRow(end_row);
+					pCell->MergeStartCol(start_col);
+					pCell->MergeEndCol(end_col);
+				}
+				else {
+					pCell->SetMerged(1);
+				}
+			}
+		}
+	}
 }

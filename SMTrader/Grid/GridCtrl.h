@@ -33,6 +33,7 @@
 #include "GridCell.h"
 #include <afxtempl.h>
 #include <vector>
+#include <map>
 
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -817,9 +818,12 @@ private:
 	bool m_AllowSelectRowInFixedCol;
 
 	std::vector<std::pair<CCellID, CCellID>> _StopOrderVector;
-
-
+	std::map<std::pair<int, int>, int> _ButtonMap;
 public:
+	int FindButtonID(int row, int col);
+	void RegisterButton(int id, int row, int col);
+	void RegisterButton(int id, int row, int col, COLORREF color);
+	void RegisterButton(int id, int row, int col, COLORREF color, LPCTSTR title);
 	void DrawArrow(int type, CDC* pdc, POINT p0, POINT p1, int head_length, int head_width);
 	void PutStopOrder(std::pair<CCellID, CCellID> order) {
 		_StopOrderVector.push_back(order);
@@ -831,6 +835,7 @@ public:
 	void DrawStopOrders(CDC* pdc);
 	void DrawCloseLine(CDC* pDC);
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
+	void MergeCells(int start_row, int start_col, int end_row, int end_col);
 };
 
 // Returns the default cell implementation for the given grid region

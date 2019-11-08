@@ -89,6 +89,14 @@ public:
 
 	int Style() const { return _Style; }
 	void Style(int val) { _Style = val; }
+	int MergeStartRow() const { return _MergeStartRow; }
+	void MergeStartRow(int val) { _MergeStartRow = val; }
+	int MergeEndRow() const { return _MergeEndRow; }
+	void MergeEndRow(int val) { _MergeEndRow = val; }
+	int MergeStartCol() const { return _MergeStartCol; }
+	void MergeStartCol(int val) { _MergeStartCol = val; }
+	int MergeEndCol() const { return _MergeEndCol; }
+	void MergeEndCol(int val) { _MergeEndCol = val; }
 	// Attributes
 public:
     virtual void SetText(LPCTSTR /* szText */)              = 0 ;
@@ -107,6 +115,9 @@ public:
 
 	virtual void SetLabel(LPCTSTR /* szText */) = 0;
 	virtual LPCTSTR    GetLabel()       const = 0;
+
+	virtual int GetMerged() const = 0;
+	virtual void SetMerged(int flag) = 0;
 
     virtual LPCTSTR    GetText()       const                = 0 ;
     virtual LPCTSTR    GetTipText()    const                { return GetText(); } // may override TitleTip return
@@ -187,7 +198,12 @@ protected:
 	std::map<int, VtOrder*> OrderMap;
 	std::map<int, HdOrderRequest*> StopOrderMap;
 	void DrawOrder(CDC* pDC, CRect& rect);
+	// 0 : normal, 1 : close line, 2 : button, 3 : select, 4 : select bold.
 	int _Style = 0;
+	int _MergeStartRow;
+	int _MergeEndRow;
+	int _MergeStartCol;
+	int _MergeEndCol;
 };
 
 //{{AFX_INSERT_LOCATION}}

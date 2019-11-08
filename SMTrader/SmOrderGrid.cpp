@@ -187,6 +187,27 @@ void SmOrderGrid::Init()
 		SetRowHeight(i, _CellHeight);
 	}
 
+	// 정렬버튼 등록
+	RegisterButton(1, 0, CenterCol, RGB(0, 255, 255));
+	MergeCells(1, CenterCol - 2, 1, CenterCol - 1);
+	// 시장가 매도 
+	RegisterButton(2, 1, CenterCol - 2, RGB(0, 255, 255), "시장가매도");
+	// 시장가  
+	RegisterButton(3, 1, CenterCol, RGB(0, 255, 255), "시장가");
+	MergeCells(1, CenterCol + 1, 1, CenterCol + 2);
+	// 시장가 매수 
+	RegisterButton(4, 1, CenterCol + 1, RGB(0, 255, 255), "시장가매수");
+	// 매도스탑 취소 
+	RegisterButton(5, _EndRowForValue + 2, CenterCol - 4, RGB(0, 255, 255), "매도STOP취소");
+	// 매도주문 취소 
+	RegisterButton(6, _EndRowForValue + 2, CenterCol - 3, RGB(0, 255, 255), "매도주문취소");
+	// 모든주문 취소
+	RegisterButton(7, _EndRowForValue + 2, CenterCol, RGB(0, 255, 255), "전체주문취소");
+	// 매수주문취소
+	RegisterButton(8, _EndRowForValue + 2, CenterCol + 3, RGB(0, 255, 255), "매수주문취소");
+	// 매수스탑 취소
+	RegisterButton(9, _EndRowForValue + 2, CenterCol + 4, RGB(0, 255, 255), "매수STOP취소");
+
 	_StopOrderMgr = new VtStopOrderManager();
 	SetFont(&_defFont);
 	SetOrderArea();
@@ -211,10 +232,7 @@ void SmOrderGrid::SetColTitle(bool init)
 
 	SetRowHeight(0, _HeadHeight);
 
-	for (int i = 0; i < _ColCount; i++)
-	{
-		if (i == CenterCol)
-			continue;
+	for (int i = 0; i < _ColCount; i++) {
 		if (!init)
 			SetColumnWidth(i, colWidth[i]);
 
@@ -499,7 +517,7 @@ void SmOrderGrid::SetHogaInfo(const VtSymbol* sym, std::set<std::pair<int, int>>
 {
 	if (!sym)
 		return;
-
+	_HogaPos.clear();
 	for (int i = 0; i < 5; i++) {
 		int pos = FindRowFromCenterValue(sym->Hoga.Ary[i].IntBuyPrice);
 		if (pos >= _StartRowForValue && pos <= _EndRowForValue) {
@@ -898,7 +916,8 @@ void SmOrderGrid::RefreshCells(std::set<std::pair<int, int>>& refreshSet)
 	for (auto it = refreshSet.begin(); it != refreshSet.end(); ++it) {
 		std::pair<int, int> pos = *it;
 		CGridCellBase* pCell = GetCell(pos.first, pos.second);
-		RedrawCell(pos.first, pos.second);
+		//RedrawCell(pos.first, pos.second);
+		InvalidateCellRect(pos.first, pos.second);
 	}
 }
 
@@ -1025,7 +1044,14 @@ void SmOrderGrid::OnLButtonDown(UINT nFlags, CPoint point)
 	}
 
 	SetCapture();
-	CGridCtrl::OnLButtonDown(nFlags, point);
+	int nButtonID = FindButtonID(cell.row, cell.col);
+	if (nButtonID == -1)
+		CGridCtrl::OnLButtonDown(nFlags, point);
+	else {
+		if (nButtonID == 2) {
+			AfxMessageBox("시장가매도");
+		}
+	}
 }
 
 

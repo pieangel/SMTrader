@@ -121,8 +121,10 @@ BOOL CGridCellBase::Draw(CDC* pDC, int nRow, int nCol, CRect rect,  BOOL bEraseB
     CGridCtrl* pGrid = GetGrid();
     ASSERT(pGrid);
 
-	CRect closeRect;
+	CRect closeRect, borderRect, btnRect;
 	closeRect.CopyRect(&rect);
+	borderRect.CopyRect(&rect);
+	btnRect.CopyRect(&rect);
 
     if (!pGrid || !pDC)
         return FALSE;
@@ -228,37 +230,30 @@ BOOL CGridCellBase::Draw(CDC* pDC, int nRow, int nCol, CRect rect,  BOOL bEraseB
     {
         if (bEraseBkgnd)
         {
-            rect.right++; rect.bottom++;    // FillRect doesn't draw RHS or bottom
-            CBrush brush(TextBkClr);
+			rect.right++; rect.bottom++;    // FillRect doesn't draw RHS or bottom
+		    CBrush brush(TextBkClr);
             pDC->FillRect(rect, &brush);
             rect.right--; rect.bottom--;
+
+			/*
+			CPen lightpen(PS_SOLID, 1, RGB(255, 0, 0)),
+				darkpen(PS_SOLID, 1, RGB(0, 0, 255)),
+				*pOldPen = pDC->GetCurrentPen();
+
+			pDC->SelectObject(&lightpen);
+			pDC->MoveTo(borderRect.right, borderRect.top);
+			pDC->LineTo(borderRect.left, borderRect.top);
+			pDC->LineTo(borderRect.left, borderRect.bottom);
+
+			pDC->SelectObject(&darkpen);
+			pDC->MoveTo(borderRect.right, borderRect.top);
+			pDC->LineTo(borderRect.right, borderRect.bottom);
+			pDC->LineTo(borderRect.left, borderRect.bottom);
+			pDC->SelectObject(pOldPen);
+			*/
         }
         pDC->SetTextColor(TextClr);
     }
-
-	if (nRow == 2 && nCol == 2) {
-		CPen lightpen(PS_SOLID, 1, ::GetSysColor(COLOR_3DHIGHLIGHT)),
-			darkpen(PS_SOLID, 1, ::GetSysColor(COLOR_3DDKSHADOW)),
-			*pOldPen = pDC->GetCurrentPen();
-		rect.DeflateRect(1, 1);
-		pDC->SelectObject(&lightpen);
-		pDC->MoveTo(rect.right, rect.top);
-		pDC->LineTo(rect.left, rect.top);
-		pDC->LineTo(rect.left, rect.bottom);
-
-		pDC->SelectObject(&darkpen);
-		pDC->MoveTo(rect.right, rect.top);
-		pDC->LineTo(rect.right, rect.bottom);
-		pDC->LineTo(rect.left, rect.bottom);
-		pDC->SelectObject(pOldPen);
-		//rect.DeflateRect(1, 1);
-	} 
-
-	if (nRow == 4 && nCol == 2) {
-		rect.right++; rect.bottom++;
-		pDC->DrawEdge(rect, BDR_SUNKENINNER /*EDGE_RAISED*/, BF_RECT);
-		rect.DeflateRect(1, 1);
-	}
 
     // Draw lines only when wanted
     if (IsFixed() && pGrid->GetGridLines() != GVL_NONE)
@@ -275,11 +270,12 @@ BOOL CGridCellBase::Draw(CDC* pDC, int nRow, int nCol, CRect rect,  BOOL bEraseB
         if (bHiliteFixed)
         {
             rect.right++; rect.bottom++;
-            pDC->DrawEdge(rect, BDR_SUNKENINNER /*EDGE_RAISED*/, BF_RECT);
+            //pDC->DrawEdge(rect, BDR_SUNKENINNER /*EDGE_RAISED*/, BF_RECT);
             rect.DeflateRect(1,1);
         }
         else
         {
+			/*
             CPen lightpen(PS_SOLID, 1,  ::GetSysColor(COLOR_3DHIGHLIGHT)),
                 darkpen(PS_SOLID,  1, ::GetSysColor(COLOR_3DDKSHADOW)),
                 *pOldPen = pDC->GetCurrentPen();
@@ -295,6 +291,7 @@ BOOL CGridCellBase::Draw(CDC* pDC, int nRow, int nCol, CRect rect,  BOOL bEraseB
             pDC->LineTo(rect.left, rect.bottom);
             pDC->SelectObject(pOldPen);
             rect.DeflateRect(1,1);
+			*/
         }
     }
 
@@ -427,6 +424,42 @@ BOOL CGridCellBase::Draw(CDC* pDC, int nRow, int nCol, CRect rect,  BOOL bEraseB
 
 	DrawOrder(pDC, rect);
 
+	// 셀 경계선을 그린다.
+	{
+		CPen lightpen(PS_SOLID, 1, ::GetSysColor(COLOR_3DHIGHLIGHT)),
+			darkpen(PS_SOLID, 1, ::GetSysColor(COLOR_3DDKSHADOW)),
+			borderPen(PS_SOLID, 1, RGB(192, 192, 192)),
+			*pOldPen = pDC->GetCurrentPen();
+
+		// 버튼 셀 그리기
+		if (_Style == 2) {
+			pDC->SelectObject(&borderPen);
+			pDC->MoveTo(borderRect.right, borderRect.top);
+			pDC->LineTo(borderRect.left, borderRect.top);
+			pDC->LineTo(borderRect.left, borderRect.bottom + 1);
+
+			pDC->SelectObject(&lightpen);
+			btnRect.left++;
+			btnRect.top++;
+		
+			pDC->MoveTo(btnRect.right, btnRect.top);
+			pDC->LineTo(btnRect.left, btnRect.top);
+			pDC->LineTo(btnRect.left, btnRect.bottom);
+
+			pDC->SelectObject(&darkpen);
+			pDC->MoveTo(btnRect.right, btnRect.top);
+			pDC->LineTo(btnRect.right, btnRect.bottom);
+			pDC->LineTo(btnRect.left, btnRect.bottom);
+		}
+		else { // 일반 셀 그리기
+			pDC->SelectObject(&borderPen);
+			pDC->MoveTo(borderRect.right, borderRect.top);
+			pDC->LineTo(borderRect.left, borderRect.top);
+			pDC->LineTo(borderRect.left, borderRect.bottom + 1);
+		}
+		pDC->SelectObject(pOldPen);
+	}
+
 	// 호가선 표시
 	if (_Style == 1)
 	{
@@ -437,16 +470,14 @@ BOOL CGridCellBase::Draw(CDC* pDC, int nRow, int nCol, CRect rect,  BOOL bEraseB
 
 		CPoint pt1, pt2;
 		pt1.x = closeRect.left - 1;
-		pt1.y = closeRect.bottom - 1;
+		pt1.y = closeRect.bottom;
 		pt2.x = closeRect.right;
-		pt2.y = closeRect.bottom - 1;
+		pt2.y = closeRect.bottom;
 
 		pDC->MoveTo(pt1);
 		pDC->LineTo(pt2);
 		pDC->SelectObject(oldPen);
 	}
-
-
 
     // We want to see '&' characters so use DT_NOPREFIX
     GetTextRect(rect);
@@ -492,6 +523,9 @@ void CGridCellBase::OnClick( CPoint PointCellRelative)
 {
     UNUSED_ALWAYS(PointCellRelative);
     TRACE2("Mouse Left btn up in cell at x=%i y=%i\n", PointCellRelative.x, PointCellRelative.y);
+	CString msg;
+	msg.Format("click row = %d, col = %d", 4, 4);
+	//AfxMessageBox(msg);
 }
 
 void CGridCellBase::OnClickDown( CPoint PointCellRelative)

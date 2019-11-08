@@ -166,6 +166,13 @@ UINT CGridCell::GetMargin() const
     return m_nMargin; 
 }
 
+void CGridCell::OnClickDown(CPoint PointCellRelative)
+{
+	CString msg;
+	msg.Format("click row = %d, col = %d", m_nRow, m_nCol);
+	//AfxMessageBox(msg);
+}
+
 /////////////////////////////////////////////////////////////////////////////
 // GridCell Operations
 

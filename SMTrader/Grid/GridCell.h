@@ -68,7 +68,7 @@ public:
     virtual void  SetFont(const LOGFONT* plf);
     virtual void  SetMargin(UINT nMargin)        { m_nMargin = nMargin; }
     virtual CWnd* GetEditWnd() const             { return m_pEditWnd;   }
-    virtual void  SetCoords(int /*nRow*/, int /*nCol*/) {}  // don't need to know the row and
+	virtual void  SetCoords(int nRow, int nCol) { m_nRow = nRow;  m_nCol = nCol; }  // don't need to know the row and
                                                             // column for base implementation
 
     virtual LPCTSTR     GetText() const             { return (m_strText.IsEmpty())? _T("") : LPCTSTR(m_strText); }
@@ -90,6 +90,14 @@ public:
 	virtual void        SetLongValue(long value)    { m_lLongValue = value; }
 	virtual long        GetLongValue() const        { return m_lLongValue; }
 
+	virtual int         GetMerged() const           { return m_Merged;  }
+	virtual void        SetMerged(int flag)        {	m_Merged = flag; }
+
+	virtual void OnClickDown(CPoint PointCellRelative);
+
+	int GetRow() { return m_nRow;  }
+	int GetCol() { return m_nCol;  }
+
 // editing cells
 public:
     virtual BOOL Edit(int nRow, int nCol, CRect rect, CPoint point, UINT nID, UINT nChar);
@@ -107,12 +115,16 @@ protected:
     COLORREF   m_crBkClr;
     LOGFONT*   m_plfFont;
     UINT       m_nMargin;
+	int        m_nRow;
+	int        m_nCol;
 
     BOOL       m_bEditing;     // Cell being edited?
 
     CGridCtrl* m_pGrid;        // Parent grid control
     CWnd*      m_pEditWnd;
 	long       m_lLongValue;
+	// 0 : ¿œπ›ºø, 1 : ∫¥«’¥Á«— ºø, 2 : ∫¥«’«— ºø
+	int        m_Merged = 0;
 };
 
 // This class is for storing grid default values. It's a little heavy weight, so
