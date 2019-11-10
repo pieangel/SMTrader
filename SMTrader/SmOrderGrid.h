@@ -159,6 +159,8 @@ private:
 	void CleanOldOrderTrackLine(CCellID& cell);
 	void RedrawOrderTrackCells();
 	void AddStopOrder(int price, VtPositionType posi);
+	CCellID _OldClickedCell;
+	void InvalidateClickedCell();
 public:
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 	afx_msg LRESULT OnMouseLeave(WPARAM wParam, LPARAM lParam);

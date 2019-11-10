@@ -113,6 +113,11 @@ public:
 	virtual void SetLongValue(long ) = 0;
 	virtual long GetLongValue() const = 0;
 
+	virtual void SetMoving(bool) = 0;
+	virtual bool GetMoving() const = 0;
+	virtual void SetClicked(bool) = 0;
+	virtual bool GetClicked() const = 0;
+
 	virtual void SetLabel(LPCTSTR /* szText */) = 0;
 	virtual LPCTSTR    GetLabel()       const = 0;
 
@@ -198,12 +203,16 @@ protected:
 	std::map<int, VtOrder*> OrderMap;
 	std::map<int, HdOrderRequest*> StopOrderMap;
 	void DrawOrder(CDC* pDC, CRect& rect);
-	// 0 : normal, 1 : close line, 2 : button, 3 : select, 4 : select bold.
+	void DrawMovingRect(CDC* pDC, CRect& rect);
+	void DrawSelectedgRect(CDC* pDC, CRect& rect);
+	// 0 : normal, 1 : close line, 2 : button, 3 : moving rect, 4 : selected rect.
 	int _Style = 0;
 	int _MergeStartRow;
 	int _MergeEndRow;
 	int _MergeStartCol;
 	int _MergeEndCol;
+	bool _MovingRect = false;
+	bool _Clicked = false;
 };
 
 //{{AFX_INSERT_LOCATION}}

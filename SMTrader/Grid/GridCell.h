@@ -93,6 +93,11 @@ public:
 	virtual int         GetMerged() const           { return m_Merged;  }
 	virtual void        SetMerged(int flag)        {	m_Merged = flag; }
 
+	virtual void SetMoving(bool flag) { _MovingRect = flag; }
+	virtual bool GetMoving() const { return _MovingRect; }
+	virtual void SetClicked(bool flag) { _Clicked = flag; }
+	virtual bool GetClicked() const { return _Clicked; }
+
 	virtual void OnClickDown(CPoint PointCellRelative);
 
 	int GetRow() { return m_nRow;  }

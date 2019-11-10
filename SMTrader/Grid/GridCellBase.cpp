@@ -121,10 +121,11 @@ BOOL CGridCellBase::Draw(CDC* pDC, int nRow, int nCol, CRect rect,  BOOL bEraseB
     CGridCtrl* pGrid = GetGrid();
     ASSERT(pGrid);
 
-	CRect closeRect, borderRect, btnRect;
+	CRect closeRect, borderRect, btnRect, moveRect;
 	closeRect.CopyRect(&rect);
 	borderRect.CopyRect(&rect);
 	btnRect.CopyRect(&rect);
+	moveRect.CopyRect(&rect);
 
     if (!pGrid || !pDC)
         return FALSE;
@@ -459,6 +460,10 @@ BOOL CGridCellBase::Draw(CDC* pDC, int nRow, int nCol, CRect rect,  BOOL bEraseB
 		pDC->SelectObject(pOldPen);
 	}
 
+	// 선택된 사각형을 그린다.
+	if (_Clicked)
+		DrawSelectedgRect(pDC, moveRect);
+
 	// 호가선 표시
 	if (_Style == 1)
 	{
@@ -478,7 +483,11 @@ BOOL CGridCellBase::Draw(CDC* pDC, int nRow, int nCol, CRect rect,  BOOL bEraseB
 		pDC->SelectObject(oldPen);
 	}
 
-    // We want to see '&' characters so use DT_NOPREFIX
+	// 움직이는 사각형을 그린다.
+	if (_MovingRect)
+		DrawMovingRect(pDC, moveRect);
+
+	// We want to see '&' characters so use DT_NOPREFIX
     GetTextRect(rect);
     rect.right++;    
     rect.bottom++;
@@ -690,6 +699,40 @@ void CGridCellBase::DrawOrder(CDC* pDC, CRect& rect)
 		// Reselect original brush into device context.
 		pDC->SelectObject(&OrigBrush);
 	}
+}
+
+void CGridCellBase::DrawMovingRect(CDC* pDC, CRect& rect)
+{
+	rect.DeflateRect(1, 1);
+	CPen pen;
+	CBrush brush1;   // Must initialize!
+	CPen* pOldPen = NULL;
+	pen.CreatePen(0, 1, RGB(255, 0, 0));
+	pOldPen = pDC->SelectObject(&pen);
+	pDC->MoveTo(rect.left, rect.top);
+	pDC->LineTo(rect.right, rect.top);
+	pDC->LineTo(rect.right, rect.bottom);
+	pDC->LineTo(rect.left, rect.bottom);
+	pDC->LineTo(rect.left, rect.top);
+
+	pDC->SelectObject(pOldPen);
+}
+
+void CGridCellBase::DrawSelectedgRect(CDC* pDC, CRect& rect)
+{
+	rect.DeflateRect(1, 1);
+	CPen pen;
+	CBrush brush1;   // Must initialize!
+	CPen* pOldPen = NULL;
+	pen.CreatePen(0, 2, RGB(0, 102, 51));
+	pOldPen = pDC->SelectObject(&pen);
+	pDC->MoveTo(rect.left, rect.top);
+	pDC->LineTo(rect.right + 1, rect.top);
+	pDC->LineTo(rect.right + 1, rect.bottom + 1);
+	pDC->LineTo(rect.left, rect.bottom + 1);
+	pDC->LineTo(rect.left, rect.top);
+
+	pDC->SelectObject(pOldPen);
 }
 
 /////////////////////////////////////////////////////////////////////////////

@@ -980,6 +980,7 @@ BOOL SmOrderGrid::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 	else
 		distance = zDelta / 40;
 	_CloseRow =_CloseRow + (distance);
+	InvalidateClickedCell();
 	SetCenterValue();
 	return CGridCtrl::OnMouseWheel(nFlags, zDelta, pt);
 }
@@ -1032,6 +1033,26 @@ void SmOrderGrid::OnLButtonDblClk(UINT nFlags, CPoint point)
 void SmOrderGrid::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	CCellID cell = GetCellFromPt(point);
+	CGridCellBase* pCell = GetCell(cell.row, cell.col);
+	if (pCell) {
+		// 클릭한 셀을 표시하고 저장한다.
+		if (cell.col == CenterCol - 4 ||
+			cell.col == CenterCol - 3 ||
+			cell.col == CenterCol + 4 ||
+			cell.col == CenterCol + 3) {
+
+			pCell->SetClicked(true);
+			if (_OldClickedCell.IsValid() == TRUE) {
+				CGridCellBase* pOldClickedCell = GetCell(_OldClickedCell.row, _OldClickedCell.col);
+				if (pOldClickedCell) {
+					pOldClickedCell->SetClicked(false);
+					InvalidateCellRect(_OldClickedCell);
+				}
+			}
+			InvalidateCellRect(cell.row, cell.col);
+			_OldClickedCell = cell;
+		}
+	}
 	if (IsValid(cell) == TRUE) {
 		CGridCellBase* pCell = GetCell(cell.row, cell.col);
 		if (pCell->GetOrderCount() > 0 || pCell->GetStopOrderCount() > 0) {
@@ -1242,6 +1263,19 @@ void SmOrderGrid::AddStopOrder(int price, VtPositionType posi)
 	SetStopOrderInfo(refreshSet);
 	CalcPosStopOrders(refreshSet);
 	RefreshCells(refreshSet);
+}
+
+void SmOrderGrid::InvalidateClickedCell()
+{
+	if (_OldClickedCell.IsValid() == TRUE) {
+		CGridCellBase* pOldClickedCell = GetCell(_OldClickedCell.row, _OldClickedCell.col);
+		if (pOldClickedCell) {
+			pOldClickedCell->SetClicked(false);
+			InvalidateCellRect(_OldClickedCell);
+		}
+	}
+	_OldClickedCell.row = -1;
+	_OldClickedCell.col = -1;
 }
 
 void SmOrderGrid::OnMouseMove(UINT nFlags, CPoint point)
