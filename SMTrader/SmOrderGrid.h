@@ -150,7 +150,7 @@ private:
 	CRect _DragEndRect;
 	int _DragStartCol = 0;
 	int _DragStartRow = 0;
-	bool _OrderDragStarted = false;
+	
 	void DrawArrow(int direction, POINT *point, CDC* pdc, POINT p0, POINT p1, int head_length, int head_width);
 	int _OldMMRow = 0;
 	int _OldMMCol = 0;

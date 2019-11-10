@@ -1825,6 +1825,10 @@ void CGridCtrl::OnDraw(CDC* pDC)
     }
 
 	DrawStopOrders(pDC);
+
+	if (m_bLMouseButtonDown == TRUE && _OrderDragStarted) {
+		DrawOrderLine(pDC);
+	}
 	// 여기서 화면에 항상 나와야 하는 것을 그린다. 
 	// 주문 화살표, 스탑주문 화살표, 선택 사각형 등
    pDC->SelectStockObject(NULL_PEN);
@@ -7796,4 +7800,87 @@ void CGridCtrl::MergeCells(int start_row, int start_col, int end_row, int end_co
 			}
 		}
 	}
+}
+
+void CGridCtrl::DrawOrderLine(CDC* pdc)
+{
+	CPoint pt1, pt2;
+	CRect StartRect, EndRect;
+	GetCellRect(OrderCellStart, StartRect);
+	GetCellRect(OrderCellEnd, EndRect);
+	pt1.x = StartRect.left + (StartRect.right - StartRect.left) / 2;
+	pt1.y = StartRect.top + (StartRect.bottom - StartRect.top) / 2;
+	pt2.x = EndRect.left + (EndRect.right - EndRect.left) / 2;
+	pt2.y = EndRect.top + (EndRect.bottom - EndRect.top) / 2;
+	if (OrderCellStart.col == OrderCellEnd.col)
+		DrawOrderArrow(1, pdc, pt1, pt2, 6, 6);
+	else
+		DrawOrderArrow(2, pdc, pt1, pt2, 6, 6);
+}
+
+void CGridCtrl::DrawOrderArrow(int direction, CDC* pdc, POINT p0, POINT p1, int head_length, int head_width)
+{
+	CBrush brush1;   // Must initialize!
+	brush1.CreateSolidBrush(RGB(0, 0, 0));   // Blue brush.
+
+	CBrush* pTempBrush = NULL;
+	CBrush OrigBrush;
+
+	CPen pen, *oldPen = NULL;
+	pen.CreatePen(PS_SOLID, 1, RGB(0, 0, 0));
+	oldPen = pdc->SelectObject(&pen);
+	//CString msg;
+	//msg = _T("정정");
+	pTempBrush = (CBrush*)pdc->SelectObject(&brush1);
+	// Save original brush.
+	OrigBrush.FromHandle((HBRUSH)pTempBrush);
+	POINT p2;
+	float dx = 0.0;
+	float dy = 0.0;
+	if (direction == 1)
+	{
+		pdc->MoveTo(p0);
+		pdc->LineTo(p1);
+		dx = static_cast<float>(p1.x - p0.x);
+		dy = static_cast<float>(p1.y - p0.y);
+	}
+	else
+	{
+
+		p2.y = p1.y;
+		p2.x = p0.x;
+		pdc->MoveTo(p0);
+		pdc->LineTo(p2);
+
+		//pdc->MoveTo(p2);
+		pdc->LineTo(p1);
+		//msg = _T("취소");
+		dx = static_cast<float>(p1.x - p2.x);
+		dy = static_cast<float>(p1.y - p2.y);
+	}
+
+	const auto length = std::sqrt(dx*dx + dy*dy);
+	if (head_length < 1 || length < head_length) return;
+
+	// ux,uy is a unit vector parallel to the line.
+	const auto ux = dx / length;
+	const auto uy = dy / length;
+
+	// vx,vy is a unit vector perpendicular to ux,uy
+	const auto vx = -uy;
+	const auto vy = ux;
+
+	const auto half_width = 0.5f * head_width;
+
+	const POINT arrow[3] =
+	{ p1,
+		POINT{ Round(p1.x - head_length*ux + half_width*vx),
+		Round(p1.y - head_length*uy + half_width*vy) },
+		POINT{ Round(p1.x - head_length*ux - half_width*vx),
+		Round(p1.y - head_length*uy - half_width*vy) }
+	};
+	pdc->Polygon(arrow, 3);
+	pdc->SetBkMode(TRANSPARENT);
+	pdc->SelectObject(oldPen);
+	pdc->SelectObject(&OrigBrush);
 }

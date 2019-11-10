@@ -1036,10 +1036,9 @@ void SmOrderGrid::OnLButtonDown(UINT nFlags, CPoint point)
 		CGridCellBase* pCell = GetCell(cell.row, cell.col);
 		if (pCell->GetOrderCount() > 0 || pCell->GetStopOrderCount() > 0) {
 			GetCellRect(cell, _DragStartRect);
-			_DragStartCol = cell.col;
-			_DragStartRow = cell.row;
 			_OrderDragStarted = true;
-			
+			OrderCellStart.col = cell.col;
+			OrderCellStart.row = cell.row;
 		}
 	}
 
@@ -1069,8 +1068,8 @@ void SmOrderGrid::OnLButtonUp(UINT nFlags, CPoint point)
 	
 	if (_OrderDragStarted) {
 		_OrderDragStarted = false;
+		Invalidate();
 	}
-	Invalidate();
 	ReleaseCapture();
 	CGridCtrl::OnLButtonUp(nFlags, point);
 }
@@ -1265,23 +1264,11 @@ void SmOrderGrid::OnMouseMove(UINT nFlags, CPoint point)
 			cell.row = _OldMMRow;
 			cell.col = _OldMMCol;
 		}
-
-		CleanOldOrderLine(cell);
-		GetCellRect(cell, _DragEndRect);
-		CDC *dc = GetDC();
-		CPoint pt1, pt2;
-		pt1.x = _DragStartRect.left + (_DragStartRect.right - _DragStartRect.left) / 2;
-		pt1.y = _DragStartRect.top + (_DragStartRect.bottom - _DragStartRect.top) / 2;
-		pt2.x = _DragEndRect.left + (_DragEndRect.right - _DragEndRect.left) / 2;
-		pt2.y = _DragEndRect.top + (_DragEndRect.bottom - _DragEndRect.top) / 2;
-		if (cell.col == _DragStartCol)
-			DrawArrow(1, &point, dc, pt1, pt2, 6, 6);
-		else
-			DrawArrow(2, &point, dc, pt1, pt2, 6, 6);
-		DrawStopOrders(dc);
-		ReleaseDC(dc);
+		Invalidate();
 		_OldMMRow = cell.row;
 		_OldMMCol = cell.col;
+		OrderCellEnd.col = cell.col;
+		OrderCellEnd.row = cell.row;
 	}
 
 	CGridCtrl::OnMouseMove(nFlags, point);

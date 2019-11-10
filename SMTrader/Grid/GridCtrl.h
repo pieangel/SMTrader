@@ -836,6 +836,13 @@ public:
 	void DrawCloseLine(CDC* pDC);
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
 	void MergeCells(int start_row, int start_col, int end_row, int end_col);
+
+	CCellID OrderCellStart, OrderCellEnd;
+
+	void DrawOrderLine(CDC* pdc);
+	bool _OrderDragStarted = false;
+	void DrawOrderArrow(int direction, CDC* pdc, POINT p0, POINT p1, int head_length, int head_width);
+	void DrawMovingRect(CDC* pdc);
 };
 
 // Returns the default cell implementation for the given grid region
