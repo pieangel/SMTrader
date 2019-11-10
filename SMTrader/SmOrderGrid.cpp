@@ -250,7 +250,7 @@ void SmOrderGrid::SetColTitle(bool init)
 		_titleFont.GetLogFont(&lf);
 		// ¼¿ ÆùÆ® ¼³Á¤
 		pCell->SetFont(&lf);
-		RedrawCell(0, i);
+		InvalidateCellRect(0, i);
 	}
 }
 
@@ -628,7 +628,6 @@ void SmOrderGrid::SetQuoteColor(const VtSymbol* sym, std::set<std::pair<int, int
 	
 	_LowRow = FindRowFromCenterValue(sym, sym->Quote.intLow);
 	_HighRow = FindRowFromCenterValue(sym, sym->Quote.intHigh);
-	_CloseRow = FindRowFromCenterValue(sym, sym->Quote.intClose);
 	_OpenRow = FindRowFromCenterValue(sym, sym->Quote.intOpen);
 	_PreCloseRow = FindRowFromCenterValue(sym, sym->Quote.intPreClose);
 
@@ -918,7 +917,6 @@ void SmOrderGrid::RefreshCells(std::set<std::pair<int, int>>& refreshSet)
 	for (auto it = refreshSet.begin(); it != refreshSet.end(); ++it) {
 		std::pair<int, int> pos = *it;
 		CGridCellBase* pCell = GetCell(pos.first, pos.second);
-		//RedrawCell(pos.first, pos.second);
 		InvalidateCellRect(pos.first, pos.second);
 	}
 }
@@ -1166,15 +1164,15 @@ void SmOrderGrid::DrawArrow(int direction, POINT *point, CDC* pdc, POINT p0, POI
 void SmOrderGrid::CleanOldOrderLine(CCellID& cell)
 {
 	if (cell.col == _DragStartCol)
-		RedrawCell(_OldMMRow, _OldMMCol);
+		InvalidateCellRect(_OldMMRow, _OldMMCol);
 	else if (cell.col > _DragStartCol) {
 		for (int i = cell.col; i >= _DragStartCol; --i) {
-			RedrawCell(_OldMMRow, i);
+			InvalidateCellRect(_OldMMRow, i);
 		}
 	}
 	else {
 		for (int i = cell.col; i <= _DragStartCol; ++i) {
-			RedrawCell(_OldMMRow, i);
+			InvalidateCellRect(_OldMMRow, i);
 		}
 	}
 }
@@ -1182,25 +1180,25 @@ void SmOrderGrid::CleanOldOrderLine(CCellID& cell)
 void SmOrderGrid::CleanOldOrderTrackLine(CCellID& cell)
 {
 	if (cell.col == _DragStartCol)
-		RedrawCell(_OldMMRow, _OldMMCol);
+		InvalidateCellRect(_OldMMRow, _OldMMCol);
 	else if (cell.col > _DragStartCol) {
 		for (int i = cell.col; i >= _DragStartCol; --i) {
-			RedrawCell(_OldMMRow, i);
+			InvalidateCellRect(_OldMMRow, i);
 		}
 	}
 	else {
 		for (int i = cell.col; i <= _DragStartCol; ++i) {
-			RedrawCell(_OldMMRow, i);
+			InvalidateCellRect(_OldMMRow, i);
 		}
 	}
 	if (cell.row < _DragStartRow) {
 		for (int i = cell.row; i <= _DragStartRow; ++i) {
-			RedrawCell(i, _DragStartCol);
+			InvalidateCellRect(i, _DragStartCol);
 		}
 	}
 	else if (cell.row > _DragStartCol) {
 		for (int i = _DragStartRow; i <= cell.row; ++i) {
-			RedrawCell(i, _DragStartCol);
+			InvalidateCellRect(i, _DragStartCol);
 		}
 	}
 }
@@ -1213,7 +1211,7 @@ void SmOrderGrid::RedrawOrderTrackCells()
 	int max_row = std::max(_DragStartRow, _OldMMRow);
 	for (int i = min_row; i <= max_row; ++i) {
 		for (int j = min_col; j <= max_col; ++j) {
-			RedrawCell(i, j);
+			InvalidateCellRect(i, j);
 		}
 	}
 }
