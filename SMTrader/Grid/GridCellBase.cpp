@@ -497,7 +497,7 @@ BOOL CGridCellBase::Draw(CDC* pDC, int nRow, int nCol, CRect rect,  BOOL bEraseB
 	// 레이블 표시
 	{
 		CRect tempRect(closeRect);
-		tempRect.top = tempRect.top + 2;
+		tempRect.top = tempRect.top + 4;
 		tempRect.left = tempRect.right - 10;
 		pDC->ExtTextOut(tempRect.left, tempRect.top, ETO_CLIPPED, tempRect, GetLabel(), NULL);
 	}

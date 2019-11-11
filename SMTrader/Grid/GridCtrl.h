@@ -824,6 +824,7 @@ public:
 	void RegisterButton(int id, int row, int col);
 	void RegisterButton(int id, int row, int col, COLORREF color);
 	void RegisterButton(int id, int row, int col, COLORREF color, LPCTSTR title);
+	void RegisterButton(int id, int row, int col, COLORREF back_color, COLORREF text_color, LPCTSTR title);
 	void DrawArrow(int type, CDC* pdc, POINT p0, POINT p1, int head_length, int head_width);
 	void PutStopOrderVector(std::pair<CCellID, CCellID> order) {
 		_StopOrderVector.push_back(order);
@@ -842,7 +843,6 @@ public:
 	void DrawOrderLine(CDC* pdc);
 	bool _OrderDragStarted = false;
 	void DrawOrderArrow(int direction, CDC* pdc, POINT p0, POINT p1, int head_length, int head_width);
-	void DrawMovingRect(CDC* pdc);
 };
 
 // Returns the default cell implementation for the given grid region

@@ -102,6 +102,7 @@ private:
 	int FindCenterRow();
 	// 현재 최대 행갯수 구하기
 	int GetMaxRow();
+	// 호가 정보 설정
 	void SetHogaInfo(const VtSymbol* symbol, std::set<std::pair<int, int>>& refreshSet);
 	int FindRowFromCenterValue(int value);
 	int FindRowFromCenterValue(const VtSymbol* sym, int value);
@@ -129,7 +130,7 @@ private:
 
 	void PutOrder(int price, VtPositionType position, VtPriceType priceType = VtPriceType::Price);
 
-	void SetOrderArea();
+	void SetOrderAreaColor();
 
 
 public:

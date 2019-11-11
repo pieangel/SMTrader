@@ -189,6 +189,7 @@ void SmOrderGrid::Init()
 	SetDoubleBuffering(TRUE);
 	EnableSelection(FALSE);
 	SetEditable(FALSE);
+	EnableTitleTips(FALSE);
 
 	_Account = VtAccountManager::GetInstance()->FindAddAccount("00162001");
 	_Symbol = VtSymbolManager::GetInstance()->FindSymbol(_SymbolCode);
@@ -198,31 +199,31 @@ void SmOrderGrid::Init()
 	}
 
 	// 정렬버튼 등록
-	RegisterButton(1, 0, CenterCol, RGB(0, 255, 255));
+	RegisterButton(1, 0, CenterCol, GetSysColor(COLOR_BTNFACE));
 	MergeCells(1, CenterCol - 2, 1, CenterCol - 1);
 	MergeCells(_EndRowForValue + 2, CenterCol - 2, _EndRowForValue + 2, CenterCol - 1);
 	// 시장가 매도 
-	RegisterButton(2, 1, CenterCol - 2, RGB(0, 255, 255), "시장가매도");
+	RegisterButton(2, 1, CenterCol - 2, RGB(19, 137, 255), RGB(255, 255, 255), "시장가매도");
 	// 시장가  
-	RegisterButton(3, 1, CenterCol, RGB(0, 255, 255), "시장가");
+	RegisterButton(3, 1, CenterCol, GetSysColor(COLOR_BTNFACE), "시장가");
 	MergeCells(1, CenterCol + 1, 1, CenterCol + 2);
 	MergeCells(_EndRowForValue + 2, CenterCol + 1, _EndRowForValue + 2, CenterCol + 2);
 	// 시장가 매수 
-	RegisterButton(4, 1, CenterCol + 1, RGB(0, 255, 255), "시장가매수");
+	RegisterButton(4, 1, CenterCol + 1, RGB(240, 51, 58), RGB(255, 255, 255), "시장가매수");
 	// 매도스탑 취소 
-	RegisterButton(5, _EndRowForValue + 2, CenterCol - 4, RGB(0, 255, 255), "ST취소");
+	RegisterButton(5, _EndRowForValue + 2, CenterCol - 4, RGB(190, 190, 245), "ST취소");
 	// 매도주문 취소 
-	RegisterButton(6, _EndRowForValue + 2, CenterCol - 3, RGB(0, 255, 255), "일괄취소");
+	RegisterButton(6, _EndRowForValue + 2, CenterCol - 3, RGB(190, 190, 245), "일괄취소");
 	// 모든주문 취소
-	RegisterButton(7, _EndRowForValue + 2, CenterCol, RGB(0, 255, 255), "전체취소");
+	RegisterButton(7, _EndRowForValue + 2, CenterCol, RGB(190, 190, 245), "전체취소");
 	// 매수주문취소
-	RegisterButton(8, _EndRowForValue + 2, CenterCol + 3, RGB(0, 255, 255), "일괄취소");
+	RegisterButton(8, _EndRowForValue + 2, CenterCol + 3, RGB(252, 190, 190), "일괄취소");
 	// 매수스탑 취소
-	RegisterButton(9, _EndRowForValue + 2, CenterCol + 4, RGB(0, 255, 255), "ST취소");
+	RegisterButton(9, _EndRowForValue + 2, CenterCol + 4, RGB(252, 190, 190), "ST취소");
 
 	_StopOrderMgr = new VtStopOrderManager();
 	SetFont(&_defFont);
-	SetOrderArea();
+	SetOrderAreaColor();
 	SetCenterValue();
 }
 
@@ -256,10 +257,7 @@ void SmOrderGrid::SetColTitle(bool init)
 		pCell->SetBackClr(VtGlobal::GridTitleBackColor);
 		// 셀 글자색 설정
 		pCell->SetTextClr(VtGlobal::GridTitleTextColor);
-		LOGFONT lf;
-		_titleFont.GetLogFont(&lf);
-		// 셀 폰트 설정
-		pCell->SetFont(&lf);
+		
 		InvalidateCellRect(0, i);
 	}
 }
@@ -577,6 +575,59 @@ void SmOrderGrid::SetHogaInfo(const VtSymbol* sym, std::set<std::pair<int, int>>
 			refreshSet.insert(std::make_pair(pos, CenterCol - 1));
 		}
 	}
+
+	// 총호가 건수, 수량 설정
+	{
+		CGridCellBase* pCell = GetCell(_EndRowForValue + 1, CenterCol - 2);
+		std::string strVal = fmt::format("{}", sym->Hoga.TotSellNo);
+		pCell->SetText(strVal.c_str());
+		//pCell->SetBackClr(SellColor[0]);
+		pCell->SetFormat(DT_CENTER | DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX);
+		_HogaPos.insert(std::make_pair(_EndRowForValue + 1, CenterCol - 2));
+		refreshSet.insert(std::make_pair(_EndRowForValue + 1, CenterCol - 2));
+
+		pCell = GetCell(_EndRowForValue + 1, CenterCol - 1);
+		strVal = fmt::format("{}", sym->Hoga.TotSellQty);
+		pCell->SetText(strVal.c_str());
+		//pCell->SetBackClr(SellColor[0]);
+		pCell->SetFormat(DT_CENTER | DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX);
+		_HogaPos.insert(std::make_pair(_EndRowForValue + 1, CenterCol - 1));
+		refreshSet.insert(std::make_pair(_EndRowForValue + 1, CenterCol - 1));
+
+		pCell = GetCell(_EndRowForValue + 1, CenterCol + 1);
+		strVal = fmt::format("{}", sym->Hoga.TotBuyQty);
+		pCell->SetText(strVal.c_str());
+		//pCell->SetBackClr(BuyColor[0]);
+		pCell->SetFormat(DT_CENTER | DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX);
+		_HogaPos.insert(std::make_pair(_EndRowForValue + 1, CenterCol + 1));
+		refreshSet.insert(std::make_pair(_EndRowForValue + 1, CenterCol + 1));
+
+		pCell = GetCell(_EndRowForValue + 1, CenterCol + 2);
+		strVal = fmt::format("{}", sym->Hoga.TotBuyNo);
+		pCell->SetText(strVal.c_str());
+		//pCell->SetBackClr(BuyColor[0]);
+		pCell->SetFormat(DT_CENTER | DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX);
+		_HogaPos.insert(std::make_pair(_EndRowForValue + 1, CenterCol + 2));
+		refreshSet.insert(std::make_pair(_EndRowForValue + 1, CenterCol + 2));
+
+		int dif = sym->Hoga.TotBuyQty - sym->Hoga.TotSellQty;
+
+		pCell = GetCell(_EndRowForValue + 1, CenterCol);
+		strVal = fmt::format("{}", dif);
+		pCell->SetText(strVal.c_str());
+		//pCell->SetBackClr(BuyColor[0]);
+		pCell->SetFormat(DT_CENTER | DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX);
+		if (dif > 0)
+		{
+			pCell->SetTextClr(RGB(255, 0, 0));
+		}
+		else
+		{
+			pCell->SetTextClr(RGB(0, 0, 255));
+		}
+		_HogaPos.insert(std::make_pair(_EndRowForValue + 1, CenterCol + 2));
+		refreshSet.insert(std::make_pair(_EndRowForValue + 1, CenterCol + 2));
+	}
 }
 
 int SmOrderGrid::FindRowFromCenterValue(int value)
@@ -795,6 +846,9 @@ void SmOrderGrid::SetOrderInfo(std::set<std::pair<int, int>>& refreshSet)
 
 	std::vector<VtOrder*> acptOrderList = orderMgr->GetAcceptedOrders(_Symbol->ShortCode);
 
+	int buy_count = 0, sell_count = 0;
+	CGridCellBase* pCell = nullptr;
+	std::string strVal;
 	for (auto it = acptOrderList.begin(); it != acptOrderList.end(); ++it) {
 		VtOrder* order = *it;
 		if (order->amount == 0)
@@ -802,7 +856,6 @@ void SmOrderGrid::SetOrderInfo(std::set<std::pair<int, int>>& refreshSet)
 
 		int row = FindRowFromCenterValue(_Symbol, order->intOrderPrice);
 
-		CGridCellBase* pCell = nullptr;
 		if (row >= _StartRowForValue && row <= _EndRowForValue) {
 			
 			if (order->orderPosition == VtPositionType::Sell) {
@@ -811,6 +864,7 @@ void SmOrderGrid::SetOrderInfo(std::set<std::pair<int, int>>& refreshSet)
 				pCell->AddOrder(order);
 				_OrderPos.insert(std::make_pair(row, CenterCol - 3));
 				refreshSet.insert(std::make_pair(row, CenterCol - 3));
+				sell_count += order->amount;
 			}
 			else if (order->orderPosition == VtPositionType::Buy) {
 				pCell = GetCell(row, CenterCol + 3);
@@ -818,12 +872,28 @@ void SmOrderGrid::SetOrderInfo(std::set<std::pair<int, int>>& refreshSet)
 				pCell->AddOrder(order);
 				_OrderPos.insert(std::make_pair(row, CenterCol + 3));
 				refreshSet.insert(std::make_pair(row, CenterCol + 3));
+				buy_count += order->amount;
 			}
 			// 주문 갯수 설정
-			std::string strVal = fmt::format("{}", pCell->GetOrderCount());
+			strVal = fmt::format("{}", pCell->GetOrderCount());
 			pCell->SetText(strVal.c_str());	
 		}
 	}
+
+	// 전체 주문 갯수 설정
+	pCell = GetCell(1, CenterCol + 3);
+	pCell->SetFormat(DT_RIGHT | DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX);
+	_OrderPos.insert(std::make_pair(1, CenterCol + 3));
+	refreshSet.insert(std::make_pair(1, CenterCol + 3));
+	strVal = fmt::format("{}", buy_count);
+	pCell->SetText(strVal.c_str());
+
+	pCell = GetCell(1, CenterCol - 3);
+	pCell->SetFormat(DT_RIGHT | DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX);
+	_OrderPos.insert(std::make_pair(1, CenterCol - 3));
+	refreshSet.insert(std::make_pair(1, CenterCol - 3));
+	strVal = fmt::format("{}", sell_count);
+	pCell->SetText(strVal.c_str());
 }
 
 void SmOrderGrid::ClearOldOrders(std::set<std::pair<int, int>>& refreshSet)
@@ -843,10 +913,13 @@ void SmOrderGrid::SetStopOrderInfo(std::set<std::pair<int, int>>& refreshSet)
 		return;
 
 	_StopOrderPos.clear();
+	CGridCellBase* pCell = nullptr;
+	std::string strVal;
+	int buy_count = 0, sell_count = 0;
 	for (auto it = _StopOrderMgr->StopOrderMapHd.begin(); it != _StopOrderMgr->StopOrderMapHd.end(); ++it) {
 		HdOrderRequest* order = it->second;
 		int row = FindRowFromCenterValue(order->Price);
-		CGridCellBase* pCell = nullptr;
+		
 		if (row >= _StartRowForValue && row <= _EndRowForValue) {
 
 			if (order->Position == VtPositionType::Sell) {
@@ -855,6 +928,7 @@ void SmOrderGrid::SetStopOrderInfo(std::set<std::pair<int, int>>& refreshSet)
 				pCell->SetFormat(DT_CENTER | DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX);
 				_StopOrderPos.insert(std::make_pair(row, CenterCol - 4));
 				refreshSet.insert(std::make_pair(row, CenterCol - 4));
+				sell_count += order->Amount;
 			}
 			else if (order->Position == VtPositionType::Buy) {
 				pCell = GetCell(row, CenterCol + 4);
@@ -862,12 +936,28 @@ void SmOrderGrid::SetStopOrderInfo(std::set<std::pair<int, int>>& refreshSet)
 				pCell->SetFormat(DT_CENTER | DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX);
 				_StopOrderPos.insert(std::make_pair(row, CenterCol + 4));
 				refreshSet.insert(std::make_pair(row, CenterCol + 4));
+				buy_count += order->Amount;
 			}
 			// 스탑 주문 갯수 설정
-			std::string strVal = fmt::format("{}({})", pCell->GetStopOrderCount(), _StopOrderMgr->Slip());
+			strVal = fmt::format("{}({})", pCell->GetStopOrderCount(), _StopOrderMgr->Slip());
 			pCell->SetText(strVal.c_str());
 		}
 	}
+
+	// 전체 주문 갯수 설정
+	pCell = GetCell(1, CenterCol + 4);
+	pCell->SetFormat(DT_RIGHT | DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX);
+	_OrderPos.insert(std::make_pair(1, CenterCol + 4));
+	refreshSet.insert(std::make_pair(1, CenterCol + 4));
+	strVal = fmt::format("{}", buy_count);
+	pCell->SetText(strVal.c_str());
+
+	pCell = GetCell(1, CenterCol - 4);
+	pCell->SetFormat(DT_RIGHT | DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX);
+	_OrderPos.insert(std::make_pair(1, CenterCol - 4));
+	refreshSet.insert(std::make_pair(1, CenterCol - 4));
+	strVal = fmt::format("{}", sell_count);
+	pCell->SetText(strVal.c_str());
 }
 
 void SmOrderGrid::ClearOldStopOrders(std::set<std::pair<int, int>>& refreshSet)
@@ -959,14 +1049,20 @@ void SmOrderGrid::PutOrder(int price, VtPositionType position, VtPriceType price
 	orderMgr->PutOrder(std::move(request));
 }
 
-void SmOrderGrid::SetOrderArea()
+void SmOrderGrid::SetOrderAreaColor()
 {
-	for (int i = 1; i < m_nRows; ++i) {
-		CGridCellBase* pCell = GetCell(i, CenterCol - 3);
+	CGridCellBase* pCell = nullptr;
+	for (int i = 1; i <= _EndRowForValue + 1; ++i) {
+		pCell = GetCell(i, CenterCol - 3);
 		pCell->SetBackClr(RGB(218, 226, 245));
 		pCell = GetCell(i, CenterCol + 3);
 		pCell->SetBackClr(RGB(252, 226, 228));
 	}
+
+	pCell = GetCell(1, CenterCol - 4);
+	pCell->SetBackClr(RGB(218, 226, 245));
+	pCell = GetCell(1, CenterCol + 4);
+	pCell->SetBackClr(RGB(252, 226, 228));
 }
 
 void SmOrderGrid::RefreshAllValues()
@@ -1072,10 +1168,12 @@ void SmOrderGrid::OnLButtonDown(UINT nFlags, CPoint point)
 	CGridCellBase* pCell = GetCell(cell.row, cell.col);
 	if (pCell) {
 		// 클릭한 셀을 표시하고 저장한다.
-		if (cell.col == CenterCol - 4 ||
+		if (cell.row >= _StartRowForValue &&
+			cell.row <= _EndRowForValue && (
+			cell.col == CenterCol - 4 ||
 			cell.col == CenterCol - 3 ||
 			cell.col == CenterCol + 4 ||
-			cell.col == CenterCol + 3) {
+			cell.col == CenterCol + 3)) {
 
 			pCell->SetClicked(true);
 			if (_OldClickedCell.IsValid() == TRUE) {
@@ -1370,6 +1468,14 @@ void SmOrderGrid::SetMovingCell(CCellID cell)
 		_OldMovingCellSide.row = -1;
 		_OldMovingCellSide.col = -1;
 		break;
+	}
+
+	if (_OldMovingCellCenter.row < _StartRowForValue ||
+		_OldMovingCellCenter.row > _EndRowForValue) {
+		_OldMovingCellCenter.row = -1;
+		_OldMovingCellCenter.col = -1;
+		_OldMovingCellSide.row = -1;
+		_OldMovingCellSide.col = -1;
 	}
 
 	if (_OldMovingCellCenter.IsValid() == TRUE) {

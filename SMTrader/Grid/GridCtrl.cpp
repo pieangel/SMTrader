@@ -4542,6 +4542,29 @@ void CGridCtrl::RegisterButton(int id, int row, int col, COLORREF color, LPCTSTR
 	}
 }
 
+void CGridCtrl::RegisterButton(int id, int row, int col, COLORREF back_color, COLORREF text_color, LPCTSTR title)
+{
+	CGridCellBase* pCell = GetCell(row, col);
+	if (!pCell)
+		return;
+	pCell->SetBackClr(back_color);
+	pCell->SetTextClr(text_color);
+	pCell->Style(2);
+	pCell->SetFormat(DT_CENTER | DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX);
+	pCell->SetText(title);
+
+	// 병합된 셀일때는 모든 셀을 다 등록해 준다.
+	if (pCell->GetMerged() == 2) {
+		for (int r = pCell->MergeStartRow(); r <= pCell->MergeEndRow(); ++r)
+			for (int c = pCell->MergeStartCol(); c <= pCell->MergeEndCol(); ++c) {
+				_ButtonMap[std::make_pair(r, c)] = id;
+			}
+	}
+	else {
+		_ButtonMap[std::make_pair(row, col)] = id;
+	}
+}
+
 void CGridCtrl::DrawArrow(int type, CDC* pdc, POINT p0, POINT p1, int head_length, int head_width)
 {
 	CBrush brush1;   // Must initialize!
