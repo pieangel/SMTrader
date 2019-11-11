@@ -825,10 +825,10 @@ public:
 	void RegisterButton(int id, int row, int col, COLORREF color);
 	void RegisterButton(int id, int row, int col, COLORREF color, LPCTSTR title);
 	void DrawArrow(int type, CDC* pdc, POINT p0, POINT p1, int head_length, int head_width);
-	void PutStopOrder(std::pair<CCellID, CCellID> order) {
+	void PutStopOrderVector(std::pair<CCellID, CCellID> order) {
 		_StopOrderVector.push_back(order);
 	}
-	void ClearStopOrders() {
+	void ClearStopOrderVectors() {
 		_StopOrderVector.clear();
 	}
 

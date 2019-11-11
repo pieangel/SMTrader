@@ -7806,6 +7806,11 @@ void CGridCtrl::DrawOrderLine(CDC* pdc)
 {
 	CPoint pt1, pt2;
 	CRect StartRect, EndRect;
+	if (OrderCellStart.IsValid() != TRUE)
+		return;
+	if (OrderCellEnd.IsValid() != TRUE)
+		return;
+
 	GetCellRect(OrderCellStart, StartRect);
 	GetCellRect(OrderCellEnd, EndRect);
 	pt1.x = StartRect.left + (StartRect.right - StartRect.left) / 2;

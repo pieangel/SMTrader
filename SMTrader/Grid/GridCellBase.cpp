@@ -710,9 +710,9 @@ void CGridCellBase::DrawMovingRect(CDC* pDC, CRect& rect)
 	pen.CreatePen(0, 1, RGB(255, 0, 0));
 	pOldPen = pDC->SelectObject(&pen);
 	pDC->MoveTo(rect.left, rect.top);
-	pDC->LineTo(rect.right, rect.top);
-	pDC->LineTo(rect.right, rect.bottom);
-	pDC->LineTo(rect.left, rect.bottom);
+	pDC->LineTo(rect.right + 1, rect.top);
+	pDC->LineTo(rect.right + 1, rect.bottom + 1);
+	pDC->LineTo(rect.left, rect.bottom + 1);
 	pDC->LineTo(rect.left, rect.top);
 
 	pDC->SelectObject(pOldPen);

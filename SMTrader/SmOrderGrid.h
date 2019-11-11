@@ -42,17 +42,19 @@ public:
 	void UnregisterOrderCallback();
 	void OnOrderEvent(const VtOrder* order);
 
-	// 컬럼 타이틀 설정
-	void SetColTitle(bool init);
-	
-	// 중간값 설정
-	void SetCenterValue(const VtSymbol*, std::set<std::pair<int, int>>& refreshSet);
-	void SetCenterValueByFixed(const VtSymbol* symbol, std::set<std::pair<int, int>>& refreshSet);
-	void Init();
 	VtOrderConfigManager* OrderConfigMgr() const { return _OrderConfigMgr; }
 	void OrderConfigMgr(VtOrderConfigManager* val) { _OrderConfigMgr = val; }
 	void SetCenterValue();
+	void RefreshAllValues();
+	void Init();
 private:
+	// 컬럼 타이틀 설정
+	void SetColTitle(bool init);
+
+	// 중간값 설정
+	void SetCenterValue(const VtSymbol*, std::set<std::pair<int, int>>& refreshSet);
+	void SetCenterValueByFixed(const VtSymbol* symbol, std::set<std::pair<int, int>>& refreshSet);
+
 	VtOrderConfigManager* _OrderConfigMgr = nullptr;
 	std::vector<COLORREF> BuyColor;
 	std::vector<COLORREF> SellColor;
@@ -129,6 +131,7 @@ private:
 
 	void SetOrderArea();
 
+
 public:
 	DECLARE_MESSAGE_MAP()
 	afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
@@ -152,15 +155,19 @@ private:
 	int _DragStartRow = 0;
 	
 	void DrawArrow(int direction, POINT *point, CDC* pdc, POINT p0, POINT p1, int head_length, int head_width);
-	int _OldMMRow = 0;
-	int _OldMMCol = 0;
+	//int _OldMMRow = 0;
+	//int _OldMMCol = 0;
 	BOOL m_bMouseTracking;
 	void CleanOldOrderLine(CCellID& cell);
 	void CleanOldOrderTrackLine(CCellID& cell);
 	void RedrawOrderTrackCells();
 	void AddStopOrder(int price, VtPositionType posi);
 	CCellID _OldClickedCell;
+	CCellID _OldMMCell;
+	CCellID _OldMovingCellCenter;
+	CCellID _OldMovingCellSide;
 	void InvalidateClickedCell();
+	void SetMovingCell(CCellID cell);
 public:
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 	afx_msg LRESULT OnMouseLeave(WPARAM wParam, LPARAM lParam);

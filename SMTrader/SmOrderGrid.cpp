@@ -73,6 +73,15 @@ SmOrderGrid::SmOrderGrid()
 	RegisterOrderallback();
 
 	m_bMouseTracking = FALSE;
+
+	_OldClickedCell.row = -1;
+	_OldClickedCell.col = -1;
+	_OldMMCell.row = -1;
+	_OldMMCell.col = -1;
+	_OldMovingCellCenter.row = -1;
+	_OldMovingCellCenter.col = -1;
+	_OldMovingCellSide.row = -1;
+	_OldMovingCellSide.col = -1;
 }
 
 
@@ -102,6 +111,7 @@ void SmOrderGrid::OnUpdateSise(const VtSymbol* symbol)
 	if (!symbol || _SymbolCode.compare(symbol->ShortCode) != 0)
 		return;
 	std::set<std::pair<int, int>> refreshSet;
+	ClearQuotes(refreshSet);
 	SetQuoteColor(symbol, refreshSet);
 	RefreshCells(refreshSet);
 }
@@ -258,7 +268,6 @@ void SmOrderGrid::SetCenterValue(const VtSymbol* symbol, std::set<std::pair<int,
 {
 	if (!symbol)
 		return;
-	ClearQuotes(refreshSet);
 
 	std::string code = symbol->ShortCode.substr(0, 1);
 	if ((code.compare(_T("2")) == 0) || (code.compare(_T("3")) == 0)) {
@@ -268,8 +277,6 @@ void SmOrderGrid::SetCenterValue(const VtSymbol* symbol, std::set<std::pair<int,
 	{
 		SetCenterValueForFuture(symbol, refreshSet);
 	}
-
-	SetQuoteColor(symbol, refreshSet);
 }
 
 void SmOrderGrid::SetCenterValue()
@@ -279,9 +286,14 @@ void SmOrderGrid::SetCenterValue()
 	if (symbol) {
 		std::set<std::pair<int, int>> refreshSet;
 		SetCenterValue(symbol, refreshSet);
+		ClearQuotes(refreshSet);
+		SetQuoteColor(symbol, refreshSet);
 
 		ClearHogas(refreshSet);
 		SetHogaInfo(symbol, refreshSet);
+		ClearOldOrders(refreshSet);
+		SetOrderInfo(refreshSet);
+
 		ClearOldOrders(refreshSet);
 		SetOrderInfo(refreshSet);
 		
@@ -317,9 +329,7 @@ void SmOrderGrid::ClearQuotes(std::set<std::pair<int, int>>& refreshSet)
 		refreshSet.insert(std::make_pair(pos.first, pos.second));
 		CGridCellBase* pCell = GetCell(pos.first, pos.second);
 		if (pCell) {
-			pCell->SetText("");
 			pCell->SetLabel("");
-			pCell->SetBackClr(RGB(255, 255, 255));
 		}
 	}
 }
@@ -628,6 +638,7 @@ void SmOrderGrid::SetQuoteColor(const VtSymbol* sym, std::set<std::pair<int, int
 	
 	_LowRow = FindRowFromCenterValue(sym, sym->Quote.intLow);
 	_HighRow = FindRowFromCenterValue(sym, sym->Quote.intHigh);
+	_CloseRow = FindRowFromCenterValue(sym, sym->Quote.intClose);
 	_OpenRow = FindRowFromCenterValue(sym, sym->Quote.intOpen);
 	_PreCloseRow = FindRowFromCenterValue(sym, sym->Quote.intPreClose);
 
@@ -875,7 +886,7 @@ void SmOrderGrid::CalcPosStopOrders(std::set<std::pair<int, int>>& refreshSet)
 	if (!_Symbol)
 		return;
 
-	ClearStopOrders();
+	ClearStopOrderVectors();
 	for (auto it = _StopOrderMgr->StopOrderMapHd.begin(); it != _StopOrderMgr->StopOrderMapHd.end(); ++it) {
 		HdOrderRequest* order = it->second;
 		int order_row = FindRowFromCenterValue(order->Price);
@@ -896,7 +907,7 @@ void SmOrderGrid::CalcPosStopOrders(std::set<std::pair<int, int>>& refreshSet)
 			slip_cell.row  < _StartRowForValue || slip_cell.row > _EndRowForValue)
 			continue;
 	
-		PutStopOrder(std::make_pair(order_cell, slip_cell));
+		PutStopOrderVector(std::make_pair(order_cell, slip_cell));
 
 		int min_row = min(order_cell.row, slip_cell.row);
 		int max_row = max(order_cell.row, slip_cell.row);
@@ -955,6 +966,31 @@ void SmOrderGrid::SetOrderArea()
 		pCell->SetBackClr(RGB(218, 226, 245));
 		pCell = GetCell(i, CenterCol + 3);
 		pCell->SetBackClr(RGB(252, 226, 228));
+	}
+}
+
+void SmOrderGrid::RefreshAllValues()
+{
+	VtSymbolManager* symMgr = VtSymbolManager::GetInstance();
+	VtSymbol* symbol = symMgr->FindSymbol(_SymbolCode);
+	if (symbol) {
+		std::set<std::pair<int, int>> refreshSet;
+		ClearQuotes(refreshSet);
+		SetQuoteColor(symbol, refreshSet);
+
+		ClearHogas(refreshSet);
+		SetHogaInfo(symbol, refreshSet);
+		ClearOldOrders(refreshSet);
+		SetOrderInfo(refreshSet);
+
+		ClearOldOrders(refreshSet);
+		SetOrderInfo(refreshSet);
+
+		ClearOldStopOrders(refreshSet);
+		SetStopOrderInfo(refreshSet);
+		CalcPosStopOrders(refreshSet);
+
+		RefreshCells(refreshSet);
 	}
 }
 
@@ -1058,8 +1094,7 @@ void SmOrderGrid::OnLButtonDown(UINT nFlags, CPoint point)
 		if (pCell->GetOrderCount() > 0 || pCell->GetStopOrderCount() > 0) {
 			GetCellRect(cell, _DragStartRect);
 			_OrderDragStarted = true;
-			OrderCellStart.col = cell.col;
-			OrderCellStart.row = cell.row;
+			OrderCellStart = cell;
 		}
 	}
 
@@ -1088,6 +1123,10 @@ void SmOrderGrid::OnLButtonUp(UINT nFlags, CPoint point)
 	}
 	
 	if (_OrderDragStarted) {
+		OrderCellStart.row = -1;
+		OrderCellStart.col = -1;
+		OrderCellEnd.row = -1;
+		OrderCellEnd.col = -1;
 		_OrderDragStarted = false;
 		Invalidate();
 	}
@@ -1184,15 +1223,15 @@ void SmOrderGrid::DrawArrow(int direction, POINT *point, CDC* pdc, POINT p0, POI
 void SmOrderGrid::CleanOldOrderLine(CCellID& cell)
 {
 	if (cell.col == _DragStartCol)
-		InvalidateCellRect(_OldMMRow, _OldMMCol);
+		InvalidateCellRect(_OldMMCell.row, _OldMMCell.col);
 	else if (cell.col > _DragStartCol) {
 		for (int i = cell.col; i >= _DragStartCol; --i) {
-			InvalidateCellRect(_OldMMRow, i);
+			InvalidateCellRect(_OldMMCell.row, i);
 		}
 	}
 	else {
 		for (int i = cell.col; i <= _DragStartCol; ++i) {
-			InvalidateCellRect(_OldMMRow, i);
+			InvalidateCellRect(_OldMMCell.row, i);
 		}
 	}
 }
@@ -1200,15 +1239,15 @@ void SmOrderGrid::CleanOldOrderLine(CCellID& cell)
 void SmOrderGrid::CleanOldOrderTrackLine(CCellID& cell)
 {
 	if (cell.col == _DragStartCol)
-		InvalidateCellRect(_OldMMRow, _OldMMCol);
+		InvalidateCellRect(_OldMMCell.row, _OldMMCell.col);
 	else if (cell.col > _DragStartCol) {
 		for (int i = cell.col; i >= _DragStartCol; --i) {
-			InvalidateCellRect(_OldMMRow, i);
+			InvalidateCellRect(_OldMMCell.row, i);
 		}
 	}
 	else {
 		for (int i = cell.col; i <= _DragStartCol; ++i) {
-			InvalidateCellRect(_OldMMRow, i);
+			InvalidateCellRect(_OldMMCell.row, i);
 		}
 	}
 	if (cell.row < _DragStartRow) {
@@ -1225,10 +1264,10 @@ void SmOrderGrid::CleanOldOrderTrackLine(CCellID& cell)
 
 void SmOrderGrid::RedrawOrderTrackCells()
 {
-	int min_col = std::min(_DragStartCol, _OldMMCol);
-	int max_col = std::max(_DragStartCol, _OldMMCol);
-	int min_row = std::min(_DragStartRow, _OldMMRow);
-	int max_row = std::max(_DragStartRow, _OldMMRow);
+	int min_col = std::min(_DragStartCol, _OldMMCell.col);
+	int max_col = std::max(_DragStartCol, _OldMMCell.col);
+	int min_row = std::min(_DragStartRow, _OldMMCell.row);
+	int max_row = std::max(_DragStartRow, _OldMMCell.row);
 	for (int i = min_row; i <= max_row; ++i) {
 		for (int j = min_col; j <= max_col; ++j) {
 			InvalidateCellRect(i, j);
@@ -1278,6 +1317,78 @@ void SmOrderGrid::InvalidateClickedCell()
 	_OldClickedCell.col = -1;
 }
 
+void SmOrderGrid::SetMovingCell(CCellID cell)
+{
+	if (_OldMovingCellCenter.IsValid() == TRUE) {
+		CGridCellBase* pCell = GetCell(_OldMovingCellCenter.row, _OldMovingCellCenter.col);
+		if (pCell) {
+			pCell->SetMoving(false);
+			InvalidateCellRect(_OldMovingCellCenter);
+		}
+	}
+
+	if (_OldMovingCellSide.IsValid() == TRUE) {
+		CGridCellBase* pCell = GetCell(_OldMovingCellSide.row, _OldMovingCellSide.col);
+		if (pCell) {
+			pCell->SetMoving(false);
+			InvalidateCellRect(_OldMovingCellSide);
+		}
+	}
+
+	switch (cell.col)
+	{
+	case CenterCol:
+		_OldMovingCellCenter = cell;
+		break;
+	case CenterCol - 4:
+		_OldMovingCellCenter.row = cell.row;
+		_OldMovingCellCenter.col = CenterCol;
+		_OldMovingCellSide.row = cell.row;
+		_OldMovingCellSide.col = CenterCol - 4;
+		break;
+	case CenterCol - 3:
+		_OldMovingCellCenter.row = cell.row;
+		_OldMovingCellCenter.col = CenterCol;
+		_OldMovingCellSide.row = cell.row;
+		_OldMovingCellSide.col = CenterCol - 3;
+		break;
+	case CenterCol + 3:
+		_OldMovingCellCenter.row = cell.row;
+		_OldMovingCellCenter.col = CenterCol;
+		_OldMovingCellSide.row = cell.row;
+		_OldMovingCellSide.col = CenterCol + 3;
+		break;
+	case CenterCol + 4:
+		_OldMovingCellCenter.row = cell.row;
+		_OldMovingCellCenter.col = CenterCol;
+		_OldMovingCellSide.row = cell.row;
+		_OldMovingCellSide.col = CenterCol + 4;
+			break;
+	default:
+		_OldMovingCellCenter.row = -1;
+		_OldMovingCellCenter.col = -1;
+		_OldMovingCellSide.row = -1;
+		_OldMovingCellSide.col = -1;
+		break;
+	}
+
+	if (_OldMovingCellCenter.IsValid() == TRUE) {
+		CGridCellBase* pCell = GetCell(_OldMovingCellCenter.row, _OldMovingCellCenter.col);
+		if (pCell) {
+			pCell->SetMoving(true);
+			InvalidateCellRect(_OldMovingCellCenter);
+		}
+	}
+
+	if (_OldMovingCellSide.IsValid() == TRUE) {
+		CGridCellBase* pCell = GetCell(_OldMovingCellSide.row, _OldMovingCellSide.col);
+		if (pCell) {
+			pCell->SetMoving(true);
+			InvalidateCellRect(_OldMovingCellSide);
+		}
+	}
+}
+
 void SmOrderGrid::OnMouseMove(UINT nFlags, CPoint point)
 {
 	if (!m_bMouseTracking)
@@ -1292,17 +1403,22 @@ void SmOrderGrid::OnMouseMove(UINT nFlags, CPoint point)
 		}
 	}
 
+	
+
+	CCellID cell = GetCellFromPt(point);
+	if (IsValid(cell) != TRUE) {
+		cell.row = _OldMMCell.row;
+		cell.col = _OldMMCell.col;
+	}
+
+	
+	SetMovingCell(cell);
+
+	_OldMMCell = cell;
+	OrderCellEnd = cell;
+
 	if (_OrderDragStarted) {
-		CCellID cell = GetCellFromPt(point);
-		if (IsValid(cell) != TRUE) {
-			cell.row = _OldMMRow;
-			cell.col = _OldMMCol;
-		}
 		Invalidate();
-		_OldMMRow = cell.row;
-		_OldMMCol = cell.col;
-		OrderCellEnd.col = cell.col;
-		OrderCellEnd.row = cell.row;
 	}
 
 	CGridCtrl::OnMouseMove(nFlags, point);
@@ -1311,6 +1427,9 @@ void SmOrderGrid::OnMouseMove(UINT nFlags, CPoint point)
 LRESULT SmOrderGrid::OnMouseLeave(WPARAM wParam, LPARAM lParam)
 {
 	m_bMouseTracking = FALSE;
-
+	CCellID cell;
+	cell.row = -1;
+	cell.col = -1;
+	SetMovingCell(cell);
 	return 1;
 }
