@@ -169,6 +169,7 @@ private:
 	CCellID _OldMovingCellSide;
 	void InvalidateClickedCell();
 	void SetMovingCell(CCellID cell);
+	void HandleButtonEvent(int button_id);
 public:
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 	afx_msg LRESULT OnMouseLeave(WPARAM wParam, LPARAM lParam);

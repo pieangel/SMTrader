@@ -1195,16 +1195,7 @@ void SmOrderGrid::OnLButtonDown(UINT nFlags, CPoint point)
 
 	SetCapture();
 	int nButtonID = FindButtonID(cell.row, cell.col);
-	if (nButtonID == -1)
-		CGridCtrl::OnLButtonDown(nFlags, point);
-	else {
-		if (nButtonID == 2) {
-			AfxMessageBox("시장가매도");
-		}
-		else {
-			AfxMessageBox("버튼이 눌렸습니다.");
-		}
-	}
+	HandleButtonEvent(nButtonID);
 }
 
 
@@ -1490,6 +1481,13 @@ void SmOrderGrid::SetMovingCell(CCellID cell)
 			InvalidateCellRect(_OldMovingCellSide);
 		}
 	}
+}
+
+void SmOrderGrid::HandleButtonEvent(int button_id)
+{
+	if (button_id == -1)
+		return;
+
 }
 
 void SmOrderGrid::OnMouseMove(UINT nFlags, CPoint point)
