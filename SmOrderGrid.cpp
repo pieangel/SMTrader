@@ -850,15 +850,18 @@ void SmOrderGrid::SetOrderInfo(std::set<std::pair<int, int>>& refreshSet)
 		VtOrder* order = *it;
 		if (order->amount == 0)
 			continue;
-		order->orderPosition == VtPositionType::Buy ? buy_count += order->amount : sell_count += order->amount;
+
 		int row = FindRowFromCenterValue(_Symbol, order->intOrderPrice);
+
 		if (row >= _StartRowForValue && row <= _EndRowForValue) {
+			
 			if (order->orderPosition == VtPositionType::Sell) {
 				pCell = GetCell(row, CenterCol - 3);
 				pCell->SetFormat(DT_LEFT | DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX);
 				pCell->AddOrder(order);
 				_OrderPos.insert(std::make_pair(row, CenterCol - 3));
 				refreshSet.insert(std::make_pair(row, CenterCol - 3));
+				sell_count += order->amount;
 			}
 			else if (order->orderPosition == VtPositionType::Buy) {
 				pCell = GetCell(row, CenterCol + 3);
@@ -866,6 +869,7 @@ void SmOrderGrid::SetOrderInfo(std::set<std::pair<int, int>>& refreshSet)
 				pCell->AddOrder(order);
 				_OrderPos.insert(std::make_pair(row, CenterCol + 3));
 				refreshSet.insert(std::make_pair(row, CenterCol + 3));
+				buy_count += order->amount;
 			}
 			// 주문 갯수 설정
 			strVal = fmt::format("{}", pCell->GetOrderCount());
@@ -911,15 +915,17 @@ void SmOrderGrid::SetStopOrderInfo(std::set<std::pair<int, int>>& refreshSet)
 	int buy_count = 0, sell_count = 0;
 	for (auto it = _StopOrderMgr->StopOrderMapHd.begin(); it != _StopOrderMgr->StopOrderMapHd.end(); ++it) {
 		HdOrderRequest* order = it->second;
-		order->Position == VtPositionType::Buy ? buy_count += order->Amount : sell_count += order->Amount;
 		int row = FindRowFromCenterValue(order->Price);
+		
 		if (row >= _StartRowForValue && row <= _EndRowForValue) {
+
 			if (order->Position == VtPositionType::Sell) {
 				pCell = GetCell(row, CenterCol - 4);
 				pCell->AddStopOrder(order);
 				pCell->SetFormat(DT_CENTER | DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX);
 				_StopOrderPos.insert(std::make_pair(row, CenterCol - 4));
 				refreshSet.insert(std::make_pair(row, CenterCol - 4));
+				sell_count += order->Amount;
 			}
 			else if (order->Position == VtPositionType::Buy) {
 				pCell = GetCell(row, CenterCol + 4);
@@ -927,6 +933,7 @@ void SmOrderGrid::SetStopOrderInfo(std::set<std::pair<int, int>>& refreshSet)
 				pCell->SetFormat(DT_CENTER | DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX);
 				_StopOrderPos.insert(std::make_pair(row, CenterCol + 4));
 				refreshSet.insert(std::make_pair(row, CenterCol + 4));
+				buy_count += order->Amount;
 			}
 			// 스탑 주문 갯수 설정
 			strVal = fmt::format("{}({})", pCell->GetStopOrderCount(), _StopOrderMgr->Slip());
@@ -1526,4 +1533,69 @@ LRESULT SmOrderGrid::OnMouseLeave(WPARAM wParam, LPARAM lParam)
 	cell.col = -1;
 	SetMovingCell(cell);
 	return 1;
+}
+
+void SmOrderGrid::ResizeGrid(int height)
+{
+
+}
+
+void SmOrderGrid::InitInfo()
+{
+
+}
+
+void SmOrderGrid::ClearAllStopOrders()
+{
+
+}
+
+void SmOrderGrid::ResetByCenterRow()
+{
+
+}
+
+void SmOrderGrid::LiqudAll(VtPriceType priceType, int price /*= 0*/)
+{
+
+}
+
+int SmOrderGrid::ShowHideOrderGrid(std::vector<bool>& colOptions)
+{
+	return 1;
+}
+
+void SmOrderGrid::SetOrderCellHeight(int value)
+{
+
+}
+
+void SmOrderGrid::SetOrderCellWidth(int value)
+{
+
+}
+
+void SmOrderGrid::SetOrderArea(int height, int width)
+{
+
+}
+
+int SmOrderGrid::GetMaxWidth()
+{
+	return 1;
+}
+
+void SmOrderGrid::ApplyProfitLossForPosition()
+{
+
+}
+
+int SmOrderGrid::GetGridWidth(std::vector<bool>& colOptions)
+{
+	return 1;
+}
+
+void SmOrderGrid::RefreshInfo()
+{
+
 }
