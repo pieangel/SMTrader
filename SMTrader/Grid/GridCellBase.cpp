@@ -705,7 +705,6 @@ void CGridCellBase::DrawMovingRect(CDC* pDC, CRect& rect)
 {
 	rect.DeflateRect(1, 1);
 	CPen pen;
-	CBrush brush1;   // Must initialize!
 	CPen* pOldPen = NULL;
 	pen.CreatePen(0, 1, RGB(255, 0, 0));
 	pOldPen = pDC->SelectObject(&pen);
@@ -722,7 +721,6 @@ void CGridCellBase::DrawSelectedgRect(CDC* pDC, CRect& rect)
 {
 	rect.DeflateRect(1, 1);
 	CPen pen;
-	CBrush brush1;   // Must initialize!
 	CPen* pOldPen = NULL;
 	pen.CreatePen(0, 2, RGB(0, 102, 51));
 	pOldPen = pDC->SelectObject(&pen);

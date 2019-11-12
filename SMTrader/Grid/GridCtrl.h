@@ -197,7 +197,9 @@ public:
     BOOL Create(const RECT& rect, CWnd* parent, UINT nID,
                 DWORD dwStyle = WS_CHILD | WS_BORDER | WS_TABSTOP | WS_VISIBLE);
 
-///////////////////////////////////////////////////////////////////////////////////
+	bool Selected() const { return _Selected; }
+	void Selected(bool val) { _Selected = val; }
+	///////////////////////////////////////////////////////////////////////////////////
 // Attributes
 ///////////////////////////////////////////////////////////////////////////////////
 public:
@@ -819,6 +821,7 @@ private:
 
 	std::vector<std::pair<CCellID, CCellID>> _StopOrderVector;
 	std::map<std::pair<int, int>, int> _ButtonMap;
+	bool _Selected = true;
 public:
 	int FindButtonID(int row, int col);
 	void RegisterButton(int id, int row, int col);

@@ -68,6 +68,6 @@ void SmOrderPanel::OnTimer(UINT_PTR nIDEvent)
 {
 	// TODO: Add your message handler code here and/or call default
 	//for(int i = 0; i < 100; ++i)
-		m_Grid.RefreshAllValues();
+	//	m_Grid.RefreshAllValues();
 	CDialogEx::OnTimer(nIDEvent);
 }

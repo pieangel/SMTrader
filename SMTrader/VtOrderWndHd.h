@@ -11,6 +11,7 @@
 #include "SimpleBinStream.h"
 //#include "TTComboBox.h"
 #include "ShadeButtonST.h"
+#include "SmOrderPanel.h"
 using same_endian_type = std::is_same<simple::LittleEndian, simple::LittleEndian>;
 
 using Poco::BasicEvent;
@@ -36,6 +37,7 @@ class VtLayoutManager;
 // VtOrderWndHd dialog
 const int StartWndID = 40000;
 const int LimitCenterWidth = 264;
+
 class VtOrderWndHd : public CDialog
 {
 	DECLARE_DYNAMIC(VtOrderWndHd)
@@ -81,6 +83,7 @@ private:
 	VtOrderLeftWndHd _LeftWnd;
 	VtOrderRightWndHd _RightWnd;
 	std::vector<VtOrderCenterWndHd*> _CenterWndVector;
+	//std::vector<SmOrderPanel*> _CenterWndVector;
 	std::map<VtRealTickWnd*, VtRealTickWnd*> _RealTickWndVector;
 	void Begin();
 	void End();

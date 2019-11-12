@@ -1619,6 +1619,28 @@ void CGridCtrl::OnDraw(CDC* pDC)
 	QueryPerformanceCounter(&iStartCount);
 #endif
 
+	CRect clientRect;
+	GetClientRect(clientRect);
+	// 배경색을 그린다.
+	{
+		CBrush brush1;   // Must initialize!
+		CPen* pOldPen = NULL;
+		CBrush* pTempBrush = NULL;
+		CBrush OrigBrush;
+		if (_Selected)
+			brush1.CreateSolidBrush(RGB(255, 255, 0));   // Blue brush.
+		else
+			brush1.CreateSolidBrush(RGB(255, 255, 255));   // Blue brush.
+		pTempBrush = (CBrush*)pDC->SelectObject(&brush1);
+		
+		pDC->FillRect(clientRect, pTempBrush);
+		// Save original brush.
+		OrigBrush.FromHandle((HBRUSH)pTempBrush);
+
+		// Reselect original brush into device context.
+		pDC->SelectObject(&OrigBrush);
+	}
+	
     CRect rect;
     int row, col;
     CGridCellBase* pCell;
@@ -1796,6 +1818,8 @@ void CGridCtrl::OnDraw(CDC* pDC)
     pen.CreatePen(PS_SOLID, 0, m_crGridLineColour);
     pDC->SelectObject(&pen);
 
+	// 그리드 라인은 셀 자체에서 그리는 방법으로 바꿈
+	/*
     // draw vertical lines (drawn at ends of cells)
     if (m_nGridLines == GVL_BOTH || m_nGridLines == GVL_VERT)
     {
@@ -1805,8 +1829,8 @@ void CGridCtrl::OnDraw(CDC* pDC)
             if (GetColumnWidth(col) <= 0) continue;
 
             x += GetColumnWidth(col);
-            //pDC->MoveTo(x-1, nFixedRowHeight);
-            //pDC->LineTo(x-1, VisRect.bottom);
+            pDC->MoveTo(x-1, nFixedRowHeight);
+            pDC->LineTo(x-1, VisRect.bottom);
         }
     }
 
@@ -1819,19 +1843,41 @@ void CGridCtrl::OnDraw(CDC* pDC)
             if (GetRowHeight(row) <= 0) continue;
 
             y += GetRowHeight(row);
-			//pDC->MoveTo(nFixedColWidth, y - 1);
-			//pDC->LineTo(VisRect.right, y - 1);
+			pDC->MoveTo(nFixedColWidth, y - 1);
+			pDC->LineTo(VisRect.right, y - 1);
         }
     }
+	*/
 
 	DrawStopOrders(pDC);
 
 	if (m_bLMouseButtonDown == TRUE && _OrderDragStarted) {
 		DrawOrderLine(pDC);
 	}
-	// 여기서 화면에 항상 나와야 하는 것을 그린다. 
-	// 주문 화살표, 스탑주문 화살표, 선택 사각형 등
-   pDC->SelectStockObject(NULL_PEN);
+	CString msg;
+	msg.Format("down = %d, drag = %d\n", m_bLMouseButtonDown, _OrderDragStarted);
+	TRACE(msg);
+
+
+	
+	// 테두리를 그린다.
+	{
+		CPen pen, *oldPen = NULL;
+		if (_Selected)
+			pen.CreatePen(PS_SOLID, 3, RGB(255, 0, 0));
+		else
+			pen.CreatePen(PS_SOLID, 1, RGB(0, 0, 0));
+
+		oldPen = pDC->SelectObject(&pen);
+		pDC->MoveTo(clientRect.left, clientRect.top);
+		pDC->LineTo(clientRect.right - 1, clientRect.top);
+		pDC->LineTo(clientRect.right - 1, clientRect.bottom - 1);
+		pDC->LineTo(clientRect.left, clientRect.bottom - 1);
+		pDC->LineTo(clientRect.left, clientRect.top);
+		pDC->SelectObject(oldPen);
+	}
+	
+	pDC->SelectStockObject(NULL_PEN);
 
     // Let parent know it can discard it's data if it needs to.
     if (GetVirtualMode())

@@ -1189,6 +1189,7 @@ void SmOrderGrid::OnLButtonDown(UINT nFlags, CPoint point)
 	SetCapture();
 	int nButtonID = FindButtonID(cell.row, cell.col);
 	HandleButtonEvent(nButtonID);
+	CGridCtrl::OnLButtonDown(nFlags, point);
 }
 
 
