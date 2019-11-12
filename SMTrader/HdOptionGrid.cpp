@@ -18,6 +18,7 @@
 #include "HdSymbolSelecter.h"
 #include "VtSignalConnectionGrid.h"
 #include "VtUsdStrategyConfigDlg.h"
+#include "SmOrderPanel.h"
 using Poco::NumberFormatter;
 
 HdOptionGrid::HdOptionGrid()

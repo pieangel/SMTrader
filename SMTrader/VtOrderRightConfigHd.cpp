@@ -7,6 +7,7 @@
 #include "afxdialogex.h"
 #include "VtOrderConfigManager.h"
 #include "VtOrderCenterWndHd.h"
+#include "SmOrderPanel.h"
 
 // VtOrderRightConfigHd dialog
 extern TApplicationFont g_Font;

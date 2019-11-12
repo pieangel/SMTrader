@@ -1162,7 +1162,7 @@ void VtOrderPanelGrid::OnDClicked(int col, long row, RECT *rect, POINT *point, B
 void VtOrderPanelGrid::OnLClicked(int col, long row, int updn, RECT *rect, POINT *point, int processed)
 {
 	if (_OrderConfigMgr && _OrderConfigMgr->_HdOrderWnd) {
-		_OrderConfigMgr->_HdOrderWnd->SetActiveCenterWnd(_CenterWnd);
+		; // _OrderConfigMgr->_HdOrderWnd->SetActiveCenterWnd(_CenterWnd);
 	}
 	SetFocus();
 

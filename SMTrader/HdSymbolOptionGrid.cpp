@@ -20,6 +20,7 @@
 #include "VtFund.h"
 #include "VtRealtimeRegisterManager.h"
 #include "VtGlobal.h"
+#include "SmOrderPanel.h"
 using Poco::NumberFormatter;
 
 HdSymbolOptionGrid::HdSymbolOptionGrid()

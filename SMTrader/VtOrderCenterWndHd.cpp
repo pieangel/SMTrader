@@ -457,7 +457,7 @@ BOOL VtOrderCenterWndHd::OnInitDialog()
 
 	_OrderPanelGrid.OrderConfigMgr(_OrderConfigMgr);
 	_TickGrid.SetOrderConfigMgr(_OrderConfigMgr);
-	_TickGrid.CenterWnd(this);
+	//_TickGrid.CenterWnd(this);
 	ShowHideCtrl();
 	RepositionProductGrid();
 
@@ -1490,7 +1490,7 @@ void VtOrderCenterWndHd::CreateChildWindow(VtOrderConfigDlg* centerWnd, UINT id,
 void VtOrderCenterWndHd::OnBnClickedButtonSetting()
 {
 	if (_ParentDlg) {
-		_ParentDlg->SetActiveCenterWnd(this);
+		//_ParentDlg->SetActiveCenterWnd(this);
 	}
 	ClearConfigDlg();
 	VtOrderGridConfig* grid = new VtOrderGridConfig();
@@ -2144,7 +2144,7 @@ void VtOrderCenterWndHd::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
 	if (_ParentDlg) {
-		_ParentDlg->SetActiveCenterWnd(this);
+		//_ParentDlg->SetActiveCenterWnd(this);
 	}
 	CDialogEx::OnLButtonDown(nFlags, point);
 }

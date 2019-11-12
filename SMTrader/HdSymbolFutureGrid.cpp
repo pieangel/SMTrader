@@ -24,6 +24,7 @@
 #include "Format/format.h"
 #include "XFormatNumber.h"
 #include "VtChartDataCollector.h"
+#include "SmOrderPanel.h"
 
 using Poco::NumberFormatter;
 HdSymbolFutureGrid::HdSymbolFutureGrid()

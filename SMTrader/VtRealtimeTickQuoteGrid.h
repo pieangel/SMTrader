@@ -5,6 +5,7 @@ struct VtQuote;
 class VtOrderConfigManager;
 class VtSymbol;
 class VtOrderCenterWndHd;
+class SmOrderPanel;
 class VtRealtimeTickQuoteGrid : public VtGrid
 {
 public:
@@ -30,8 +31,8 @@ public:
 	int MaxRow() const { return _MaxRow; }
 	void MaxRow(int val); // { _MaxRow = val; }
 	void ClearValues();
-	VtOrderCenterWndHd* CenterWnd() const { return _CenterWnd; }
-	void CenterWnd(VtOrderCenterWndHd* val) { _CenterWnd = val; }
+	SmOrderPanel* CenterWnd() const { return _CenterWnd; }
+	void CenterWnd(SmOrderPanel* val) { _CenterWnd = val; }
 	int GetGridWidth();
 private:
 	VtOrderConfigManager* _OrderConfigMgr = nullptr;
@@ -39,6 +40,6 @@ private:
 	int _MaxRow = 20;
 	int _CellHeight;
 	std::vector<int> _ColWidths;
-	VtOrderCenterWndHd* _CenterWnd = nullptr;
+	SmOrderPanel* _CenterWnd = nullptr;
 };
 

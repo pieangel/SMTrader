@@ -71,3 +71,93 @@ void SmOrderPanel::OnTimer(UINT_PTR nIDEvent)
 	//	m_Grid.RefreshAllValues();
 	CDialogEx::OnTimer(nIDEvent);
 }
+
+void SmOrderPanel::InitAll()
+{
+
+}
+
+void SmOrderPanel::Activated(bool flag)
+{
+
+}
+
+void SmOrderPanel::ResetByCenterRow()
+{
+
+}
+
+void SmOrderPanel::ChangeFocus()
+{
+
+}
+
+int SmOrderPanel::GetWindowWidth()
+{
+	return 800;
+}
+
+void SmOrderPanel::RefreshLayout(bool flag)
+{
+
+}
+
+int SmOrderPanel::GetMaxWidth()
+{
+	return 800;
+}
+
+void SmOrderPanel::AdjustControlForMode()
+{
+
+}
+
+void SmOrderPanel::RepositionControl(int height)
+{
+
+}
+
+void SmOrderPanel::ResizeOrderGrid(int maxHeight)
+{
+
+}
+
+void SmOrderPanel::ResizeOrderGrid()
+{
+
+}
+
+int SmOrderPanel::GetCountOrderGridEnabledCol()
+{
+	return 1;
+}
+
+bool SmOrderPanel::ShowTickWnd()
+{
+	return true;
+}
+
+void SmOrderPanel::ChangeAccount(VtAccount* acnt)
+{
+
+}
+
+void SmOrderPanel::ChangeFund(VtFund* fund)
+{
+
+}
+
+void SmOrderPanel::Save(simple::file_ostream<same_endian_type>& ss)
+{
+
+}
+
+void SmOrderPanel::Load(simple::file_istream<same_endian_type>& ss)
+{
+
+}
+
+void SmOrderPanel::ChangeSymbol(VtSymbol* symbol)
+{
+
+}

@@ -82,8 +82,8 @@ private:
 	VtFund* _Fund = nullptr;
 	VtOrderLeftWndHd _LeftWnd;
 	VtOrderRightWndHd _RightWnd;
-	std::vector<VtOrderCenterWndHd*> _CenterWndVector;
-	//std::vector<SmOrderPanel*> _CenterWndVector;
+	//std::vector<VtOrderCenterWndHd*> _CenterWndVector;
+	std::vector<SmOrderPanel*> _CenterWndVector;
 	std::map<VtRealTickWnd*, VtRealTickWnd*> _RealTickWndVector;
 	void Begin();
 	void End();
@@ -122,7 +122,7 @@ public:
 	void GetOptionSymbolMaster();
 	void OnOutstanding();
 	void AddWindow();
-	VtOrderCenterWndHd* AddWindow(CRect& rcWnd);
+	SmOrderPanel* AddWindow(CRect& rcWnd);
 	void RemoveWindow();
 	void RecalcLayout(bool fixed, int maxHeight = 0);
 	void ResizeWnd(int maxHeight);
@@ -146,7 +146,7 @@ public:
 	{
 		_OrderWindowEvent(this, arg);
 	}
-	void SetActiveCenterWnd(VtOrderCenterWndHd* centerWnd);
+	void SetActiveCenterWnd(SmOrderPanel* centerWnd);
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
@@ -154,7 +154,7 @@ public:
 
 private:
 	bool _Sizing = false;
-	void CreateChildWindow(VtOrderCenterWndHd* centerWnd, UINT id, CWnd* parent);
+	void CreateChildWindow(SmOrderPanel* centerWnd, UINT id, CWnd* parent);
 	void SetControlPositionsOnLeft(int left);
 	void SetControlPositionsOnRight(int right);
 	CRect GetLastCenterWindowPos();

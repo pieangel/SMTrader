@@ -130,7 +130,7 @@ void VtOrderWndHd::Begin()
 void VtOrderWndHd::End()
 {
 	for (auto it = _CenterWndVector.begin(); it != _CenterWndVector.end(); ++it) {
-		VtOrderCenterWndHd* centerWnd = *it;
+		SmOrderPanel* centerWnd = *it;
 		centerWnd->DestroyWindow();
 		delete centerWnd;
 	}
@@ -264,7 +264,7 @@ BOOL VtOrderWndHd::OnInitDialog()
 
 	_ComboAcnt.SetDroppedWidth(150);
 
-	VtOrderCenterWndHd* centerWnd = _CenterWndVector.front();
+	SmOrderPanel* centerWnd = _CenterWndVector.front();
 	centerWnd->Activated(true);
 	_OrderConfigMgr->_HdCenterWnd = centerWnd;
 
@@ -344,7 +344,7 @@ void VtOrderWndHd::RepositionChildWindowsByReverse(int winWidth)
 
 	int right = rcChild.left;
 	for (auto it = _CenterWndVector.rbegin(); it != _CenterWndVector.rend(); ++it) {
-		VtOrderCenterWndHd* centerWnd = *it;
+		SmOrderPanel* centerWnd = *it;
 		rcChild.top = CenterTop;
 		rcChild.bottom = _WindowHeight - CenterTop;
 		rcChild.left = right - centerWnd->GetWindowWidth();
@@ -417,19 +417,19 @@ int VtOrderWndHd::GetTitleBarHeight()
 void VtOrderWndHd::CreateChildWindows()
 {
 	if (_CenterWndVector.size() == 0) { // 주문창이 하나도 없을 때 기본을 하나 생성해서 목록에 넣는다.
-		VtOrderCenterWndHd* centerWnd = new VtOrderCenterWndHd();
+		SmOrderPanel* centerWnd = new SmOrderPanel();
 		centerWnd->ParentDlg(this);
 		centerWnd->OrderConfigMgr(_OrderConfigMgr);
-		centerWnd->Create(IDD_ORDER_CENTER_HD, this);
+		centerWnd->Create(IDD_ORDER_PANEL, this);
 		_CenterWndVector.push_back(centerWnd);
 		//_CenterWndCount = _CenterWndVector.size();
 	}
 	else { // 주문창 객체가 외부에서 만들어 질때
 		for (auto it = _CenterWndVector.begin(); it != _CenterWndVector.end(); ++it) {
-			VtOrderCenterWndHd* centerWnd = *it;
+			SmOrderPanel* centerWnd = *it;
 			centerWnd->ParentDlg(this);
 			centerWnd->OrderConfigMgr(_OrderConfigMgr);
-			centerWnd->Create(IDD_ORDER_CENTER_HD, this);
+			centerWnd->Create(IDD_ORDER_PANEL, this);
 		}
 	}
 
@@ -447,10 +447,10 @@ void VtOrderWndHd::CreateChildWindows(std::vector<CRect>& rcVec)
 void VtOrderWndHd::AddWindow()
 {
 	_EnableOnSizeEvent = false;
-	VtOrderCenterWndHd* centerWnd = new VtOrderCenterWndHd();
+	SmOrderPanel* centerWnd = new SmOrderPanel();
 	centerWnd->ParentDlg(this);
 	centerWnd->OrderConfigMgr(_OrderConfigMgr);
-	centerWnd->Create(IDD_ORDER_CENTER_HD, this);
+	centerWnd->Create(IDD_ORDER_PANEL, this);
 	centerWnd->ShowWindow(SW_HIDE);
 	SetActiveCenterWnd(centerWnd);
 	_OrderConfigMgr->_HdCenterWnd = centerWnd;
@@ -461,16 +461,16 @@ void VtOrderWndHd::AddWindow()
 	_EnableOnSizeEvent = true;
 }
 
-VtOrderCenterWndHd* VtOrderWndHd::AddWindow(CRect& rcWnd)
+SmOrderPanel* VtOrderWndHd::AddWindow(CRect& rcWnd)
 {
-	VtOrderCenterWndHd* centerWnd = nullptr;
-	centerWnd = new VtOrderCenterWndHd();
+	SmOrderPanel* centerWnd = nullptr;
+	centerWnd = new SmOrderPanel();
 	centerWnd->x = rcWnd.left;
 	centerWnd->y = 0;
 	centerWnd->width = rcWnd.Width();
 	centerWnd->height = rcWnd.Height();
 	_CenterWndVector.push_back(centerWnd);
-	CreateChildWindow(centerWnd, IDD_ORDER_CENTER_HD, this);
+	CreateChildWindow(centerWnd, IDD_ORDER_PANEL, this);
 	SetActiveCenterWnd(centerWnd);
 	centerWnd->OrderConfigMgr(_OrderConfigMgr);
 	if (_OrderConfigMgr) {
@@ -488,7 +488,7 @@ void VtOrderWndHd::RemoveWindow()
 		return;
 	}
 	auto it = std::prev(_CenterWndVector.end());
-	VtOrderCenterWndHd* centerWnd = *it;
+	SmOrderPanel* centerWnd = *it;
 	bool curCenterWnd = false;
 	if (_OrderConfigMgr && centerWnd == _OrderConfigMgr->_HdCenterWnd)
 		curCenterWnd = true;
@@ -552,7 +552,7 @@ void VtOrderWndHd::RecalcLayout(bool fixed, int maxHeight)
 	int centerWidth = 0;
 	for (auto it = _CenterWndVector.begin(); it != _CenterWndVector.end(); ++it)
 	{
-		VtOrderCenterWndHd* curWnd = *it;
+		SmOrderPanel* curWnd = *it;
 	
 		curWnd->GetWindowRect(rcTemp);
 		ScreenToClient(rcTemp);
@@ -636,7 +636,7 @@ void VtOrderWndHd::ResizeWnd(int maxHeight)
 
 	for (auto it = _CenterWndVector.begin(); it != _CenterWndVector.end(); ++it)
 	{
-		VtOrderCenterWndHd* curWnd = *it;
+		SmOrderPanel* curWnd = *it;
 		rect.left = left;
 		rect.top = VtGlobal::CenterWndYPos;
 		rect.right = rect.left + curWnd->GetMaxWidth();
@@ -721,7 +721,7 @@ void VtOrderWndHd::ShowHideCtrl()
 	if ( _CenterWndVector.size() == 0)
 		return;
 	if (_CenterWndVector.size() == 1) {
-		VtOrderCenterWndHd* centerWnd = _CenterWndVector.front();
+		SmOrderPanel* centerWnd = _CenterWndVector.front();
 		int optionCnt = centerWnd->GetCountOrderGridEnabledCol();
 		if (optionCnt == 0) {
 			_BtnGetAcntInfo.ShowWindow(SW_HIDE);
@@ -827,7 +827,7 @@ void VtOrderWndHd::ShowHideCtrl()
 	}
 }
 
-void VtOrderWndHd::SetActiveCenterWnd(VtOrderCenterWndHd* centerWnd)
+void VtOrderWndHd::SetActiveCenterWnd(SmOrderPanel* centerWnd)
 {
 	if (_OrderConfigMgr && _OrderConfigMgr->_HdCenterWnd == centerWnd)
 		return;
@@ -842,7 +842,7 @@ void VtOrderWndHd::RemoveLastWindow()
 	if (_CenterWndVector.size() == 1)
 		return;
 
-	VtOrderCenterWndHd* centerWnd = _CenterWndVector[_CenterWndVector.size() - 1];
+	SmOrderPanel* centerWnd = _CenterWndVector[_CenterWndVector.size() - 1];
 	if (centerWnd)
 	{
 		centerWnd->DestroyWindow();
@@ -1084,9 +1084,9 @@ void VtOrderWndHd::OnReceiveHoga(VtSymbol* sym)
 	if (!sym)
 		return;
 	VtOrderCenterWndHd* centerWnd = nullptr;
-	for (auto it = _CenterWndVector.begin(); it != _CenterWndVector.end(); ++it) {
-		(*it)->OnReceiveHoga(sym);
-	}
+	//for (auto it = _CenterWndVector.begin(); it != _CenterWndVector.end(); ++it) {
+	//	(*it)->OnReceiveHoga(sym);
+	//}
 }
 
 void VtOrderWndHd::OnReceiveQuote(VtSymbol* sym)
@@ -1109,16 +1109,16 @@ void VtOrderWndHd::OnReceiveAccountInfo()
 
 void VtOrderWndHd::OnReceiveMsg(CString msg)
 {
-	for (auto it = _CenterWndVector.begin(); it != _CenterWndVector.end(); ++it) {
-		(*it)->OnReceiveMsg(msg);
-	}
+	//for (auto it = _CenterWndVector.begin(); it != _CenterWndVector.end(); ++it) {
+	//	(*it)->OnReceiveMsg(msg);
+	//}
 }
 
 void VtOrderWndHd::OnReceiveMsgWithReqId(int id, CString msg)
 {
-	for (auto it = _CenterWndVector.begin(); it != _CenterWndVector.end(); ++it) {
-		(*it)->OnReceiveMsgWithReqId(id, msg);
-	}
+	//for (auto it = _CenterWndVector.begin(); it != _CenterWndVector.end(); ++it) {
+	//	(*it)->OnReceiveMsgWithReqId(id, msg);
+	//}
 }
 
 void VtOrderWndHd::GetOptionSymbolMaster()
@@ -1183,7 +1183,7 @@ void VtOrderWndHd::OnSizing(UINT fwSide, LPRECT pRect)
 
 }
 
-void VtOrderWndHd::CreateChildWindow(VtOrderCenterWndHd* centerWnd, UINT id, CWnd* parent)
+void VtOrderWndHd::CreateChildWindow(SmOrderPanel* centerWnd, UINT id, CWnd* parent)
 {
 	if (!centerWnd || !parent)
 		return;
@@ -1270,7 +1270,7 @@ void VtOrderWndHd::SetControlPositionsOnRight(int right)
 CRect VtOrderWndHd::GetLastCenterWindowPos()
 {
 	CRect rcWnd;
-	VtOrderCenterWndHd* centerWnd = _CenterWndVector.back();
+	SmOrderPanel* centerWnd = _CenterWndVector.back();
 	centerWnd->GetWindowRect(rcWnd);
 	ScreenToClient(rcWnd);
 	return rcWnd;
@@ -1407,7 +1407,7 @@ void VtOrderWndHd::OnCbnSelchangeComboAccountHd()
 			_StaticAcntName.SetWindowText(_OrderConfigMgr->Account()->AccountName.c_str());
 
 			for (auto it = _CenterWndVector.begin(); it != _CenterWndVector.end(); ++it) {
-				VtOrderCenterWndHd* centerWnd = *it;
+				SmOrderPanel* centerWnd = *it;
 				centerWnd->ChangeAccount(_OrderConfigMgr->Account());
 			}
 			if (acnt->AccountLevel() == 0 && acnt->hasValidPassword()) {
@@ -1442,7 +1442,7 @@ void VtOrderWndHd::OnCbnSelchangeComboAccountHd()
 				RegisterRealtimeAccount(parentAcnt);
 			}
 			for (auto it = _CenterWndVector.begin(); it != _CenterWndVector.end(); ++it) {
-				VtOrderCenterWndHd* centerWnd = *it;
+				SmOrderPanel* centerWnd = *it;
 				centerWnd->ChangeFund(_OrderConfigMgr->Fund());
 			}
 		}
@@ -1543,7 +1543,7 @@ void VtOrderWndHd::Save(simple::file_ostream<same_endian_type>& ss)
 		ss << (int)_CenterWndVector.size();
 
 		for (auto it = _CenterWndVector.begin(); it != _CenterWndVector.end(); ++it) {
-			VtOrderCenterWndHd* centerWnd = *it;
+			SmOrderPanel* centerWnd = *it;
 			centerWnd->GetWindowRect(rcWnd);
 			ScreenToClient(rcWnd);
 			// 중앙창 위치 및 크기 저장
@@ -1600,7 +1600,7 @@ void VtOrderWndHd::Load(simple::file_istream<same_endian_type>& ss)
 		CString msg;
 		msg.Format(_T("load :: left = %d, top = %d, right = %d, bottom = %d, width = %d, height = %d \n"), rcWnd.left, rcWnd.top, rcWnd.right, rcWnd.bottom, rcWnd.Width(), rcWnd.Height());
 
-		VtOrderCenterWndHd* centerWnd = new VtOrderCenterWndHd();
+		SmOrderPanel* centerWnd = new SmOrderPanel();
 		// 중앙창 모든 옵션 복원
 		centerWnd->Load(ss);
 		// 중앙창 목록에 추가
@@ -1783,7 +1783,7 @@ int VtOrderWndHd::GetTotalCenterWidth()
 	// 중앙창 너비를 모두 합한다.
 	// 중앙창은 반드시 모든 옵션이 설정되거나 로드된 상태여야 한다.
 	for (auto it = _CenterWndVector.begin(); it != _CenterWndVector.end(); ++it) {
-		VtOrderCenterWndHd* centerWnd = *it;
+		SmOrderPanel* centerWnd = *it;
 		totalWidth += centerWnd->GetWindowWidth();
 	}
 
@@ -1827,7 +1827,7 @@ void VtOrderWndHd::RecalChildWindows()
 	int left = _ShowLeftWnd ? _LeftWnd.DefaultWidth() : 0;
 	int totalCenterWndWidth = 0;
 	for (auto it = _CenterWndVector.begin(); it != _CenterWndVector.end(); ++it) {
-		VtOrderCenterWndHd* centerWnd = *it;
+		SmOrderPanel* centerWnd = *it;
 		totalCenterWndWidth += centerWnd->GetWindowWidth();
 		rcChild.top = CenterTop;
 		rcChild.bottom = _WindowHeight - CenterTop;

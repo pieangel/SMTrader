@@ -19,6 +19,7 @@ class VtOrderRightWndHd;
 class VtOrderCenterWndHd;
 class VtOrderWndHd;
 class VtFund;
+class SmOrderPanel;
 enum class VtSpaceByOrderType
 {
 	NONE = 0,
@@ -144,7 +145,8 @@ public:
 
 	VtOrderLeftWndHd* _HdLeftWnd = nullptr;
 	VtOrderRightWndHd* _HdRightWnd = nullptr;
-	VtOrderCenterWndHd* _HdCenterWnd = nullptr;
+	//VtOrderCenterWndHd* _HdCenterWnd = nullptr;
+	SmOrderPanel* _HdCenterWnd = nullptr;
 	VtOrderWndHd*       _HdOrderWnd = nullptr;
 
 	void SetDefaultSymbol();

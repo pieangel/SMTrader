@@ -15,6 +15,7 @@
 #include "HdSymbolSelecter.h"
 #include "VtSignalConnectionGrid.h"
 #include "VtAddConnectSignalDlg.h"
+#include "SmOrderPanel.h"
 using Poco::NumberFormatter;
 
 HdFutureGrid::HdFutureGrid()
