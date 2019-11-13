@@ -25,6 +25,12 @@ SmOrderPanel::~SmOrderPanel()
 {
 }
 
+void SmOrderPanel::OrderConfigMgr(VtOrderConfigManager* val)
+{
+	_OrderConfigMgr = val;
+	m_Grid.OrderConfigMgr(val);
+}
+
 void SmOrderPanel::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
@@ -160,4 +166,24 @@ void SmOrderPanel::Load(simple::file_istream<same_endian_type>& ss)
 void SmOrderPanel::ChangeSymbol(VtSymbol* symbol)
 {
 
+}
+
+
+void SmOrderPanel::UnregisterOrderWnd()
+{
+	m_Grid.UnregisterHogaCallback();
+	m_Grid.UnregisterOrderCallback();
+	m_Grid.UnregisterQuoteCallback();
+}
+
+BOOL SmOrderPanel::PreTranslateMessage(MSG* pMsg)
+{
+	if (pMsg->message == WM_KEYDOWN) {
+		if (pMsg->wParam == VK_SPACE ) {
+			m_Grid.OrderBySpaceBar();
+			return TRUE;
+		}
+	}
+
+	return CDialogEx::PreTranslateMessage(pMsg);
 }

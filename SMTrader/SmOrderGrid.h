@@ -20,6 +20,7 @@ class VtSymbol;
 class VtAccount;
 class VtOrderConfigManager;
 class VtStopOrderManager;
+struct VtPosition;
 class SmOrderGrid : public CGridCtrl
 {
 public:
@@ -47,6 +48,8 @@ public:
 	void SetCenterValue();
 	void RefreshAllValues();
 	void Init();
+	// 스페이스바 주문
+	void OrderBySpaceBar();
 private:
 	// 컬럼 타이틀 설정
 	void SetColTitle(bool init);
@@ -132,7 +135,14 @@ private:
 
 	void SetOrderAreaColor();
 
-
+	// 포지션 표시
+	void SetPositionInfo(std::set<std::pair<int, int>>& refreshSet);
+	// 포지션 없애기
+	void ClearPositionInfo(std::set<std::pair<int, int>>& refreshSet);
+	void ShowPosition(std::set<std::pair<int, int>>& refreshSet, VtPosition* posi, VtSymbol* sym);
+	
+	void OrderByMouseClick();
+	void OrderByMousePosition();
 public:
 	DECLARE_MESSAGE_MAP()
 	afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
@@ -148,8 +158,9 @@ public:
 	afx_msg void OnMove(int x, int y);
 	afx_msg void OnRButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
-
+	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
 private:
+	bool _MouseIn = true;
 	CRect _DragStartRect;
 	CRect _DragEndRect;
 	int _DragStartCol = 0;
@@ -159,22 +170,30 @@ private:
 	//int _OldMMRow = 0;
 	//int _OldMMCol = 0;
 	BOOL m_bMouseTracking;
-	void CleanOldOrderLine(CCellID& cell);
-	void CleanOldOrderTrackLine(CCellID& cell);
 	void RedrawOrderTrackCells();
 	void AddStopOrder(int price, VtPositionType posi);
 	CCellID _OldClickedCell;
 	CCellID _OldMMCell;
 	CCellID _OldMovingCellCenter;
 	CCellID _OldMovingCellSide;
+	CCellID _OldPositionCell;
 	void InvalidateClickedCell();
 	void SetMovingCell(CCellID cell);
 	void HandleButtonEvent(int button_id);
+	void ChangeOrder(VtOrder* order, int newPrice);
+	void CancelOrder(VtOrder* order);
+	void ChangeOrder();
+	void ChangeStopOrder();
+	void CancelOrder();
 public:
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 	afx_msg LRESULT OnMouseLeave(WPARAM wParam, LPARAM lParam);
 
 private:
 	VtStopOrderManager* _StopOrderMgr = nullptr;
+	int FindPositionRow(VtPosition* posi);
+public:
+	afx_msg void OnClose();
+	afx_msg void OnDestroy();
 };
 

@@ -1854,10 +1854,6 @@ void CGridCtrl::OnDraw(CDC* pDC)
 	if (m_bLMouseButtonDown == TRUE && _OrderDragStarted) {
 		DrawOrderLine(pDC);
 	}
-	CString msg;
-	msg.Format("down = %d, drag = %d\n", m_bLMouseButtonDown, _OrderDragStarted);
-	TRACE(msg);
-
 
 	
 	// 테두리를 그린다.

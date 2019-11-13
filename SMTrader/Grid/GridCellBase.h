@@ -118,6 +118,9 @@ public:
 	virtual void SetClicked(bool) = 0;
 	virtual bool GetClicked() const = 0;
 
+	virtual void SetPosition(int position) = 0;
+	virtual int GetPosition() const = 0;
+
 	virtual void SetLabel(LPCTSTR /* szText */) = 0;
 	virtual LPCTSTR    GetLabel()       const = 0;
 
@@ -198,6 +201,13 @@ public:
 	void RemoveStopOrder(int reqNo);
 	void ClearStopOrders();
 	int GetStopOrderCount();
+	std::map<int, VtOrder*>& GetOrderMap() {
+		return OrderMap;
+	}
+	std::map<int, HdOrderRequest*>& GetStopOrderMap() {
+		return StopOrderMap;
+	}
+	
 protected:
     DWORD    m_nState;      // Cell state (selected/focus etc)
 	std::map<int, VtOrder*> OrderMap;
@@ -213,6 +223,8 @@ protected:
 	int _MergeEndCol;
 	bool _MovingRect = false;
 	bool _Clicked = false;
+	// 포지션 정보 0 : None, 1 : buy, 2 : sell.
+	int _Position = 0;
 };
 
 //{{AFX_INSERT_LOCATION}}

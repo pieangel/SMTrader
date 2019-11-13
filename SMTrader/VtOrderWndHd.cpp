@@ -256,6 +256,7 @@ BOOL VtOrderWndHd::OnInitDialog()
 
 	for (auto it = _CenterWndVector.begin(); it != _CenterWndVector.end(); ++it) {
 		(*it)->InitAll();
+		(*it)->OrderConfigMgr(_OrderConfigMgr);
 	}
 
 	if (_OrderConfigMgr && _OrderConfigMgr->_HdRightWnd) {
@@ -856,12 +857,12 @@ void VtOrderWndHd::RemoveLastWindow()
 
 void VtOrderWndHd::OnClose()
 {
-	// TODO: Add your message handler code here and/or call default
-	//if (_OrderConfigMgr && _OrderConfigMgr->_HdCenterWnd)
-	//{
-	//	_OrderConfigMgr->_HdCenterWnd->UnregisterOrderWnd();
-	//	_OrderConfigMgr->_HdCenterWnd->UnregisterSymbolWnd();
-	//}
+	for (auto it = _CenterWndVector.begin(); it != _CenterWndVector.end(); ++it)
+	{
+		SmOrderPanel* curWnd = *it;
+		curWnd->UnregisterOrderWnd();
+	}
+	
 	CDialog::OnClose();
 	VtOrderWndEventArgs arg;
 	arg.pOrderWnd = this;

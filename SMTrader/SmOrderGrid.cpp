@@ -128,7 +128,7 @@ void SmOrderGrid::UnregisterHogaCallback()
 
 void SmOrderGrid::OnUpdateHoga(const VtSymbol* symbol)
 {
-	if (!symbol || _SymbolCode.compare(symbol->ShortCode) != 0)
+ 	if (!symbol || _SymbolCode.compare(symbol->ShortCode) != 0)
 		return;
 	std::set<std::pair<int, int>> refreshSet;
 	ClearHogas(refreshSet);
@@ -154,6 +154,8 @@ void SmOrderGrid::OnOrderEvent(const VtOrder* order)
 	std::set<std::pair<int, int>> refreshSet;
 	ClearOldOrders(refreshSet);
 	SetOrderInfo(refreshSet);
+	ClearPositionInfo(refreshSet);
+	SetPositionInfo(refreshSet);
 	RefreshCells(refreshSet);
 }
 
@@ -161,6 +163,9 @@ void SmOrderGrid::Init()
 {
 	_defFont.CreateFont(12, 0, 0, 0, 500, 0, 0, 0, 0, 0, 0, 0, 0, _T("±¼¸²"));
 	_Init = false;
+
+	_OldPositionCell.row = -1;
+	_OldPositionCell.col = -1;
 
 	_GridColMap[SmOrderGridCol::STOP] = 48;
 	_GridColMap[SmOrderGridCol::ORDER] = 60;
@@ -295,6 +300,9 @@ void SmOrderGrid::SetCenterValue()
 		ClearOldStopOrders(refreshSet);
 		SetStopOrderInfo(refreshSet);
 		CalcPosStopOrders(refreshSet);
+
+		ClearPositionInfo(refreshSet);
+		SetPositionInfo(refreshSet);
 
 		RefreshCells(refreshSet);
 	}
@@ -1055,6 +1063,129 @@ void SmOrderGrid::SetOrderAreaColor()
 	pCell->SetBackClr(RGB(252, 226, 228));
 }
 
+void SmOrderGrid::SetPositionInfo(std::set<std::pair<int, int>>& refreshSet)
+{
+	if (!_Symbol || !_OrderConfigMgr)
+		return;
+	if (_OrderConfigMgr->Type() == 0)
+	{
+		VtAccount* acnt = _OrderConfigMgr->Account();
+		if (!acnt)
+			return;
+		VtPosition* posi = acnt->FindPosition(_Symbol->ShortCode);
+		ShowPosition(refreshSet, posi, _Symbol);
+	}
+	else
+	{
+		VtFund* fund = _OrderConfigMgr->Fund();
+		if (!fund)
+			return;
+		int count = 0;
+		VtPosition posi = fund->GetPosition(_Symbol->ShortCode, count);
+		if (count == 0)
+			ShowPosition(refreshSet, nullptr, _Symbol);
+		else
+			ShowPosition(refreshSet, &posi, _Symbol);
+	}
+}
+
+void SmOrderGrid::ClearPositionInfo(std::set<std::pair<int, int>>& refreshSet)
+{
+	if (_OldPositionCell.IsValid() == TRUE) {
+		CGridCellBase* pCell = GetCell(_OldPositionCell.row, _OldPositionCell.col);
+		pCell->SetPosition(0);
+		refreshSet.insert(std::make_pair(_OldPositionCell.row, _OldPositionCell.col));
+		_OldPositionCell.row = -1;
+		_OldPositionCell.col = -1;
+	}
+}
+
+void SmOrderGrid::ShowPosition(std::set<std::pair<int, int>>& refreshSet, VtPosition* posi, VtSymbol* sym)
+{
+	if (!sym)
+		return;
+
+	if (!posi || posi->OpenQty == 0 || posi->Position == VtPositionType::None) {
+		return;
+	}
+
+	int position_row = FindPositionRow(posi);
+	CCellID cell;
+	cell.row = position_row;
+	cell.col = CenterCol;
+	if (cell.IsValid() == TRUE) {
+		CGridCellBase* pCell = GetCell(cell.row, cell.col);
+		posi->Position == VtPositionType::Buy ? pCell->SetPosition(1) : pCell->SetPosition(2);
+		refreshSet.insert(std::make_pair(cell.row, cell.col));
+		_OldPositionCell = cell;
+	}
+}
+
+void SmOrderGrid::OrderBySpaceBar()
+{
+	if (_MouseIn) {
+		if (_OrderConfigMgr->UseSpaceBarOrder) {
+			if (_OrderConfigMgr->SpaceBarorderType == VtSpaceByOrderType::ByMouseClick) {
+				OrderByMouseClick();
+			}
+			else if (_OrderConfigMgr->SpaceBarorderType == VtSpaceByOrderType::ByMousePositon) {
+				OrderByMousePosition();
+			}
+		}
+		else {
+			int newCenter = FindCenterRow();
+			//SetCenterRow(newCenter);
+			//ChangeCenter(_CloseRow, newCenter);
+		}
+	}
+}
+
+void SmOrderGrid::OrderByMouseClick()
+{
+	if (_OldClickedCell.IsValid() == FALSE)
+		return;
+	auto it = RowToValueMap.find(_OldClickedCell.row);
+	int price = it->second;
+
+	if (_OldClickedCell.col == CenterCol - 3) {
+		PutOrder(price, VtPositionType::Sell, VtPriceType::Price);
+	}
+	else if (_OldClickedCell.col == CenterCol + 3) {
+		PutOrder(price, VtPositionType::Buy, VtPriceType::Price);
+	}
+	else if (_OldClickedCell.col == CenterCol - 4) {
+		AddStopOrder(price, VtPositionType::Sell);
+	}
+	else if (_OldClickedCell.col == CenterCol + 4) {
+		AddStopOrder(price, VtPositionType::Buy);
+	}
+}
+
+void SmOrderGrid::OrderByMousePosition()
+{
+	if (_OldMMCell.IsValid() == FALSE)
+		return;
+	auto it = RowToValueMap.find(_OldMMCell.row);
+	int price = it->second;
+
+	if (_OldMMCell.col == CenterCol - 3)
+	{
+		PutOrder(price, VtPositionType::Sell, VtPriceType::Price);
+	}
+	else if (_OldMMCell.col == CenterCol + 3)
+	{
+		PutOrder(price, VtPositionType::Buy, VtPriceType::Price);
+	}
+	else if (_OldMMCell.col == CenterCol - 4)
+	{
+		AddStopOrder(price, VtPositionType::Sell);
+	}
+	else if (_OldMMCell.col == CenterCol + 4)
+	{
+		AddStopOrder(price, VtPositionType::Buy);
+	}
+}
+
 void SmOrderGrid::RefreshAllValues()
 {
 	VtSymbolManager* symMgr = VtSymbolManager::GetInstance();
@@ -1090,6 +1221,8 @@ BEGIN_MESSAGE_MAP(SmOrderGrid, CGridCtrl)
 	ON_WM_RBUTTONUP()
 	ON_WM_MOUSEMOVE()
 	ON_MESSAGE(WM_MOUSELEAVE, OnMouseLeave)
+	ON_WM_CLOSE()
+	ON_WM_DESTROY()
 END_MESSAGE_MAP()
 
 
@@ -1198,11 +1331,38 @@ void SmOrderGrid::OnLButtonUp(UINT nFlags, CPoint point)
 	CCellID cell = GetCellFromPt(point);
 	if (IsValid(cell) == TRUE) {
 		if (_OrderDragStarted) {
-			CleanOldOrderTrackLine(cell);
+			Invalidate();
 		}
 	}
 	
 	if (_OrderDragStarted) {
+		OrderCellEnd = cell;
+		if (OrderCellStart.row == cell.row &&
+			OrderCellStart.col ==cell.col) {
+			OrderCellStart.row = -1;
+			OrderCellStart.col = -1;
+			OrderCellEnd.row = -1;
+			OrderCellEnd.col = -1;
+			_OrderDragStarted = false;
+			return;
+			}
+
+		if (OrderCellEnd.col == CenterCol - 3 && OrderCellStart.col == CenterCol - 3) {
+			ChangeOrder();
+		}
+		else if (OrderCellEnd.col == CenterCol + 3 && OrderCellStart.col == CenterCol + 3) {
+			ChangeOrder();
+		}
+		else if (OrderCellEnd.col == CenterCol - 4 && OrderCellStart.col == CenterCol - 4) {
+			ChangeStopOrder();
+		}
+		else if (OrderCellEnd.col == CenterCol + 4 && OrderCellStart.col == CenterCol + 4) {
+			ChangeStopOrder();
+		}
+		else {
+			CancelOrder();
+		}
+
 		OrderCellStart.row = -1;
 		OrderCellStart.col = -1;
 		OrderCellEnd.row = -1;
@@ -1225,15 +1385,47 @@ void SmOrderGrid::OnRButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
 
-	CGridCtrl::OnRButtonDown(nFlags, point);
+	//CGridCtrl::OnRButtonDown(nFlags, point);
 }
 
 
 void SmOrderGrid::OnRButtonUp(UINT nFlags, CPoint point)
 {
-	// TODO: Add your message handler code here and/or call default
+	CCellID cell = GetCellFromPt(point);
+	CGridCellBase* pSrcCell = GetCell(cell.row, cell.col);
+	if (pSrcCell->GetOrderCount() > 0) {
+		std::map<int, VtOrder*>& orderMap = pSrcCell->GetOrderMap();
+		for (auto it = orderMap.begin(); it != orderMap.end(); ++it) {
+			VtOrder* order = it->second;
+			CancelOrder(order);
+		}
+		pSrcCell->ClearOrders();
+	}
 
-	CGridCtrl::OnRButtonUp(nFlags, point);
+	if (pSrcCell->GetStopOrderCount() > 0) {
+		std::map<int, HdOrderRequest*>& stopOrderMap = pSrcCell->GetStopOrderMap();
+		for (auto it = stopOrderMap.begin(); it != stopOrderMap.end(); ++it) {
+			_StopOrderMgr->RemoveOrderHd(it->first);
+		}
+
+		pSrcCell->ClearStopOrders();
+		std::set<std::pair<int, int>> refreshSet;
+		ClearOldStopOrders(refreshSet);
+		SetStopOrderInfo(refreshSet);
+		CalcPosStopOrders(refreshSet);
+		RefreshCells(refreshSet);
+	}
+	
+	//CGridCtrl::OnRButtonUp(nFlags, point);
+}
+
+void SmOrderGrid::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
+{
+	if (nChar == VK_SPACE) {
+		AfxMessageBox("space clicked");
+	}
+
+	CGridCtrl::OnKeyDown(nChar, nRepCnt, nFlags);
 }
 
 void SmOrderGrid::DrawArrow(int direction, POINT *point, CDC* pdc, POINT p0, POINT p1, int head_length, int head_width)
@@ -1299,48 +1491,6 @@ void SmOrderGrid::DrawArrow(int direction, POINT *point, CDC* pdc, POINT p0, POI
 	pdc->SelectObject(&OrigBrush);
 }
 
-
-void SmOrderGrid::CleanOldOrderLine(CCellID& cell)
-{
-	if (cell.col == _DragStartCol)
-		InvalidateCellRect(_OldMMCell.row, _OldMMCell.col);
-	else if (cell.col > _DragStartCol) {
-		for (int i = cell.col; i >= _DragStartCol; --i) {
-			InvalidateCellRect(_OldMMCell.row, i);
-		}
-	}
-	else {
-		for (int i = cell.col; i <= _DragStartCol; ++i) {
-			InvalidateCellRect(_OldMMCell.row, i);
-		}
-	}
-}
-
-void SmOrderGrid::CleanOldOrderTrackLine(CCellID& cell)
-{
-	if (cell.col == _DragStartCol)
-		InvalidateCellRect(_OldMMCell.row, _OldMMCell.col);
-	else if (cell.col > _DragStartCol) {
-		for (int i = cell.col; i >= _DragStartCol; --i) {
-			InvalidateCellRect(_OldMMCell.row, i);
-		}
-	}
-	else {
-		for (int i = cell.col; i <= _DragStartCol; ++i) {
-			InvalidateCellRect(_OldMMCell.row, i);
-		}
-	}
-	if (cell.row < _DragStartRow) {
-		for (int i = cell.row; i <= _DragStartRow; ++i) {
-			InvalidateCellRect(i, _DragStartCol);
-		}
-	}
-	else if (cell.row > _DragStartCol) {
-		for (int i = _DragStartRow; i <= cell.row; ++i) {
-			InvalidateCellRect(i, _DragStartCol);
-		}
-	}
-}
 
 void SmOrderGrid::RedrawOrderTrackCells()
 {
@@ -1415,6 +1565,9 @@ void SmOrderGrid::SetMovingCell(CCellID cell)
 		}
 	}
 
+	if (cell.IsValid() == FALSE)
+		return;
+
 	switch (cell.col)
 	{
 	case CenterCol:
@@ -1484,8 +1637,243 @@ void SmOrderGrid::HandleButtonEvent(int button_id)
 
 }
 
+void SmOrderGrid::ChangeOrder(VtOrder* order, int newPrice)
+{
+	if (!order)
+		return;
+
+	if (!_OrderConfigMgr || !_OrderConfigMgr->OrderMgr())
+		return;
+	if (_OrderConfigMgr->Type() == 0)
+	{
+		if (!_OrderConfigMgr->Account())
+			return;
+		VtAccount* acnt = _OrderConfigMgr->Account();
+
+		HdOrderRequest request;
+		request.Price = newPrice;
+		request.Position = order->orderPosition;
+		request.Amount = order->amount;
+		request.RequestType = order->RequestType;
+
+		if (acnt->AccountLevel() == 0)
+		{
+			request.AccountNo = acnt->AccountNo;
+			request.Password = acnt->Password;
+		}
+		else
+		{
+			VtAccount* parentAcnt = acnt->ParentAccount();
+			if (parentAcnt)
+			{
+				request.AccountNo = parentAcnt->AccountNo;
+				request.Password = parentAcnt->Password;
+			}
+		}
+		request.SymbolCode = order->shortCode;
+		request.FillCondition = VtFilledCondition::Fas;
+		request.PriceType = VtPriceType::Price;
+		request.OrderNo = order->orderNo;
+		request.RequestId = _OrderConfigMgr->OrderMgr()->GetOrderRequestID();
+		request.SourceId = (long)this;
+		if (acnt->AccountLevel() == 0)
+		{
+			request.SubAccountNo = order->SubAccountNo;
+			request.FundName = order->FundName;
+		}
+		else
+			request.SubAccountNo = acnt->AccountNo;
+
+		request.orderType = VtOrderType::Change;
+
+		_OrderConfigMgr->OrderMgr()->ChangeOrder(std::move(request));
+	}
+	else
+	{
+		if (_OrderConfigMgr->Fund())
+		{
+			VtSubAccountManager* subAcntMgr = VtSubAccountManager::GetInstance();
+			VtAccount* subAcnt = subAcntMgr->FindAccount(order->SubAccountNo);
+			if (!subAcnt)
+				return;
+			VtAccount* parentAcnt = subAcnt->ParentAccount();
+			if (!parentAcnt)
+				return;
+
+			HdOrderRequest request;
+			request.RequestType = order->RequestType;
+			request.Price = newPrice;
+			request.Position = order->orderPosition;
+			request.Amount = order->amount;
+			request.AccountNo = parentAcnt->AccountNo;
+			request.Password = parentAcnt->Password;
+			request.SymbolCode = order->shortCode;
+			request.FillCondition = _CenterWnd->FillCondition();
+			request.PriceType = _CenterWnd->PriceType();
+			request.OrderNo = order->orderNo;
+			request.RequestId = _OrderConfigMgr->OrderMgr()->GetOrderRequestID();
+			request.SourceId = (long)this;
+			request.SubAccountNo = subAcnt->AccountNo;
+			request.FundName = _OrderConfigMgr->Fund()->Name;
+			request.orderType = VtOrderType::Change;
+
+			_OrderConfigMgr->OrderMgr()->ChangeOrder(std::move(request));
+		}
+	}
+}
+
+void SmOrderGrid::ChangeOrder()
+{
+	CGridCellBase* pSrcCell = GetCell(OrderCellStart.row, OrderCellStart.col);
+	if (pSrcCell->GetOrderCount() > 0) {
+		auto it = RowToValueMap.find(OrderCellEnd.row);
+		int price = it->second;
+		std::map<int, VtOrder*>& orderMap = pSrcCell->GetOrderMap();
+		for (auto it = orderMap.begin(); it != orderMap.end(); ++it) {
+			VtOrder* order = it->second;
+			ChangeOrder(order, price);
+		}
+
+		pSrcCell->ClearOrders();
+	}
+}
+
+void SmOrderGrid::ChangeStopOrder()
+{
+	CGridCellBase* pSrcCell = GetCell(OrderCellStart.row, OrderCellStart.col);
+	CGridCellBase* pTgtCell = GetCell(OrderCellEnd.row, OrderCellEnd.col);
+	if (pSrcCell->GetStopOrderCount() > 0) {
+		auto it = RowToValueMap.find(OrderCellEnd.row);
+		int price = it->second;
+		std::map<int, HdOrderRequest*>& stopOrderMap = pSrcCell->GetStopOrderMap();
+		for (auto it = stopOrderMap.begin(); it != stopOrderMap.end(); ++it) {
+			HdOrderRequest* order = it->second;
+			order->Price = price;
+		}
+		std::set<std::pair<int, int>> refreshSet;
+		ClearOldStopOrders(refreshSet);
+		SetStopOrderInfo(refreshSet);
+		CalcPosStopOrders(refreshSet);
+		RefreshCells(refreshSet);
+	}
+}
+
+void SmOrderGrid::CancelOrder(VtOrder* order)
+{
+	if (!order || !_OrderConfigMgr || !_OrderConfigMgr->OrderMgr())
+		return;
+
+	if (_OrderConfigMgr->Type() == 0)
+	{
+		if (!_OrderConfigMgr->Account())
+			return;
+
+		if (!_OrderConfigMgr->Account())
+			return;
+		VtAccount* acnt = _OrderConfigMgr->Account();
+
+		HdOrderRequest request;
+		request.Price = order->intOrderPrice;
+		request.Position = order->orderPosition;
+		request.Amount = order->amount;
+		request.RequestType = order->RequestType;
+
+		if (acnt->AccountLevel() == 0)
+		{
+			request.AccountNo = acnt->AccountNo;
+			request.Password = acnt->Password;
+		}
+		else
+		{
+			VtAccount* parentAcnt = acnt->ParentAccount();
+			if (parentAcnt)
+			{
+				request.AccountNo = parentAcnt->AccountNo;
+				request.Password = parentAcnt->Password;
+			}
+		}
+		request.SymbolCode = order->shortCode;
+		request.FillCondition = VtFilledCondition::Fas;
+		request.PriceType = VtPriceType::Price;
+		request.OrderNo = order->orderNo;
+		request.RequestId = _OrderConfigMgr->OrderMgr()->GetOrderRequestID();
+		request.SourceId = (long)this;
+		if (acnt->AccountLevel() == 0)
+		{
+			request.SubAccountNo = order->SubAccountNo;
+			request.FundName = order->FundName;
+		}
+		else
+			request.SubAccountNo = acnt->AccountNo;
+
+		request.orderType = VtOrderType::Cancel;
+
+		_OrderConfigMgr->OrderMgr()->CancelOrder(std::move(request));
+	}
+	else
+	{
+		if (_OrderConfigMgr->Fund())
+		{
+			VtSubAccountManager* subAcntMgr = VtSubAccountManager::GetInstance();
+			VtAccount* subAcnt = subAcntMgr->FindAccount(order->SubAccountNo);
+			if (!subAcnt)
+				return;
+			VtAccount* parentAcnt = subAcnt->ParentAccount();
+			if (!parentAcnt)
+				return;
+
+			HdOrderRequest request;
+			request.RequestType = order->RequestType;
+			request.Price = order->intOrderPrice;
+			request.Position = order->orderPosition;
+			request.Amount = order->amount;
+			request.AccountNo = parentAcnt->AccountNo;
+			request.Password = parentAcnt->Password;
+			request.SymbolCode = order->shortCode;
+			request.FillCondition = VtFilledCondition::Fas;
+			request.PriceType = VtPriceType::Price;
+			request.OrderNo = order->orderNo;
+			request.RequestId = _OrderConfigMgr->OrderMgr()->GetOrderRequestID();
+			request.SourceId = (long)this;
+			request.SubAccountNo = subAcnt->AccountNo;
+			request.FundName = _OrderConfigMgr->Fund()->Name;
+			request.orderType = VtOrderType::Cancel;
+
+			_OrderConfigMgr->OrderMgr()->CancelOrder(std::move(request));
+		}
+	}
+}
+
+void SmOrderGrid::CancelOrder()
+{
+	CGridCellBase* pSrcCell = GetCell(OrderCellStart.row, OrderCellStart.col);
+	if (pSrcCell->GetOrderCount() > 0) {
+		std::map<int, VtOrder*>& orderMap = pSrcCell->GetOrderMap();
+		for (auto it = orderMap.begin(); it != orderMap.end(); ++it) {
+			VtOrder* order = it->second;
+			CancelOrder(order);
+		}
+		pSrcCell->ClearOrders();
+	}
+
+	if (pSrcCell->GetStopOrderCount() > 0) {
+		std::map<int, HdOrderRequest*>& stopOrderMap = pSrcCell->GetStopOrderMap();
+		for (auto it = stopOrderMap.begin(); it != stopOrderMap.end(); ++it) {
+			_StopOrderMgr->RemoveOrderHd(it->first);
+		}
+		pSrcCell->ClearStopOrders();
+		std::set<std::pair<int, int>> refreshSet;
+		ClearOldStopOrders(refreshSet);
+		SetStopOrderInfo(refreshSet);
+		CalcPosStopOrders(refreshSet);
+		RefreshCells(refreshSet);
+	}
+}
+
 void SmOrderGrid::OnMouseMove(UINT nFlags, CPoint point)
 {
+	_MouseIn = true;
+
 	if (!m_bMouseTracking)
 	{
 		TRACKMOUSEEVENT tme;
@@ -1501,12 +1889,7 @@ void SmOrderGrid::OnMouseMove(UINT nFlags, CPoint point)
 	
 
 	CCellID cell = GetCellFromPt(point);
-	if (IsValid(cell) != TRUE) {
-		cell.row = _OldMMCell.row;
-		cell.col = _OldMMCell.col;
-	}
-
-	
+		
 	SetMovingCell(cell);
 
 	_OldMMCell = cell;
@@ -1521,10 +1904,49 @@ void SmOrderGrid::OnMouseMove(UINT nFlags, CPoint point)
 
 LRESULT SmOrderGrid::OnMouseLeave(WPARAM wParam, LPARAM lParam)
 {
+	_MouseIn = false;
 	m_bMouseTracking = FALSE;
 	CCellID cell;
 	cell.row = -1;
 	cell.col = -1;
 	SetMovingCell(cell);
 	return 1;
+}
+
+
+int SmOrderGrid::FindPositionRow(VtPosition* posi)
+{
+	if (!posi || ValueToRowMap.size() == 0)
+		return -1;
+
+	VtSymbol* sym = VtSymbolManager::GetInstance()->FindSymbol(posi->ShortCode);
+	if (!sym)
+		return -1;
+
+	int intAvg = static_cast<int>(ROUNDING(posi->AvgPrice * std::pow(10, sym->IntDecimal), sym->IntDecimal));
+	intAvg = intAvg - intAvg % sym->intTickSize;
+
+	auto it = ValueToRowMap.find(intAvg);
+	if (it != ValueToRowMap.end())
+		return it->second;
+	else
+		return -1;
+}
+
+void SmOrderGrid::OnClose()
+{
+	int i = 0;
+	i = i + 1;
+	//UnregisterQuoteCallback();
+
+	CGridCtrl::OnClose();
+}
+
+
+void SmOrderGrid::OnDestroy()
+{
+	UnregisterQuoteCallback();
+	CGridCtrl::OnDestroy();
+
+	// TODO: Add your message handler code here
 }

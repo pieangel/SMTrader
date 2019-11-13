@@ -31,7 +31,7 @@ public:
 #endif
 
 	VtOrderConfigManager* OrderConfigMgr() const { return _OrderConfigMgr; }
-	void OrderConfigMgr(VtOrderConfigManager* val) { _OrderConfigMgr = val; }
+	void OrderConfigMgr(VtOrderConfigManager* val);
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
@@ -63,8 +63,11 @@ public:
 	void Save(simple::file_ostream<same_endian_type>& ss);
 	void Load(simple::file_istream<same_endian_type>& ss);
 	void ChangeSymbol(VtSymbol* symbol);
+	void UnregisterOrderWnd();
 private:
 	VtOrderWndHd* _ParentDlg = nullptr;
 	VtOrderConfigManager* _OrderConfigMgr = nullptr;
 
+public:
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
 };

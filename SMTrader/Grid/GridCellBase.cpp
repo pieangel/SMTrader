@@ -121,11 +121,12 @@ BOOL CGridCellBase::Draw(CDC* pDC, int nRow, int nCol, CRect rect,  BOOL bEraseB
     CGridCtrl* pGrid = GetGrid();
     ASSERT(pGrid);
 
-	CRect closeRect, borderRect, btnRect, moveRect;
+	CRect closeRect, borderRect, btnRect, moveRect, posiRect;
 	closeRect.CopyRect(&rect);
 	borderRect.CopyRect(&rect);
 	btnRect.CopyRect(&rect);
 	moveRect.CopyRect(&rect);
+	posiRect.CopyRect(&rect);
 
     if (!pGrid || !pDC)
         return FALSE;
@@ -500,6 +501,44 @@ BOOL CGridCellBase::Draw(CDC* pDC, int nRow, int nCol, CRect rect,  BOOL bEraseB
 		tempRect.top = tempRect.top + 4;
 		tempRect.left = tempRect.right - 10;
 		pDC->ExtTextOut(tempRect.left, tempRect.top, ETO_CLIPPED, tempRect, GetLabel(), NULL);
+	}
+
+	// 포지션 표시
+	if (_Position == 1 || _Position == 2)
+	{
+		CRect tempRect;
+		int halfY = (posiRect.bottom - posiRect.top) / 2;
+		CBrush brush1;   // Must initialize!
+		CBrush* pTempBrush = NULL;
+		CBrush OrigBrush;
+		if (_Position == 1)
+		{
+			brush1.CreateSolidBrush(RGB(255, 0, 0));
+
+			tempRect.top = posiRect.top + halfY - 5;
+			tempRect.left = posiRect.right - 17;
+			tempRect.right = posiRect.right - 4;
+			tempRect.bottom = posiRect.bottom - halfY + 7;
+		}
+		else if (_Position == 2)
+		{
+			brush1.CreateSolidBrush(RGB(0, 0, 255));
+
+			tempRect.top = posiRect.top + halfY - 5;
+			tempRect.left = posiRect.left + 4;
+			tempRect.right = posiRect.left + 17;
+			tempRect.bottom = posiRect.bottom - halfY + 7;
+		}
+		
+		tempRect.DeflateRect(1, 1);
+		pTempBrush = (CBrush*)pDC->SelectObject(&brush1);
+		// Save original brush.
+		OrigBrush.FromHandle((HBRUSH)pTempBrush);
+
+		pDC->SelectObject(&brush1);
+		pDC->Ellipse(tempRect);
+		pDC->SetBkMode(OPAQUE);
+		pDC->SelectObject(&OrigBrush);
 	}
 
     pDC->RestoreDC(nSavedDC);
