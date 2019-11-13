@@ -5,6 +5,7 @@
 #include <set>
 #include <functional>
 #include "Global/VtDefine.h"
+#include <memory>
 
 //m_Pen.CreatePen(PS_SOLID, 1, RGB(0, 255, 255));
 enum class SmOrderGridCol {
@@ -190,7 +191,7 @@ public:
 	afx_msg LRESULT OnMouseLeave(WPARAM wParam, LPARAM lParam);
 
 private:
-	VtStopOrderManager* _StopOrderMgr = nullptr;
+	std::shared_ptr<VtStopOrderManager> _StopOrderMgr = nullptr;
 	int FindPositionRow(VtPosition* posi);
 public:
 	afx_msg void OnClose();

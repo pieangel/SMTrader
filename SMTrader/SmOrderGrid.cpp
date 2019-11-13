@@ -87,6 +87,7 @@ SmOrderGrid::SmOrderGrid()
 
 SmOrderGrid::~SmOrderGrid()
 {
+	
 }
 
 
@@ -223,7 +224,7 @@ void SmOrderGrid::Init()
 	// 매수스탑 취소
 	RegisterButton(9, _EndRowForValue + 2, CenterCol + 4, RGB(252, 190, 190), "ST취소");
 
-	_StopOrderMgr = new VtStopOrderManager();
+	_StopOrderMgr = std::make_shared<VtStopOrderManager>();
 	SetFont(&_defFont);
 	SetOrderAreaColor();
 	SetCenterValue();
