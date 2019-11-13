@@ -193,6 +193,9 @@ void SmOrderGrid::Init()
 	EnableSelection(FALSE);
 	SetEditable(FALSE);
 	EnableTitleTips(FALSE);
+	SetColumnResize(FALSE);
+	SetRowResize(FALSE);
+	AllowReorderColumn(false);
 
 	_Account = VtAccountManager::GetInstance()->FindAddAccount("00162001");
 	_Symbol = VtSymbolManager::GetInstance()->FindSymbol(_SymbolCode);
@@ -764,7 +767,7 @@ void SmOrderGrid::SetQuoteColor(const VtSymbol* sym, std::set<std::pair<int, int
 			}
 			else if (it->second < _LowRow + 1) {
 				CGridCellBase* pCell = GetCell(it->second, CenterCol);
-				pCell->SetBackClr(RGB(255, 255, 255));
+				pCell->SetBackClr(RGB(255, 255, 255)); 
 			}
 			else {
 				CGridCellBase* pCell = GetCell(it->second, CenterCol);
@@ -1635,7 +1638,7 @@ void SmOrderGrid::HandleButtonEvent(int button_id)
 {
 	if (button_id == -1)
 		return;
-
+	AfxMessageBox("Button Clicked");
 }
 
 void SmOrderGrid::ChangeOrder(VtOrder* order, int newPrice)

@@ -6339,8 +6339,8 @@ void CGridCtrl::OnLButtonDown(UINT nFlags, CPoint point)
     else if (IsCellSelected(m_LeftClickDownCell))
     {
 		// 버튼이 아닐때만 선택하게 한다.
-		if (FindButtonID(m_LeftClickDownCell.row, m_LeftClickDownCell.col) > 0)
-			SetFocusCell(m_LeftClickDownCell.row, m_LeftClickDownCell.col);
+		//if (FindButtonID(m_LeftClickDownCell.row, m_LeftClickDownCell.col) > 0)
+		//	SetFocusCell(m_LeftClickDownCell.row, m_LeftClickDownCell.col);
 
         // If control is pressed then unselect the cell or row (depending on the list mode)
         if (nFlags & MK_CONTROL)
@@ -6360,6 +6360,7 @@ void CGridCtrl::OnLButtonDown(UINT nFlags, CPoint point)
     else if (m_MouseMode != MOUSE_OVER_COL_DIVIDE &&
              m_MouseMode != MOUSE_OVER_ROW_DIVIDE)        
     {
+		/*
 		if (m_LeftClickDownCell.row >= GetFixedRowCount() && 
 			m_LeftClickDownCell.col >= GetFixedColumnCount())
 		{
@@ -6369,7 +6370,8 @@ void CGridCtrl::OnLButtonDown(UINT nFlags, CPoint point)
 		}
 		else
 			SetFocusCell(-1, -1);
-
+		*/
+		SetFocusCell(-1, -1);
 		//Don't set focus on any cell if the user clicked on a fixed cell - David Pritchard
         //if (GetRowCount() > GetFixedRowCount() && 
         //    GetColumnCount() > GetFixedColumnCount())
