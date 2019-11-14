@@ -3,7 +3,7 @@
 #include <numeric>
 #include "VtGlobal.h"
 #include "VtOrderCenterWndHd.h"
-
+#include "SmOrderPanel.h"
 VtConfigGrid::VtConfigGrid()
 {
 }

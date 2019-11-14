@@ -11,6 +11,7 @@
 #include "VtLayoutManager.h"
 #include "VtGlobal.h"
 #include "VtCutManager.h"
+#include "SmOrderPanel.h"
 using Poco::NumberParser;
 
 // VtOrderConfigDlg dialog

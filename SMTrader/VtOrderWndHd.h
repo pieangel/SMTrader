@@ -208,7 +208,7 @@ private:
 	int _YPos = 0;
 	int _WindowWidth = 823;
 	int _WindowHeight = 0;
-	int _DefaultHeight = 750;
+	int _DefaultHeight = 1000;
 	void CalcLayout();
 	int GetTotalCenterWidth();
 	void RepositionControl();

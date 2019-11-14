@@ -3354,8 +3354,9 @@ void CGridCtrl::ResetScrollBars()
     
     if (VisibleRect.Height() < VirtualRect.Height())
     {
-        EnableScrollBars(SB_VERT, TRUE); 
-        m_nVScrollMax = VirtualRect.Height() - 1;
+        //EnableScrollBars(SB_VERT, TRUE); 
+        //m_nVScrollMax = VirtualRect.Height() - 1;
+		m_nVScrollMax = 0;
     }
     else
     {
@@ -3365,8 +3366,9 @@ void CGridCtrl::ResetScrollBars()
 
     if (VisibleRect.Width() < VirtualRect.Width())
     {
-        EnableScrollBars(SB_HORZ, TRUE); 
-        m_nHScrollMax = VirtualRect.Width() - 1;
+        //EnableScrollBars(SB_HORZ, TRUE); 
+        //m_nHScrollMax = VirtualRect.Width() - 1;
+		m_nHScrollMax = 0;
     }
     else
     {
@@ -3390,6 +3392,7 @@ void CGridCtrl::ResetScrollBars()
     */
 
     // New code - Paul Runstedler 
+	
     SCROLLINFO si;
     si.cbSize = sizeof(SCROLLINFO);
     si.fMask = SIF_PAGE | SIF_RANGE;
@@ -7864,6 +7867,22 @@ void CGridCtrl::MergeCells(int start_row, int start_col, int end_row, int end_co
 				else {
 					pCell->SetMerged(1);
 				}
+			}
+		}
+	}
+}
+
+void CGridCtrl::RestoreCells(int start_row, int start_col, int end_row, int end_col)
+{
+	for (int i = start_row; i <= end_row; ++i) {
+		for (int j = start_col; j <= end_col; ++j) {
+			CGridCellBase* pCell = GetCell(i, j);
+			if (pCell) {
+				pCell->SetMerged(0);
+				pCell->MergeStartRow(-1);
+				pCell->MergeEndRow(-1);
+				pCell->MergeStartCol(-1);
+				pCell->MergeEndCol(-1);
 			}
 		}
 	}

@@ -31,9 +31,9 @@ class VtOrderGridConfig;
 class VtFund;
 class VtCutManager;
 class VtLayoutManager;
-const int ConfigHeight = 94;
-const int ConfigWidth = 480;
-const int TickWndWidth = 155;
+const int SmConfigHeight = 94;
+const int SmConfigWidth = 480;
+const int SmTickWndWidth = 155;
 class VtRefreshManager;
 class VtOrderCenterWndHd : public CDialogEx
 {
@@ -274,6 +274,8 @@ public:
 	afx_msg void OnStnClickedStaticOrderPanel();
 	afx_msg void OnRClicked(NMHDR * pNotifyStruct, LRESULT * result);
 	afx_msg void OnStnClickedStaticRealTick();
+	afx_msg void OnBnClickedBtnRemainFund();
+
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 public:
 	bool _ShowOrderArea = true;
@@ -327,7 +329,6 @@ public:
 		return _OrderPanelGrid.CutMgr();
 	}
 	int GetCountOrderGridEnabledCol();
-	afx_msg void OnBnClickedBtnRemainFund();
 	void ResetRemainFund();
 	void CalcLayout();
 	void RefreshLayout(bool recalGrid = false);

@@ -73,7 +73,7 @@ VtOrderCenterWndHd::VtOrderCenterWndHd(CWnd* pParent )
 	_GridGap = 0;
 	_OrderConfigMgr = nullptr;
 	_OrderPanelGrid.CenterWnd(this);
-	_ProductRemainGrid.CenterWnd(this);
+	//_ProductRemainGrid.CenterWnd(this);
 	_Unregistered = false;
 	_OrderByRemain = false;
 	_LayoutMgr = new VtLayoutManager((CWnd*)this);
@@ -81,10 +81,6 @@ VtOrderCenterWndHd::VtOrderCenterWndHd(CWnd* pParent )
 	_OrderGridColOption.push_back(true);
 	_OrderGridColOption.push_back(true);
 	_OrderGridColOption.push_back(true);
-
-	// create the background brush
-	VERIFY(_BrushBackSel.CreateSolidBrush(VtGlobal::SelDialogBackColor));
-	VERIFY(_BrushBackNor.CreateSolidBrush(GetSysColor(COLOR_BTNFACE)));
 }
 
 VtOrderCenterWndHd::~VtOrderCenterWndHd()
@@ -375,10 +371,10 @@ BOOL VtOrderCenterWndHd::OnInitDialog()
 	m_NormalBrush.CreateSolidBrush(RGB(255, 255, 255)); // color yellow brush 
 
 	_ConfigDlg = new VtOrderConfigDlg();
-	_ConfigDlg->CenterWnd(this);
+	//_ConfigDlg->CenterWnd(this);
 	_ConfigDlg->Create(IDD_CENTER_CONFIG, this);
 
-	_ConfigGrid.CenterWnd(this);
+	//_ConfigGrid.CenterWnd(this);
 	_OrderPanelGrid.AttachGrid(this, IDC_STATIC_ORDER_PANEL);
 	_ProductRemainGrid.AttachGrid(this, IDC_STATIC_PRODUCT_REMAIN);
 	_TickGrid.AttachGrid(this, IDC_STATIC_REAL_TICK);

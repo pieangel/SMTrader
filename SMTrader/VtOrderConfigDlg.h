@@ -7,6 +7,7 @@
 // VtOrderConfigDlg dialog
 class VtOrderCenterWndHd;
 class VtLayoutManager;
+class SmOrderPanel;
 class VtOrderConfigDlg : public CDialog
 {
 	DECLARE_DYNAMIC(VtOrderConfigDlg)
@@ -20,8 +21,8 @@ public:
 	enum { IDD = IDD_CENTER_CONFIG };
 #endif
 
-	VtOrderCenterWndHd* CenterWnd() const { return _CenterWnd; }
-	void CenterWnd(VtOrderCenterWndHd* val) { _CenterWnd = val; }
+	SmOrderPanel* CenterWnd() const { return _CenterWnd; }
+	void CenterWnd(SmOrderPanel* val) { _CenterWnd = val; }
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
@@ -37,7 +38,7 @@ public:
 	afx_msg void OnEnChangeEditOrderTypeSlip();
 
 private:
-	VtOrderCenterWndHd* _CenterWnd = nullptr;
+	SmOrderPanel* _CenterWnd = nullptr;
 	VtLayoutManager* _LayoutMgr;
 	void SaveControls();
 	CRect GetClientArea(int resourceID);

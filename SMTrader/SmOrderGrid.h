@@ -22,6 +22,8 @@ class VtAccount;
 class VtOrderConfigManager;
 class VtStopOrderManager;
 struct VtPosition;
+class SmOrderPanel;
+class VtCutManager;
 class SmOrderGrid : public CGridCtrl
 {
 public:
@@ -31,6 +33,10 @@ public:
 	void Symbol(VtSymbol* val);
 	VtAccount* Account() const { return _Account; }
 	void Account(VtAccount* val) { _Account = val; }
+	SmOrderPanel* CenterWnd() const { return _CenterWnd; }
+	void CenterWnd(SmOrderPanel* val) { _CenterWnd = val; }
+	VtCutManager* CutMgr() const { return _CutMgr; }
+	void CutMgr(VtCutManager* val) { _CutMgr = val; }
 public:
 	void RegisterQuoteCallback();
 	void UnregisterQuoteCallback();
@@ -51,6 +57,7 @@ public:
 	void Init();
 	// 스페이스바 주문
 	void OrderBySpaceBar();
+	void ResizeGrid();
 private:
 	// 컬럼 타이틀 설정
 	void SetColTitle(bool init);
@@ -85,7 +92,7 @@ private:
 	int _PreCloseRow = 0;
 	int _CellHeight = 18;
 
-	VtOrderCenterWndHd* _CenterWnd;
+	SmOrderPanel* _CenterWnd;
 	std::map<int, int> ValueToRowMap;
 	std::map<int, int> RowToValueMap;
 	std::set<std::pair<int, int>> _OrderPos;
@@ -196,5 +203,13 @@ private:
 public:
 	afx_msg void OnClose();
 	afx_msg void OnDestroy();
+public:
+	int ShowHideOrderGrid(std::vector<bool>& colOptions);
+	int GetGridWidth(std::vector<bool>& colOptions);
+	int GetGridHeight();
+	void ApplyProfitLossForPosition();
+	void ResetByCenterRow();
+private:
+	VtCutManager* _CutMgr;
 };
 

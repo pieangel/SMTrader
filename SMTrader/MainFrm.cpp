@@ -719,7 +719,7 @@ void CMainFrame::OnReceiveQuoteHd(VtSymbol* sym)
 void CMainFrame::OpenAcntOrder()
 {
 	VtOrderWndHd* pOrderDlg = new VtOrderWndHd(this);
-	pOrderDlg->WindowHeight(750);
+	pOrderDlg->WindowHeight(1000);
 	// For the order with the accuount and the product code.
 	pOrderDlg->SetType(0);
 	//pOrderDlg->CenterWndCount(0);

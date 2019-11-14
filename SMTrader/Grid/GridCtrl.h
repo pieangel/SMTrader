@@ -839,7 +839,10 @@ public:
 	void DrawStopOrders(CDC* pdc);
 	void DrawCloseLine(CDC* pDC);
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
+	// 주어진 범위의 셀을 병합한다.
 	void MergeCells(int start_row, int start_col, int end_row, int end_col);
+	// 주어진 범위의 병합된 셀을 원상복귀한다.
+	void RestoreCells(int start_row, int start_col, int end_row, int end_col);
 
 	CCellID OrderCellStart, OrderCellEnd;
 

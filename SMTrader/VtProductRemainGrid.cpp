@@ -15,6 +15,7 @@
 #include <array>
 #include <numeric>
 #include "VtGlobal.h"
+#include "SmOrderPanel.h"
 using Poco::NumberFormatter;
 
 

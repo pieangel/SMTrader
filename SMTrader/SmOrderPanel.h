@@ -1,5 +1,14 @@
 #pragma once
 #include "SmOrderGrid.h"
+#include "GenericChildDialog.h"
+#include "VtOrderPanelGrid.h"
+#include "VtProductRemainGrid.h"
+#include "afxwin.h"
+#include "afxcmn.h"
+#include <vector>
+#include "BtnST.h"
+#include "VtEditCtrl.h"
+#include "VtRealtimeTickQuoteGrid.h"
 #include "SimpleBinStream.h"
 #include "OXLayoutManager.h"
 #include "VtCutManager.h"
@@ -8,15 +17,26 @@
 #include "VtRefreshManager.h"
 #include "GradientStatic.h"
 #include <thread>
+
 using same_endian_type = std::is_same<simple::LittleEndian, simple::LittleEndian>;
 // SmOrderPanel dialog
-class VtSymbol;
-class SmTest {
-public:
-	void OnSise(VtSymbol* symbol);
-};
 class VtOrderWndHd;
+class VtOrderConfigManager;
+class VtSymbol;
+class VtAccount;
+class VtOrderManager;
+class VtProductOrderManager;
+class VtRealTickWnd;
+class VtOrderConfigDlg;
+class VtOrderGridConfig;
 class VtFund;
+class VtCutManager;
+class VtLayoutManager;
+const int ConfigHeight = 94;
+const int ConfigWidth = 480;
+const int TickWndWidth = 155;
+class VtRefreshManager;
+
 class SmOrderPanel : public CDialogEx
 {
 	DECLARE_DYNAMIC(SmOrderPanel)
@@ -32,6 +52,14 @@ public:
 
 	VtOrderConfigManager* OrderConfigMgr() const { return _OrderConfigMgr; }
 	void OrderConfigMgr(VtOrderConfigManager* val);
+	VtFilledCondition FillCondition() const { return _FillCondition; }
+	void FillCondition(VtFilledCondition val) { _FillCondition = val; }
+	VtPriceType PriceType() const { return _PriceType; }
+	void PriceType(VtPriceType val) { _PriceType = val; }
+	VtSymbol* Symbol() const { return _Symbol; }
+	void Symbol(VtSymbol* val) { _Symbol = val; }
+	int StopVal() const { return _StopVal; }
+	void StopVal(int val) { _StopVal = val; }
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
@@ -54,6 +82,7 @@ public:
 	int GetMaxWidth();
 	void AdjustControlForMode();
 	void RepositionControl(int height);
+	void RepositionControl();
 	void ResizeOrderGrid(int maxHeight);
 	void ResizeOrderGrid();
 	int GetCountOrderGridEnabledCol();
@@ -64,10 +93,150 @@ public:
 	void Load(simple::file_istream<same_endian_type>& ss);
 	void ChangeSymbol(VtSymbol* symbol);
 	void UnregisterOrderWnd();
+public:
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
+
+	CComboBox _ComboSymbol;
+	CEdit _EditOrderAmount;
+	CSpinButtonCtrl _ScOrderAmount;
+	CSpinButtonCtrl _ScStopVal;
+	CEdit _EditStopVal;
+	CButton _BtnAvail;
+	CShadeButtonST _BtnRemain;
+	CShadeButtonST _BtnSearch;
+	CStatic _StaticMsg;
+	CGradientStatic _StaticProductName;
+	CGradientStatic _StaticProduct;
+	CShadeButtonST _BtnAmt1;
+	CShadeButtonST _BtnAmt2;
+	CShadeButtonST _BtnAmt3;
+	CShadeButtonST _BtnAmt4;
+	CShadeButtonST _BtnAmt5;
+	CShadeButtonST _BtnAmt6;
+	CShadeButtonST _BtnSettings;
+	VtEditCtrl _EditAmt;
+	CShadeButtonST* _CurBtn = nullptr;
+	CStatic _StaticStop;
+	CButton _CheckFixedCenter;
+	CButtonST _BtnRemainFund;
+
+
+	afx_msg void OnBnClickedButtonSetting();
+	afx_msg void OnDestroy();
+	afx_msg void OnDeltaposSpinExpand(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnStnClickedStaticMsg();
+	afx_msg void OnBnClickedBtnShowRealtick();
+	afx_msg void OnBnClickedStaticFillPl();
+	afx_msg void OnCbnSelchangeComboProductHd();
+	afx_msg void OnBnClickedCkFixedCenter();
+	afx_msg void OnBnClickedBtnOrderAmt1();
+	afx_msg void OnBnClickedBtnOrderAmt2();
+	afx_msg void OnBnClickedBtnOrderAmt3();
+	afx_msg void OnBnClickedBtnOrderAmt4();
+	afx_msg void OnBnClickedBtnOrderAmt5();
+	afx_msg void OnBnClickedBtnOrderAmt6();
+	afx_msg void OnDeltaposSpinOrderAmount(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnEnChangeEditOrderAmount();
+	afx_msg void OnEnChangeEditStopval();
+	afx_msg void OnBnClickedBtnLiq();
+	afx_msg void OnBnClickedBtnRemain();
+	afx_msg void OnBnClickedBtnSelSymbol();
+	afx_msg void OnBnClickedButtonProfitLoss();
+	afx_msg void OnStnClickedStaticOrderPanel();
+	afx_msg void OnRClicked(NMHDR * pNotifyStruct, LRESULT * result);
+	afx_msg void OnStnClickedStaticRealTick();
+	afx_msg void OnBnClickedBtnRemainFund();
+	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 private:
 	VtOrderWndHd* _ParentDlg = nullptr;
 	VtOrderConfigManager* _OrderConfigMgr = nullptr;
+	std::vector<VtOrderGridConfig*> _ConfigDlgVector;
+	VtRealtimeTickQuoteGrid _TickGrid;
+	VtProductRemainGrid _ProductRemainGrid;
+	VtConfigGrid _ConfigGrid;
+	bool _FixedCenter;
+	VtRealTickWnd* _RealTickWnd = nullptr;
+	bool _Init = false;
+	bool _ShowRemainConfig = true;
+	bool _ShowOrderCountArea = true;
+	bool _UseHogaSiseFilter = true;
 
+	VtSymbol*  _Symbol;
+	int _OrderAmount;
+	VtFilledCondition _FillCondition;
+	VtPriceType _PriceType;
+
+	int _StopVal;
+	bool _Activated = false;
+	int _TickWndPos = 0;
+	int _GridGap;
+	COXLayoutManager m_LayoutManager;
+
+	bool _ShowOrderArea = true;
+	bool _ShowStopArea = true;
+	bool _ShowTickWnd = false;
+
+	VtRefreshManager* _RefreshManager = nullptr;
+	bool _Unregistered = false;
+	//VtCutManager* _CutMgr;
+	// 남은 잔고 만큼 주문을 낸다.
+	bool _OrderByRemain;
+	VtLayoutManager* _LayoutMgr;
+	std::vector<bool> _OrderGridColOption;
+
+	int _DefaultWidth = 482;
+	int _DefaultHeight = 750;
+	VtSymbol* _DefaultSymbol = nullptr;
+	VtOrderConfigDlg* _ConfigDlg = nullptr;
+private:
+	void CreateChildWindow(VtOrderConfigDlg* centerWnd, UINT id, CWnd* parent);
+	void ResetRemainFund();
+	CRect GetClientArea(int resourceID);
 public:
-	virtual BOOL PreTranslateMessage(MSG* pMsg);
+	void SetRemain(int remain);
+	void RefreshOrderPositon();
+	void ClearConfigDlg();
+	void SaveControlPos();
+	void CalcLayout();
+	int GetParentHeight();
+	int GetParentTitleBarHeight();
+	int GetGridWidth();
+	int GetRemainWidth(int parentWidth);
+	int GetRemainWidth();
+	void RepositionConfigWnd();
+	void RepositionTickGrid();
+	void ShowHideCtrl();
+	void RepositionProductGrid();
+
+	bool EnableCutProfit() const;
+
+	void EnableCutProfit(bool val);
+
+	bool EnableCutLoss() const;
+
+	void EnableCutLoss(bool val);
+
+	int CutProfit() const;
+
+	void CutProfit(int val);
+
+	int CutLoss() const;
+
+	void CutLoss(int val);
+
+	int OrderType() const;
+
+	void OrderType(int val);
+
+	int OrderTypeSlip() const;
+
+	void OrderTypeSlip(int val);
+
+	VtCutManager* GetCutManager() {
+		return m_Grid.CutMgr();
+	}
+
+	void ApplyProfitLossForPosition();
+	void FixedCenter(bool val);
+	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 };

@@ -5,6 +5,7 @@
 #include <vector>
 #define SPIN_TYPE1					160
 class VtOrderCenterWndHd;
+class SmOrderPanel;
 class VtConfigGrid : public VtGrid
 {
 public:
@@ -19,8 +20,8 @@ public:
 	int OnCheckbox(long ID, int col, long row, long msg, long param);
 	int OnSpinButton(long ID, int col, long row, long msg, long param);
 	int OnPushButton(long ID, int col, long row, long msg, long param);
-	VtOrderCenterWndHd* CenterWnd() const { return _CenterWnd; }
-	void CenterWnd(VtOrderCenterWndHd* val) { _CenterWnd = val; }
+	SmOrderPanel* CenterWnd() const { return _CenterWnd; }
+	void CenterWnd(SmOrderPanel* val) { _CenterWnd = val; }
 	virtual void OnMouseLeaveFromMainGrid();
 	virtual void OnMouseMove(int col, long row, POINT *point, UINT nFlags, BOOL processed = 0);
 	void RestoreButtonCell();
@@ -43,6 +44,6 @@ private:
 	CUGButtonType		m_button;
 	int					m_nButtonIndex;
 
-	VtOrderCenterWndHd* _CenterWnd = nullptr;
+	SmOrderPanel* _CenterWnd = nullptr;
 };
 

@@ -8,6 +8,7 @@ struct VtQuote;
 struct VtPosition;
 class VtOrderConfigManager;
 class VtOrderCenterWndHd;
+class SmOrderPanel;
 class VtProductRemainGrid : public VtGrid
 {
 public:
@@ -33,8 +34,8 @@ public:
 	void ShowPosition();
 	VtOrderConfigManager* OrderConfigMgr() const { return _OrderConfigMgr; }
 	void OrderConfigMgr(VtOrderConfigManager* val) { _OrderConfigMgr = val; }
-	VtOrderCenterWndHd* CenterWnd() const { return _CenterWnd; }
-	void CenterWnd(VtOrderCenterWndHd* val) { _CenterWnd = val; }
+	SmOrderPanel* CenterWnd() const { return _CenterWnd; }
+	void CenterWnd(SmOrderPanel* val) { _CenterWnd = val; }
 	void SetSymbol(VtSymbol* sym);
 private:
 	void ShowSinglePosition();
@@ -42,7 +43,7 @@ private:
 	//VtSymbol* _Symbol = nullptr;
 	//VtAccount* _Account = nullptr;
 	//VtPosition* _Position = nullptr;
-	VtOrderCenterWndHd* _CenterWnd;
+	SmOrderPanel* _CenterWnd;
 	void ResetColTitle();
 	void SetColTitle(int level);
 	int FindLevel(int ParentWidth);

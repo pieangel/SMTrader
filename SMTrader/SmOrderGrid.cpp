@@ -82,12 +82,32 @@ SmOrderGrid::SmOrderGrid()
 	_OldMovingCellCenter.col = -1;
 	_OldMovingCellSide.row = -1;
 	_OldMovingCellSide.col = -1;
+
+	_defFont.CreateFont(12, 0, 0, 0, 500, 0, 0, 0, 0, 0, 0, 0, 0, _T("굴림"));
+	_Init = false;
+
+	_OldPositionCell.row = -1;
+	_OldPositionCell.col = -1;
+
+	_GridColMap[SmOrderGridCol::STOP] = 48;
+	_GridColMap[SmOrderGridCol::ORDER] = 60;
+	_GridColMap[SmOrderGridCol::COUNT] = 45;
+	_GridColMap[SmOrderGridCol::QUANTITY] = 45;
+	_GridColMap[SmOrderGridCol::CENTER] = 80;
+
+	_HeadHeight = 20;
+
+	_CutMgr = new VtCutManager();
 }
 
 
 SmOrderGrid::~SmOrderGrid()
 {
-	
+	if (_CutMgr)
+	{
+		delete _CutMgr;
+		_CutMgr = nullptr;
+	}
 }
 
 
@@ -109,7 +129,7 @@ void SmOrderGrid::UnregisterQuoteCallback()
 
 void SmOrderGrid::OnUpdateSise(const VtSymbol* symbol)
 {
-	if (!symbol || _SymbolCode.compare(symbol->ShortCode) != 0)
+	if (!_Init || !symbol || _SymbolCode.compare(symbol->ShortCode) != 0)
 		return;
 	std::set<std::pair<int, int>> refreshSet;
 	ClearQuotes(refreshSet);
@@ -129,7 +149,7 @@ void SmOrderGrid::UnregisterHogaCallback()
 
 void SmOrderGrid::OnUpdateHoga(const VtSymbol* symbol)
 {
- 	if (!symbol || _SymbolCode.compare(symbol->ShortCode) != 0)
+	if (!_Init || !symbol || _SymbolCode.compare(symbol->ShortCode) != 0)
 		return;
 	std::set<std::pair<int, int>> refreshSet;
 	ClearHogas(refreshSet);
@@ -150,7 +170,7 @@ void SmOrderGrid::UnregisterOrderCallback()
 
 void SmOrderGrid::OnOrderEvent(const VtOrder* order)
 {
-	if (!order || _SymbolCode.compare(order->shortCode) != 0)
+	if (!_Init || !order || _SymbolCode.compare(order->shortCode) != 0)
 		return;
 	std::set<std::pair<int, int>> refreshSet;
 	ClearOldOrders(refreshSet);
@@ -162,20 +182,6 @@ void SmOrderGrid::OnOrderEvent(const VtOrder* order)
 
 void SmOrderGrid::Init()
 {
-	_defFont.CreateFont(12, 0, 0, 0, 500, 0, 0, 0, 0, 0, 0, 0, 0, _T("굴림"));
-	_Init = false;
-
-	_OldPositionCell.row = -1;
-	_OldPositionCell.col = -1;
-
-	_GridColMap[SmOrderGridCol::STOP] = 48;
-	_GridColMap[SmOrderGridCol::ORDER] = 60;
-	_GridColMap[SmOrderGridCol::COUNT] = 45;
-	_GridColMap[SmOrderGridCol::QUANTITY] = 45;
-	_GridColMap[SmOrderGridCol::CENTER] = 80;
-
-	_HeadHeight = 20;
-
 	_RowCount = GetMaxRow();
 	_CloseRow = FindCenterRow();
 	_EndRowForValue = _RowCount - 3;
@@ -184,7 +190,8 @@ void SmOrderGrid::Init()
 	SetFixedRowCount(_FixedRow);
 	SetFixedColumnCount(_FixedCol);
 	SetColTitle(_Init);
-
+	EnableScrollBars(SB_VERT, FALSE);
+	EnableScrollBars(SB_HORZ, FALSE);
 	SetFixedColumnSelection(FALSE);
 	SetFixedRowSelection(FALSE);
 	EnableColumnHide();
@@ -196,6 +203,7 @@ void SmOrderGrid::Init()
 	SetColumnResize(FALSE);
 	SetRowResize(FALSE);
 	AllowReorderColumn(false);
+	//EnableScrollBarCtrl(SB_BOTH, FALSE);
 
 	_Account = VtAccountManager::GetInstance()->FindAddAccount("00162001");
 	_Symbol = VtSymbolManager::GetInstance()->FindSymbol(_SymbolCode);
@@ -231,6 +239,7 @@ void SmOrderGrid::Init()
 	SetFont(&_defFont);
 	SetOrderAreaColor();
 	SetCenterValue();
+	_Init = true;
 }
 
 void SmOrderGrid::SetColTitle(bool init)
@@ -521,7 +530,8 @@ int SmOrderGrid::FindCenterRow()
 int SmOrderGrid::GetMaxRow()
 {
 	RECT rect;
-	GetWindowRect(&rect);
+	//GetWindowRect(&rect);
+	GetClientRect(&rect);
 
 
 	double pureHeight = rect.bottom - rect.top;
@@ -589,53 +599,63 @@ void SmOrderGrid::SetHogaInfo(const VtSymbol* sym, std::set<std::pair<int, int>>
 	{
 		CGridCellBase* pCell = GetCell(_EndRowForValue + 1, CenterCol - 2);
 		std::string strVal = fmt::format("{}", sym->Hoga.TotSellNo);
-		pCell->SetText(strVal.c_str());
-		//pCell->SetBackClr(SellColor[0]);
-		pCell->SetFormat(DT_CENTER | DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX);
-		_HogaPos.insert(std::make_pair(_EndRowForValue + 1, CenterCol - 2));
-		refreshSet.insert(std::make_pair(_EndRowForValue + 1, CenterCol - 2));
+		if (pCell) {
+			pCell->SetText(strVal.c_str());
+			//pCell->SetBackClr(SellColor[0]);
+			pCell->SetFormat(DT_CENTER | DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX);
+			_HogaPos.insert(std::make_pair(_EndRowForValue + 1, CenterCol - 2));
+			refreshSet.insert(std::make_pair(_EndRowForValue + 1, CenterCol - 2));
+		}
 
 		pCell = GetCell(_EndRowForValue + 1, CenterCol - 1);
-		strVal = fmt::format("{}", sym->Hoga.TotSellQty);
-		pCell->SetText(strVal.c_str());
-		//pCell->SetBackClr(SellColor[0]);
-		pCell->SetFormat(DT_CENTER | DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX);
-		_HogaPos.insert(std::make_pair(_EndRowForValue + 1, CenterCol - 1));
-		refreshSet.insert(std::make_pair(_EndRowForValue + 1, CenterCol - 1));
+		if (pCell) {
+			strVal = fmt::format("{}", sym->Hoga.TotSellQty);
+			pCell->SetText(strVal.c_str());
+			//pCell->SetBackClr(SellColor[0]);
+			pCell->SetFormat(DT_CENTER | DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX);
+			_HogaPos.insert(std::make_pair(_EndRowForValue + 1, CenterCol - 1));
+			refreshSet.insert(std::make_pair(_EndRowForValue + 1, CenterCol - 1));
+		}
 
 		pCell = GetCell(_EndRowForValue + 1, CenterCol + 1);
-		strVal = fmt::format("{}", sym->Hoga.TotBuyQty);
-		pCell->SetText(strVal.c_str());
-		//pCell->SetBackClr(BuyColor[0]);
-		pCell->SetFormat(DT_CENTER | DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX);
-		_HogaPos.insert(std::make_pair(_EndRowForValue + 1, CenterCol + 1));
-		refreshSet.insert(std::make_pair(_EndRowForValue + 1, CenterCol + 1));
+		if (pCell) {
+			strVal = fmt::format("{}", sym->Hoga.TotBuyQty);
+			pCell->SetText(strVal.c_str());
+			//pCell->SetBackClr(BuyColor[0]);
+			pCell->SetFormat(DT_CENTER | DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX);
+			_HogaPos.insert(std::make_pair(_EndRowForValue + 1, CenterCol + 1));
+			refreshSet.insert(std::make_pair(_EndRowForValue + 1, CenterCol + 1));
+		}
 
 		pCell = GetCell(_EndRowForValue + 1, CenterCol + 2);
-		strVal = fmt::format("{}", sym->Hoga.TotBuyNo);
-		pCell->SetText(strVal.c_str());
-		//pCell->SetBackClr(BuyColor[0]);
-		pCell->SetFormat(DT_CENTER | DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX);
-		_HogaPos.insert(std::make_pair(_EndRowForValue + 1, CenterCol + 2));
-		refreshSet.insert(std::make_pair(_EndRowForValue + 1, CenterCol + 2));
+		if (pCell) {
+			strVal = fmt::format("{}", sym->Hoga.TotBuyNo);
+			pCell->SetText(strVal.c_str());
+			//pCell->SetBackClr(BuyColor[0]);
+			pCell->SetFormat(DT_CENTER | DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX);
+			_HogaPos.insert(std::make_pair(_EndRowForValue + 1, CenterCol + 2));
+			refreshSet.insert(std::make_pair(_EndRowForValue + 1, CenterCol + 2));
+		}
 
 		int dif = sym->Hoga.TotBuyQty - sym->Hoga.TotSellQty;
 
 		pCell = GetCell(_EndRowForValue + 1, CenterCol);
-		strVal = fmt::format("{}", dif);
-		pCell->SetText(strVal.c_str());
-		//pCell->SetBackClr(BuyColor[0]);
-		pCell->SetFormat(DT_CENTER | DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX);
-		if (dif > 0)
-		{
-			pCell->SetTextClr(RGB(255, 0, 0));
+		if (pCell) {
+			strVal = fmt::format("{}", dif);
+			pCell->SetText(strVal.c_str());
+			//pCell->SetBackClr(BuyColor[0]);
+			pCell->SetFormat(DT_CENTER | DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX);
+			if (dif > 0)
+			{
+				pCell->SetTextClr(RGB(255, 0, 0));
+			}
+			else
+			{
+				pCell->SetTextClr(RGB(0, 0, 255));
+			}
+			_HogaPos.insert(std::make_pair(_EndRowForValue + 1, CenterCol + 2));
+			refreshSet.insert(std::make_pair(_EndRowForValue + 1, CenterCol + 2));
 		}
-		else
-		{
-			pCell->SetTextClr(RGB(0, 0, 255));
-		}
-		_HogaPos.insert(std::make_pair(_EndRowForValue + 1, CenterCol + 2));
-		refreshSet.insert(std::make_pair(_EndRowForValue + 1, CenterCol + 2));
 	}
 }
 
@@ -696,27 +716,27 @@ void SmOrderGrid::SetQuoteColor(const VtSymbol* sym, std::set<std::pair<int, int
 
 	CUGCell cell;
 	
-	_LowRow = FindRowFromCenterValue(sym, sym->Quote.intLow);
-	_HighRow = FindRowFromCenterValue(sym, sym->Quote.intHigh);
-	_CloseRow = FindRowFromCenterValue(sym, sym->Quote.intClose);
-	_OpenRow = FindRowFromCenterValue(sym, sym->Quote.intOpen);
-	_PreCloseRow = FindRowFromCenterValue(sym, sym->Quote.intPreClose);
+	int lowRow = FindRowFromCenterValue(sym, sym->Quote.intLow);
+	int highRow = FindRowFromCenterValue(sym, sym->Quote.intHigh);
+	int closeRow = FindRowFromCenterValue(sym, sym->Quote.intClose);
+	int openRow = FindRowFromCenterValue(sym, sym->Quote.intOpen);
+	int preCloseRow = FindRowFromCenterValue(sym, sym->Quote.intPreClose);
 
 	if (sym->Quote.intClose > sym->Quote.intOpen) { // 양봉
 		for (auto it = ValueToRowMap.rbegin(); it != ValueToRowMap.rend(); ++it) {
-			if (it->second < _HighRow) {
+			if (it->second < highRow) {
 				CGridCellBase* pCell = GetCell(it->second, CenterCol);
 				pCell->SetBackClr(RGB(242, 242, 242));
 			} 
-			else if (it->second < _CloseRow) {
+			else if (it->second < closeRow) {
 				CGridCellBase* pCell = GetCell(it->second, CenterCol);
 				pCell->SetBackClr(RGB(255, 255, 255));
 			}
-			else if (it->second <= _OpenRow) {
+			else if (it->second <= openRow) {
 				CGridCellBase* pCell = GetCell(it->second, CenterCol);
 				pCell->SetBackClr(RGB(252, 226, 228));
 			}
-			else if (it->second < _LowRow + 1) {
+			else if (it->second < lowRow + 1) {
 				CGridCellBase* pCell = GetCell(it->second, CenterCol);
 				pCell->SetBackClr(RGB(255, 255, 255));
 			}
@@ -729,19 +749,19 @@ void SmOrderGrid::SetQuoteColor(const VtSymbol* sym, std::set<std::pair<int, int
 	}
 	else if (sym->Quote.intClose < sym->Quote.intOpen) { // 음봉
 		for (auto it = ValueToRowMap.rbegin(); it != ValueToRowMap.rend(); ++it) {
-			if (it->second < _HighRow) {
+			if (it->second < highRow) {
 				CGridCellBase* pCell = GetCell(it->second, CenterCol);
 				pCell->SetBackClr(RGB(242, 242, 242));
 			}
-			else if (it->second < _OpenRow) {
+			else if (it->second < openRow) {
 				CGridCellBase* pCell = GetCell(it->second, CenterCol);
 				pCell->SetBackClr(RGB(255, 255, 255));
 			}
-			else if (it->second <= _CloseRow) {
+			else if (it->second <= closeRow) {
 				CGridCellBase* pCell = GetCell(it->second, CenterCol);
 				pCell->SetBackClr(RGB(218, 226, 245));
 			}
-			else if (it->second < _LowRow + 1) {
+			else if (it->second < lowRow + 1) {
 				CGridCellBase* pCell = GetCell(it->second, CenterCol);
 				pCell->SetBackClr(RGB(255, 255, 255));
 			}
@@ -753,19 +773,19 @@ void SmOrderGrid::SetQuoteColor(const VtSymbol* sym, std::set<std::pair<int, int
 	}
 	else { // 도지
 		for (auto it = ValueToRowMap.rbegin(); it != ValueToRowMap.rend(); ++it) {
-			if (it->second < _HighRow) {
+			if (it->second < highRow) {
 				CGridCellBase* pCell = GetCell(it->second, CenterCol);
 				pCell->SetBackClr(RGB(242, 242, 242));
 			}
-			else if (it->second < _CloseRow) {
+			else if (it->second < closeRow) {
 				CGridCellBase* pCell = GetCell(it->second, CenterCol);
 				pCell->SetBackClr(RGB(255, 255, 255));
 			}
-			else if (it->second <= _OpenRow) {
+			else if (it->second <= openRow) {
 				CGridCellBase* pCell = GetCell(it->second, CenterCol);
 				pCell->SetBackClr(RGB(252, 226, 228));
 			}
-			else if (it->second < _LowRow + 1) {
+			else if (it->second < lowRow + 1) {
 				CGridCellBase* pCell = GetCell(it->second, CenterCol);
 				pCell->SetBackClr(RGB(255, 255, 255)); 
 			}
@@ -777,21 +797,21 @@ void SmOrderGrid::SetQuoteColor(const VtSymbol* sym, std::set<std::pair<int, int
 	}
 
 	// 종가 색상 입히기
-	CGridCellBase* pCell = GetCell(_CloseRow, CenterCol);
-	if (pCell && _CloseRow >= _StartRowForValue && _CloseRow <= _EndRowForValue)
+	CGridCellBase* pCell = GetCell(closeRow, CenterCol);
+	if (pCell && closeRow >= _StartRowForValue && closeRow <= _EndRowForValue)
 		pCell->SetBackClr(RGB(255, 255, 0));
 
 	// 고가 텍스트 색상 설정
-	SetSiseLabel(_HighRow, "H", RGB(255, 0, 0));
+	SetSiseLabel(highRow, "H", RGB(255, 0, 0));
 	
 	// 저가 텍스트 색상 설정
-	SetSiseLabel(_LowRow, "L", RGB(0, 0, 255));
+	SetSiseLabel(lowRow, "L", RGB(0, 0, 255));
 
 	// 시작가 레이블 설정
-	SetSiseLabel(_OpenRow, "O", RGB(0, 0, 0));
+	SetSiseLabel(openRow, "O", RGB(0, 0, 0));
 	
 	// 이전 종가 레이블 설정
-	SetSiseLabel(_PreCloseRow, "C", RGB(0, 0, 0));
+	SetSiseLabel(preCloseRow, "C", RGB(0, 0, 0));
 	
 	for (auto it = ValueToRowMap.begin(); it != ValueToRowMap.end(); ++it) {
 		refreshSet.insert(std::make_pair(it->second, CenterCol));
@@ -830,17 +850,25 @@ void SmOrderGrid::ClearHogas(std::set<std::pair<int, int>>& refreshSet)
 	// 호가 표시된 기존 셀을 초기화 시킨다.
 	for (auto it = _HogaPos.begin(); it != _HogaPos.end(); ++it){
 		std::pair<int, int> pos = *it;
-		CGridCellBase* pCell = GetCell(pos.first, pos.second);
-		pCell->SetText("");
-		pCell->SetBackClr(RGB(255, 255, 255));
-		refreshSet.insert(std::make_pair(pos.first, pos.second));
+		CCellID cell(pos.first, pos.second);
+		if (cell.IsValid() == TRUE) {
+			CGridCellBase* pCell = GetCell(cell.row, cell.col);
+			if (pCell) {
+				pCell->SetText("");
+				pCell->SetBackClr(RGB(255, 255, 255));
+				refreshSet.insert(std::make_pair(pos.first, pos.second));
+			}
+		}
 	}
 
 	// 호가 라인을 다시 정상으로 되돌려 놓는다.
 	for (int k = 0; k < m_nCols; ++k) {
-		CGridCellBase* pCell = GetCell(_CloseLineRow, k);
-		if (pCell)
-			pCell->Style(0);
+		CCellID cell(_CloseLineRow, k);
+		if (cell.IsValid() == TRUE) {
+			CGridCellBase* pCell = GetCell(_CloseLineRow, k);
+			if (pCell)
+				pCell->Style(0);
+		}
 	}
 }
 
@@ -1142,6 +1170,16 @@ void SmOrderGrid::OrderBySpaceBar()
 			//ChangeCenter(_CloseRow, newCenter);
 		}
 	}
+}
+
+// 종가라인은 변하지 않는다.
+// 행 갯수만 늘어난다.
+void SmOrderGrid::ResizeGrid()
+{
+	_RowCount = GetMaxRow();
+	_EndRowForValue = _RowCount - 3;
+	SetRowCount(_RowCount);
+	SetCenterValue();
 }
 
 void SmOrderGrid::OrderByMouseClick()
@@ -1890,14 +1928,14 @@ void SmOrderGrid::OnMouseMove(UINT nFlags, CPoint point)
 		}
 	}
 
-	
-
 	CCellID cell = GetCellFromPt(point);
 		
 	SetMovingCell(cell);
 
 	_OldMMCell = cell;
-	OrderCellEnd = cell;
+	if (_OrderDragStarted && cell.IsValid() == TRUE) {
+		OrderCellEnd = cell;
+	}
 
 	if (_OrderDragStarted) {
 		Invalidate();
@@ -1953,4 +1991,89 @@ void SmOrderGrid::OnDestroy()
 	CGridCtrl::OnDestroy();
 
 	// TODO: Add your message handler code here
+}
+
+int SmOrderGrid::ShowHideOrderGrid(std::vector<bool>& colOptions)
+{
+	for (int i = 0; i < colOptions.size(); ++i) {
+		if (i == 0) {
+			if (colOptions[i]) { // for order column
+				SetColumnWidth(1, _GridColMap[SmOrderGridCol::ORDER]);
+				SetColumnWidth(7, _GridColMap[SmOrderGridCol::ORDER]);
+			}
+			else {
+				SetColumnWidth(1, 0);
+				SetColumnWidth(7, 0);
+			}
+		}
+		else if (i == 1) { // for stop column
+			if (colOptions[1]) {
+				SetColumnWidth(0, _GridColMap[SmOrderGridCol::STOP]);
+				SetColumnWidth(8, _GridColMap[SmOrderGridCol::STOP]);
+			}
+			else {
+				SetColumnWidth(0, 0);
+				SetColumnWidth(8, 0);
+			}
+		}
+		else if (i == 2) { // for order count column
+			if (colOptions[2]) {
+				SetColumnWidth(2, _GridColMap[SmOrderGridCol::COUNT]);
+				SetColumnWidth(6, _GridColMap[SmOrderGridCol::COUNT]);
+			}
+			else {
+				SetColumnWidth(2, 1);
+				SetColumnWidth(6, 1);
+			}
+		}
+	}
+
+	return 0;
+}
+
+int SmOrderGrid::GetGridWidth(std::vector<bool>& colOptions)
+{
+	int totalWidth = _GridColMap[SmOrderGridCol::CENTER] + _GridColMap[SmOrderGridCol::QUANTITY] * 2;
+	for (int i = 0; i < colOptions.size(); ++i) {
+		if (i == 0) { // for order
+			totalWidth += colOptions[i] ? _GridColMap[SmOrderGridCol::ORDER] * 2 : 0;
+		}
+		else if (i == 1) { // for stop
+			totalWidth += colOptions[i] ? _GridColMap[SmOrderGridCol::STOP] * 2 : 0;
+		}
+		else if (i == 2) { // for count and quantity.
+			totalWidth += colOptions[i] ? _GridColMap[SmOrderGridCol::COUNT] * 2 : 0;
+		}
+	}
+
+	return totalWidth + 5;
+}
+
+int SmOrderGrid::GetGridHeight()
+{
+	int total = _HeadHeight;
+	total += _CellHeight * _RowCount;
+
+	return total;
+}
+
+void SmOrderGrid::ApplyProfitLossForPosition()
+{
+	if (!_CutMgr || !_CenterWnd || !_CenterWnd->Symbol())
+		return;
+	// 모든 익절,손절 스탑 취소
+	_CutMgr->RemoveAllHd();
+	_CutMgr->MakePositionStopByRemain(_CenterWnd->Symbol());
+	std::set<std::pair<int, int>> refreshSet;
+	ClearOldOrders(refreshSet);
+	SetOrderInfo(refreshSet);
+	ClearPositionInfo(refreshSet);
+	SetPositionInfo(refreshSet);
+	RefreshCells(refreshSet);
+}
+
+void SmOrderGrid::ResetByCenterRow()
+{
+	_CloseRow = FindCenterRow();
+	SetCenterValue();
 }

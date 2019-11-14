@@ -217,10 +217,10 @@ protected:
 	void DrawSelectedgRect(CDC* pDC, CRect& rect);
 	// 0 : normal, 1 : close line, 2 : button, 3 : moving rect, 4 : selected rect.
 	int _Style = 0;
-	int _MergeStartRow;
-	int _MergeEndRow;
-	int _MergeStartCol;
-	int _MergeEndCol;
+	int _MergeStartRow = -1;
+	int _MergeEndRow = -1;
+	int _MergeStartCol = -1;
+	int _MergeEndCol = -1;
 	bool _MovingRect = false;
 	bool _Clicked = false;
 	// 포지션 정보 0 : None, 1 : buy, 2 : sell.

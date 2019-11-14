@@ -1152,6 +1152,11 @@ void VtOrderWndHd::OnOutstanding()
 
 void VtOrderWndHd::OnSize(UINT nType, int cx, int cy)
 {
+	if (cy < 350)
+		return;
+	int rem = cy % 25;
+	if (rem != 0)
+		cy -= rem;
 	CDialog::OnSize(nType, cx, cy);
 	CRect rcWnd;
 	GetWindowRect(rcWnd);
@@ -1313,8 +1318,9 @@ void VtOrderWndHd::ReposChildWindowsForward()
 		CRect& rect = std::get<2>(item);
 		if (std::get<1>(item) && wnd->GetSafeHwnd()) {
 			wnd->ShowWindow(SW_SHOW);
-			wnd->SetWindowPos(nullptr, rect.left, rect.top, rect.Width(), rect.Height(), SWP_NOZORDER | SWP_FRAMECHANGED | SWP_DRAWFRAME);
-			wnd->Invalidate(FALSE);
+			//wnd->SetWindowPos(nullptr, rect.left, rect.top, rect.Width(), rect.Height(), SWP_NOZORDER | SWP_FRAMECHANGED | SWP_DRAWFRAME);
+			wnd->MoveWindow(rect, FALSE);
+			//wnd->Invalidate(FALSE);
 		}
 		else {
 			if (wnd->GetSafeHwnd())
@@ -1331,8 +1337,9 @@ void VtOrderWndHd::ReposChildWindowsBackward()
 		CRect& rect = std::get<2>(item);
 		if (std::get<1>(item)) {
 			wnd->ShowWindow(SW_SHOW);
-			wnd->SetWindowPos(nullptr, rect.left, rect.top, rect.Width(), rect.Height(), SWP_NOZORDER | SWP_FRAMECHANGED | SWP_DRAWFRAME);
-			wnd->Invalidate(FALSE);
+			//wnd->SetWindowPos(nullptr, rect.left, rect.top, rect.Width(), rect.Height(), SWP_NOZORDER | SWP_FRAMECHANGED | SWP_DRAWFRAME);
+			wnd->MoveWindow(rect, FALSE);
+			//wnd->Invalidate(FALSE);
 		}
 		else {
 			wnd->ShowWindow(SW_HIDE);
@@ -1342,6 +1349,7 @@ void VtOrderWndHd::ReposChildWindowsBackward()
 
 void VtOrderWndHd::OnGetMinMaxInfo(MINMAXINFO* lpMMI)
 {
+	lpMMI->ptMinTrackSize.y = 150;
 	// TODO: Add your message handler code here and/or call default
 	CDialog::OnGetMinMaxInfo(lpMMI);
 }
@@ -1805,7 +1813,7 @@ void VtOrderWndHd::RepositionControl()
 				CRect rectWC = std::get<1>(item);
 				::DeferWindowPos(hdwp, pWnd->m_hWnd, NULL,
 					rectWC.left, rectWC.top, rectWC.Width(), rectWC.Height(),
-					SWP_NOZORDER);
+					SWP_NOZORDER || SWP_NOREDRAW);
 				pWnd->RedrawWindow();
 
 			}
