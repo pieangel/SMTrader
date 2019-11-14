@@ -4526,11 +4526,29 @@ int CGridCtrl::FindButtonID(int row, int col)
 	return -1;
 }
 
+void CGridCtrl::UnregisterButton(int id)
+{
+	for (auto it = _ButtonMap.begin(); it != _ButtonMap.end(); ++it) {
+		int btn_id = it->second;
+		if (btn_id == id) {
+			std::pair<int, int> cell = it->first;
+			CGridCellBase* pCell = GetCell(cell.first, cell.second);
+			if (pCell) {
+				pCell->Style(0); // 일반스타일로 변경
+				pCell->SetText("");
+				pCell->SetTextClr(RGB(0, 0, 0));
+				pCell->SetBackClr(RGB(255, 255, 255));
+			}
+		}
+	}
+}
+
 void CGridCtrl::RegisterButton(int id, int row, int col)
 {
 	CGridCellBase* pCell = GetCell(row, col);
 	if (!pCell)
 		return;
+	// 버튼 스타일 등록
 	pCell->Style(2);
 	pCell->SetFormat(DT_CENTER | DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX);
 	// 병합된 셀일때는 모든 셀을 다 등록해 준다.

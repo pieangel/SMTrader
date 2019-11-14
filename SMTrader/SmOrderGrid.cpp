@@ -212,6 +212,18 @@ void SmOrderGrid::Init()
 		SetRowHeight(i, _CellHeight);
 	}
 
+	RegisterButtons();
+	
+	_StopOrderMgr = std::make_shared<VtStopOrderManager>();
+	SetFont(&_defFont);
+	SetOrderAreaColor();
+	SetCenterValue();
+	_Init = true;
+}
+
+
+void SmOrderGrid::RegisterButtons()
+{
 	// 정렬버튼 등록
 	RegisterButton(1, 0, CenterCol, GetSysColor(COLOR_BTNFACE));
 	MergeCells(1, CenterCol - 2, 1, CenterCol - 1);
@@ -234,13 +246,21 @@ void SmOrderGrid::Init()
 	RegisterButton(8, _EndRowForValue + 2, CenterCol + 3, RGB(252, 190, 190), "일괄취소");
 	// 매수스탑 취소
 	RegisterButton(9, _EndRowForValue + 2, CenterCol + 4, RGB(252, 190, 190), "ST취소");
-
-	_StopOrderMgr = std::make_shared<VtStopOrderManager>();
-	SetFont(&_defFont);
-	SetOrderAreaColor();
-	SetCenterValue();
-	_Init = true;
 }
+
+void SmOrderGrid::UnregisterButtons()
+{
+	for (int id = 1; id <= 9; ++id) {
+		UnregisterButton(id);
+	}
+
+	RestoreCells(1, CenterCol - 2, 1, CenterCol - 1);
+	RestoreCells(_EndRowForValue + 2, CenterCol - 2, _EndRowForValue + 2, CenterCol - 1);
+
+	RestoreCells(1, CenterCol + 1, 1, CenterCol + 2);
+	RestoreCells(_EndRowForValue + 2, CenterCol + 1, _EndRowForValue + 2, CenterCol + 2);
+}
+
 
 void SmOrderGrid::SetColTitle(bool init)
 {
@@ -1176,10 +1196,13 @@ void SmOrderGrid::OrderBySpaceBar()
 // 행 갯수만 늘어난다.
 void SmOrderGrid::ResizeGrid()
 {
+	UnregisterButtons();
 	_RowCount = GetMaxRow();
 	_EndRowForValue = _RowCount - 3;
 	SetRowCount(_RowCount);
+	SetOrderAreaColor();
 	SetCenterValue();
+	RegisterButtons();
 }
 
 void SmOrderGrid::OrderByMouseClick()

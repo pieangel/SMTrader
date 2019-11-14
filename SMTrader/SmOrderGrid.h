@@ -193,6 +193,8 @@ private:
 	void ChangeOrder();
 	void ChangeStopOrder();
 	void CancelOrder();
+	void RegisterButtons();
+	void UnregisterButtons();
 public:
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 	afx_msg LRESULT OnMouseLeave(WPARAM wParam, LPARAM lParam);

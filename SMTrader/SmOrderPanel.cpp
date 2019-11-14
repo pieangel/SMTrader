@@ -436,7 +436,7 @@ void SmOrderPanel::CalcLayout()
 	rcConfig.bottom = rcConfig.top + ConfigHeight;
 	rcConfig.left = 0;
 	//rcConfig.right = rcConfig.left + clientWidth > ConfigWidth ?  ConfigWidth : clientWidth;
-	rcConfig.right = rcConfig.left + clientWidth;
+	rcConfig.right = rcConfig.left + clientWidth + 4;
 
 	// 틱윈도우 위치 및 크기 설정
 	int tickBottom = _ShowRemainConfig ? availableHeight - rcTick.top - ConfigHeight : availableHeight - rcTick.top;
