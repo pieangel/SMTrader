@@ -825,6 +825,7 @@ private:
 public:
 	int FindButtonID(int row, int col);
 	void UnregisterButton(int id);
+	void ClearButtonIDMap();
 	void RegisterButton(int id, int row, int col);
 	void RegisterButton(int id, int row, int col, COLORREF color);
 	void RegisterButton(int id, int row, int col, COLORREF color, LPCTSTR title);

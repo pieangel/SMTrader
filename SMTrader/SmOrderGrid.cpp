@@ -66,7 +66,7 @@ SmOrderGrid::SmOrderGrid()
 	SellColor.push_back(RGB(221, 243, 255));
 	SellColor.push_back(RGB(230, 247, 255));
 
-	_SymbolCode = "101PC000";
+	//_SymbolCode = "101PC000";
 
 	RegisterQuoteCallback();
 	RegisterHogaCallback();
@@ -110,12 +110,19 @@ SmOrderGrid::~SmOrderGrid()
 	}
 }
 
-
-void SmOrderGrid::Symbol(VtSymbol* val)
+void SmOrderGrid::SetAutoStopOnFilled(VtOrder* order)
 {
-	_Symbol = val;
-	_SymbolCode = _Symbol->ShortCode;
+	if (!order)
+		return;
+	_CutMgr->AddStopOrderForFilled(_CenterWnd->Symbol(), order);
 }
+
+// 
+// void SmOrderGrid::Symbol(VtSymbol* val)
+// {
+// 	_Symbol = val;
+// 	_SymbolCode = _Symbol->ShortCode;
+// }
 
 void SmOrderGrid::UnregisterAllCallback()
 {
@@ -136,11 +143,26 @@ void SmOrderGrid::UnregisterQuoteCallback()
 
 void SmOrderGrid::OnUpdateSise(const VtSymbol* symbol)
 {
-	if (!_Init || !symbol || _SymbolCode.compare(symbol->ShortCode) != 0)
+	if (!_Init || !symbol)
 		return;
+	
+	if (!_CenterWnd || !_CutMgr || !_CenterWnd->Symbol()) {
+		return;
+	}
+
+	if (_CenterWnd->Symbol()->ShortCode.compare(symbol->ShortCode) != 0)
+		return;
+
+	// 잔고에 대하여 익절과 손절을 확인한다.
+	//_CutMgr->CheckProfitLoss(sym);
+	// 익절, 손절 스탑 주문이 종가에 닿았는지 검사한다.
+	CheckProfitLossTouchHd(_CenterWnd->Symbol()->Quote.intClose);
+	// 스탑 주문이 종가에 닿았는지 검사한다.
+	CheckStopTouchedHd(_CenterWnd->Symbol()->Quote.intClose);
+
 	std::set<std::pair<int, int>> refreshSet;
 	ClearQuotes(refreshSet);
-	SetQuoteColor(symbol, refreshSet);
+	SetQuoteColor(_CenterWnd->Symbol(), refreshSet);
 	RefreshCells(refreshSet);
 }
 
@@ -156,8 +178,16 @@ void SmOrderGrid::UnregisterHogaCallback()
 
 void SmOrderGrid::OnUpdateHoga(const VtSymbol* symbol)
 {
-	if (!_Init || !symbol || _SymbolCode.compare(symbol->ShortCode) != 0)
+	if (!_Init || !symbol)
 		return;
+
+	if (!_CenterWnd || !_CutMgr || !_CenterWnd->Symbol()) {
+		return;
+	}
+
+	if (_CenterWnd->Symbol()->ShortCode.compare(symbol->ShortCode) != 0)
+		return;
+
 	std::set<std::pair<int, int>> refreshSet;
 	ClearHogas(refreshSet);
 	SetHogaInfo(symbol, refreshSet);
@@ -177,13 +207,29 @@ void SmOrderGrid::UnregisterOrderCallback()
 
 void SmOrderGrid::OnOrderEvent(const VtOrder* order)
 {
-	if (!_Init || !order || _SymbolCode.compare(order->shortCode) != 0)
+	if (!_Init || !order)
 		return;
+
+	if (!_CenterWnd || !_CutMgr || !_CenterWnd->Symbol()) {
+		return;
+	}
+
+	if (_CenterWnd->Symbol()->ShortCode.compare(order->shortCode) != 0)
+		return;
+
 	std::set<std::pair<int, int>> refreshSet;
 	ClearOldOrders(refreshSet);
 	SetOrderInfo(refreshSet);
 	ClearPositionInfo(refreshSet);
 	SetPositionInfo(refreshSet);
+
+	if (order->state == VtOrderState::Filled) {
+		_CutMgr->AddStopOrderForFilled(_CenterWnd->Symbol(), (VtOrder*)order);
+		ClearOldStopOrders(refreshSet);
+		SetStopOrderInfo(refreshSet);
+		CalcPosStopOrders(refreshSet);
+	}
+
 	RefreshCells(refreshSet);
 }
 
@@ -212,8 +258,8 @@ void SmOrderGrid::Init()
 	SetRowResize(FALSE);
 	AllowReorderColumn(false);
 
-	_Account = VtAccountManager::GetInstance()->FindAddAccount("00162001");
-	_Symbol = VtSymbolManager::GetInstance()->FindSymbol(_SymbolCode);
+	//_Account = VtAccountManager::GetInstance()->FindAddAccount("00162001");
+	//_Symbol = VtSymbolManager::GetInstance()->FindSymbol(_SymbolCode);
 
 	for (int i = 1; i < m_nRows; ++i) {
 		SetRowHeight(i, _CellHeight);
@@ -232,7 +278,7 @@ void SmOrderGrid::Init()
 void SmOrderGrid::RegisterButtons()
 {
 	// 정렬버튼 등록
-	RegisterButton(1, 0, CenterCol, GetSysColor(COLOR_BTNFACE));
+	RegisterButton(1, 0, CenterCol, GetSysColor(COLOR_BTNFACE), RGB(0, 0, 0), "정렬");
 	MergeCells(1, CenterCol - 2, 1, CenterCol - 1);
 	MergeCells(_EndRowForValue + 2, CenterCol - 2, _EndRowForValue + 2, CenterCol - 1);
 	// 시장가 매도 
@@ -268,6 +314,67 @@ void SmOrderGrid::UnregisterButtons()
 	RestoreCells(_EndRowForValue + 2, CenterCol + 1, _EndRowForValue + 2, CenterCol + 2);
 }
 
+
+void SmOrderGrid::CheckProfitLossTouchHd(int intClose)
+{
+	if (!_CenterWnd || !_CenterWnd->Symbol() || !_StopOrderMgr)
+		return;
+
+	VtSymbol* sym = _CenterWnd->Symbol();
+
+	for (auto it = _StopOrderMgr->StopOrderMapHd.begin(), next_it = it; it != _StopOrderMgr->StopOrderMapHd.end(); it = next_it)
+	{
+		HdOrderRequest* stop = it->second;
+		++next_it;
+
+		if (stop->Price == intClose)
+		{
+			if (stop->Position == VtPositionType::Buy)
+			{
+				stop->Price = VtSymbolManager::GetNextValue(stop->Price, stop->slip, sym);
+			}
+			else
+			{
+				stop->Price = VtSymbolManager::GetNextValue(stop->Price, -stop->slip, sym);
+			}
+			_OrderConfigMgr->OrderMgr()->PutOrder(std::move(*stop));
+			// 가격이 닿은 스탑 주문은 목록에서 없애 준다.
+			_StopOrderMgr->StopOrderMapHd.erase(it);
+		}
+	}
+}
+
+void SmOrderGrid::CheckStopTouchedHd(int intClose)
+{
+	if (!_CenterWnd || !_CenterWnd->Symbol() || !_CutMgr)
+		return;
+	std::vector<int> removeList;
+	VtSymbol* sym = _CenterWnd->Symbol();
+	std::map<int, HdOrderRequest*>& profitLossMap = _CutMgr->GetStopOrderMap();
+	for (auto it = profitLossMap.begin(); it != profitLossMap.end(); ++it) {
+		HdOrderRequest* stop = it->second;
+		//LOG_F(INFO, _T("CheckProfitLossTouchHd : 손절익절가격 %d"), stop->Price);
+		if (stop->Price == intClose) { // 종가와 일치하는 경우
+			if (stop->Position == VtPositionType::Buy) { // 매수 포지션인 경우
+				stop->Price = VtSymbolManager::GetNextValue(stop->Price, stop->slip, sym);
+			}
+			else { // 매도 포지션인 경우
+				stop->Price = VtSymbolManager::GetNextValue(stop->Price, -stop->slip, sym);
+			}
+
+			removeList.push_back(stop->RequestId);  // 삭제 목록에 저장한다.
+
+			if (stop->Paired && stop->PairedReq) { // 익절, 손절 쌍으로 연결되어 있는 경우 한쪽이 사라지면 다른 한쪽도 삭제 목록에 넣어준다.
+				removeList.push_back(stop->PairedReq->RequestId);
+			}
+			_OrderConfigMgr->OrderMgr()->PutOrder(std::move(*stop));
+		}
+	}
+
+	for (auto it = removeList.begin(); it != removeList.end(); ++it) { // 위에서 등록된 삭제 목록들을 목록에서 지워준다.
+		_CutMgr->RemoveOrderHd(*it, false);
+	}
+}
 
 void SmOrderGrid::SetColTitle(bool init)
 {
@@ -321,8 +428,9 @@ void SmOrderGrid::SetCenterValue(const VtSymbol* symbol, std::set<std::pair<int,
 
 void SmOrderGrid::SetCenterValue()
 {
-	VtSymbolManager* symMgr = VtSymbolManager::GetInstance();
-	VtSymbol* symbol = symMgr->FindSymbol(_SymbolCode);
+	if (!_CenterWnd || !_CenterWnd->Symbol())
+		return;
+	VtSymbol* symbol = _CenterWnd->Symbol();
 	if (symbol) {
 		std::set<std::pair<int, int>> refreshSet;
 		SetCenterValue(symbol, refreshSet);
@@ -899,14 +1007,14 @@ void SmOrderGrid::ClearHogas(std::set<std::pair<int, int>>& refreshSet)
 
 void SmOrderGrid::SetOrderInfo(std::set<std::pair<int, int>>& refreshSet)
 {
-	if (!_Symbol || !_Account)
+	if (!_CenterWnd || !_CenterWnd->Symbol() || !_OrderConfigMgr || !_OrderConfigMgr->OrderMgr())
 		return;
 
-	VtOrderManager* orderMgr = VtOrderManagerSelector::GetInstance()->FindAddOrderManager(_Account->AccountNo);
+	VtSymbol* sym = _CenterWnd->Symbol();
 
 	_OrderPos.clear();
 
-	std::vector<VtOrder*> acptOrderList = orderMgr->GetAcceptedOrders(_Symbol->ShortCode);
+	std::vector<VtOrder*> acptOrderList = _OrderConfigMgr->OrderMgr()->GetAcceptedOrders(sym->ShortCode);
 
 	int buy_count = 0, sell_count = 0;
 	CGridCellBase* pCell = nullptr;
@@ -916,7 +1024,7 @@ void SmOrderGrid::SetOrderInfo(std::set<std::pair<int, int>>& refreshSet)
 		if (order->amount == 0)
 			continue;
 		order->orderPosition == VtPositionType::Buy ? buy_count += order->amount : sell_count += order->amount;
-		int row = FindRowFromCenterValue(_Symbol, order->intOrderPrice);
+		int row = FindRowFromCenterValue(sym, order->intOrderPrice);
 		if (row >= _StartRowForValue && row <= _EndRowForValue) {
 			if (order->orderPosition == VtPositionType::Sell) {
 				pCell = GetCell(row, CenterCol - 3);
@@ -967,9 +1075,6 @@ void SmOrderGrid::ClearOldOrders(std::set<std::pair<int, int>>& refreshSet)
 
 void SmOrderGrid::SetStopOrderInfo(std::set<std::pair<int, int>>& refreshSet)
 {
-	if (!_Symbol)
-		return;
-
 	_StopOrderPos.clear();
 	CGridCellBase* pCell = nullptr;
 	std::string strVal;
@@ -1028,9 +1133,6 @@ void SmOrderGrid::ClearOldStopOrders(std::set<std::pair<int, int>>& refreshSet)
 
 void SmOrderGrid::CalcPosStopOrders(std::set<std::pair<int, int>>& refreshSet)
 {
-	if (!_Symbol)
-		return;
-
 	ClearStopOrderVectors();
 	for (auto it = _StopOrderMgr->StopOrderMapHd.begin(); it != _StopOrderMgr->StopOrderMapHd.end(); ++it) {
 		HdOrderRequest* order = it->second;
@@ -1079,29 +1181,29 @@ void SmOrderGrid::RefreshCells(std::set<std::pair<int, int>>& refreshSet)
 
 void SmOrderGrid::PutOrder(int price, VtPositionType position, VtPriceType priceType /*= VtPriceType::Price*/)
 {
-	if (!_Symbol || !_Account)
+	if (!_OrderConfigMgr->Account() || !_OrderConfigMgr->Symbol() || !_OrderConfigMgr->OrderMgr())
 		return;
 
-	VtOrderManager* orderMgr = VtOrderManagerSelector::GetInstance()->FindAddOrderManager(_Account->AccountNo);
+	//VtOrderManager* orderMgr = VtOrderManagerSelector::GetInstance()->FindAddOrderManager(_Account->AccountNo);
 	
 	HdOrderRequest request;
 	request.Price = price;
 	request.Position = position;
 	request.Amount = 1;
-	request.AccountNo = _Account->AccountNo;
-	request.Password = _Account->Password;
-	request.SymbolCode = _Symbol->ShortCode;
+	request.AccountNo = _OrderConfigMgr->Account()->AccountNo;
+	request.Password = _OrderConfigMgr->Account()->Password;
+	request.SymbolCode = _OrderConfigMgr->Symbol()->ShortCode;
 	request.FillCondition = VtFilledCondition::Fas;
 	request.PriceType = priceType;
 
-	request.RequestId = orderMgr->GetOrderRequestID();
+	request.RequestId = _OrderConfigMgr->OrderMgr()->GetOrderRequestID();
 	request.SourceId = (long)this;
 	request.SubAccountNo = _T("");
 	request.FundName = _T("");
 
 	request.AccountLevel = 0;
 	request.orderType = VtOrderType::New;
-	orderMgr->PutOrder(std::move(request));
+	_OrderConfigMgr->OrderMgr()->PutOrder(std::move(request));
 }
 
 void SmOrderGrid::PutOrder(VtPosition* posi, int price, bool liqud /*= false*/)
@@ -1212,15 +1314,17 @@ void SmOrderGrid::SetOrderAreaColor()
 
 void SmOrderGrid::SetPositionInfo(std::set<std::pair<int, int>>& refreshSet)
 {
-	if (!_Symbol || !_OrderConfigMgr)
+	if (!_OrderConfigMgr)
+		return;
+	if (!_CenterWnd || !_CenterWnd->Symbol())
 		return;
 	if (_OrderConfigMgr->Type() == 0)
 	{
 		VtAccount* acnt = _OrderConfigMgr->Account();
 		if (!acnt)
 			return;
-		VtPosition* posi = acnt->FindPosition(_Symbol->ShortCode);
-		ShowPosition(refreshSet, posi, _Symbol);
+		VtPosition* posi = acnt->FindPosition(_CenterWnd->Symbol()->ShortCode);
+		ShowPosition(refreshSet, posi, _CenterWnd->Symbol());
 	}
 	else
 	{
@@ -1228,11 +1332,11 @@ void SmOrderGrid::SetPositionInfo(std::set<std::pair<int, int>>& refreshSet)
 		if (!fund)
 			return;
 		int count = 0;
-		VtPosition posi = fund->GetPosition(_Symbol->ShortCode, count);
+		VtPosition posi = fund->GetPosition(_CenterWnd->Symbol()->ShortCode, count);
 		if (count == 0)
-			ShowPosition(refreshSet, nullptr, _Symbol);
+			ShowPosition(refreshSet, nullptr, _CenterWnd->Symbol());
 		else
-			ShowPosition(refreshSet, &posi, _Symbol);
+			ShowPosition(refreshSet, &posi, _CenterWnd->Symbol());
 	}
 }
 
@@ -1394,25 +1498,23 @@ void SmOrderGrid::OrderByMousePosition()
 
 void SmOrderGrid::RefreshAllValues()
 {
-	VtSymbolManager* symMgr = VtSymbolManager::GetInstance();
-	VtSymbol* symbol = symMgr->FindSymbol(_SymbolCode);
-	if (symbol) {
-		std::set<std::pair<int, int>> refreshSet;
-		ClearQuotes(refreshSet);
-		SetQuoteColor(symbol, refreshSet);
+	if (!_CenterWnd || !_CenterWnd->Symbol() )
+		return;
+	std::set<std::pair<int, int>> refreshSet;
+	ClearQuotes(refreshSet);
+	SetQuoteColor(_CenterWnd->Symbol(), refreshSet);
 
-		ClearHogas(refreshSet);
-		SetHogaInfo(symbol, refreshSet);
+	ClearHogas(refreshSet);
+	SetHogaInfo(_CenterWnd->Symbol(), refreshSet);
 
-		ClearOldOrders(refreshSet);
-		SetOrderInfo(refreshSet);
+	ClearOldOrders(refreshSet);
+	SetOrderInfo(refreshSet);
 
-		ClearOldStopOrders(refreshSet);
-		SetStopOrderInfo(refreshSet);
-		CalcPosStopOrders(refreshSet);
+	ClearOldStopOrders(refreshSet);
+	SetStopOrderInfo(refreshSet);
+	CalcPosStopOrders(refreshSet);
 
-		RefreshCells(refreshSet);
-	}
+	RefreshCells(refreshSet);
 }
 
 BEGIN_MESSAGE_MAP(SmOrderGrid, CGridCtrl)
@@ -1712,19 +1814,21 @@ void SmOrderGrid::RedrawOrderTrackCells()
 	}
 }
 
+/*
 void SmOrderGrid::AddStopOrder(int price, VtPositionType posi)
 {
-	if (!_Account || !_Symbol)
+	if (!_OrderConfigMgr->Account() || !_OrderConfigMgr->Symbol() || !_OrderConfigMgr->OrderMgr())
 		return;
-	VtOrderManager* orderMgr = VtOrderManagerSelector::GetInstance()->FindAddOrderManager(_Account->AccountNo);
+
+	VtOrderManager* orderMgr = VtOrderManagerSelector::GetInstance()->FindAddOrderManager(_OrderConfigMgr->Account()->AccountNo);
 	HdOrderRequest* request = new HdOrderRequest();
 	request->Type = 0;
-	request->AccountNo = _Account->AccountNo;
-	request->Password = _Account->Password;
+	request->AccountNo = _OrderConfigMgr->Account()->AccountNo;
+	request->Password = _OrderConfigMgr->Account()->Password;
 	request->Price = price;
 	request->Position = posi;
 	request->Amount = 1;
-	request->SymbolCode = _Symbol->ShortCode;
+	request->SymbolCode = _OrderConfigMgr->Symbol()->ShortCode;
 	request->FillCondition = VtFilledCondition::Fas;
 	request->PriceType = VtPriceType::Price;
 	request->slip = 2;
@@ -1733,6 +1837,82 @@ void SmOrderGrid::AddStopOrder(int price, VtPositionType posi)
 	request->SubAccountNo = _T("");
 	request->FundName = _T("");
 	_StopOrderMgr->AddOrderHd(request);
+
+	std::set<std::pair<int, int>> refreshSet;
+	ClearOldStopOrders(refreshSet);
+	SetStopOrderInfo(refreshSet);
+	CalcPosStopOrders(refreshSet);
+	RefreshCells(refreshSet);
+}
+*/
+
+void SmOrderGrid::AddStopOrder(int price, VtPositionType posi)
+{
+	if (!_CenterWnd || !_CenterWnd->Symbol() || !_OrderConfigMgr)
+		return;
+
+	if (_OrderConfigMgr->Type() == 0) { // 계좌 주문
+		if (!_OrderConfigMgr->Account())
+			return;
+		VtAccount* acnt = _OrderConfigMgr->Account();
+		HdOrderRequest* request = new HdOrderRequest();
+		if (acnt->AccountLevel() == 0) { // 본계좌인 경우
+			request->Type = 0;
+			request->AccountNo = acnt->AccountNo;
+			request->Password = acnt->Password;
+		}
+		else { // 서브계좌 인 경우
+			request->Type = 1;
+			VtAccount* parentAcnt = acnt->ParentAccount();
+			if (parentAcnt) {
+				request->AccountNo = parentAcnt->AccountNo;
+				request->Password = parentAcnt->Password;
+			}
+		}
+		request->Price = price;
+		request->Position = posi;
+		request->Amount = _CenterWnd->OrderAmount();
+		request->SymbolCode = _CenterWnd->Symbol()->ShortCode;
+		request->FillCondition = _CenterWnd->FillCondition();
+		request->PriceType = _CenterWnd->PriceType();
+		request->slip = _CenterWnd->StopVal();
+		request->RequestId = _OrderConfigMgr->OrderMgr()->GetOrderRequestID();
+		request->SourceId = (long)this;
+		request->SubAccountNo = _T("");
+		request->FundName = _T("");
+		_StopOrderMgr->AddOrderHd(request);
+
+	}
+	else { // 펀드 주문
+		if (!_OrderConfigMgr->Fund())
+			return;
+		VtFund* fund = _OrderConfigMgr->Fund();
+		std::vector<VtAccount*>& acntVec = fund->GetFundAccountVector();
+		for (auto it = acntVec.begin(); it != acntVec.end(); ++it) {
+			VtAccount* acnt = *it;
+			// 부모 계좌가 없는 것은 주문을 낼 수 없다.
+			if (!acnt->ParentAccount())
+				continue;
+
+			HdOrderRequest* request = new HdOrderRequest();
+			request->Type = 2;
+			request->Price = price;
+			request->Position = posi;
+			// 펀드는 계좌의 승수를 넣어 준다.
+			request->Amount = acnt->SeungSu;
+			request->AccountNo = acnt->ParentAccount()->AccountNo;
+			request->Password = acnt->ParentAccount()->Password;
+			request->SymbolCode = _CenterWnd->Symbol()->ShortCode;
+			request->FillCondition = _CenterWnd->FillCondition();
+			request->PriceType = _CenterWnd->PriceType();
+			request->slip = _CenterWnd->StopVal();
+			request->RequestId = _OrderConfigMgr->OrderMgr()->GetOrderRequestID();
+			request->SourceId = (long)this;
+			request->SubAccountNo = acnt->AccountNo;
+			request->FundName = fund->Name;
+			_StopOrderMgr->AddOrderHd(request);
+		}
+	}
 
 	std::set<std::pair<int, int>> refreshSet;
 	ClearOldStopOrders(refreshSet);

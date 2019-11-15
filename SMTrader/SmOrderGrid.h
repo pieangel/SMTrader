@@ -29,10 +29,6 @@ class SmOrderGrid : public CGridCtrl
 public:
 	SmOrderGrid();
 	~SmOrderGrid();
-	VtSymbol* Symbol() const { return _Symbol; }
-	void Symbol(VtSymbol* val);
-	VtAccount* Account() const { return _Account; }
-	void Account(VtAccount* val) { _Account = val; }
 	SmOrderPanel* CenterWnd() const { return _CenterWnd; }
 	void CenterWnd(SmOrderPanel* val) { _CenterWnd = val; }
 	VtCutManager* CutMgr() const { return _CutMgr; }
@@ -43,7 +39,10 @@ public:
 	void OrderWidth(int val) { _OrderWidth = val; }
 	int CellHeight() const { return _CellHeight; }
 	void CellHeight(int val) { _CellHeight = val; }
+	int OrderAmount() const { return _OrderAmount; }
+	void OrderAmount(int val) { _OrderAmount = val; }
 public:
+	void SetAutoStopOnFilled(VtOrder* order);
 	void UnregisterAllCallback();
 	void RegisterQuoteCallback();
 	void UnregisterQuoteCallback();
@@ -70,6 +69,8 @@ public:
 	void RefreshOrderPosition();
 	void SetOrderArea(int height, int width);
 private:
+	void CheckProfitLossTouchHd(int intClose);
+	void CheckStopTouchedHd(int intClose);
 	int _OrderWidth = 60;
 	bool _ShowOrderQuantityCol = true;
 	// 컬럼 타이틀 설정
@@ -169,9 +170,9 @@ public:
 	afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
 
 private:
-	VtSymbol* _Symbol = nullptr;
-	std::string _SymbolCode;
-	VtAccount* _Account = nullptr;
+	//VtSymbol* _Symbol = nullptr;
+	//std::string _SymbolCode;
+	// VtAccount* _Account = nullptr;
 public:
 	afx_msg void OnLButtonDblClk(UINT nFlags, CPoint point);
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
@@ -181,6 +182,7 @@ public:
 	afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
 	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
 private:
+	int _OrderAmount;
 	bool _MouseIn = true;
 	CRect _DragStartRect;
 	CRect _DragEndRect;
@@ -188,8 +190,6 @@ private:
 	int _DragStartRow = 0;
 	
 	void DrawArrow(int direction, POINT *point, CDC* pdc, POINT p0, POINT p1, int head_length, int head_width);
-	//int _OldMMRow = 0;
-	//int _OldMMCol = 0;
 	BOOL m_bMouseTracking;
 	void RedrawOrderTrackCells();
 	void AddStopOrder(int price, VtPositionType posi);

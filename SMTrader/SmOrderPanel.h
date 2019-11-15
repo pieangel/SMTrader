@@ -57,7 +57,7 @@ public:
 	VtPriceType PriceType() const { return _PriceType; }
 	void PriceType(VtPriceType val) { _PriceType = val; }
 	VtSymbol* Symbol() const { return _Symbol; }
-	void Symbol(VtSymbol* val) { _Symbol = val; }
+	//void Symbol(VtSymbol* val) { _Symbol = val; }
 	int StopVal() const { return _StopVal; }
 	void StopVal(int val) { _StopVal = val; }
 	int TickWndPos() const { return _TickWndPos; }
@@ -69,6 +69,8 @@ public:
 	bool UseHogaSiseFilter() const { return _UseHogaSiseFilter; }
 	void UseHogaSiseFilter(bool val) { _UseHogaSiseFilter = val; }
 	void BlockEvent();
+	int OrderAmount() const { return _OrderAmount; }
+	void OrderAmount(int val) { _OrderAmount = val; }
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 

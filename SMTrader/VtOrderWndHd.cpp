@@ -266,7 +266,7 @@ BOOL VtOrderWndHd::OnInitDialog()
 	_ComboAcnt.SetDroppedWidth(150);
 
 	SmOrderPanel* centerWnd = _CenterWndVector.front();
-	centerWnd->Activated(true);
+	centerWnd->Activated(false);
 	_OrderConfigMgr->_HdCenterWnd = centerWnd;
 
 	_EnableOnSizeEvent = true;

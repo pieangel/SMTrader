@@ -4552,9 +4552,16 @@ void CGridCtrl::UnregisterButton(int id)
 				pCell->SetText("");
 				pCell->SetTextClr(RGB(0, 0, 0));
 				pCell->SetBackClr(RGB(255, 255, 255));
+				_ButtonMap.erase(it);
+				return;
 			}
 		}
 	}
+}
+
+void CGridCtrl::ClearButtonIDMap()
+{
+	_ButtonMap.clear();
 }
 
 void CGridCtrl::RegisterButton(int id, int row, int col)
