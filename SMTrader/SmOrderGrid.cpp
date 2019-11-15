@@ -1491,6 +1491,9 @@ void SmOrderGrid::OnLButtonDblClk(UINT nFlags, CPoint point)
 
 void SmOrderGrid::OnLButtonDown(UINT nFlags, CPoint point)
 {
+	if (_OrderConfigMgr && _OrderConfigMgr->_HdOrderWnd) {
+		_OrderConfigMgr->_HdOrderWnd->SetActiveCenterWnd(_CenterWnd);
+	}
 	CCellID cell = GetCellFromPt(point);
 	CGridCellBase* pCell = GetCell(cell.row, cell.col);
 	if (pCell) {

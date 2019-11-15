@@ -821,7 +821,7 @@ private:
 
 	std::vector<std::pair<CCellID, CCellID>> _StopOrderVector;
 	std::map<std::pair<int, int>, int> _ButtonMap;
-	bool _Selected = true;
+	bool _Selected = false;
 public:
 	int FindButtonID(int row, int col);
 	void UnregisterButton(int id);

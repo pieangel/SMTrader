@@ -1628,9 +1628,9 @@ void CGridCtrl::OnDraw(CDC* pDC)
 		CBrush* pTempBrush = NULL;
 		CBrush OrigBrush;
 		if (_Selected)
-			brush1.CreateSolidBrush(RGB(255, 255, 0));   // Blue brush.
+			brush1.CreateSolidBrush(RGB(255, 255, 0));   
 		else
-			brush1.CreateSolidBrush(RGB(255, 255, 255));   // Blue brush.
+			brush1.CreateSolidBrush(RGB(255, 255, 255));   
 		pTempBrush = (CBrush*)pDC->SelectObject(&brush1);
 		
 		pDC->FillRect(clientRect, pTempBrush);
@@ -1855,6 +1855,20 @@ void CGridCtrl::OnDraw(CDC* pDC)
 		DrawOrderLine(pDC);
 	}
 
+	if (m_nGridLines == GVL_BOTH || m_nGridLines == GVL_HORZ) {
+		int y = nFixedRowHeight;
+		for (row = minVisibleRow; row <= maxVisibleRow; row++)
+		{
+			if (GetRowHeight(row) <= 0) continue;
+
+			y += GetRowHeight(row);
+			if (row == maxVisibleRow) {
+				pDC->MoveTo(nFixedColWidth, y - 1);
+				pDC->LineTo(VisRect.right, y - 1);
+			}
+		}
+	}
+
 	
 	// 테두리를 그린다.
 	{
@@ -1862,7 +1876,7 @@ void CGridCtrl::OnDraw(CDC* pDC)
 		if (_Selected)
 			pen.CreatePen(PS_SOLID, 3, RGB(255, 0, 0));
 		else
-			pen.CreatePen(PS_SOLID, 1, RGB(0, 0, 0));
+			pen.CreatePen(PS_SOLID, 1, RGB(127, 127, 127));
 
 		oldPen = pDC->SelectObject(&pen);
 		pDC->MoveTo(clientRect.left, clientRect.top);

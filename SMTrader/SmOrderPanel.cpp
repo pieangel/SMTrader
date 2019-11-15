@@ -1104,7 +1104,41 @@ void SmOrderPanel::InitAll()
 
 void SmOrderPanel::Activated(bool flag)
 {
+	_Activated = flag;
+	
+	if (_Symbol && _ParentDlg) {
+		SetProductName(_Symbol);
+		CString title;
+		title.Format(_T("계좌주문창 : 종목 - %s"), _Symbol->Name.c_str());
+		_ParentDlg->SetWindowText(title);
+	}
+	m_Grid.Selected(flag);
+	m_Grid.Invalidate();
+	if (_Activated) {
+		_StaticProductName.SetTextColor(RGB(255, 255, 255));
+		_StaticProductName.SetColor(RGB(19, 137, 255));
+		_StaticProductName.SetGradientColor(RGB(19, 137, 255));
 
+
+		_StaticProduct.SetTextColor(RGB(255, 255, 255));
+		_StaticProduct.SetColor(RGB(19, 137, 255));
+		_StaticProduct.SetGradientColor(RGB(19, 137, 255));
+
+	}
+	else {
+		_StaticProductName.SetTextColor(RGB(0, 0, 0));
+		_StaticProductName.SetColor(GetSysColor(COLOR_BTNFACE));
+		_StaticProductName.SetGradientColor(GetSysColor(COLOR_BTNFACE));
+
+		_StaticProduct.SetTextColor(RGB(0, 0, 0));
+		_StaticProduct.SetColor(GetSysColor(COLOR_BTNFACE));
+		_StaticProduct.SetGradientColor(GetSysColor(COLOR_BTNFACE));
+	}
+
+	if (_StaticProductName.GetSafeHwnd()) {
+		_StaticProductName.Invalidate();
+		_StaticProduct.Invalidate();
+	}
 }
 
 void SmOrderPanel::ResetByCenterRow()
