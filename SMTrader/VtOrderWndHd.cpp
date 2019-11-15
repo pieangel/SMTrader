@@ -386,21 +386,26 @@ void VtOrderWndHd::RefreshLayout(bool resize, bool recalGrid, bool forward)
 	// 크기가 줄어들 때는 정순으로 이동을 시킨다.
 	// 이것은 윈도우가 겹쳐 컨트롤이 그려지지 않는 것을 방지하기 위함이다.
 	if (resize) {
+		// 윈도우 크기를 다시 설정한다.
 		ResizeWindow();	
 	}
+	// 자식 윈도우의 위치를 설정한다.
 	RecalChildWindows();
 	if (forward) {
+		// 자식 윈도우를 원하는 위치로 이동시킨다.
 		ReposChildWindowsForward();
 	} else {
+		// 자식 윈도우를 원하는 위치로 이동시킨다.
 		ReposChildWindowsBackward();
 	}
+	// 컨트롤들을 레이아웃에 맞게 이동시킨다.
 	RepositionControl();
+	// 컨트롤들을 환경에 맞게 보이거나 감춘다.
 	ShowHideCtrl();
 
 	if (!resize) {
 		for (auto it = _CenterWndVector.begin(); it != _CenterWndVector.end(); ++it) {
 			(*it)->RefreshLayout(recalGrid);
-			//(*it)->Invalidate(TRUE);
 		}
 	}
 }
@@ -457,7 +462,6 @@ void VtOrderWndHd::AddWindow()
 	_OrderConfigMgr->_HdCenterWnd = centerWnd;
 	centerWnd->InitAll();
 	_CenterWndVector.push_back(centerWnd);
-	//_CenterWndCount = _CenterWndVector.size();
 	RefreshLayout(true, false);
 	_EnableOnSizeEvent = true;
 }
@@ -490,6 +494,7 @@ void VtOrderWndHd::RemoveWindow()
 	}
 	auto it = std::prev(_CenterWndVector.end());
 	SmOrderPanel* centerWnd = *it;
+	centerWnd->BlockEvent();
 	bool curCenterWnd = false;
 	if (_OrderConfigMgr && centerWnd == _OrderConfigMgr->_HdCenterWnd)
 		curCenterWnd = true;
@@ -1319,7 +1324,7 @@ void VtOrderWndHd::ReposChildWindowsForward()
 		if (std::get<1>(item) && wnd->GetSafeHwnd()) {
 			wnd->ShowWindow(SW_SHOW);
 			//wnd->SetWindowPos(nullptr, rect.left, rect.top, rect.Width(), rect.Height(), SWP_NOZORDER | SWP_FRAMECHANGED | SWP_DRAWFRAME);
-			wnd->MoveWindow(rect, FALSE);
+			wnd->MoveWindow(rect, TRUE);
 			//wnd->Invalidate(FALSE);
 		}
 		else {
@@ -1813,7 +1818,7 @@ void VtOrderWndHd::RepositionControl()
 				CRect rectWC = std::get<1>(item);
 				::DeferWindowPos(hdwp, pWnd->m_hWnd, NULL,
 					rectWC.left, rectWC.top, rectWC.Width(), rectWC.Height(),
-					SWP_NOZORDER || SWP_NOREDRAW);
+					SWP_NOZORDER);
 				pWnd->RedrawWindow();
 
 			}

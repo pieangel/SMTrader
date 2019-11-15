@@ -4,13 +4,14 @@
 
 // VtOrderGridConfig dialog
 class VtOrderCenterWndHd;
+class SmOrderPanel;
 class VtOrderGridConfig : public CDialogEx
 {
 	DECLARE_DYNAMIC(VtOrderGridConfig)
 
 public:
 	VtOrderGridConfig(CWnd* pParent = NULL);   // standard constructor
-	VtOrderGridConfig(VtOrderCenterWndHd* centerWnd);
+	VtOrderGridConfig(SmOrderPanel* centerWnd);
 	virtual ~VtOrderGridConfig();
 
 // Dialog Data
@@ -19,8 +20,8 @@ public:
 		IDD = IDD_ORDERGRID_CONFIG};
 #endif
 
-	VtOrderCenterWndHd* CenterWnd() const { return _CenterWnd; }
-	void CenterWnd(VtOrderCenterWndHd* val) { _CenterWnd = val; }
+	SmOrderPanel* CenterWnd() const { return _CenterWnd; }
+	void CenterWnd(SmOrderPanel* val) { _CenterWnd = val; }
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
@@ -42,7 +43,7 @@ public:
 	virtual BOOL OnInitDialog();
 
 private:
-	VtOrderCenterWndHd* _CenterWnd = nullptr;
+	SmOrderPanel* _CenterWnd = nullptr;
 public:
 	CButton _CheckShowCountCol;
 	CButton _CheckShowOrderCol;

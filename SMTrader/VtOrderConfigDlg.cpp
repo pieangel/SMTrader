@@ -63,9 +63,7 @@ BEGIN_MESSAGE_MAP(VtOrderConfigDlg, CDialog)
 	ON_EN_CHANGE(IDC_EDIT_ORDER_TYPE_SLIP, &VtOrderConfigDlg::OnEnChangeEditOrderTypeSlip)
 	ON_BN_CLICKED(IDC_STATIC_FILL_PL, &VtOrderConfigDlg::OnBnClickedStaticFillPl)
 	ON_BN_CLICKED(IDC_STATIC_ORDER_TYPE, &VtOrderConfigDlg::OnBnClickedStaticOrderType)
-	ON_WM_ERASEBKGND()
 	ON_WM_LBUTTONDOWN()
-	ON_WM_CTLCOLOR()
 END_MESSAGE_MAP()
 
 
@@ -392,33 +390,6 @@ void VtOrderConfigDlg::OnBnClickedStaticOrderType()
 	// TODO: Add your control notification handler code here
 }
 
-
-BOOL VtOrderConfigDlg::OnEraseBkgnd(CDC* pDC)
-{
-	//if (_CenterWnd->GetCenterWndCount() <= 1)
-	//	return FALSE;
-	/*
-	//CBrush brush;
-	if (_CenterWnd->Activated())
-		pDC->SelectObject(&_BrushBackSel);
-	else
-		pDC->SelectObject(&_BrushBackNor);
-
-	//pDC->SelectObject(&brush);
-	CRect rect;
-	GetClientRect(&rect);
-	//pDC->FillRect(&rect, &brush);
-
-	if (_CenterWnd->Activated())
-		pDC->FillRect(&rect, &_BrushBackSel);
-	else
-		pDC->FillRect(&rect, &_BrushBackNor);
-	return TRUE;
-	*/
-	return FALSE;
-}
-
-
 void VtOrderConfigDlg::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
@@ -428,39 +399,3 @@ void VtOrderConfigDlg::OnLButtonDown(UINT nFlags, CPoint point)
 	CDialog::OnLButtonDown(nFlags, point);
 }
 
-
-HBRUSH VtOrderConfigDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
-{
-	return CDialog::OnCtlColor(pDC, pWnd, nCtlColor);
-	/*
-	HBRUSH hBrush = NULL;
-	switch (nCtlColor)
-	{
-// 	case CTLCOLOR_DLG:
-// 		// just return a not NULL brush handle
-// 		if (_CenterWnd->Activated())
-// 			hBrush = (HBRUSH)_BrushBackSel;
-// 		else
-// 			hBrush = (HBRUSH)_BrushBackNor;
-// 		break;
-	case CTLCOLOR_STATIC:
-	{
-		// set text color, transparent back node then 
-		//pDC->SetTextColor(m_crStaticText);
-		pDC->SetBkMode(TRANSPARENT);
-		// return a not NULL brush handle
-		//hBrush = (HBRUSH)m_brushBack;
-		if (_CenterWnd->Activated())
-			hBrush = (HBRUSH)_BrushBackSel;
-		else
-			hBrush = (HBRUSH)_BrushBackNor;
-	}
-	break;
-	default:
-		// do the default processing
-		hBrush = CDialog::OnCtlColor(pDC, pWnd, nCtlColor);
-		break;
-	}
-	return hBrush;
-	*/
-}

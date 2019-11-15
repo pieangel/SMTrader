@@ -117,6 +117,13 @@ void SmOrderGrid::Symbol(VtSymbol* val)
 	_SymbolCode = _Symbol->ShortCode;
 }
 
+void SmOrderGrid::UnregisterAllCallback()
+{
+	UnregisterHogaCallback();
+	UnregisterOrderCallback();
+	UnregisterQuoteCallback();
+}
+
 void SmOrderGrid::RegisterQuoteCallback()
 {
 	SmCallbackManager::GetInstance()->SubscribeQuoteCallback((long)this, std::bind(&SmOrderGrid::OnUpdateSise, this, _1));
@@ -182,6 +189,7 @@ void SmOrderGrid::OnOrderEvent(const VtOrder* order)
 
 void SmOrderGrid::Init()
 {
+	UnregisterButtons();
 	_RowCount = GetMaxRow();
 	_CloseRow = FindCenterRow();
 	_EndRowForValue = _RowCount - 3;
@@ -203,7 +211,6 @@ void SmOrderGrid::Init()
 	SetColumnResize(FALSE);
 	SetRowResize(FALSE);
 	AllowReorderColumn(false);
-	//EnableScrollBarCtrl(SB_BOTH, FALSE);
 
 	_Account = VtAccountManager::GetInstance()->FindAddAccount("00162001");
 	_Symbol = VtSymbolManager::GetInstance()->FindSymbol(_SymbolCode);
@@ -324,8 +331,6 @@ void SmOrderGrid::SetCenterValue()
 
 		ClearHogas(refreshSet);
 		SetHogaInfo(symbol, refreshSet);
-		ClearOldOrders(refreshSet);
-		SetOrderInfo(refreshSet);
 
 		ClearOldOrders(refreshSet);
 		SetOrderInfo(refreshSet);
@@ -1099,6 +1104,96 @@ void SmOrderGrid::PutOrder(int price, VtPositionType position, VtPriceType price
 	orderMgr->PutOrder(std::move(request));
 }
 
+void SmOrderGrid::PutOrder(VtPosition* posi, int price, bool liqud /*= false*/)
+{
+	if (!_CenterWnd || !_CenterWnd->Symbol() || !posi || !_OrderConfigMgr)
+		return;
+	if (posi->OpenQty == 0)
+		return;
+
+	VtSymbol* sym = _CenterWnd->Symbol();
+	VtAccount* acnt = nullptr;
+	VtAccountManager* acntMgr = VtAccountManager::GetInstance();
+	acnt = acntMgr->FindAccount(posi->AccountNo);
+	if (!acnt) { // 본계좌에 없을 경우 서브 계좌를 찾아 본다.
+		VtSubAccountManager* subAcntMgr = VtSubAccountManager::GetInstance();
+		acnt = subAcntMgr->FindAccount(posi->AccountNo);
+	}
+
+	if (!acnt) // 계좌가 없는 경우 아무일도 하지 않음.
+		return;
+
+	HdOrderRequest request;
+	request.Amount = std::abs(posi->OpenQty);
+	if (acnt->AccountLevel() == 0) { // 본계좌 일 때
+		request.AccountNo = acnt->AccountNo;
+		request.Password = acnt->Password;
+	}
+	else { // 서브 계좌 일 때
+		VtAccount* parentAcnt = acnt->ParentAccount();
+		if (parentAcnt) { // 부모 계좌가 있는지 확인 한다.
+			request.AccountNo = parentAcnt->AccountNo;
+			request.Password = parentAcnt->Password;
+		}
+		else
+			return;
+	}
+	request.SymbolCode = _CenterWnd->Symbol()->ShortCode;
+	request.FillCondition = _CenterWnd->FillCondition();
+
+	if (liqud) { // 시장가 청산인 경우
+		request.Price = 0;
+		request.PriceType = VtPriceType::Market;
+	}
+	else { // 지정가 청산인 경우
+		request.PriceType = VtPriceType::Price;
+		request.Price = price;
+	}
+
+	if (posi->Position == VtPositionType::Buy) { // 매수 청산인 경우
+		request.Position = VtPositionType::Sell;
+	}
+	else if (posi->Position == VtPositionType::Sell) { // 매도 청산인 경우
+		request.Position = VtPositionType::Buy;
+	}
+
+	request.RequestId = _OrderConfigMgr->OrderMgr()->GetOrderRequestID();
+	request.SourceId = (long)this;
+
+	if (acnt->AccountLevel() == 0) { // 본계좌 인 경우
+		request.SubAccountNo = _T("");
+		request.FundName = _T("");
+	}
+	else { // 서브 계좌인 경우
+		request.SubAccountNo = acnt->AccountNo;
+		if (acnt->Fund())
+			request.FundName = acnt->Fund()->Name;
+		else
+			request.FundName = _T("");
+	}
+
+	request.orderType = VtOrderType::New;
+	// 정산 주문이냐 청산
+	// 0 : 일반 , 1 : 익절, 2 : 손절- 청산 주문일 때는 익절 손절이 활성화 되어 있어도 처리하지 않는다.
+	request.RequestType = 1;
+
+	_OrderConfigMgr->OrderMgr()->PutOrder(std::move(request));
+}
+
+void SmOrderGrid::RefreshOrderPosition()
+{
+	std::set<std::pair<int, int>> refreshSet;
+	ClearOldOrders(refreshSet);
+	SetOrderInfo(refreshSet);
+	RefreshCells(refreshSet);
+}
+
+void SmOrderGrid::SetOrderArea(int height, int width)
+{
+	_CellHeight = height;
+	_GridColMap[SmOrderGridCol::ORDER] = width;
+}
+
 void SmOrderGrid::SetOrderAreaColor()
 {
 	CGridCellBase* pCell = nullptr;
@@ -1205,6 +1300,52 @@ void SmOrderGrid::ResizeGrid()
 	RegisterButtons();
 }
 
+void SmOrderGrid::LiqudAll(VtPriceType priceType, int price /*= 0*/)
+{
+	if (!_CenterWnd || !_CenterWnd->Symbol() || !_OrderConfigMgr || !_OrderConfigMgr->OrderMgr())
+		return;
+	VtSymbol* sym = _CenterWnd->Symbol();
+	if (_OrderConfigMgr->Type() == 0) { // 계좌 주문일 때
+		VtAccount* acnt = _OrderConfigMgr->Account();
+		VtPosition* posi = acnt->FindPosition(sym->ShortCode);
+
+		if (!posi || posi->OpenQty == 0)
+			return;
+		if (priceType == VtPriceType::Market) // 시장가
+			PutOrder(posi, 0, true);
+		else // 지정가
+			PutOrder(posi, price, false);
+	}
+	else {
+		if (_OrderConfigMgr->Fund()) { // 펀드 주문일 때
+			VtOrderManagerSelector* orderMgrSelector = VtOrderManagerSelector::GetInstance();
+			std::vector<VtAccount*>& fundAcntList = _OrderConfigMgr->Fund()->GetFundAccountVector();
+			for (auto it = fundAcntList.begin(); it != fundAcntList.end(); ++it) { // 서브 계좌 목록을 돌면서 각 서브계좌의 잔고를 청산해 준다.
+				VtAccount* subAcnt = *it;
+				VtPosition* posi = subAcnt->FindPosition(sym->ShortCode);
+
+				if (!posi || posi->OpenQty == 0)
+					continue;
+				if (priceType == VtPriceType::Market) // 시장가
+					PutOrder(posi, 0, true);
+				else // 지정가
+					PutOrder(posi, price, false);
+			}
+		}
+	}
+
+	// 모든 스탑 주문 취소
+	_StopOrderMgr->RemoveAll();
+	// 모든 익절,손절 스탑 취소
+	_CutMgr->RemoveAllHd();
+	// 스탑 주문 모두 갱신
+	std::set<std::pair<int, int>> refreshSet;
+	ClearOldStopOrders(refreshSet);
+	SetStopOrderInfo(refreshSet);
+	CalcPosStopOrders(refreshSet);
+	RefreshCells(refreshSet);
+}
+
 void SmOrderGrid::OrderByMouseClick()
 {
 	if (_OldClickedCell.IsValid() == FALSE)
@@ -1262,8 +1403,6 @@ void SmOrderGrid::RefreshAllValues()
 
 		ClearHogas(refreshSet);
 		SetHogaInfo(symbol, refreshSet);
-		ClearOldOrders(refreshSet);
-		SetOrderInfo(refreshSet);
 
 		ClearOldOrders(refreshSet);
 		SetOrderInfo(refreshSet);

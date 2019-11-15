@@ -1490,7 +1490,7 @@ void VtOrderCenterWndHd::OnBnClickedButtonSetting()
 	}
 	ClearConfigDlg();
 	VtOrderGridConfig* grid = new VtOrderGridConfig();
-	grid->CenterWnd(this);
+	//grid->CenterWnd(this);
 	_ConfigDlgVector.push_back(grid);
 	grid->Create(IDD_ORDERGRID_CONFIG, this);
 	grid->ShowWindow(SW_SHOW);

@@ -57,8 +57,6 @@ public:
 	void RecalateLayout(CRect rcWnd);
 	afx_msg void OnBnClickedStaticFillPl();
 	afx_msg void OnBnClickedStaticOrderType();
-	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
-	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 	CShadeButtonST _BtnApply;
 };

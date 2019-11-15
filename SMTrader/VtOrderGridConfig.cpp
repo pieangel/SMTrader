@@ -9,6 +9,8 @@
 #include "VtOrderCenterWndHd.h"
 #include "VtOrderPanelGrid.h"
 #include "VtOrderWndHd.h"
+#include "SmOrderPanel.h"
+#include "SmOrderGrid.h"
 
 // VtOrderGridConfig dialog
 
@@ -20,7 +22,7 @@ VtOrderGridConfig::VtOrderGridConfig(CWnd* pParent /*=NULL*/)
 	_CenterWnd = nullptr;
 }
 
-VtOrderGridConfig::VtOrderGridConfig(VtOrderCenterWndHd* centerWnd)
+VtOrderGridConfig::VtOrderGridConfig(SmOrderPanel* centerWnd)
 {
 	_CenterWnd = centerWnd;
 }
@@ -228,7 +230,7 @@ BOOL VtOrderGridConfig::OnInitDialog()
 	if (!_CenterWnd)
 		return FALSE;
 
-	VtOrderPanelGrid& grid = _CenterWnd->GetOrderPanelGrid();
+	SmOrderGrid& grid = _CenterWnd->GetOrderPanelGrid();
 
 	std::vector<bool>& gridColOptions = _CenterWnd->GetGridColOptions();
 	

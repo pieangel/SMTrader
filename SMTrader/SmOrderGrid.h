@@ -37,7 +37,14 @@ public:
 	void CenterWnd(SmOrderPanel* val) { _CenterWnd = val; }
 	VtCutManager* CutMgr() const { return _CutMgr; }
 	void CutMgr(VtCutManager* val) { _CutMgr = val; }
+	bool ShowOrderQuantityCol() const { return _ShowOrderQuantityCol; }
+	void ShowOrderQuantityCol(bool val) { _ShowOrderQuantityCol = val; }
+	int OrderWidth() const { return _OrderWidth; }
+	void OrderWidth(int val) { _OrderWidth = val; }
+	int CellHeight() const { return _CellHeight; }
+	void CellHeight(int val) { _CellHeight = val; }
 public:
+	void UnregisterAllCallback();
 	void RegisterQuoteCallback();
 	void UnregisterQuoteCallback();
 	void OnUpdateSise(const VtSymbol* symbol);
@@ -58,7 +65,13 @@ public:
 	// 스페이스바 주문
 	void OrderBySpaceBar();
 	void ResizeGrid();
+	void LiqudAll(VtPriceType priceType, int price = 0);
+	void PutOrder(VtPosition* posi, int price, bool liqud = false);
+	void RefreshOrderPosition();
+	void SetOrderArea(int height, int width);
 private:
+	int _OrderWidth = 60;
+	bool _ShowOrderQuantityCol = true;
 	// 컬럼 타이틀 설정
 	void SetColTitle(bool init);
 

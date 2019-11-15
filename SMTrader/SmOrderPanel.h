@@ -60,16 +60,58 @@ public:
 	void Symbol(VtSymbol* val) { _Symbol = val; }
 	int StopVal() const { return _StopVal; }
 	void StopVal(int val) { _StopVal = val; }
+	int TickWndPos() const { return _TickWndPos; }
+	void TickWndPos(int val) { _TickWndPos = val; }
+	bool ShowTickWnd() const { return _ShowTickWnd; }
+	void ShowTickWnd(bool val) { _ShowTickWnd = val; }
+	bool ShowRemainConfig() const { return _ShowRemainConfig; }
+	void ShowRemainConfig(bool val) { _ShowRemainConfig = val; }
+	bool UseHogaSiseFilter() const { return _UseHogaSiseFilter; }
+	void UseHogaSiseFilter(bool val) { _UseHogaSiseFilter = val; }
+	void BlockEvent();
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
 	DECLARE_MESSAGE_MAP()
 public:
+	void InitSymbol();
+	void SetSymbol(VtSymbol* sym);
+	void AddSymbolToCombo(VtSymbol* symbol);
+	void SetProductName(VtSymbol* symbol);
+	void InitPosition();
+	void RegisterRealtimeSymbol();
+	void UnregisterRealtimeSymbol();
+	void RegisterRealtimeAccount();
+	void UnregisterRealtimeAccount();
 	virtual BOOL OnInitDialog();
 	SmOrderGrid m_Grid;
 	afx_msg void OnClose();
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 public:
+	void InitGridInfo();
+	void SetSymbol();
+	void ClearPosition();
+	void SetTickCount(int count);
+	int GetTickCount();
+	int GetOrderCellWidth()
+	{
+		return m_Grid.OrderWidth();
+	}
+
+	int GetCellHeight()
+	{
+		return m_Grid.CellHeight();
+	}
+	SmOrderGrid& GetOrderPanelGrid()
+	{
+		return m_Grid;
+	}
+	std::vector<bool>& GetGridColOptions() {
+		return _OrderGridColOption;
+	}
+	void SetOrderArea(int height, int width);
+	void ShowOrderCountInGrid(bool flag);
+	void SetShowPLConfigWnd(bool flag);
 	void InitAll();
 	void Activated(bool flag);
 	void ResetByCenterRow();
@@ -148,6 +190,7 @@ public:
 	afx_msg void OnBnClickedBtnRemainFund();
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 private:
+	bool _BlockEvent = true;
 	VtOrderWndHd* _ParentDlg = nullptr;
 	VtOrderConfigManager* _OrderConfigMgr = nullptr;
 	std::vector<VtOrderGridConfig*> _ConfigDlgVector;
@@ -239,4 +282,8 @@ public:
 	void ApplyProfitLossForPosition();
 	void FixedCenter(bool val);
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
+
+	void ShowOrderAreaInGrid(bool flag);
+	void ShowStopAreaInGrid(bool flag);
+	void SetTickWndPos(int pos);
 };

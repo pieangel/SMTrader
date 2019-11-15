@@ -179,7 +179,15 @@ END_MESSAGE_MAP()
 
 void SmOrderPanel::OnBnClickedButtonSetting()
 {
-
+	if (_ParentDlg) {
+		_ParentDlg->SetActiveCenterWnd(this);
+	}
+	ClearConfigDlg();
+	VtOrderGridConfig* grid = new VtOrderGridConfig();
+	grid->CenterWnd(this);
+	_ConfigDlgVector.push_back(grid);
+	grid->Create(IDD_ORDERGRID_CONFIG, this);
+	grid->ShowWindow(SW_SHOW);
 }
 
 void SmOrderPanel::OnDestroy()
@@ -209,7 +217,6 @@ void SmOrderPanel::OnBnClickedStaticFillPl()
 
 void SmOrderPanel::OnCbnSelchangeComboProductHd()
 {
-	//ChangeSymbol();
 	int curSel = _ComboSymbol.GetCurSel();
 	if (curSel != -1)
 	{
@@ -224,67 +231,129 @@ void SmOrderPanel::OnCbnSelchangeComboProductHd()
 
 void SmOrderPanel::OnBnClickedCkFixedCenter()
 {
-
+	_FixedCenter = !_FixedCenter;
+	m_Grid.Init();
 }
 
 void SmOrderPanel::OnBnClickedBtnOrderAmt1()
 {
-
+	// TODO: Add your control notification handler code here
+	CString strText;
+	_BtnAmt1.GetWindowText(strText);
+	_EditOrderAmount.SetWindowText(strText);
+	_OrderAmount = _ttoi(strText);
 }
 
 void SmOrderPanel::OnBnClickedBtnOrderAmt2()
 {
-
+	// TODO: Add your control notification handler code here
+	CString strText;
+	_BtnAmt2.GetWindowText(strText);
+	_EditOrderAmount.SetWindowText(strText);
+	_OrderAmount = _ttoi(strText);
 }
 
 void SmOrderPanel::OnBnClickedBtnOrderAmt3()
 {
-
+	// TODO: Add your control notification handler code here
+	CString strText;
+	_BtnAmt3.GetWindowText(strText);
+	_EditOrderAmount.SetWindowText(strText);
+	_OrderAmount = _ttoi(strText);
 }
 
 void SmOrderPanel::OnBnClickedBtnOrderAmt4()
 {
-
+	// TODO: Add your control notification handler code here
+	CString strText;
+	_BtnAmt4.GetWindowText(strText);
+	_EditOrderAmount.SetWindowText(strText);
+	_OrderAmount = _ttoi(strText);
 }
 
 void SmOrderPanel::OnBnClickedBtnOrderAmt5()
 {
-
+	// TODO: Add your control notification handler code here
+	CString strText;
+	_BtnAmt5.GetWindowText(strText);
+	_EditOrderAmount.SetWindowText(strText);
+	_OrderAmount = _ttoi(strText);
 }
 
 void SmOrderPanel::OnBnClickedBtnOrderAmt6()
 {
-
+	// TODO: Add your control notification handler code here
+	CString strText;
+	_BtnAmt6.GetWindowText(strText);
+	_EditOrderAmount.SetWindowText(strText);
+	_OrderAmount = _ttoi(strText);
 }
 
 void SmOrderPanel::OnDeltaposSpinOrderAmount(NMHDR *pNMHDR, LRESULT *pResult)
 {
-
+	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>(pNMHDR);
+	// TODO: Add your control notification handler code here
+	*pResult = 0;
 }
 
 void SmOrderPanel::OnEnChangeEditOrderAmount()
 {
+	if (!_EditOrderAmount.GetSafeHwnd())
+		return;
 
+	CString strAmount;
+	_EditOrderAmount.GetWindowText(strAmount);
+	std::string amt = strAmount;
+	if (!NumberParser::tryParse(amt, _OrderAmount))
+	{
+		return;
+	}
 }
 
 void SmOrderPanel::OnEnChangeEditStopval()
 {
+	if (!_EditStopVal.GetSafeHwnd())
+		return;
 
+	CString strVal;
+	_EditStopVal.GetWindowText(strVal);
+	std::string amt = strVal;
+	if (!NumberParser::tryParse(amt, _StopVal))
+	{
+		return;
+	}
 }
 
 void SmOrderPanel::OnBnClickedBtnLiq()
 {
-
+	m_Grid.LiqudAll(VtPriceType::Market, 0);
+	ResetRemainFund();
 }
 
 void SmOrderPanel::OnBnClickedBtnRemain()
 {
+	if (!_OrderConfigMgr)
+		return;
 
+	if (_OrderConfigMgr->Type() == 0)
+	{
+		CString strValue;
+		_BtnRemain.GetWindowText(strValue);
+		int first = 0, last = 0;
+		first = strValue.Find('(');
+		last = strValue.Find(')');
+		strValue = strValue.Mid(first + 1, last - first - 1);
+		_OrderAmount = std::abs(_ttoi(strValue));
+		strValue.Format(_T("%d"), _OrderAmount);
+		_EditOrderAmount.SetWindowText(strValue);
+	}
 }
 
 void SmOrderPanel::OnBnClickedBtnSelSymbol()
 {
-
+	HdSymbolSelecter symSelecter;
+	symSelecter.OrderConfigMgr(_OrderConfigMgr);
+	symSelecter.DoModal();
 }
 
 void SmOrderPanel::OnBnClickedButtonProfitLoss()
@@ -299,7 +368,94 @@ void SmOrderPanel::OnStnClickedStaticOrderPanel()
 
 void SmOrderPanel::OnRClicked(NMHDR * pNotifyStruct, LRESULT * result)
 {
+	if (_CurBtn)
+		return;
 
+	int id = pNotifyStruct->idFrom;
+	if (id == IDC_BTN_ORDER_AMT1)
+	{
+		CRect rcWnd;
+		_BtnAmt1.GetWindowRect(rcWnd);
+		ScreenToClient(rcWnd);
+		_BtnAmt1.ShowWindow(SW_HIDE);
+		CString strText;
+		_BtnAmt1.GetWindowText(strText);
+		_EditAmt.SetWindowText(strText);
+		_EditAmt.ShowWindow(SW_SHOW);
+		_EditAmt.MoveWindow(rcWnd);
+		_EditAmt.SetFocus();
+		_CurBtn = &_BtnAmt1;
+	}
+	else if (id == IDC_BTN_ORDER_AMT2)
+	{
+		CRect rcWnd;
+		_BtnAmt2.GetWindowRect(rcWnd);
+		ScreenToClient(rcWnd);
+		_BtnAmt2.ShowWindow(SW_HIDE);
+		CString strText;
+		_BtnAmt2.GetWindowText(strText);
+		_EditAmt.SetWindowText(strText);
+		_EditAmt.ShowWindow(SW_SHOW);
+		_EditAmt.MoveWindow(rcWnd);
+		_EditAmt.SetFocus();
+		_CurBtn = &_BtnAmt2;
+	}
+	else if (id == IDC_BTN_ORDER_AMT3)
+	{
+		CRect rcWnd;
+		_BtnAmt3.GetWindowRect(rcWnd);
+		ScreenToClient(rcWnd);
+		_BtnAmt3.ShowWindow(SW_HIDE);
+		CString strText;
+		_BtnAmt3.GetWindowText(strText);
+		_EditAmt.SetWindowText(strText);
+		_EditAmt.ShowWindow(SW_SHOW);
+		_EditAmt.MoveWindow(rcWnd);
+		_EditAmt.SetFocus();
+		_CurBtn = &_BtnAmt3;
+	}
+	else if (id == IDC_BTN_ORDER_AMT4)
+	{
+		CRect rcWnd;
+		_BtnAmt4.GetWindowRect(rcWnd);
+		ScreenToClient(rcWnd);
+		_BtnAmt4.ShowWindow(SW_HIDE);
+		CString strText;
+		_BtnAmt4.GetWindowText(strText);
+		_EditAmt.SetWindowText(strText);
+		_EditAmt.ShowWindow(SW_SHOW);
+		_EditAmt.MoveWindow(rcWnd);
+		_EditAmt.SetFocus();
+		_CurBtn = &_BtnAmt4;
+	}
+	else if (id == IDC_BTN_ORDER_AMT5)
+	{
+		CRect rcWnd;
+		_BtnAmt5.GetWindowRect(rcWnd);
+		ScreenToClient(rcWnd);
+		_BtnAmt5.ShowWindow(SW_HIDE);
+		CString strText;
+		_BtnAmt5.GetWindowText(strText);
+		_EditAmt.SetWindowText(strText);
+		_EditAmt.ShowWindow(SW_SHOW);
+		_EditAmt.MoveWindow(rcWnd);
+		_EditAmt.SetFocus();
+		_CurBtn = &_BtnAmt5;
+	}
+	else if (id == IDC_BTN_ORDER_AMT6)
+	{
+		CRect rcWnd;
+		_BtnAmt6.GetWindowRect(rcWnd);
+		ScreenToClient(rcWnd);
+		_BtnAmt6.ShowWindow(SW_HIDE);
+		CString strText;
+		_BtnAmt6.GetWindowText(strText);
+		_EditAmt.SetWindowText(strText);
+		_EditAmt.ShowWindow(SW_SHOW);
+		_EditAmt.MoveWindow(rcWnd);
+		_EditAmt.SetFocus();
+		_CurBtn = &_BtnAmt6;
+	}
 }
 
 void SmOrderPanel::OnStnClickedStaticRealTick()
@@ -309,12 +465,56 @@ void SmOrderPanel::OnStnClickedStaticRealTick()
 
 void SmOrderPanel::OnBnClickedBtnRemainFund()
 {
+	if (!_OrderConfigMgr || !_Symbol)
+		return;
+	std::pair<bool, int> curRemain;
+	if (_OrderConfigMgr->Type() == 0) { // 게좌 주문 일 때
+		if (!_OrderConfigMgr->Account())
+			return;
+		curRemain = _OrderConfigMgr->Account()->GetRemainCount(_Symbol->ShortCode);
+	}
+	else { // 펀드 주문일 때
+		if (!_OrderConfigMgr->Fund())
+			return;
+		curRemain = _OrderConfigMgr->Fund()->GetRemainCount(_Symbol->ShortCode);
+	}
 
+	// 잔고가 한번도 생기지 않았거나 0일 때는 처리하지 않는다.
+	if (!curRemain.first || curRemain.second == 0)
+		return;
+
+	_OrderByRemain = !_OrderByRemain;
+	if (_OrderByRemain) {
+		if (curRemain.second < 0) {
+			_BtnRemainFund.SetColor(BTNST_COLOR_FG_IN, RGB(255, 255, 255), true);
+			_BtnRemainFund.SetColor(BTNST_COLOR_BK_IN, RGB(19, 137, 255), true);
+			_BtnRemainFund.SetColor(BTNST_COLOR_FG_OUT, RGB(255, 255, 255), true);
+			_BtnRemainFund.SetColor(BTNST_COLOR_BK_OUT, RGB(19, 137, 255), true);
+
+			_BtnRemainFund.SetColor(BTNST_COLOR_FG_FOCUS, RGB(255, 255, 255), true);
+			_BtnRemainFund.SetColor(BTNST_COLOR_BK_FOCUS, RGB(19, 137, 255), true);
+		}
+		else if (curRemain.second > 0) {
+			_BtnRemainFund.SetColor(BTNST_COLOR_FG_IN, RGB(255, 255, 255), true);
+			_BtnRemainFund.SetColor(BTNST_COLOR_BK_IN, RGB(240, 51, 58), true);
+			_BtnRemainFund.SetColor(BTNST_COLOR_FG_OUT, RGB(255, 255, 255), true);
+			_BtnRemainFund.SetColor(BTNST_COLOR_BK_OUT, RGB(240, 51, 58), true);
+
+			_BtnRemainFund.SetColor(BTNST_COLOR_FG_FOCUS, RGB(255, 255, 255), true);
+			_BtnRemainFund.SetColor(BTNST_COLOR_BK_FOCUS, RGB(240, 51, 58), true);
+		}
+	}
+	else {
+		ResetRemainFund();
+	}
 }
 
 void SmOrderPanel::OnLButtonDown(UINT nFlags, CPoint point)
 {
-
+	if (_ParentDlg) {
+		_ParentDlg->SetActiveCenterWnd(this);
+	}
+	CDialogEx::OnLButtonDown(nFlags, point);
 }
 
 void SmOrderPanel::CreateChildWindow(VtOrderConfigDlg* centerWnd, UINT id, CWnd* parent)
@@ -373,7 +573,7 @@ void SmOrderPanel::SetRemain(int remain)
 
 void SmOrderPanel::RefreshOrderPositon()
 {
-	
+	m_Grid.RefreshOrderPosition();
 }
 
 void SmOrderPanel::ClearConfigDlg()
@@ -518,7 +718,8 @@ void SmOrderPanel::RepositionConfigWnd()
 	if (!_LayoutMgr || !_ConfigDlg)
 		return;
 	CRect& rcConfig = _LayoutMgr->GetRect(IDC_STATIC_MSG);
-	_ConfigDlg->SetWindowPos(nullptr, rcConfig.left, rcConfig.top, rcConfig.Width(), rcConfig.Height(), SWP_NOZORDER);
+	//_ConfigDlg->SetWindowPos(nullptr, rcConfig.left, rcConfig.top, rcConfig.Width(), rcConfig.Height(), SWP_NOZORDER);
+	_ConfigDlg->MoveWindow(rcConfig, TRUE);
 	_ConfigDlg->RecalateLayout(rcConfig);
 }
 
@@ -526,7 +727,8 @@ void SmOrderPanel::RepositionTickGrid()
 {
 	if (_ShowTickWnd) {
 		CRect& rcTick = _LayoutMgr->GetRect(IDC_STATIC_REAL_TICK);
-		_TickGrid.SetWindowPos(nullptr, rcTick.left, rcTick.top, rcTick.Width(), rcTick.Height(), SWP_NOSIZE);
+		//_TickGrid.SetWindowPos(nullptr, rcTick.left, rcTick.top, rcTick.Width(), rcTick.Height(), SWP_NOSIZE);
+		_TickGrid.MoveWindow(rcTick, TRUE);
 	}
 }
 
@@ -573,6 +775,169 @@ CRect SmOrderPanel::GetClientArea(int resourceID)
 	return rcWnd;
 }
 
+void SmOrderPanel::InitSymbol()
+{
+	// 기본 심볼 설정
+	VtSymbol* sym = _DefaultSymbol;
+
+	if (!sym) { // 기본 심볼이 없으면 목록에서 첫번째 것을 가져온다.
+		VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();
+		std::string secName = prdtCatMgr->MainFutureVector.front();
+		VtProductSection* section = prdtCatMgr->FindProductSection(secName);
+		if (section) {
+			if (section->SubSectionVector.size() > 0) {
+				VtProductSubSection* subSection = section->SubSectionVector.front();
+				if (subSection->_SymbolVector.size() > 0) {
+					sym = subSection->_SymbolVector.front();
+				}
+			}
+		}
+	}
+	SetSymbol(sym);
+	AddSymbolToCombo(sym);
+	SetProductName(sym);
+}
+
+void SmOrderPanel::SetSymbol(VtSymbol* sym)
+{
+	if (!sym || !_OrderConfigMgr)
+		return;
+
+	_Symbol = sym;
+	SetProductName(_Symbol);
+	_ProductRemainGrid.SetSymbol(sym);
+
+	if (_OrderConfigMgr->OrderMgr())
+	{
+		_OrderConfigMgr->OrderMgr()->CalcTotalProfitLoss(sym);
+		VtProductOrderManager* PrdtOrderMgr = _OrderConfigMgr->OrderMgr()->FindAddProductOrderManager(sym->ShortCode);
+		PrdtOrderMgr->OrderMgr(_OrderConfigMgr->OrderMgr());
+	}
+}
+
+void SmOrderPanel::SetSymbol()
+{
+	if (!_Symbol || !_OrderConfigMgr)
+		return;
+
+	_ProductRemainGrid.SetSymbol(_Symbol);
+	if (_OrderConfigMgr->Type() == 0)
+	{
+		if (_OrderConfigMgr->OrderMgr())
+		{
+			_OrderConfigMgr->OrderMgr()->CalcTotalProfitLoss(_Symbol);
+			VtProductOrderManager* PrdtOrderMgr = _OrderConfigMgr->OrderMgr()->FindAddProductOrderManager(_Symbol->ShortCode);
+			PrdtOrderMgr->OrderMgr(_OrderConfigMgr->OrderMgr());
+		}
+	}
+	else
+	{
+		VtFundOrderManager* fundOrderMgr = (VtFundOrderManager*)_OrderConfigMgr->OrderMgr();
+		std::map<std::string, VtOrderManager*> orderMgrMap = fundOrderMgr->GetOrderManagerMap();
+		for (auto it = orderMgrMap.begin(); it != orderMgrMap.end(); ++it)
+		{
+			VtOrderManager* orderMgr = it->second;
+			orderMgr->CalcTotalProfitLoss(_Symbol);
+			VtProductOrderManager* PrdtOrderMgr = orderMgr->FindAddProductOrderManager(_Symbol->ShortCode);
+			PrdtOrderMgr->OrderMgr(orderMgr);
+		}
+	}
+}
+
+void SmOrderPanel::AddSymbolToCombo(VtSymbol* symbol)
+{
+	if (!symbol || !_ComboSymbol.GetSafeHwnd())
+		return;
+	int index = _ComboSymbol.FindString(0, symbol->ShortCode.c_str());
+	if (index == -1)
+	{
+		index = _ComboSymbol.AddString(symbol->ShortCode.c_str());
+		_ComboSymbol.SetItemDataPtr(index, symbol);
+	}
+	_ComboSymbol.SetCurSel(index);
+}
+
+void SmOrderPanel::SetProductName(VtSymbol* symbol)
+{
+	if (!symbol)
+		return;
+
+	if (_StaticProductName.GetSafeHwnd()) {
+		_StaticProductName.SetWindowText(symbol->Name.c_str());
+		_StaticProductName.Invalidate();
+	}
+}
+
+void SmOrderPanel::InitPosition()
+{
+	_ProductRemainGrid.InitPosition();
+}
+
+void SmOrderPanel::RegisterRealtimeSymbol()
+{
+	if (!_Symbol)
+		return;
+	VtRealtimeRegisterManager* realtimeRegiMgr = VtRealtimeRegisterManager::GetInstance();
+	realtimeRegiMgr->RegisterProduct(_Symbol->ShortCode);
+}
+
+void SmOrderPanel::UnregisterRealtimeSymbol()
+{
+	if (!_Symbol)
+		return;
+	VtRealtimeRegisterManager* realtimeRegiMgr = VtRealtimeRegisterManager::GetInstance();
+	realtimeRegiMgr->UnregisterProduct(_Symbol->ShortCode);
+}
+
+void SmOrderPanel::RegisterRealtimeAccount()
+{
+
+	if (!_OrderConfigMgr)
+		return;
+	VtRealtimeRegisterManager* realtimeRegiMgr = VtRealtimeRegisterManager::GetInstance();
+	if (_OrderConfigMgr->Type() == 0)
+	{
+		if (!_OrderConfigMgr->Account())
+			return;
+
+		realtimeRegiMgr->RegisterAccount(_OrderConfigMgr->Account()->AccountNo);
+	}
+	else
+	{
+		if (!_OrderConfigMgr->Fund())
+			return;
+		// Register the new account to the Event Map.
+		std::set<VtAccount*> parendAcntSet = _OrderConfigMgr->Fund()->GetParentAccountSet();
+		for (auto it = parendAcntSet.begin(); it != parendAcntSet.end(); ++it)
+		{
+			VtAccount* parentAcnt = *it;
+			realtimeRegiMgr->RegisterAccount(parentAcnt->AccountNo);
+		}
+	}
+}
+
+void SmOrderPanel::UnregisterRealtimeAccount()
+{
+	if (!_OrderConfigMgr)
+		return;
+	VtRealtimeRegisterManager* realtimeRegiMgr = VtRealtimeRegisterManager::GetInstance();
+	if (_OrderConfigMgr->Type() == 0)
+	{
+		if (!_OrderConfigMgr->Account())
+			return;
+		realtimeRegiMgr->UnregisterAccount(_OrderConfigMgr->Account()->AccountNo);
+	}
+	else
+	{
+		std::set<VtAccount*> parendAcntSet = _OrderConfigMgr->Fund()->GetParentAccountSet();
+		for (auto it = parendAcntSet.begin(); it != parendAcntSet.end(); ++it)
+		{
+			VtAccount* acnt = *it;
+			realtimeRegiMgr->UnregisterAccount(acnt->AccountNo);
+		}
+	}
+}
+
 BOOL SmOrderPanel::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
@@ -597,11 +962,7 @@ BOOL SmOrderPanel::OnInitDialog()
 	RepositionConfigWnd();
 	// 틱창을 옮겨 준다.
 	RepositionTickGrid();
-	// 주문 그리드 셀들을 설정한다.
-	m_Grid.Init();
-	// 그리드 컬럼 옵션을 설정해 준다.
-	m_Grid.ShowHideOrderGrid(_OrderGridColOption);
-
+	
 	_StaticProductName.SetTextColor(RGB(0, 0, 0));
 	_StaticProductName.SetColor(GetSysColor(COLOR_BTNFACE));
 	_StaticProductName.SetGradientColor(GetSysColor(COLOR_BTNFACE));
@@ -681,9 +1042,64 @@ void SmOrderPanel::OnTimer(UINT_PTR nIDEvent)
 	CDialogEx::OnTimer(nIDEvent);
 }
 
+void SmOrderPanel::InitGridInfo()
+{
+	if (m_Grid.GetSafeHwnd())
+		m_Grid.Init();
+}
+
+void SmOrderPanel::ClearPosition()
+{
+	_ProductRemainGrid.ClearPosition();
+}
+
+void SmOrderPanel::SetTickCount(int count)
+{
+	_TickGrid.MaxRow(count);
+}
+
+int SmOrderPanel::GetTickCount()
+{
+	return _TickGrid.MaxRow();
+}
+
+void SmOrderPanel::SetOrderArea(int height, int width)
+{
+	m_Grid.SetOrderArea(height, width);
+	ResizeOrderGrid();
+}
+
+void SmOrderPanel::ShowOrderCountInGrid(bool flag)
+{
+	_ShowOrderCountArea = flag;
+	_OrderGridColOption[2] = flag;
+	m_Grid.ShowHideOrderGrid(_OrderGridColOption);
+	if (!_ShowStopArea && !_ShowOrderCountArea) {
+		_ProductRemainGrid.SetShowAvage(false);
+		_ProductRemainGrid.SetShowRemainType(false);
+	}
+	else {
+		_ProductRemainGrid.SetShowAvage(true);
+		_ProductRemainGrid.SetShowRemainType(true);
+	}
+}
+
+void SmOrderPanel::SetShowPLConfigWnd(bool flag)
+{
+	_ShowRemainConfig = flag;
+}
+
 void SmOrderPanel::InitAll()
 {
-
+	if (!_OrderConfigMgr)
+		return;
+	InitSymbol();
+	InitPosition();
+	// 주문 그리드 셀들을 설정한다.
+	m_Grid.Init();
+	// 그리드 컬럼 옵션을 설정해 준다.
+	m_Grid.ShowHideOrderGrid(_OrderGridColOption);
+	_Init = true;
 }
 
 void SmOrderPanel::Activated(bool flag)
@@ -712,11 +1128,17 @@ int SmOrderPanel::GetWindowWidth()
 
 void SmOrderPanel::RefreshLayout(bool flag)
 {
+	// 컨트롤들의 레이아웃을 계산한다.
 	CalcLayout();
+	// 컨트롤들을 위치를 설정한다.
 	RepositionControl();
+	// 주문 그리들의 크기를 조절한다.
 	m_Grid.ResizeGrid();
+	// 제품정보 그리드를 위치를 설정한다.
 	RepositionProductGrid();
+	// 설정 윈도우의 위치를 재설정한다.
 	RepositionConfigWnd();
+	// 틱윈도우의 위치를 재설정한다.
 	RepositionTickGrid();
 }
 
@@ -771,7 +1193,11 @@ void SmOrderPanel::ResizeOrderGrid(int maxHeight)
 
 void SmOrderPanel::ResizeOrderGrid()
 {
-
+	CalcLayout();
+	RepositionControl();
+	m_Grid.ResizeGrid();
+	RepositionProductGrid();
+	RepositionConfigWnd();
 }
 
 int SmOrderPanel::GetCountOrderGridEnabledCol()
@@ -784,14 +1210,29 @@ bool SmOrderPanel::ShowTickWnd()
 	return true;
 }
 
+void SmOrderPanel::BlockEvent()
+{
+	m_Grid.UnregisterAllCallback();
+}
+
 void SmOrderPanel::ChangeAccount(VtAccount* acnt)
 {
-
+	if (!acnt)
+		return;
+	ClearPosition();
+	SetSymbol();
+	InitGridInfo();
+	InitPosition();
 }
 
 void SmOrderPanel::ChangeFund(VtFund* fund)
 {
-
+	if (!fund)
+		return;
+	ClearPosition();
+	SetSymbol();
+	InitGridInfo();
+	InitPosition();
 }
 
 void SmOrderPanel::Save(simple::file_ostream<same_endian_type>& ss)
@@ -806,7 +1247,15 @@ void SmOrderPanel::Load(simple::file_istream<same_endian_type>& ss)
 
 void SmOrderPanel::ChangeSymbol(VtSymbol* symbol)
 {
-
+	if (!symbol)
+		return;
+	_TickGrid.ClearValues();
+	ClearPosition();
+	SetSymbol(symbol);
+	AddSymbolToCombo(symbol);
+	SetProductName(symbol);
+	InitGridInfo();
+	InitPosition();
 }
 
 
@@ -910,4 +1359,23 @@ BOOL SmOrderPanel::OnEraseBkgnd(CDC* pDC)
 	BOOL bRet = CDialog::OnEraseBkgnd(pDC);
 
 	return bRet;
+}
+
+void SmOrderPanel::ShowOrderAreaInGrid(bool flag)
+{
+	_ShowOrderArea = flag;
+	_OrderGridColOption[0] = flag;
+	m_Grid.ShowHideOrderGrid(_OrderGridColOption);
+}
+
+void SmOrderPanel::ShowStopAreaInGrid(bool flag)
+{
+	_ShowStopArea = flag;
+	_OrderGridColOption[1] = flag;
+	m_Grid.ShowHideOrderGrid(_OrderGridColOption);
+}
+
+void SmOrderPanel::SetTickWndPos(int pos)
+{
+	_TickWndPos = pos;
 }
