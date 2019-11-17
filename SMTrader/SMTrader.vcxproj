@@ -334,6 +334,7 @@
     <ClInclude Include="SmCallbackManager.h" />
     <ClInclude Include="SmOrderGrid.h" />
     <ClInclude Include="SmOrderPanel.h" />
+    <ClInclude Include="SmTickGrid.h" />
     <ClInclude Include="SMTrader.h" />
     <ClInclude Include="SMTraderDoc.h" />
     <ClInclude Include="SMTraderView.h" />
@@ -764,6 +765,7 @@
     <ClCompile Include="SmCallbackManager.cpp" />
     <ClCompile Include="SmOrderGrid.cpp" />
     <ClCompile Include="SmOrderPanel.cpp" />
+    <ClCompile Include="SmTickGrid.cpp" />
     <ClCompile Include="SMTrader.cpp" />
     <ClCompile Include="SMTraderDoc.cpp" />
     <ClCompile Include="SMTraderView.cpp" />

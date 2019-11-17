@@ -17,6 +17,8 @@
 #include "VtRefreshManager.h"
 #include "GradientStatic.h"
 #include <thread>
+#include "SmTickGrid.h"
+
 
 using same_endian_type = std::is_same<simple::LittleEndian, simple::LittleEndian>;
 // SmOrderPanel dialog
@@ -198,7 +200,8 @@ private:
 	VtOrderWndHd* _ParentDlg = nullptr;
 	VtOrderConfigManager* _OrderConfigMgr = nullptr;
 	std::vector<VtOrderGridConfig*> _ConfigDlgVector;
-	VtRealtimeTickQuoteGrid _TickGrid;
+	//VtRealtimeTickQuoteGrid _TickGrid;
+	SmTickGrid _TickGrid;
 	VtProductRemainGrid _ProductRemainGrid;
 	VtConfigGrid _ConfigGrid;
 	bool _FixedCenter;

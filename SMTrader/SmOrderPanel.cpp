@@ -113,7 +113,7 @@ void SmOrderPanel::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_ORDER_GRID, m_Grid);
-
+	DDX_Control(pDX, IDC_STATIC_REAL_TICK, _TickGrid);
 	DDX_Control(pDX, IDC_COMBO_PRODUCT_HD, _ComboSymbol);
 	DDX_Control(pDX, IDC_STATIC_MSG, _StaticMsg);
 	DDX_Control(pDX, IDC_EDIT_ORDER_AMOUNT, _EditOrderAmount);
@@ -950,7 +950,7 @@ BOOL SmOrderPanel::OnInitDialog()
 
 	_ConfigGrid.CenterWnd(this);
 	_ProductRemainGrid.AttachGrid(this, IDC_STATIC_PRODUCT_REMAIN);
-	_TickGrid.AttachGrid(this, IDC_STATIC_REAL_TICK);
+	//_TickGrid.AttachGrid(this, IDC_STATIC_REAL_TICK);
 	_ConfigGrid.AttachGrid(this, IDC_STATIC_SET);
 	// 레이아웃에 따라 위치가 바뀌는 컨트롤들의 원래 위치를 저장한다.
 	SaveControlPos();
@@ -1106,6 +1106,7 @@ void SmOrderPanel::InitAll()
 	InitPosition();
 	// 주문 그리드 셀들을 설정한다.
 	m_Grid.Init();
+	_TickGrid.Init();
 	// 그리드 컬럼 옵션을 설정해 준다.
 	m_Grid.ShowHideOrderGrid(_OrderGridColOption);
 	_Init = true;
