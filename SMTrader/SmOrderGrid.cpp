@@ -748,13 +748,12 @@ int SmOrderGrid::FindCenterRow()
 {
 	int count = GetMaxRow();
 
-	return (count - 2) / 2;
+	return (count - 3) / 2;
 }
 
 int SmOrderGrid::GetMaxRow()
 {
 	RECT rect;
-	//GetWindowRect(&rect);
 	GetClientRect(&rect);
 
 
@@ -1490,6 +1489,23 @@ void SmOrderGrid::ResizeGrid()
 	_RowCount = GetMaxRow();
 	_EndRowForValue = _RowCount - 3;
 	SetRowCount(_RowCount);
+	SetOrderAreaColor();
+	SetCenterValue();
+	RegisterButtons();
+}
+
+void SmOrderGrid::ResizeGrid(int cellHeight, int orderAreaWidth)
+{
+	_CellHeight = cellHeight;
+	_OrderWidth = orderAreaWidth;
+	UnregisterButtons();
+	_RowCount = GetMaxRow();
+	_EndRowForValue = _RowCount - 3;
+	SetRowCount(_RowCount);
+	for (int i = 1; i < m_nRows; ++i) {
+		SetRowHeight(i, _CellHeight);
+	}
+	_CloseRow = FindCenterRow();
 	SetOrderAreaColor();
 	SetCenterValue();
 	RegisterButtons();

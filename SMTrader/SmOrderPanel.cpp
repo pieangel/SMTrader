@@ -1066,7 +1066,16 @@ int SmOrderPanel::GetTickCount()
 void SmOrderPanel::SetOrderArea(int height, int width)
 {
 	m_Grid.SetOrderArea(height, width);
-	ResizeOrderGrid();
+	// 컨트롤들의 위치를 계산한다.
+	CalcLayout();
+	// 컨트롤들을 계산된 위치로 옮겨 준다.
+	RepositionControl();
+	// 그리드를 다시 설정한다.
+	m_Grid.ResizeGrid(height, width);
+	// 잔고 그리드를 위치 재설정
+	RepositionProductGrid();
+	// 설정 윈도 위치 재설성
+	RepositionConfigWnd();
 }
 
 void SmOrderPanel::ShowOrderCountInGrid(bool flag)
@@ -1105,15 +1114,15 @@ void SmOrderPanel::InitAll()
 void SmOrderPanel::Activated(bool flag)
 {
 	_Activated = flag;
-	
+	m_Grid.Selected(flag);
+	m_Grid.Invalidate();
+
 	if (_Symbol && _ParentDlg) {
 		SetProductName(_Symbol);
 		CString title;
 		title.Format(_T("계좌주문창 : 종목 - %s"), _Symbol->Name.c_str());
 		_ParentDlg->SetWindowText(title);
 	}
-	m_Grid.Selected(flag);
-	m_Grid.Invalidate();
 	if (_Activated) {
 		_StaticProductName.SetTextColor(RGB(255, 255, 255));
 		_StaticProductName.SetColor(RGB(19, 137, 255));
@@ -1227,10 +1236,15 @@ void SmOrderPanel::ResizeOrderGrid(int maxHeight)
 
 void SmOrderPanel::ResizeOrderGrid()
 {
+	// 컨트롤들의 위치를 계산한다.
 	CalcLayout();
+	// 컨트롤들을 계산된 위치로 옮겨 준다.
 	RepositionControl();
+	// 그리드를 다시 설정한다.
 	m_Grid.ResizeGrid();
+	// 잔고 그리드를 위치 재설정
 	RepositionProductGrid();
+	// 설정 윈도 위치 재설성
 	RepositionConfigWnd();
 }
 
@@ -1241,7 +1255,7 @@ int SmOrderPanel::GetCountOrderGridEnabledCol()
 
 bool SmOrderPanel::ShowTickWnd()
 {
-	return true;
+	return _ShowTickWnd;
 }
 
 void SmOrderPanel::BlockEvent()

@@ -63,7 +63,10 @@ public:
 	void Init();
 	// 스페이스바 주문
 	void OrderBySpaceBar();
+	// 그리드의 걧수를 다시 설정한다.
 	void ResizeGrid();
+	// 셀의 높이와 주문영역의 너비를 다시 설정하고 그리드의 갯수를 다시 설정한다.
+	void ResizeGrid(int cellHeight, int orderAreaWidth);
 	void LiqudAll(VtPriceType priceType, int price = 0);
 	void PutOrder(VtPosition* posi, int price, bool liqud = false);
 	void RefreshOrderPosition();

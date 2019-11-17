@@ -494,21 +494,26 @@ void VtOrderWndHd::RemoveWindow()
 		_EnableOnSizeEvent = true;
 		return;
 	}
+	_OrderConfigMgr->_HdCenterWnd->Activated(false);
 	auto it = std::prev(_CenterWndVector.end());
 	SmOrderPanel* centerWnd = *it;
 	centerWnd->BlockEvent();
-// 	bool curCenterWnd = false;
-// 	if (_OrderConfigMgr && centerWnd == _OrderConfigMgr->_HdCenterWnd)
-// 		curCenterWnd = true;
+	// 	bool curCenterWnd = false;
+	// 	if (_OrderConfigMgr && centerWnd == _OrderConfigMgr->_HdCenterWnd)
+	// 		curCenterWnd = true;
 
 	centerWnd->DestroyWindow();
 	delete centerWnd;
 	_CenterWndVector.erase(it);
 
 	if (_OrderConfigMgr) {
-		it = std::prev(_CenterWndVector.end());
-		_OrderConfigMgr->_HdCenterWnd = *it;
-		SetActiveCenterWnd(*it);
+		centerWnd = _CenterWndVector.back();
+		if (_CenterWndVector.size() > 1)
+			centerWnd->Activated(true);
+		else
+			centerWnd->Activated(false);
+		_OrderConfigMgr->_HdCenterWnd = centerWnd;
+		SetActiveCenterWnd(centerWnd);
 	}
 
 	RefreshLayout(true, false);
@@ -1818,7 +1823,7 @@ void VtOrderWndHd::RepositionControl()
 				CRect rectWC = std::get<1>(item);
 				::DeferWindowPos(hdwp, pWnd->m_hWnd, NULL,
 					rectWC.left, rectWC.top, rectWC.Width(), rectWC.Height(),
-					SWP_NOZORDER | SWP_FRAMECHANGED);
+					SWP_NOZORDER);
 				pWnd->RedrawWindow();
 
 			}
