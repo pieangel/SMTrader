@@ -9,9 +9,19 @@ struct VtPosition;
 class VtOrderConfigManager;
 class VtOrderCenterWndHd;
 class SmOrderPanel;
+struct VtOrder;
 class VtProductRemainGrid : public VtGrid
 {
 public:
+	void UnregisterAllCallback();
+
+	void RegisterQuoteCallback();
+	void OnQuoteEvent(const VtSymbol* symbol);
+
+	void RegisterOrderallback();
+	void OnOrderEvent(const VtOrder* order);
+
+
 	VtProductRemainGrid();
 	~VtProductRemainGrid();
 

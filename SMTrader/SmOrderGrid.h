@@ -46,11 +46,11 @@ public:
 	void UnregisterAllCallback();
 	void RegisterQuoteCallback();
 	void UnregisterQuoteCallback();
-	void OnUpdateSise(const VtSymbol* symbol);
+	void OnQuoteEvent(const VtSymbol* symbol);
 
 	void RegisterHogaCallback();
 	void UnregisterHogaCallback();
-	void OnUpdateHoga(const VtSymbol* symbol);
+	void OnHogaEvent(const VtSymbol* symbol);
 
 	void RegisterOrderallback();
 	void UnregisterOrderCallback();
@@ -208,6 +208,15 @@ private:
 	void CancelOrder();
 	void RegisterButtons();
 	void UnregisterButtons();
+
+	void BuyAtMarket();
+	void SellAtMarket();
+	void CancelAllSellStop();
+	void CancelAllBuyStop();
+	void CancelAllSellAccepted();
+	void CancelAllBuyAccepted();
+	void CancelAllAccepted();
+	void RefreshStopOrder();
 public:
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 	afx_msg LRESULT OnMouseLeave(WPARAM wParam, LPARAM lParam);

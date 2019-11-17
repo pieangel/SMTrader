@@ -1247,6 +1247,7 @@ bool SmOrderPanel::ShowTickWnd()
 void SmOrderPanel::BlockEvent()
 {
 	m_Grid.UnregisterAllCallback();
+	_ProductRemainGrid.UnregisterAllCallback();
 }
 
 void SmOrderPanel::ChangeAccount(VtAccount* acnt)
@@ -1383,6 +1384,7 @@ void SmOrderPanel::FixedCenter(bool val)
 {
 	ResetByCenterRow();
 	_FixedCenter = val;
+	m_Grid.SetCenterValue();
 }
 
 

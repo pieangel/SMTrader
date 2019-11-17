@@ -71,6 +71,8 @@ public:
 	void BlockEvent();
 	int OrderAmount() const { return _OrderAmount; }
 	void OrderAmount(int val) { _OrderAmount = val; }
+	bool FixedCenter() const { return _FixedCenter; }
+	void FixedCenter(bool val);
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
@@ -282,7 +284,6 @@ public:
 	}
 
 	void ApplyProfitLossForPosition();
-	void FixedCenter(bool val);
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 
 	void ShowOrderAreaInGrid(bool flag);

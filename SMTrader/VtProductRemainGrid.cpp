@@ -14,10 +14,57 @@
 #include "VtFund.h"
 #include <array>
 #include <numeric>
+#include <functional>
 #include "VtGlobal.h"
 #include "SmOrderPanel.h"
+#include "SmCallbackManager.h"
 using Poco::NumberFormatter;
+using namespace std;
+using namespace std::placeholders;
 
+void VtProductRemainGrid::UnregisterAllCallback()
+{
+	SmCallbackManager::GetInstance()->UnsubscribeQuoteCallback((long)this);
+	SmCallbackManager::GetInstance()->UnsubscribeOrderCallback((long)this);
+}
+
+void VtProductRemainGrid::RegisterQuoteCallback()
+{
+	SmCallbackManager::GetInstance()->SubscribeHogaCallback((long)this, std::bind(&VtProductRemainGrid::OnQuoteEvent, this, _1));
+}
+
+void VtProductRemainGrid::OnQuoteEvent(const VtSymbol* symbol)
+{
+	if (!_CenterWnd || !_CenterWnd->Symbol()) {
+		return;
+	}
+
+	if (_CenterWnd->Symbol()->ShortCode.compare(symbol->ShortCode) != 0)
+		return;
+
+	if (_OrderConfigMgr->Type() == 0)
+		ShowSinglePosition();
+	else
+		ShowFundPosition();
+}
+
+void VtProductRemainGrid::RegisterOrderallback()
+{
+	SmCallbackManager::GetInstance()->SubscribeOrderCallback((long)this, std::bind(&VtProductRemainGrid::OnOrderEvent, this, _1));
+}
+
+void VtProductRemainGrid::OnOrderEvent(const VtOrder* order)
+{
+	if (!order || !_OrderConfigMgr || !_CenterWnd || !_CenterWnd->Symbol())
+		return;
+
+	// 심볼과 계좌가 같지 않으면 진행하지 않는다.
+	if (_CenterWnd->Symbol()->ShortCode.compare(order->shortCode) != 0 ||
+		_OrderConfigMgr->Account()->AccountNo.compare(order->AccountNo) != 0)
+		return;
+
+	ShowPosition();
+}
 
 VtProductRemainGrid::VtProductRemainGrid()
 {
