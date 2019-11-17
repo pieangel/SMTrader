@@ -220,6 +220,7 @@ private:
 	bool _EnableSizing = true;
 	std::string _DefaultAccountNo;
 	std::string _DefaultFundName;
+	int _OldWndWidth = 0;
 public:
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 	afx_msg void OnMouseLeave();

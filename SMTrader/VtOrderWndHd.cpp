@@ -387,7 +387,9 @@ void VtOrderWndHd::RefreshLayout(bool resize, bool recalGrid, bool forward)
 	// 이것은 윈도우가 겹쳐 컨트롤이 그려지지 않는 것을 방지하기 위함이다.
 	if (resize) {
 		// 윈도우 크기를 다시 설정한다.
-		ResizeWindow();	
+		int newWndWidth = ResizeWindow();	
+		//newWndWidth > _OldWndWidth ? forward = true : forward = true;
+		_OldWndWidth = newWndWidth;
 	}
 	// 자식 윈도우의 위치를 설정한다.
 	RecalChildWindows();
@@ -495,17 +497,15 @@ void VtOrderWndHd::RemoveWindow()
 	auto it = std::prev(_CenterWndVector.end());
 	SmOrderPanel* centerWnd = *it;
 	centerWnd->BlockEvent();
-	bool curCenterWnd = false;
-	if (_OrderConfigMgr && centerWnd == _OrderConfigMgr->_HdCenterWnd)
-		curCenterWnd = true;
+// 	bool curCenterWnd = false;
+// 	if (_OrderConfigMgr && centerWnd == _OrderConfigMgr->_HdCenterWnd)
+// 		curCenterWnd = true;
 
 	centerWnd->DestroyWindow();
 	delete centerWnd;
 	_CenterWndVector.erase(it);
 
-	//_CenterWndCount = _CenterWndVector.size();
-
-	if (curCenterWnd && _OrderConfigMgr) {
+	if (_OrderConfigMgr) {
 		it = std::prev(_CenterWndVector.end());
 		_OrderConfigMgr->_HdCenterWnd = *it;
 		SetActiveCenterWnd(*it);
@@ -1344,7 +1344,7 @@ void VtOrderWndHd::ReposChildWindowsBackward()
 			wnd->ShowWindow(SW_SHOW);
 			//wnd->SetWindowPos(nullptr, rect.left, rect.top, rect.Width(), rect.Height(), SWP_NOZORDER | SWP_FRAMECHANGED | SWP_DRAWFRAME);
 			wnd->MoveWindow(rect, FALSE);
-			//wnd->Invalidate(FALSE);
+			wnd->RedrawWindow();
 		}
 		else {
 			wnd->ShowWindow(SW_HIDE);
@@ -1818,7 +1818,7 @@ void VtOrderWndHd::RepositionControl()
 				CRect rectWC = std::get<1>(item);
 				::DeferWindowPos(hdwp, pWnd->m_hWnd, NULL,
 					rectWC.left, rectWC.top, rectWC.Width(), rectWC.Height(),
-					SWP_NOZORDER);
+					SWP_NOZORDER | SWP_FRAMECHANGED);
 				pWnd->RedrawWindow();
 
 			}

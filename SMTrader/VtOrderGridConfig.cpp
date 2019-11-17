@@ -80,7 +80,6 @@ void VtOrderGridConfig::OnBnClickedCheckShowOrdercol()
 	}
 	_CenterWnd->ShowOrderAreaInGrid(flag);
 	if (_CenterWnd->ParentDlg()) {
-		_CenterWnd->RefreshLayout(true);
 		_CenterWnd->ParentDlg()->RefreshLayout(true, false, !flag);
 	}
 }
@@ -98,7 +97,6 @@ void VtOrderGridConfig::OnBnClickedCheckShowStopcol()
 		flag = false;
 	_CenterWnd->ShowStopAreaInGrid(flag);
 	if (_CenterWnd->ParentDlg()) {
-		_CenterWnd->RefreshLayout(true);
 		_CenterWnd->ParentDlg()->RefreshLayout(true, false, !flag);
 	}
 }
@@ -142,8 +140,7 @@ void VtOrderGridConfig::OnBnClickedRadioTickleft()
 	_CenterWnd->SetTickWndPos(1);
 	_CenterWnd->ShowTickWnd(true);
 	if (_CenterWnd->ParentDlg()) {
-		_CenterWnd->RefreshLayout(true);
-		//_CenterWnd->ParentDlg()->RefreshLayout(true, false);
+		_CenterWnd->ParentDlg()->RefreshLayout(false, false);
 	}
 }
 
@@ -156,8 +153,7 @@ void VtOrderGridConfig::OnBnClickedRadioTickright()
 	_CenterWnd->SetTickWndPos(0);
 	_CenterWnd->ShowTickWnd(true);
 	if (_CenterWnd->ParentDlg()) {
-		_CenterWnd->RefreshLayout(true);
-		//_CenterWnd->ParentDlg()->RefreshLayout(true, false);
+		_CenterWnd->ParentDlg()->RefreshLayout(false, false);
 	}
 }
 
@@ -190,7 +186,6 @@ void VtOrderGridConfig::OnBnClickedCheckShowCountcol()
 		flag = false;
 	_CenterWnd->ShowOrderCountInGrid(flag);
 	if (_CenterWnd->ParentDlg()) {
-		_CenterWnd->RefreshLayout(true);
 		_CenterWnd->ParentDlg()->RefreshLayout(true, false, !flag);
 	}
 }
