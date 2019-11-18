@@ -75,6 +75,8 @@ public:
 	void OrderAmount(int val) { _OrderAmount = val; }
 	bool FixedCenter() const { return _FixedCenter; }
 	void FixedCenter(bool val);
+	bool OrderByRemain() const { return _OrderByRemain; }
+	void OrderByRemain(bool val) { _OrderByRemain = val; }
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
@@ -141,6 +143,7 @@ public:
 	void Load(simple::file_istream<same_endian_type>& ss);
 	void ChangeSymbol(VtSymbol* symbol);
 	void UnregisterOrderWnd();
+	void ResetRemainFund();
 public:
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 
@@ -240,7 +243,6 @@ private:
 	VtOrderConfigDlg* _ConfigDlg = nullptr;
 private:
 	void CreateChildWindow(VtOrderConfigDlg* centerWnd, UINT id, CWnd* parent);
-	void ResetRemainFund();
 	CRect GetClientArea(int resourceID);
 public:
 	void SetRemain(int remain);

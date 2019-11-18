@@ -703,7 +703,7 @@ void CMainFrame::OnReceiveComplete()
 		saveMgr->LoadOutSignal(_T("outsignal.dat"));
 		saveMgr->LoadSystems(_T("systemlist.dat"));
 		saveMgr->LoadOutSystems(_T("outsystemlist.dat"));
-		//saveMgr->LoadOrderWndList(_T("orderwndlist.dat"), this);
+		saveMgr->LoadOrderWndList(_T("orderwndlist.dat"), this);
 
 		SetTimer(SysLiqTimer, 5000, NULL);
 

@@ -18,6 +18,11 @@ public:
 	SmTickGrid();
 	~SmTickGrid();
 
+	void UnregisterAllCallback();
+
+	void RegisterQuoteCallback();
+	void OnQuoteEvent(VtSymbol* symbol);
+
 	void Init();
 
 
@@ -35,6 +40,8 @@ public:
 	SmOrderPanel* CenterWnd() const { return _CenterWnd; }
 	void CenterWnd(SmOrderPanel* val) { _CenterWnd = val; }
 	int GetGridWidth();
+public:
+	DECLARE_MESSAGE_MAP()
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnRButtonDown(UINT nFlags, CPoint point);
 private:

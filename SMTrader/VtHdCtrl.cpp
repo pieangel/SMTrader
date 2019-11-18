@@ -2784,6 +2784,7 @@ void VtHdCtrl::OnOptionHoga(CString& strKey, LONG& nRealType)
 	// 	dataCollector->OnReceiveData(code, _ttoi(strTime), sym->Hoga.TotBuyNo);
 
 	OnReceiveHoga(_ttoi(strTime), sym);
+	SmCallbackManager::GetInstance()->OnHogaEvent(sym);
 
 	orderDlgMgr->OnReceiveHoga(sym);
 }
@@ -2889,7 +2890,7 @@ void VtHdCtrl::OnProductHoga(CString& strKey, LONG& nRealType)
 	// 	dataCollector->OnReceiveData(code, _ttoi(strTime), sym->Hoga.TotBuyNo);
 
 	OnReceiveHoga(_ttoi(strTime), sym);
-
+	SmCallbackManager::GetInstance()->OnHogaEvent(sym);
 	orderDlgMgr->OnReceiveHoga(sym);
 }
 
@@ -2993,8 +2994,7 @@ void VtHdCtrl::OnRealFutureQuote(CString& strKey, LONG& nRealType)
 
 	sym->Quote.QuoteItemQ.push_front(quoteItem);
 
-	SmCallbackManager* callbackMgr = SmCallbackManager::GetInstance();
-	callbackMgr->OnQuoteEvent(sym);
+	SmCallbackManager::GetInstance()->OnQuoteEvent(sym);
 
 	VtOrderManagerSelector* orderMgrSelector = VtOrderManagerSelector::GetInstance();
 	for (auto it = orderMgrSelector->_OrderManagerMap.begin(); it != orderMgrSelector->_OrderManagerMap.end(); ++it)
@@ -3090,7 +3090,7 @@ void VtHdCtrl::OnRealOptionQuote(CString& strKey, LONG& nRealType)
 	quoteItem.Decimal = sym->IntDecimal;
 
 	sym->Quote.QuoteItemQ.push_front(quoteItem);
-
+	SmCallbackManager::GetInstance()->OnQuoteEvent(sym);
 
 	VtOrderManagerSelector* orderMgrSelector = VtOrderManagerSelector::GetInstance();
 	for (auto it = orderMgrSelector->_OrderManagerMap.begin(); it != orderMgrSelector->_OrderManagerMap.end(); ++it)
@@ -3180,6 +3180,7 @@ void VtHdCtrl::OnRealProductQuote(CString& strKey, LONG& nRealType)
 	quoteItem.Decimal = sym->IntDecimal;
 
 	sym->Quote.QuoteItemQ.push_front(quoteItem);
+	SmCallbackManager::GetInstance()->OnQuoteEvent(sym);
 
 	VtOrderManagerSelector* orderMgrSelector = VtOrderManagerSelector::GetInstance();
 	for (auto it = orderMgrSelector->_OrderManagerMap.begin(); it != orderMgrSelector->_OrderManagerMap.end(); ++it)

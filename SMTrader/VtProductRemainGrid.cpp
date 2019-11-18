@@ -35,7 +35,7 @@ void VtProductRemainGrid::RegisterQuoteCallback()
 
 void VtProductRemainGrid::OnQuoteEvent(const VtSymbol* symbol)
 {
-	if (!_CenterWnd || !_CenterWnd->Symbol()) {
+	if (!_CenterWnd || !_CenterWnd->Symbol() || !_OrderConfigMgr) {
 		return;
 	}
 
@@ -102,6 +102,8 @@ void VtProductRemainGrid::OnSetup()
 	SetSH_Width(0);
 	SetVS_Width(0);
 	SetColTitle(4);
+	RegisterOrderallback();
+	RegisterQuoteCallback();
 }
 
 void VtProductRemainGrid::OnDClicked(int col, long row, RECT *rect, POINT *point, BOOL processed)

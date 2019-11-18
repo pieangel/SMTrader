@@ -99,7 +99,6 @@ SmOrderPanel::~SmOrderPanel()
 		_LayoutMgr = nullptr;
 	}
 
-
 	ClearConfigDlg();
 }
 
@@ -107,6 +106,9 @@ void SmOrderPanel::OrderConfigMgr(VtOrderConfigManager* val)
 {
 	_OrderConfigMgr = val;
 	m_Grid.OrderConfigMgr(val);
+	m_Grid.CutMgr()->OrderConfigMgr(_OrderConfigMgr);
+	m_Grid.OrderConfigMgr(_OrderConfigMgr);
+	_ProductRemainGrid.OrderConfigMgr(_OrderConfigMgr);
 }
 
 void SmOrderPanel::DoDataExchange(CDataExchange* pDX)
@@ -1263,6 +1265,7 @@ void SmOrderPanel::BlockEvent()
 {
 	m_Grid.UnregisterAllCallback();
 	_ProductRemainGrid.UnregisterAllCallback();
+	_TickGrid.UnregisterAllCallback();
 }
 
 void SmOrderPanel::ChangeAccount(VtAccount* acnt)
@@ -1287,12 +1290,93 @@ void SmOrderPanel::ChangeFund(VtFund* fund)
 
 void SmOrderPanel::Save(simple::file_ostream<same_endian_type>& ss)
 {
-
+	if (!_Symbol)
+		return;
+	// 종목코드
+	ss << _Symbol->ShortCode;
+	// 배열 요소를 직접 저장하지 말것.원하는 대로 저장되지 않음
+	// 반드시 변수에 넣은 다음 저장할 것.
+	// 그리드 주문열 표시여부
+	bool val = _OrderGridColOption[0];
+	ss << val;
+	// 그리도 스탑열 표시여부
+	val = _OrderGridColOption[1];
+	ss << val;
+	// 그리드 건수열 표시여부
+	val = _OrderGridColOption[2];
+	ss << val;
+	// 틱윈도우 표시여부
+	ss << _ShowTickWnd;
+	// 틱 윈도우 위치
+	ss << _TickWndPos;
+	// 주문 수량
+	ss << _OrderAmount;
+	// 셀 높이
+	ss << m_Grid.CellHeight();
+	// 셀 너비
+	ss << m_Grid.OrderWidth();
+	// 손절 익절창 표시여부
+	ss << _ShowRemainConfig;
 }
 
 void SmOrderPanel::Load(simple::file_istream<same_endian_type>& ss)
 {
+	std::string shortCode;
+	int orderAmount;
+	int cellHeight;
+	int cellWidth;
+	bool showOrderCol;
+	bool showStopCol;
+	bool showCountCol;
+	bool showTickWnd;
+	int tickWndPos;
+	// 종목코드 복원
+	ss >> shortCode;
+	// 그리드 주문열 표시 여부 복원
+	ss >> showOrderCol;
+	// 그리드 스탑열 표시 여부 복원
+	ss >> showStopCol;
+	// 그리드 건수 표시 여부 복원
+	ss >> showCountCol;
+	// 틱윈도우 보이기 복원
+	ss >> showTickWnd;
+	// 틱 윈도우 위치 복원
+	ss >> tickWndPos;
+	// 주문 개수 복원
+	ss >> orderAmount;
+	// 주문창 셀 높이 복원
+	ss >> cellHeight;
+	// 주문창 셀 너비 복원
+	ss >> cellWidth;
+	// 손절익절창 표시여부
+	ss >> _ShowRemainConfig;
+	// 주문창 그리드 속성 대입
+	_OrderGridColOption[0] = showOrderCol;
+	_ShowOrderArea = showOrderCol;
+	_OrderGridColOption[1] = showStopCol;
+	_ShowStopArea = showStopCol;
+	_OrderGridColOption[2] = showCountCol;
+	_ShowOrderCountArea = showCountCol;
 
+	// 틱윈도우 속성 대입
+	_ShowTickWnd = showTickWnd;
+	_TickWndPos = tickWndPos;
+
+	// 심볼 대입
+	VtSymbolManager* symMgr = VtSymbolManager::GetInstance();
+	_DefaultSymbol = symMgr->FindHdSymbol(shortCode);
+	// 주문 개수 복원
+	_OrderAmount = orderAmount;
+	// 셀 높이 복원
+	m_Grid.CellHeight(cellHeight);
+	// 셀 너비 복원
+	m_Grid.OrderWidth(cellWidth);
+
+	// 저장된 심볼은 목록으로 만들어 심볼 마스터 요청한다.
+	VtSaveManager* saveMgr = VtSaveManager::GetInstance();
+	std::vector<VtSymbol*>& symvec = saveMgr->GetSymbolVector();
+	if (_DefaultSymbol)
+		symvec.push_back(_DefaultSymbol);
 }
 
 void SmOrderPanel::ChangeSymbol(VtSymbol* symbol)

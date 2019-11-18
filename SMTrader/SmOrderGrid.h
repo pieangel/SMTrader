@@ -225,7 +225,7 @@ public:
 	afx_msg LRESULT OnMouseLeave(WPARAM wParam, LPARAM lParam);
 
 private:
-	std::shared_ptr<VtStopOrderManager> _StopOrderMgr = nullptr;
+	VtStopOrderManager* _StopOrderMgr = nullptr;
 	int FindPositionRow(VtPosition* posi);
 public:
 	afx_msg void OnClose();

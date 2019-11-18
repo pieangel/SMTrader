@@ -93,6 +93,8 @@ public:
 	
 	VtAccount* Account() const { return _Account; }
 	void Account(VtAccount* val);
+	// 이 함수는 중앙창에서 주문을 낼 때는 절대로 사용하면 안됨.
+	// 대신 반드시 중앙창에 있는 심볼을 이용할것.
 	VtSymbol* Symbol() const { return _Symbol; }
 	void Symbol(VtSymbol* val);
 	VtHoga* Hoga() const { return _Hoga; }

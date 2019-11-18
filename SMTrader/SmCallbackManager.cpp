@@ -19,7 +19,7 @@ void SmCallbackManager::UnsubscribeQuoteCallback(long id)
 	}
 }
 
-void SmCallbackManager::OnQuoteEvent(const VtSymbol* symbol)
+void SmCallbackManager::OnQuoteEvent( VtSymbol* symbol)
 {
 	if (!symbol)
 		return;
@@ -29,7 +29,7 @@ void SmCallbackManager::OnQuoteEvent(const VtSymbol* symbol)
 	}
 }
 
-void SmCallbackManager::OnHogaEvent(const VtSymbol* symbol)
+void SmCallbackManager::OnHogaEvent( VtSymbol* symbol)
 {
 	if (!symbol)
 		return;
@@ -55,7 +55,7 @@ void SmCallbackManager::UnsubscribeOrderCallback(long id)
 	}
 }
 
-void SmCallbackManager::OnOrderEvent(const VtOrder* order)
+void SmCallbackManager::OnOrderEvent( VtOrder* order)
 {
 	if (!order)
 		return;

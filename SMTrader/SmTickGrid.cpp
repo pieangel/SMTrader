@@ -9,6 +9,13 @@
 #include "VtOrderWndHd.h"
 #include "VtGlobal.h"
 #include <numeric>
+#include <functional>
+#include "VtGlobal.h"
+#include "SmOrderPanel.h"
+#include "SmCallbackManager.h"
+using Poco::NumberFormatter;
+using namespace std;
+using namespace std::placeholders;
 using Poco::NumberFormatter;
 
 SmTickGrid::SmTickGrid()
@@ -19,6 +26,59 @@ SmTickGrid::SmTickGrid()
 SmTickGrid::~SmTickGrid()
 {
 }
+
+
+void SmTickGrid::UnregisterAllCallback()
+{
+	SmCallbackManager::GetInstance()->UnsubscribeQuoteCallback((long)this);
+}
+
+void SmTickGrid::RegisterQuoteCallback()
+{
+	SmCallbackManager::GetInstance()->SubscribeHogaCallback((long)this, std::bind(&SmTickGrid::OnQuoteEvent, this, _1));
+}
+
+void SmTickGrid::OnQuoteEvent(VtSymbol* sym)
+{
+	if (!sym || !_CenterWnd)
+		return;
+
+	if (_CenterWnd->Symbol()->ShortCode.compare(sym->ShortCode) != 0)
+		return;
+
+	int i = 1;
+	for (auto it = sym->Quote.QuoteItemQ.begin(); it != sym->Quote.QuoteItemQ.end(); ++it) {
+		VtQuoteItem item = *it;
+		CGridCellBase* pCell = nullptr;
+		pCell = GetCell(i, 0);
+		pCell->SetText(item.Time.c_str());
+		InvalidateCellRect(i, 0);
+		std::string close = NumberFormatter::format(item.ClosePrice / std::pow(10, sym->IntDecimal), sym->IntDecimal);
+		pCell = GetCell(i, 1);
+		pCell->SetText(close.c_str());
+		InvalidateCellRect(i, 1);
+		CString qty;
+		qty.Format("%d", item.ContQty);
+		pCell = GetCell(i, 2);
+		pCell->SetText(qty);
+		if (item.MatchKind == 1)
+			pCell->SetTextClr(RGB(255, 0, 0));
+		else
+			pCell->SetTextClr(RGB(0, 0, 255));
+		InvalidateCellRect(i, 2);
+		i++;
+		if (m_nRows == i)
+			break;
+	}
+
+	if (sym->Quote.QuoteItemQ.size() > m_nRows)
+		sym->Quote.QuoteItemQ.pop_back();
+}
+
+BEGIN_MESSAGE_MAP(SmTickGrid, CGridCtrl)
+	ON_WM_LBUTTONDOWN()
+	ON_WM_LBUTTONUP()
+END_MESSAGE_MAP()
 
 void SmTickGrid::Init()
 {
@@ -61,6 +121,7 @@ void SmTickGrid::Init()
 	}
 
 	SetFont(&_defFont);
+	RegisterQuoteCallback();
 }
 
 void SmTickGrid::SetColTitle()

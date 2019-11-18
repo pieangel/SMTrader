@@ -11,28 +11,28 @@ public:
 	SmCallbackManager();
 	~SmCallbackManager();
 	
-	void SubscribeQuoteCallback(long id, std::function <void(const VtSymbol* symbol)> callback) {
+	void SubscribeQuoteCallback(long id, std::function <void( VtSymbol* symbol)> callback) {
 		_QuoteMap[id] = callback;
 	}
 	void UnsubscribeQuoteCallback(long id);
-	void OnQuoteEvent(const VtSymbol* symbol);
-	void OnHogaEvent(const VtSymbol* symbol);
+	void OnQuoteEvent( VtSymbol* symbol);
+	void OnHogaEvent( VtSymbol* symbol);
 	
-	void SubscribeHogaCallback(long id, std::function <void(const VtSymbol* symbol)> callback) {
+	void SubscribeHogaCallback(long id, std::function <void( VtSymbol* symbol)> callback) {
 		_HogaMap[id] = callback;
 	}
 	void UnsubscribeHogaCallback(long id);
 
-	void SubscribeOrderCallback(long id, std::function <void(const VtOrder* order)> callback) {
+	void SubscribeOrderCallback(long id, std::function <void( VtOrder* order)> callback) {
 		_OrderMap[id] = callback;
 	}
 	void UnsubscribeOrderCallback(long id);
 
-	void OnOrderEvent(const VtOrder* order);
+	void OnOrderEvent( VtOrder* order);
 
 private:
-	std::map<long, std::function<void(const VtSymbol* symbol)>> _QuoteMap;
-	std::map<long, std::function<void(const VtSymbol* symbol)>> _HogaMap;
-	std::map<int, std::function<void(const VtOrder* order)>> _OrderMap;
+	std::map<long, std::function<void( VtSymbol* symbol)>> _QuoteMap;
+	std::map<long, std::function<void( VtSymbol* symbol)>> _HogaMap;
+	std::map<int, std::function<void( VtOrder* order)>> _OrderMap;
 };
 
