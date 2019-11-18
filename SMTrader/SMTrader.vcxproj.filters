@@ -1511,6 +1511,9 @@
     <ClInclude Include="SmOrderPanel.h" />
     <ClInclude Include="SmCallbackManager.h" />
     <ClInclude Include="SmTickGrid.h" />
+    <ClInclude Include="SmFutureGrid.h" />
+    <ClInclude Include="SmOptionGrid.h" />
+    <ClInclude Include="SmPLGrid.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ChildFrm.cpp">
@@ -2702,6 +2705,9 @@
     <ClCompile Include="SmOrderPanel.cpp" />
     <ClCompile Include="SmCallbackManager.cpp" />
     <ClCompile Include="SmTickGrid.cpp" />
+    <ClCompile Include="SmFutureGrid.cpp" />
+    <ClCompile Include="SmOptionGrid.cpp" />
+    <ClCompile Include="SmPLGrid.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="SMTrader.rc">

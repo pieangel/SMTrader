@@ -21,6 +21,7 @@
 #include "VtRealtimeRegisterManager.h"
 #include "VtGlobal.h"
 #include "SmOrderPanel.h"
+#include "VtOrderWndHd.h"
 using Poco::NumberFormatter;
 
 HdSymbolOptionGrid::HdSymbolOptionGrid()
@@ -63,6 +64,7 @@ void HdSymbolOptionGrid::OnSetup()
 	QuickSetAlignment(0, 0, UG_ALIGNCENTER | UG_ALIGNVCENTER);
 	for (int i = 0; i < _RowCount; i++)
 	{
+		SetRowHeight(i, DefaultCellHeight);
 		QuickSetAlignment(0, i, UG_ALIGNCENTER | UG_ALIGNVCENTER);
 		QuickSetAlignment(1, i, UG_ALIGNCENTER | UG_ALIGNVCENTER);
 		QuickSetAlignment(2, i, UG_ALIGNCENTER | UG_ALIGNVCENTER);
@@ -192,7 +194,6 @@ void HdSymbolOptionGrid::InitGrid()
 		for (auto it = opSec->_SymbolVector.begin(); it != opSec->_SymbolVector.end(); ++it) {
 			VtSymbol* sym = *it;
 			GetCell(0, i, &cell);
-			//cell.SetText(sym->ShortCode.c_str());
 			cell.Tag(sym);
 			SetCell(0, i, &cell);
 			QuickRedrawCell(0, i);
@@ -234,7 +235,6 @@ void HdSymbolOptionGrid::InitGrid()
 		for (auto it = opSec->_SymbolVector.begin(); it != opSec->_SymbolVector.end(); ++it) {
 			VtSymbol* sym = *it;
 			GetCell(2, i, &cell);
-			//cell.SetText(sym->ShortCode.c_str());
 			cell.Tag(sym);
 			SetCell(2, i, &cell);
 			QuickRedrawCell(2, i);
@@ -643,6 +643,46 @@ void HdSymbolOptionGrid::SetRemain(VtSymbol* sym)
 	}
 }
 
+int HdSymbolOptionGrid::FindValueStartRow(int height)
+{
+	int selMon = _LeftWnd->_ComboOption.GetCurSel();
+	if (selMon == -1 || _CurPrdtSec->SubSectionVector.size() == 0)
+		return 0;
+
+	int eIndex = 0;
+	int delta = 0;
+	int minVal = 1000000;
+
+	int startRow = 0;
+
+	VtSymbolManager* symMgr = VtSymbolManager::GetInstance();
+	CString curYearMon;
+	_LeftWnd->_ComboOption.GetLBText(selMon, curYearMon);
+	VtProductSubSection* callSec = _CurPrdtSec->SubSectionVector[0];
+	VtOptionMonthSection* opSec = callSec->FindOptionMap((LPCTSTR)curYearMon);
+	if (opSec) {
+		for (int i = 0; i < opSec->_SymbolVector.size(); ++i) {
+			VtSymbol* sym = opSec->_SymbolVector[i];
+			std::string centerVal = sym->ShortCode.substr(5, 3);
+			char centerTip = sym->ShortCode.at(7);
+			int intCenter = std::stoi(centerVal) * static_cast<int>(std::pow(10, sym->IntDecimal));
+			if (centerTip == '2' || centerTip == '7')
+				intCenter += 50;
+			delta = std::abs(symMgr->Kospi200Current - intCenter);
+			if (delta < minVal) {
+				minVal = delta;
+				eIndex = i;
+			}
+			i++;
+		}
+		int max_row = height / DefaultCellHeight;;
+		int half = (int)(max_row / 2);
+		startRow = eIndex - half;
+	}
+
+	return startRow;
+}
+
 void HdSymbolOptionGrid::OnExpected(VtSymbol* sym)
 {
 	if (_Mode == 0) {
@@ -712,6 +752,9 @@ int HdSymbolOptionGrid::GetMaxRow()
 
 	RECT rect;
 	GetClientRect(&rect);
+
+	if (_OrderConfigMgr->_HdCenterWnd->GetSafeHwnd())
+		_OrderConfigMgr->_HdOrderWnd->GetWindowRect(&rect);
 
 	int count = (rect.bottom - rect.top) / rowHeight;
 

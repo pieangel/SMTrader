@@ -5,6 +5,7 @@
 #include "HdSymbolOptionGrid.h"
 #include "HdAssetGrid.h"
 #include "afxwin.h"
+#include "SmOptionGrid.h"
 // VtOrderLeftHd dialog
 class VtOrderConfigManager;
 class VtSymbol;
@@ -45,7 +46,8 @@ private:
 	HdSymbolFutureGrid _SymbolFutureGrid;
 	HdProfitLossGrid _ProfitLossGrid;
 	HdAssetGrid      _AssetGrid;
-	HdSymbolOptionGrid _SymbolOptionGrid;
+	//HdSymbolOptionGrid _SymbolOptionGrid;
+	SmOptionGrid _SymbolOptionGrid;
 	VtOrderConfigManager* _OrderConfigMgr = nullptr;
 
 	void Begin();

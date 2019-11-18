@@ -526,6 +526,7 @@
 #define IDC_STATIC_FUT_GRID             1044
 #define IDC_STATIC_OPT_GRID             1045
 #define IDC_CUSTOM1                     1045
+#define IDC_CUSTOM_OPTION               1045
 #define IDC_STATIC_PRODUCT_NAME         1046
 #define IDC_COMBO_FUT_MARKET            1046
 #define IDC_STATIC_PRODUCT_REMAIN       1047

@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "SMTrader.h"
 #include "VtOrderLeftWndHd.h"
+#include "VtOrderWndHd.h"
 #include "afxdialogex.h"
 #include "VtOrderConfigManager.h"
 #include "VtHdClient.h"
@@ -64,6 +65,7 @@ void VtOrderLeftWndHd::DoDataExchange(CDataExchange* pDX)
 	CDialog::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_COMBO_PRODUCT, _ComboProduct);
 	DDX_Control(pDX, IDC_COMBO_OPTION, _ComboOption);
+	DDX_Control(pDX, IDC_CUSTOM_OPTION, _SymbolOptionGrid);
 }
 
 
@@ -101,7 +103,8 @@ BOOL VtOrderLeftWndHd::OnInitDialog()
 	else {
 		_AssetGrid.ShowWindow(SW_HIDE);
 	}
-	_SymbolOptionGrid.AttachGrid(this, IDC_SYMBOL_OPTION);
+	//_SymbolOptionGrid.AttachGrid(this, IDC_SYMBOL_OPTION);
+	_SymbolOptionGrid.Init();
 	if (_FutureSymbolMode == 0)
 	{
 		((CButton*)GetDlgItem(IDC_RADIO_BALANCE))->SetCheck(BST_CHECKED);
@@ -116,6 +119,13 @@ BOOL VtOrderLeftWndHd::OnInitDialog()
 	}
 
 	_SymbolOptionGrid.GetSymbolMaster();
+
+	CRect rcRect;
+	_ComboProduct.GetClientRect(rcRect);
+
+	_ComboProduct.GetWindowRect(&rcRect);
+	ScreenToClient(&rcRect);
+
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // EXCEPTION: OCX Property Pages should return FALSE
 }
@@ -259,17 +269,21 @@ void VtOrderLeftWndHd::RefreshProfitLoss()
 
 void VtOrderLeftWndHd::RefreshAsset()
 {
-	_AssetGrid.InitGrid();
+	if (_AssetGrid.GetSafeHwnd())
+		_AssetGrid.InitGrid();
 }
 
 void VtOrderLeftWndHd::OnResizeWnd()
 {
 	CRect rcWnd;
 	if (GetSafeHwnd()) {
-		GetWindowRect(rcWnd);
+		if (!_OrderConfigMgr->_HdCenterWnd->GetSafeHwnd())
+			return;
+		_OrderConfigMgr->_HdOrderWnd->GetWindowRect(&rcWnd);
 		CRect rcGrid;
 		_SymbolOptionGrid.GetWindowRect(rcGrid);
-		_SymbolOptionGrid.SetWindowPos(nullptr, 0, 0, rcGrid.Width(), rcWnd.Height() - (rcGrid.top - rcWnd.top), SWP_NOMOVE);
+		_SymbolOptionGrid.SetWindowPos(nullptr, 0, 0, rcGrid.Width(), rcWnd.Height() - 313, SWP_NOMOVE);
+		_SymbolOptionGrid.InitGrid(rcWnd.Height() - 313);
 	}
 }
 

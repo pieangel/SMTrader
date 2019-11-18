@@ -35,7 +35,7 @@ void SmTickGrid::UnregisterAllCallback()
 
 void SmTickGrid::RegisterQuoteCallback()
 {
-	SmCallbackManager::GetInstance()->SubscribeHogaCallback((long)this, std::bind(&SmTickGrid::OnQuoteEvent, this, _1));
+	SmCallbackManager::GetInstance()->SubscribeQuoteCallback((long)this, std::bind(&SmTickGrid::OnQuoteEvent, this, _1));
 }
 
 void SmTickGrid::OnQuoteEvent(VtSymbol* sym)

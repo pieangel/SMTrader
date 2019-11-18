@@ -388,7 +388,6 @@ void VtOrderWndHd::RefreshLayout(bool resize, bool recalGrid, bool forward)
 	if (resize) {
 		// 윈도우 크기를 다시 설정한다.
 		int newWndWidth = ResizeWindow();	
-		//newWndWidth > _OldWndWidth ? forward = true : forward = true;
 		_OldWndWidth = newWndWidth;
 	}
 	// 자식 윈도우의 위치를 설정한다.
@@ -1840,7 +1839,7 @@ void VtOrderWndHd::RecalChildWindows()
 	rcChild.left = 0;
 	rcChild.right = rcChild.left + _LeftWnd.DefaultWidth();
 	rcChild.top = 0;
-	rcChild.bottom = _WindowHeight;
+	rcChild.bottom = _WindowHeight - 40;
 	_ChildWindowInfo.push_back(std::make_tuple(&_LeftWnd, _ShowLeftWnd, rcChild));
 
 	int left = _ShowLeftWnd ? _LeftWnd.DefaultWidth() : 0;

@@ -332,8 +332,11 @@
     <ClInclude Include="SimpleBinStream.h" />
     <ClInclude Include="Skel\VtGrid.h" />
     <ClInclude Include="SmCallbackManager.h" />
+    <ClInclude Include="SmFutureGrid.h" />
+    <ClInclude Include="SmOptionGrid.h" />
     <ClInclude Include="SmOrderGrid.h" />
     <ClInclude Include="SmOrderPanel.h" />
+    <ClInclude Include="SmPLGrid.h" />
     <ClInclude Include="SmTickGrid.h" />
     <ClInclude Include="SMTrader.h" />
     <ClInclude Include="SMTraderDoc.h" />
@@ -763,8 +766,11 @@
     <ClCompile Include="ShadeButtonST.cpp" />
     <ClCompile Include="Skel\VtGrid.cpp" />
     <ClCompile Include="SmCallbackManager.cpp" />
+    <ClCompile Include="SmFutureGrid.cpp" />
+    <ClCompile Include="SmOptionGrid.cpp" />
     <ClCompile Include="SmOrderGrid.cpp" />
     <ClCompile Include="SmOrderPanel.cpp" />
+    <ClCompile Include="SmPLGrid.cpp" />
     <ClCompile Include="SmTickGrid.cpp" />
     <ClCompile Include="SMTrader.cpp" />
     <ClCompile Include="SMTraderDoc.cpp" />

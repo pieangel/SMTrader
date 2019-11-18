@@ -1395,9 +1395,9 @@ void SmOrderPanel::ChangeSymbol(VtSymbol* symbol)
 
 void SmOrderPanel::UnregisterOrderWnd()
 {
-	m_Grid.UnregisterHogaCallback();
-	m_Grid.UnregisterOrderCallback();
-	m_Grid.UnregisterQuoteCallback();
+	m_Grid.UnregisterAllCallback();
+	_ProductRemainGrid.UnregisterAllCallback();
+	_TickGrid.UnregisterAllCallback();
 }
 
 BOOL SmOrderPanel::PreTranslateMessage(MSG* pMsg)

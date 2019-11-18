@@ -30,7 +30,7 @@ void VtProductRemainGrid::UnregisterAllCallback()
 
 void VtProductRemainGrid::RegisterQuoteCallback()
 {
-	SmCallbackManager::GetInstance()->SubscribeHogaCallback((long)this, std::bind(&VtProductRemainGrid::OnQuoteEvent, this, _1));
+	SmCallbackManager::GetInstance()->SubscribeQuoteCallback((long)this, std::bind(&VtProductRemainGrid::OnQuoteEvent, this, _1));
 }
 
 void VtProductRemainGrid::OnQuoteEvent(const VtSymbol* symbol)

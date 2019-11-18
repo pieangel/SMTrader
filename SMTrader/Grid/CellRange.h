@@ -34,6 +34,7 @@
 //      mailto:chinajoe@aol.com
 //      http://users.aol.com/chinajoe
 
+#include <algorithm>
 class CCellID
 {    
 // Attributes
@@ -141,8 +142,12 @@ inline CCellID CCellRange::GetTopLeft() const
 
 inline CCellRange CCellRange::Intersect(const CCellRange& rhs) const
 {
-     return CCellRange(max(m_nMinRow,rhs.m_nMinRow), max(m_nMinCol,rhs.m_nMinCol),
-                       min(m_nMaxRow,rhs.m_nMaxRow), min(m_nMaxCol,rhs.m_nMaxCol));
+	int sr = 0, sc = 0, er = 0, ec = 0;
+	m_nMinRow > rhs.m_nMinRow ? sr = m_nMinRow : sr = rhs.m_nMinRow;
+	m_nMinCol > rhs.m_nMinCol ? sc = m_nMinCol : sc = rhs.m_nMinCol;
+	m_nMaxRow < rhs.m_nMaxRow ? er = m_nMaxRow : er = rhs.m_nMaxRow;
+	m_nMaxCol < rhs.m_nMaxCol ? ec = m_nMaxCol : ec = rhs.m_nMaxCol;
+     return CCellRange(sr, sc, er, ec);
 }
 
 #endif // !defined(AFX_CELLRANGE_H__F86EF761_725A_11D1_ABBA_00A0243D1382__INCLUDED_)
