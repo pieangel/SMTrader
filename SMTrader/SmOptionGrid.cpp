@@ -54,6 +54,7 @@ END_MESSAGE_MAP()
 
 void SmOptionGrid::Init()
 {
+	_EqualIndex = -1;
 	_EqualCell.row = -1;
 	_EqualCell.col = -1;
 	_defFont.CreateFont(12, 0, 0, 0, 500, 0, 0, 0, 0, 0, 0, 0, 0, _T("±¼¸²"));
@@ -156,6 +157,8 @@ void SmOptionGrid::InitGrid()
 void SmOptionGrid::InitGrid(int height)
 {
 	std::pair<int, int> start_max = FindValueStartRow(height);
+	_ValueStartRow = start_max.first;
+	_ValueMaxRow = start_max.second;
 	if (start_max.first == 0 && start_max.second == 0)
 		return;
 	_RowCount = start_max.second;
@@ -286,7 +289,7 @@ void SmOptionGrid::GetSymbolMaster()
 	}
 	*/
 
-	if (!_CurPrdtSec || _EqualCell.row == -1)
+	if (!_CurPrdtSec || _EqualIndex == -1)
 		return;
 
 	int selMon = _LeftWnd->_ComboOption.GetCurSel();
@@ -325,7 +328,7 @@ void SmOptionGrid::GetSymbolMaster()
 		int startIndex = 0;
 		int endIndex = opSec->_SymbolVector.size() - 1;
 		int addNum = 0;
-		int curIndex = _EqualCell.row;
+		int curIndex = _EqualIndex;
 		bool upRange = false, downRange = false;
 		while (1) {
 			if (addNum % 2 == 0)
@@ -357,6 +360,7 @@ void SmOptionGrid::GetSymbolMaster()
 
 void SmOptionGrid::RefreshMode()
 {
+	ResetRemainCells();
 	if (_Mode == 0)
 		SetRemain2();
 	else if (_Mode == 1)
@@ -399,6 +403,7 @@ std::pair<int, int> SmOptionGrid::FindValueStartRow(int height)
 			}
 		}
 		
+		_EqualIndex = eIndex;
 		_EqualSymbol = opSec->_SymbolVector[eIndex];
 		int half = (int)(max_row / 2);
 		startRow = eIndex - half;
@@ -410,13 +415,13 @@ std::pair<int, int> SmOptionGrid::FindValueStartRow(int height)
 void SmOptionGrid::ResetRemainCells()
 {
 	for (auto it = _RemainPos.begin(); it != _RemainPos.end(); ++it) {
-		VtCellPos pos = *it;
-		if (pos.Col == 0)
-			QuickSetBackColor(pos.Row, pos.Col, RGB(252, 226, 228));
+		std::pair<int, int> pos = *it;
+		if (pos.second == 0)
+			QuickSetBackColor(pos.first, pos.second, RGB(252, 226, 228));
 		else
-			QuickSetBackColor(pos.Row, pos.Col, RGB(218, 226, 245));
+			QuickSetBackColor(pos.first, pos.second, RGB(218, 226, 245));
 
-		QuickSetText(pos.Row, pos.Col, _T(""));
+		QuickSetText(pos.first, pos.second, _T(""));
 	}
 }
 
@@ -502,7 +507,8 @@ void SmOptionGrid::ShowPosition(bool init, int acptCnt, VtPosition* posi, std::s
 				}
 			}
 		}
-		InvalidateCellRect(std::get<0>(pos), std::get<1>(pos));
+		InvalidateCellRect(row, col);
+		_RemainPos.insert(std::make_pair(row, col));
 	}
 }
 

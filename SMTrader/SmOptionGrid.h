@@ -87,10 +87,10 @@ public:
 	std::pair<int, int> FindValueStartRow(int height);
 private:
 	int _ValueStartRow = 0;
-	//int _EqualCol;
-	//int _EqualRow;
+	int _ValueMaxRow = 0;
+	int _EqualIndex = 0;
 	int _Mode = 1;
-	std::set<VtCellPos> _RemainPos;
+	std::set<std::pair<int, int>> _RemainPos;
 	void ResetRemainCells();
 	void ShowPosition(bool init, int acptCnt, VtPosition* posi, std::string symCode);
 	void ShowCurrent(VtSymbol* sym);
