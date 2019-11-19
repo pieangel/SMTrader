@@ -529,8 +529,11 @@
 #define IDC_CUSTOM_OPTION               1045
 #define IDC_STATIC_PRODUCT_NAME         1046
 #define IDC_COMBO_FUT_MARKET            1046
+#define IDC_CUSTOM_FUTURE               1046
 #define IDC_STATIC_PRODUCT_REMAIN       1047
 #define IDC_STATIC_FUT                  1047
+#define IDC_CUSTOM2                     1047
+#define IDC_CUSTOM_PL                   1047
 #define IDC_STATIC_ACNT_NAME            1048
 #define IDC_STATIC_REAL_TICKQUOTE       1048
 #define IDC_COMBO_OPT_MARKET            1048
@@ -686,7 +689,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        370
 #define _APS_NEXT_COMMAND_VALUE         32805
-#define _APS_NEXT_CONTROL_VALUE         1046
+#define _APS_NEXT_CONTROL_VALUE         1048
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif

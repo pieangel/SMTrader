@@ -2,6 +2,7 @@
 //
 
 #include "stdafx.h"
+#include "resource.h"
 #include "SMTrader.h"
 #include "VtOrderLeftWndHd.h"
 #include "VtOrderWndHd.h"
@@ -66,6 +67,8 @@ void VtOrderLeftWndHd::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_COMBO_PRODUCT, _ComboProduct);
 	DDX_Control(pDX, IDC_COMBO_OPTION, _ComboOption);
 	DDX_Control(pDX, IDC_CUSTOM_OPTION, _SymbolOptionGrid);
+	DDX_Control(pDX, IDC_CUSTOM_FUTURE, _SymbolFutureGrid);
+	DDX_Control(pDX, IDC_CUSTOM_PL, _ProfitLossGrid);
 }
 
 
@@ -92,9 +95,9 @@ BOOL VtOrderLeftWndHd::OnInitDialog()
 	_SymbolFutureGrid.OrderConfigMgr(_OrderConfigMgr);
 	_SymbolFutureGrid.Mode(_FutureSymbolMode);
 	// TODO:  Add extra initialization here
-	_SymbolFutureGrid.AttachGrid(this, IDC_SYMBOL_FUTURE);
+	//_SymbolFutureGrid.AttachGrid(this, IDC_SYMBOL_FUTURE);
 	_ProfitLossGrid.OrderConfigMgr(_OrderConfigMgr);
-	_ProfitLossGrid.AttachGrid(this, IDC_PROFIT_LOSS);
+	//_ProfitLossGrid.AttachGrid(this, IDC_PROFIT_LOSS);
 	_AssetGrid.OrderConfigMgr(_OrderConfigMgr);
 	_AssetGrid.AttachGrid(this, IDC_ASSET);
 	if (_OrderConfigMgr->Type() == 0) {
@@ -105,6 +108,8 @@ BOOL VtOrderLeftWndHd::OnInitDialog()
 	}
 	//_SymbolOptionGrid.AttachGrid(this, IDC_SYMBOL_OPTION);
 	_SymbolOptionGrid.Init();
+	_SymbolFutureGrid.Init();
+	_ProfitLossGrid.Init();
 	if (_FutureSymbolMode == 0)
 	{
 		((CButton*)GetDlgItem(IDC_RADIO_BALANCE))->SetCheck(BST_CHECKED);
@@ -283,6 +288,8 @@ void VtOrderLeftWndHd::OnResizeWnd()
 		_SymbolOptionGrid.SetWindowPos(nullptr, 0, 0, rcGrid.Width(), rcWnd.Height() - 313, SWP_NOMOVE);
 		_SymbolOptionGrid.InitGrid(rcWnd.Height() - 313);
 		_SymbolOptionGrid.GetSymbolMaster();
+		_SymbolFutureGrid.InitGrid();
+		_ProfitLossGrid.InitGrid();
 	}
 }
 

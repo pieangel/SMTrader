@@ -6,6 +6,8 @@
 #include "HdAssetGrid.h"
 #include "afxwin.h"
 #include "SmOptionGrid.h"
+#include "SmFutureGrid.h"
+#include "SmPLGrid.h"
 // VtOrderLeftHd dialog
 class VtOrderConfigManager;
 class VtSymbol;
@@ -43,8 +45,10 @@ public:
 	void OnOutstanding();
 	void OnExpected(VtSymbol* sym);
 private:
-	HdSymbolFutureGrid _SymbolFutureGrid;
-	HdProfitLossGrid _ProfitLossGrid;
+	//HdSymbolFutureGrid _SymbolFutureGrid;
+	SmFutureGrid _SymbolFutureGrid;
+	//HdProfitLossGrid _ProfitLossGrid;
+	SmPLGrid _ProfitLossGrid;
 	HdAssetGrid      _AssetGrid;
 	//HdSymbolOptionGrid _SymbolOptionGrid;
 	SmOptionGrid _SymbolOptionGrid;
