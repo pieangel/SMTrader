@@ -36,6 +36,7 @@ public:
 	DECLARE_MESSAGE_MAP()
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnRButtonDown(UINT nFlags, CPoint point);
+	afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
 
 	void SetColTitle();
 	int _ColCount = 3;
@@ -75,8 +76,6 @@ private:
 	void SetEqualRow(int equalRow);
 	int GetMaxRow();
 
-	std::map<std::string, std::tuple<int, int, VtSymbol*>> _CallSymbolRowMap;
-	std::map<std::string, std::tuple<int, int, VtSymbol*>> _PutSymbolRowMap;
 	std::map<std::string, std::tuple<int, int, VtSymbol*>> _SymbolRowMap;
 	void MakeSymbolRowMap(int start_index, int max_row);
 public:
@@ -89,6 +88,7 @@ private:
 	int _ValueStartRow = 0;
 	int _ValueMaxRow = 0;
 	int _EqualIndex = 0;
+	int _MaxIndex = 0;
 	int _Mode = 1;
 	std::set<std::pair<int, int>> _RemainPos;
 	void ResetRemainCells();

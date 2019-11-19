@@ -50,6 +50,7 @@ void SmOptionGrid::OnQuoteEvent(VtSymbol* symbol)
 BEGIN_MESSAGE_MAP(SmOptionGrid, CGridCtrl)
 	ON_WM_LBUTTONDOWN()
 	ON_WM_LBUTTONUP()
+	ON_WM_MOUSEWHEEL()
 END_MESSAGE_MAP()
 
 void SmOptionGrid::Init()
@@ -122,6 +123,34 @@ void SmOptionGrid::OnRButtonDown(UINT nFlags, CPoint point)
 	return;
 }
 
+BOOL SmOptionGrid::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
+{
+	int distance = zDelta / 60;
+	if (abs(zDelta) > 120)
+		distance = zDelta / 120;
+	else
+		distance = zDelta / 40;
+	_ValueStartRow = _ValueStartRow + (distance);
+	if (_ValueStartRow < 0)
+		_ValueStartRow = 0;
+	if (_ValueStartRow > _MaxIndex - _ValueMaxRow)
+		_ValueStartRow = _MaxIndex - _ValueMaxRow;
+
+	// 기존맵을 삭제한다.
+	_SymbolRowMap.clear();
+	// 새로운 맵을 만든다.
+	MakeSymbolRowMap(_ValueStartRow, _ValueMaxRow);
+
+	if (_Mode == 0)
+		SetRemain2();
+	else if (_Mode == 1)
+		SetCurrent2();
+	else
+		SetExpected2();
+	
+	return CGridCtrl::OnMouseWheel(nFlags, zDelta, pt);
+}
+
 void SmOptionGrid::SetColTitle()
 {
 	LPCTSTR title[3] = { "Call", "행사가", "Put" };
@@ -176,6 +205,9 @@ void SmOptionGrid::InitGrid(int height)
 		}
 	}
 
+	// 기존맵을 삭제한다.
+	_SymbolRowMap.clear();
+	// 새로운 맵을 만든다.
 	MakeSymbolRowMap(start_max.first, start_max.second);
 
 	if (_Mode == 0)
@@ -258,37 +290,6 @@ void SmOptionGrid::SetProductSection()
 
 void SmOptionGrid::GetSymbolMaster()
 {
-	/*
-	if (!_CurPrdtSec)
-		return;
-
-	int selMon = _LeftWnd->_ComboOption.GetCurSel();
-	if (selMon == -1 || _CurPrdtSec->SubSectionVector.size() == 0)
-		return;
-	CString curYearMon;
-	_LeftWnd->_ComboOption.GetLBText(selMon, curYearMon);
-	VtProductSubSection* callSec = _CurPrdtSec->SubSectionVector[0];
-	VtOptionMonthSection* callOp = callSec->FindOptionMap((LPCTSTR)curYearMon);
-	if (callOp) {
-		for (auto it = callOp->_SymbolVector.begin(); it != callOp->_SymbolVector.end(); ++it) {
-			VtSymbol* sym = *it;
-			if (sym->Quote.intClose == 0)
-				sym->GetSymbolMaster();
-			VtRealtimeRegisterManager::GetInstance()->RegisterProduct(sym->ShortCode);
-		}
-	}
-	VtProductSubSection* putSec = _CurPrdtSec->SubSectionVector[1];
-	VtOptionMonthSection* putOp = putSec->FindOptionMap((LPCTSTR)curYearMon);
-	if (putOp) {
-		for (auto it = putOp->_SymbolVector.begin(); it != putOp->_SymbolVector.end(); ++it) {
-			VtSymbol* sym = *it;
-			if (sym->Quote.intClose == 0)
-				sym->GetSymbolMaster();
-			VtRealtimeRegisterManager::GetInstance()->RegisterProduct(sym->ShortCode);
-		}
-	}
-	*/
-
 	if (!_CurPrdtSec || _EqualIndex == -1)
 		return;
 
@@ -403,6 +404,7 @@ std::pair<int, int> SmOptionGrid::FindValueStartRow(int height)
 			}
 		}
 		
+		_MaxIndex = opSec->_SymbolVector.size() - 1;
 		_EqualIndex = eIndex;
 		_EqualSymbol = opSec->_SymbolVector[eIndex];
 		int half = (int)(max_row / 2);
@@ -517,17 +519,9 @@ void SmOptionGrid::ShowExpected(VtSymbol* sym)
 	if (!sym)
 		return;
 	CUGCell cell;
-	auto it = _CallSymbolRowMap.find(sym->ShortCode);
-	if (it != _CallSymbolRowMap.end())
-	{
-		auto pos = _CallSymbolRowMap[sym->ShortCode];
-		ShowExpected(std::get<0>(pos), std::get<1>(pos), std::get<2>(pos));
-	}
-
-	it = _PutSymbolRowMap.find(sym->ShortCode);
-	if (it != _PutSymbolRowMap.end())
-	{
-		auto pos = _PutSymbolRowMap[sym->ShortCode];
+	auto it = _SymbolRowMap.find(sym->ShortCode);
+	if (it != _SymbolRowMap.end()) {
+		auto pos = _SymbolRowMap[sym->ShortCode];
 		ShowExpected(std::get<0>(pos), std::get<1>(pos), std::get<2>(pos));
 	}
 }
@@ -801,10 +795,12 @@ void SmOptionGrid::MakeSymbolRowMap(int start_index, int max_row)
 	int delta = 0;
 	int minVal = 1000000;
 
+	// 기존 등가 색을 지운다.
 	if (_EqualCell.IsValid()) {
 		CGridCellBase* pCell = GetCell(_EqualCell.row, _EqualCell.col);
 		if (pCell) {
 			pCell->SetBackClr(RGB(255, 255, 255));
+			InvalidateCellRect(_EqualCell.row, _EqualCell.col);
 		}
 	}
 
@@ -817,6 +813,8 @@ void SmOptionGrid::MakeSymbolRowMap(int start_index, int max_row)
 	VtOptionMonthSection* putMonthSec = putSec->FindOptionMap((LPCTSTR)curYearMon);
 	if (callMonthSec && putMonthSec) {
 		for (int i = start_index, j = 1; i < start_index + max_row; ++i, ++j) {
+			if (i < 0 || i >= callMonthSec->_SymbolVector.size())
+				break;
 			VtSymbol* call_sym = callMonthSec->_SymbolVector[i];
 			VtSymbol* put_sym = putMonthSec->_SymbolVector[i];
 			_SymbolRowMap[call_sym->ShortCode] = std::make_tuple(j, 0, call_sym);
@@ -832,6 +830,7 @@ void SmOptionGrid::MakeSymbolRowMap(int start_index, int max_row)
 			std::string strVal = NumberFormatter::format(intCenter / std::pow(10, call_sym->IntDecimal), call_sym->IntDecimal);
 			CGridCellBase* pCell = GetCell(j, 1);
 			if (pCell) {
+				// 새로운 등가를 설정한다.
 				if (call_sym == _EqualSymbol) {
 					pCell->SetBackClr(RGB(255, 255, 0));
 					_EqualCell.row = j;
