@@ -64,3 +64,21 @@ void SmCallbackManager::OnOrderEvent( VtOrder* order)
 		it->second(order);
 	}
 }
+
+void SmCallbackManager::UnsubscribeMasterCallback(long id)
+{
+	auto it = _MasterMap.find(id);
+	if (it != _MasterMap.end()) {
+		_MasterMap.erase(it);
+	}
+}
+
+void SmCallbackManager::OnMasterEvent(VtSymbol* symbol)
+{
+	if (!symbol)
+		return;
+	// 맵에 있는 모든 함수를 호출한다.
+	for (auto it = _MasterMap.begin(); it != _MasterMap.end(); ++it) {
+		it->second(symbol);
+	}
+}

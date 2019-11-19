@@ -104,12 +104,21 @@ void SmOptionGrid::Init()
 
 void SmOptionGrid::OnLButtonDown(UINT nFlags, CPoint point)
 {
-
+	CCellID cell = GetCellFromPt(point);
+	CGridCellBase* pCell = GetCell(cell.row, cell.col);
+	VtSymbol* sym = (VtSymbol*)pCell->GetData();
+	if (sym) {
+		sym->GetSymbolMaster();
+		if (_OrderConfigMgr->_HdCenterWnd) {
+			_OrderConfigMgr->Symbol(sym);
+			_OrderConfigMgr->_HdCenterWnd->ChangeSymbol(sym);
+		}
+	}
 }
 
 void SmOptionGrid::OnRButtonDown(UINT nFlags, CPoint point)
 {
-
+	return;
 }
 
 void SmOptionGrid::SetColTitle()
@@ -140,87 +149,8 @@ void SmOptionGrid::SetColTitle()
 
 void SmOptionGrid::InitGrid()
 {
-	if (!_LeftWnd)
-		return;
-	if (!_CurPrdtSec)
-		return;
-	CGridCellBase* pCell = nullptr;
-	ResetRemainCells();
-
-	pCell = GetCell(_EqualCol, _EqualRow);
-	if (pCell)
-		pCell->SetBackClr(RGB(255, 255, 255));
-
-	int selMon = _LeftWnd->_ComboOption.GetCurSel();
-	if (selMon == -1 || _CurPrdtSec->SubSectionVector.size() == 0)
-		return;
-
-	int eIndex = 0;
-	int delta = 0;
-	int minVal = 1000000;
-
-	VtSymbolManager* symMgr = VtSymbolManager::GetInstance();
-	CString curYearMon;
-	_LeftWnd->_ComboOption.GetLBText(selMon, curYearMon);
-	VtProductSubSection* callSec = _CurPrdtSec->SubSectionVector[0];
-	VtOptionMonthSection* opSec = callSec->FindOptionMap((LPCTSTR)curYearMon);
-	if (opSec) {
-		int i = 0;
-		for (auto it = opSec->_SymbolVector.begin(); it != opSec->_SymbolVector.end(); ++it) {
-			VtSymbol* sym = *it;
-			// 콜 셀에 심볼을 할당해 준다.
-			pCell = GetCell(i, 0);
-			pCell->SetData((LPARAM)sym);
-			_CallSymbolRowMap[sym->ShortCode] = std::make_tuple(i, 0, sym);
-
-			pCell = GetCell(i, 1);
-			std::string centerVal = sym->ShortCode.substr(5, 3);
-			char centerTip = sym->ShortCode.at(7);
-			int intCenter = std::stoi(centerVal) * static_cast<int>(std::pow(10, sym->IntDecimal));
-			if (centerTip == '2' || centerTip == '7')
-				intCenter += 50;
-			delta = std::abs(symMgr->Kospi200Current - intCenter);
-			if (delta < minVal) {
-				minVal = delta;
-				eIndex = i;
-			}
-
-			// 중앙값을 설정한다.
-			std::string strVal = NumberFormatter::format(intCenter / std::pow(10, sym->IntDecimal), sym->IntDecimal);
-			pCell->SetText(strVal.c_str());
-			InvalidateCellRect(i, 1);
-			i++;
-		}
-
-		// 최근월물 설정
-		SetEqualRow(eIndex);
-		pCell = GetCell(eIndex, i);
-		pCell->SetBackClr(RGB(255, 255, 0));
-		InvalidateCellRect(eIndex, i);
-		_EqualCol = 1;
-		_EqualRow = eIndex;
-	}
-
-	VtProductSubSection* putSec = _CurPrdtSec->SubSectionVector[1];
-	opSec = putSec->FindOptionMap((LPCTSTR)curYearMon);
-	if (opSec) {
-		int i = 0;
-		for (auto it = opSec->_SymbolVector.begin(); it != opSec->_SymbolVector.end(); ++it) {
-			// 풋셀에 심볼을 설정한다.
-			VtSymbol* sym = *it;
-			pCell = GetCell(i, 2);
-			pCell->SetData((LPARAM)sym);
-			_PutSymbolRowMap[sym->ShortCode] = std::make_tuple(i, 2, sym);
-			i++;
-		}
-	}
-
-	if (_Mode == 0)
-		SetRemain();
-	else if (_Mode == 1)
-		SetCurrent();
-	else
-		SetExpected();
+	CRect rcGrid;
+	InitGrid(rcGrid.Height());
 }
 
 void SmOptionGrid::InitGrid(int height)
@@ -325,10 +255,7 @@ void SmOptionGrid::SetProductSection()
 
 void SmOptionGrid::GetSymbolMaster()
 {
-	if (_EqualRow >= 0) {
-		GetSymbolMasterByCenter();
-		return;
-	}
+	/*
 	if (!_CurPrdtSec)
 		return;
 
@@ -338,34 +265,28 @@ void SmOptionGrid::GetSymbolMaster()
 	CString curYearMon;
 	_LeftWnd->_ComboOption.GetLBText(selMon, curYearMon);
 	VtProductSubSection* callSec = _CurPrdtSec->SubSectionVector[0];
-	VtOptionMonthSection* opSec = callSec->FindOptionMap((LPCTSTR)curYearMon);
-	if (opSec)
-	{
-		for (auto it = opSec->_SymbolVector.begin(); it != opSec->_SymbolVector.end(); ++it)
-		{
+	VtOptionMonthSection* callOp = callSec->FindOptionMap((LPCTSTR)curYearMon);
+	if (callOp) {
+		for (auto it = callOp->_SymbolVector.begin(); it != callOp->_SymbolVector.end(); ++it) {
 			VtSymbol* sym = *it;
 			if (sym->Quote.intClose == 0)
 				sym->GetSymbolMaster();
+			VtRealtimeRegisterManager::GetInstance()->RegisterProduct(sym->ShortCode);
 		}
 	}
 	VtProductSubSection* putSec = _CurPrdtSec->SubSectionVector[1];
-	opSec = putSec->FindOptionMap((LPCTSTR)curYearMon);
-	if (opSec)
-	{
-		for (auto it = opSec->_SymbolVector.begin(); it != opSec->_SymbolVector.end(); ++it)
-		{
+	VtOptionMonthSection* putOp = putSec->FindOptionMap((LPCTSTR)curYearMon);
+	if (putOp) {
+		for (auto it = putOp->_SymbolVector.begin(); it != putOp->_SymbolVector.end(); ++it) {
 			VtSymbol* sym = *it;
 			if (sym->Quote.intClose == 0)
 				sym->GetSymbolMaster();
+			VtRealtimeRegisterManager::GetInstance()->RegisterProduct(sym->ShortCode);
 		}
 	}
-}
+	*/
 
-void SmOptionGrid::GetSymbolMasterByCenter()
-{
-	int centerRow = _EqualRow;
-
-	if (!_CurPrdtSec)
+	if (!_CurPrdtSec || _EqualCell.row == -1)
 		return;
 
 	int selMon = _LeftWnd->_ComboOption.GetCurSel();
@@ -404,7 +325,7 @@ void SmOptionGrid::GetSymbolMasterByCenter()
 		int startIndex = 0;
 		int endIndex = opSec->_SymbolVector.size() - 1;
 		int addNum = 0;
-		int curIndex = _EqualRow;
+		int curIndex = _EqualCell.row;
 		bool upRange = false, downRange = false;
 		while (1) {
 			if (addNum % 2 == 0)
@@ -432,6 +353,16 @@ void SmOptionGrid::GetSymbolMasterByCenter()
 			addNum++;
 		}
 	}
+}
+
+void SmOptionGrid::RefreshMode()
+{
+	if (_Mode == 0)
+		SetRemain2();
+	else if (_Mode == 1)
+		SetCurrent2();
+	else
+		SetExpected2();
 }
 
 std::pair<int, int> SmOptionGrid::FindValueStartRow(int height)
@@ -492,98 +423,85 @@ void SmOptionGrid::ResetRemainCells()
 void SmOptionGrid::ShowPosition(bool init, int acptCnt, VtPosition* posi, std::string symCode)
 {
 	CUGCell cell;
-	auto it = _CallSymbolRowMap.find(symCode);
-	if (it != _CallSymbolRowMap.end()) {
-		auto pos = _CallSymbolRowMap[symCode];
-
-		VtCellPos cellPos;
-
-		if (!posi) {
-			if (acptCnt > 0) { // 포지션 없고 접수확인 주문만 있을 때 - 회색 배경에 0
-				QuickSetText(std::get<0>(pos), std::get<1>(pos), _T("0"));
-				QuickSetBackColor(std::get<0>(pos), std::get<1>(pos), RGB(212, 186, 188));
-			}
-			else { // 접수 확인 주문이 없을 때
-				if (init) { // 한번이라도 주문이 나갔으면 흰색배경에 0
-					QuickSetText(std::get<0>(pos), std::get<1>(pos), _T("0"));
-					QuickSetBackColor(std::get<0>(pos), std::get<1>(pos), RGB(255, 255, 255));
+	auto it = _SymbolRowMap.find(symCode);
+	if (it != _SymbolRowMap.end()) {
+		auto pos = _SymbolRowMap[symCode];
+		int col = std::get<1>(pos);
+		int row = std::get<0>(pos);
+		if (col == 0) { // 콜일 경우
+			if (!posi) {
+				if (acptCnt > 0) { // 포지션 없고 접수확인 주문만 있을 때 - 회색 배경에 0
+					QuickSetText(row, col, _T("0"));
+					QuickSetBackColor(row, col, RGB(212, 186, 188));
 				}
-				else { // 한번도 주문이 안 나갔으면 매수 배경색
-					QuickSetText(std::get<0>(pos), std::get<1>(pos), _T(""));
-					QuickSetBackColor(std::get<0>(pos), std::get<1>(pos), RGB(252, 226, 228));
-				}
-			}
-		}
-		else { // 포지션이 있는 경우 - 최소 한번이라도 주문이 나간것으로 간주한다. - 이전에 나갔어도 
-			if (std::abs(posi->OpenQty) > 0) { // 잔고가 있는 경우
-				QuickSetNumber(std::get<0>(pos), std::get<1>(pos), posi->OpenQty);
-				if (acptCnt > 0) // 접수 확인 주문이 있는 경우  회색배경에 잔고 갯수
-					QuickSetBackColor(std::get<0>(pos), std::get<1>(pos), RGB(212, 186, 188));
-				else // 접수 확인 주문이 없는 경우는 흰색 배경에 잔고 갯수
-					QuickSetBackColor(std::get<0>(pos), std::get<1>(pos), RGB(255, 255, 255));
-			}
-			else { // 잔고가 없는 경우
-				if (acptCnt > 0) { // 한번이라도 주문이 나간경우 회색배경에 0
-					QuickSetText(std::get<0>(pos), std::get<1>(pos), _T("0"));
-					QuickSetBackColor(std::get<0>(pos), std::get<1>(pos), RGB(212, 186, 188));
-				}
-				else { // 잔고, 접수확인 둘 다 없을 때 흰색 배경에 0
-					QuickSetText(std::get<0>(pos), std::get<1>(pos), _T("0"));
-					QuickSetBackColor(std::get<0>(pos), std::get<1>(pos), RGB(255, 255, 255));
+				else { // 접수 확인 주문이 없을 때
+					if (init) { // 한번이라도 주문이 나갔으면 흰색배경에 0
+						QuickSetText(row, col, _T("0"));
+						QuickSetBackColor(row, col, RGB(255, 255, 255));
+					}
+					else { // 한번도 주문이 안 나갔으면 매수 배경색
+						QuickSetText(row, col, _T(""));
+						QuickSetBackColor(row, col, RGB(252, 226, 228));
+					}
 				}
 			}
-		}
-
-		cellPos.Col = std::get<0>(pos);
-		cellPos.Row = std::get<1>(pos);
-		_RemainPos.insert(cellPos);
-		InvalidateCellRect(std::get<0>(pos), std::get<1>(pos));
-	}
-
-	it = _PutSymbolRowMap.find(symCode);
-	if (it != _PutSymbolRowMap.end()) {
-		auto pos = _PutSymbolRowMap[symCode];
-
-		VtCellPos cellPos;
-
-		if (!posi) { // 포지션이 없는 경우 - 주문이 나간적이 없을 경우
-			if (acptCnt > 0) { // 접수확인된 주문이 있을 경우 - 0에 회색 배경
-				QuickSetText(std::get<0>(pos), std::get<1>(pos), _T("0"));
-				QuickSetBackColor(std::get<0>(pos), std::get<1>(pos), RGB(178, 186, 205));
-			}
-			else {
-				if (init) { // 잔고 없이 한번이라도 주문이 나간경우 - 0에 흰색 배경
-					QuickSetText(std::get<0>(pos), std::get<1>(pos), _T("0"));
-					QuickSetBackColor(std::get<0>(pos), std::get<1>(pos), RGB(255, 255, 255));
+			else { // 포지션이 있는 경우 - 최소 한번이라도 주문이 나간것으로 간주한다. - 이전에 나갔어도 
+				if (std::abs(posi->OpenQty) > 0) { // 잔고가 있는 경우
+					QuickSetNumber(row, col, posi->OpenQty);
+					if (acptCnt > 0) // 접수 확인 주문이 있는 경우  회색배경에 잔고 갯수
+						QuickSetBackColor(row, col, RGB(212, 186, 188));
+					else // 접수 확인 주문이 없는 경우는 흰색 배경에 잔고 갯수
+						QuickSetBackColor(row, col, RGB(255, 255, 255));
 				}
-				else { // 잔고도 없고 한번도 주문이 나가지 않은 경우 - 숫자없이 매도 배경색
-					QuickSetText(std::get<0>(pos), std::get<1>(pos), _T(""));
-					QuickSetBackColor(std::get<0>(pos), std::get<1>(pos), RGB(218, 226, 245));
+				else { // 잔고가 없는 경우
+					if (acptCnt > 0) { // 한번이라도 주문이 나간경우 회색배경에 0
+						QuickSetText(row, col, _T("0"));
+						QuickSetBackColor(row, col, RGB(212, 186, 188));
+					}
+					else { // 잔고, 접수확인 둘 다 없을 때 흰색 배경에 0
+						QuickSetText(row, col, _T("0"));
+						QuickSetBackColor(row, col, RGB(255, 255, 255));
+					}
 				}
 			}
 		}
-		else { // 포지션이 있는 경우 - 주문이 나간적이 있는 경우 - 한번이라도 주문이 나갔다
-			if (std::abs(posi->OpenQty) > 0) { // 잔고가 있는 경우
-				QuickSetNumber(std::get<0>(pos), std::get<1>(pos), posi->OpenQty);
-				if (acptCnt > 0) // 접수확인이 있는 경우 회색 배경
-					QuickSetBackColor(std::get<0>(pos), std::get<1>(pos), RGB(178, 186, 205));
-				else // 잔고만 있을 때는 흰색 배경
-					QuickSetBackColor(std::get<0>(pos), std::get<1>(pos), RGB(255, 255, 255));
-			}
-			else { // 잔고가 없는 경우
-				if (acptCnt > 0) { // 접수확인이 있는 경우 - 회색 배경에 0
-					QuickSetText(std::get<0>(pos), std::get<1>(pos), _T("0"));
-					QuickSetBackColor(std::get<0>(pos), std::get<1>(pos), RGB(178, 186, 205));
+		else { // 풋일 경우
+			if (!posi) { // 포지션이 없는 경우 - 주문이 나간적이 없을 경우
+				if (acptCnt > 0) { // 접수확인된 주문이 있을 경우 - 0에 회색 배경
+					QuickSetText(row, col, _T("0"));
+					QuickSetBackColor(row, col, RGB(178, 186, 205));
 				}
-				else { // 잔고, 접수확인 없을 때 흰색 배경에 0
-					QuickSetText(std::get<0>(pos), std::get<1>(pos), _T("0"));
-					QuickSetBackColor(std::get<0>(pos), std::get<1>(pos), RGB(255, 255, 255));
+				else {
+					if (init) { // 잔고 없이 한번이라도 주문이 나간경우 - 0에 흰색 배경
+						QuickSetText(row, col, _T("0"));
+						QuickSetBackColor(row, col, RGB(255, 255, 255));
+					}
+					else { // 잔고도 없고 한번도 주문이 나가지 않은 경우 - 숫자없이 매도 배경색
+						QuickSetText(row, col, _T(""));
+						QuickSetBackColor(row, col, RGB(218, 226, 245));
+					}
+				}
+			}
+			else { // 포지션이 있는 경우 - 주문이 나간적이 있는 경우 - 한번이라도 주문이 나갔다
+				if (std::abs(posi->OpenQty) > 0) { // 잔고가 있는 경우
+					QuickSetNumber(row, col, posi->OpenQty);
+					if (acptCnt > 0) // 접수확인이 있는 경우 회색 배경
+						QuickSetBackColor(row, col, RGB(178, 186, 205));
+					else // 잔고만 있을 때는 흰색 배경
+						QuickSetBackColor(row, col, RGB(255, 255, 255));
+				}
+				else { // 잔고가 없는 경우
+					if (acptCnt > 0) { // 접수확인이 있는 경우 - 회색 배경에 0
+						QuickSetText(row, col, _T("0"));
+						QuickSetBackColor(row, col, RGB(178, 186, 205));
+					}
+					else { // 잔고, 접수확인 없을 때 흰색 배경에 0
+						QuickSetText(row, col, _T("0"));
+						QuickSetBackColor(row, col, RGB(255, 255, 255));
+					}
 				}
 			}
 		}
-		cellPos.Col = std::get<0>(pos);
-		cellPos.Row = std::get<1>(pos);
-		_RemainPos.insert(cellPos);
 		InvalidateCellRect(std::get<0>(pos), std::get<1>(pos));
 	}
 }
@@ -625,8 +543,7 @@ void SmOptionGrid::ShowCurrent(VtSymbol* sym)
 		return;
 	CUGCell cell;
 	auto it = _SymbolRowMap.find(sym->ShortCode);
-	if (it != _SymbolRowMap.end())
-	{
+	if (it != _SymbolRowMap.end()) {
 		auto pos = _SymbolRowMap[sym->ShortCode];
 		ShowCurrent(std::get<0>(pos), std::get<1>(pos), std::get<2>(pos));
 	}
@@ -643,47 +560,6 @@ void SmOptionGrid::ShowCurrent(int row, int col, VtSymbol* sym)
 	}
 }
 
-void SmOptionGrid::SetRemain()
-{
-	if (_Mode != 0 || !_OrderConfigMgr)
-		return;
-
-	for (auto it = _SymbolRowMap.begin(); it != _SymbolRowMap.end(); ++it) {
-		auto pos = it->second;
-		VtSymbol* sym = std::get<2>(pos);
-
-		if (_OrderConfigMgr->Type() == 0) {
-			VtAccount* acnt = _OrderConfigMgr->Account();
-			if (!acnt)
-				return;
-
-			VtOrderManagerSelector* orderMgrSeledter = VtOrderManagerSelector::GetInstance();
-			VtOrderManager* orderMgr = orderMgrSeledter->FindOrderManager(acnt->AccountNo);
-			if (!orderMgr)
-				return;
-			VtProductOrderManager* prdtOrderMgr = orderMgr->GetProductOrderManager(sym->ShortCode);
-			VtPosition* posi = acnt->FindPosition(sym->ShortCode);
-			if (prdtOrderMgr)
-				ShowPosition(prdtOrderMgr->Init(), prdtOrderMgr->GetAcceptedOrderCount(), posi, sym->ShortCode);
-			else
-				ShowPosition(false, 0, nullptr, sym->ShortCode);
-		}
-		else {
-			VtFund* fund = _OrderConfigMgr->Fund();
-			if (!fund)
-				return;
-
-			std::tuple<bool, int> result = fund->GetInitAndAcceptedCount(sym->ShortCode);
-			int count = 0;
-			VtPosition posi = fund->GetPosition(sym->ShortCode, count);
-			if (count != 0)
-				ShowPosition(std::get<0>(result), std::get<1>(result), &posi, sym->ShortCode);
-			else
-				ShowPosition(std::get<0>(result), std::get<1>(result), nullptr, sym->ShortCode);
-		}
-	}
-}
-
 void SmOptionGrid::SetRemain(VtPosition* posi)
 {
 	if (!posi)
@@ -695,32 +571,22 @@ void SmOptionGrid::SetRemain(VtPosition* posi)
 	if (!_OrderConfigMgr || !_OrderConfigMgr->Account())
 		return;
 
-	CUGCell cell;
 	auto it = _SymbolRowMap.find(posi->ShortCode);
 	if (it != _SymbolRowMap.end())
 	{
 		auto pos = _SymbolRowMap[posi->ShortCode];
-
-
 		VtAccount* acnt = _OrderConfigMgr->Account();
-		VtCellPos cellPos;
-
-		if (std::abs(posi->OpenQty) > 0)
-		{
+		if (std::abs(posi->OpenQty) > 0) {
 			QuickSetNumber(std::get<0>(pos), std::get<1>(pos), posi->OpenQty);
 			if (acnt->GetAcceptedOrderCount(posi->ShortCode) > 0)
 				QuickSetBackColor(std::get<0>(pos), std::get<1>(pos), RGB(212, 186, 188));
 			else
 				QuickSetBackColor(std::get<0>(pos), std::get<1>(pos), RGB(255, 255, 255));
 		}
-		else
-		{
+		else {
 			QuickSetText(std::get<0>(pos), std::get<1>(pos), _T("0"));
 			QuickSetBackColor(std::get<0>(pos), std::get<1>(pos), RGB(255, 255, 255));
 		}
-		cellPos.Col = std::get<0>(pos);
-		cellPos.Row = std::get<1>(pos);
-		_RemainPos.insert(cellPos);
 		InvalidateCellRect(std::get<0>(pos), std::get<1>(pos));
 	}
 }
@@ -841,8 +707,7 @@ void SmOptionGrid::SetCurrent2()
 	if (_Mode != 1)
 		return;
 
-	for (auto it = _SymbolRowMap.begin(); it != _SymbolRowMap.end(); ++it)
-	{
+	for (auto it = _SymbolRowMap.begin(); it != _SymbolRowMap.end(); ++it) {
 		auto pos = it->second;
 		VtSymbol* sym = std::get<2>(pos);
 		ShowCurrent(sym);
@@ -854,8 +719,7 @@ void SmOptionGrid::SetExpected2()
 	if (!_OrderConfigMgr || !_OrderConfigMgr->Account())
 		return;
 
-	for (auto it = _SymbolRowMap.begin(); it != _SymbolRowMap.end(); ++it)
-	{
+	for (auto it = _SymbolRowMap.begin(); it != _SymbolRowMap.end(); ++it) {
 		auto pos = it->second;
 		QuickSetText(std::get<0>(pos), std::get<1>(pos), _T(""));
 		InvalidateCellRect(std::get<0>(pos), std::get<1>(pos));
@@ -883,7 +747,7 @@ void SmOptionGrid::QuickSetNumber(int row, int col, int number)
 	CGridCellBase* pCell = GetCell(row, col);
 	if (pCell) {
 		CString text;
-		text.Format("%d", nullptr);
+		text.Format("%d", number);
 		pCell->SetText(text);
 	}
 }
@@ -972,11 +836,15 @@ void SmOptionGrid::MakeSymbolRowMap(int start_index, int max_row)
 			}
 			pCell = GetCell(j, 0);
 			if (pCell) {
+				pCell->SetText("");
+				pCell->SetData((LPARAM)call_sym);
 				pCell->SetBackClr(RGB(252, 226, 228));
 				InvalidateCellRect(j, 0);
 			}
 			pCell = GetCell(j, 2);
 			if (pCell) {
+				pCell->SetText("");
+				pCell->SetData((LPARAM)put_sym);
 				pCell->SetBackClr(RGB(218, 226, 245));
 				InvalidateCellRect(j, 2);
 			}
@@ -991,12 +859,36 @@ void SmOptionGrid::OnSymbolMaster(VtSymbol* sym)
 
 void SmOptionGrid::OnOrderFilled(VtOrder* order)
 {
+	if (!_OrderConfigMgr || !order)
+		return;
 
+	if (_OrderConfigMgr->Type() == 0) {
+		VtAccount* acnt = _OrderConfigMgr->Account();
+		if (!acnt)
+			return;
+
+		VtPosition* posi = acnt->FindPosition(order->shortCode);
+		if (posi)
+			SetRemain(posi);
+	}
+	else {
+		VtFund* fund = _OrderConfigMgr->Fund();
+		if (!fund)
+			return;
+		int count = 0;
+		VtPosition posi = fund->GetPosition(order->shortCode, count);
+		SetRemain(&posi);
+	}
 }
 
 void SmOptionGrid::OnReceiveQuote(VtSymbol* sym)
 {
-
+	if (_Mode == 0) {
+		SetRemain(sym);
+	}
+	else if (_Mode == 1) {
+		ShowCurrent(sym);
+	}
 }
 
 void SmOptionGrid::OnExpected(VtSymbol* sym)
@@ -1006,45 +898,5 @@ void SmOptionGrid::OnExpected(VtSymbol* sym)
 	}
 	else if (_Mode == 2) {
 		ShowExpected(sym);
-	}
-}
-
-void SmOptionGrid::SetCurrent()
-{
-	if (_Mode != 1)
-		return;
-
-	for (auto it = _CallSymbolRowMap.begin(); it != _CallSymbolRowMap.end(); ++it)
-	{
-		auto pos = it->second;
-		VtSymbol* sym = std::get<2>(pos);
-		ShowCurrent(sym);
-	}
-
-	for (auto it = _PutSymbolRowMap.begin(); it != _PutSymbolRowMap.end(); ++it)
-	{
-		auto pos = it->second;
-		VtSymbol* sym = std::get<2>(pos);
-		ShowCurrent(sym);
-	}
-}
-
-void SmOptionGrid::SetExpected()
-{
-	if (!_OrderConfigMgr || !_OrderConfigMgr->Account())
-		return;
-
-	for (auto it = _CallSymbolRowMap.begin(); it != _CallSymbolRowMap.end(); ++it)
-	{
-		auto pos = it->second;
-		QuickSetText(std::get<0>(pos), std::get<1>(pos), _T(""));
-		InvalidateCellRect(std::get<0>(pos), std::get<1>(pos));
-	}
-
-	for (auto it = _PutSymbolRowMap.begin(); it != _PutSymbolRowMap.end(); ++it)
-	{
-		auto pos = it->second;
-		QuickSetText(std::get<0>(pos), std::get<1>(pos), _T(""));
-		InvalidateCellRect(std::get<0>(pos), std::get<1>(pos));
 	}
 }

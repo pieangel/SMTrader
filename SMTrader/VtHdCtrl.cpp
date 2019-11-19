@@ -2545,6 +2545,9 @@ void VtHdCtrl::OnSymbolMaster(CString& sTrCode, LONG& nRqID)
 	//TRACE(strData159);
 	//TRACE(_T("\n"));
 
+
+	SmCallbackManager::GetInstance()->OnMasterEvent(sym);
+
 	char firstCode = sym->ShortCode.at(0);
 
 	if (_FutureGrid && firstCode == '1') {

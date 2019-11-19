@@ -101,6 +101,7 @@ private:
 	void RemoveLastWindow();
 	VtOrderConfigManager* _OrderConfigMgr = nullptr;
 public:
+	void SetDefaultCenterWnd();
 	void ResetByCenterRow();
 	int ResizeWindow();
 	void RepositionChildWindowsByReverse(int winWidth);

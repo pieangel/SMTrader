@@ -37,6 +37,7 @@
 #include "VtCutManager.h"
 #include <map>
 #include "VtLayoutManager.h"
+#include "SmCallbackManager.h"
 
 using Poco::NumberParser;
 
@@ -777,6 +778,19 @@ CRect SmOrderPanel::GetClientArea(int resourceID)
 	return rcWnd;
 }
 
+void SmOrderPanel::OnSymbolMaster(VtSymbol* sym)
+{
+	if (!sym || !_Symbol)
+		return;
+	if (_Symbol->ShortCode.compare(sym->ShortCode) != 0)
+		return;
+
+	SetProductName(sym);
+	if (m_Grid.GetSafeHwnd()) {
+		m_Grid.OnSymbolMaster(sym);
+	}
+}
+
 void SmOrderPanel::InitSymbol()
 {
 	// 기본 심볼 설정
@@ -1023,6 +1037,8 @@ BOOL SmOrderPanel::OnInitDialog()
 	RepositionProductGrid();
 
 	SetTimer(1, 10, NULL);
+
+	SmCallbackManager::GetInstance()->SubscribeMasterCallback((long)this, std::bind(&SmOrderPanel::OnSymbolMaster, this, _1));
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // EXCEPTION: OCX Property Pages should return FALSE
 }
@@ -1030,7 +1046,6 @@ BOOL SmOrderPanel::OnInitDialog()
 void SmOrderPanel::OnClose()
 {
 	// TODO: Add your message handler code here and/or call default
-	m_Grid.UnregisterQuoteCallback();
 	KillTimer(1);
 	CDialogEx::OnClose();
 }
@@ -1395,6 +1410,7 @@ void SmOrderPanel::ChangeSymbol(VtSymbol* symbol)
 
 void SmOrderPanel::UnregisterOrderWnd()
 {
+	SmCallbackManager::GetInstance()->UnsubscribeMasterCallback((long)this);
 	m_Grid.UnregisterAllCallback();
 	_ProductRemainGrid.UnregisterAllCallback();
 	_TickGrid.UnregisterAllCallback();

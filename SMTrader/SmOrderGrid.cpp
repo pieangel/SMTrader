@@ -101,18 +101,30 @@ SmOrderGrid::SmOrderGrid()
 
 SmOrderGrid::~SmOrderGrid()
 {
-	if (_StopOrderMgr)
-	{
+	if (_StopOrderMgr) {
 		_StopOrderMgr->RemoveAllHd();
 		delete _StopOrderMgr;
 		_StopOrderMgr = nullptr;
 	}
 
-	if (_CutMgr)
-	{
+	if (_CutMgr) {
 		delete _CutMgr;
 		_CutMgr = nullptr;
 	}
+}
+
+void SmOrderGrid::OnSymbolMaster(VtSymbol* sym)
+{
+	if (!sym)
+		return;
+	if (!_CenterWnd || !_CenterWnd->Symbol())
+		return;
+	VtSymbol* symbol = _CenterWnd->Symbol();
+	if (symbol->ShortCode.compare(sym->ShortCode) != 0) {
+		return;
+	}
+
+	ResetByCenterRow();
 }
 
 void SmOrderGrid::SetAutoStopOnFilled(VtOrder* order)
@@ -121,13 +133,6 @@ void SmOrderGrid::SetAutoStopOnFilled(VtOrder* order)
 		return;
 	_CutMgr->AddStopOrderForFilled(_CenterWnd->Symbol(), order);
 }
-
-// 
-// void SmOrderGrid::Symbol(VtSymbol* val)
-// {
-// 	_Symbol = val;
-// 	_SymbolCode = _Symbol->ShortCode;
-// }
 
 void SmOrderGrid::UnregisterAllCallback()
 {

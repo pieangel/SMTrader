@@ -52,17 +52,14 @@ public:
 	void SetYearMonth();
 	void SetProductSection();
 	void GetSymbolMaster();
-	void GetSymbolMasterByCenter();
-
+	void RefreshMode();
 	VtOrderLeftWndHd* LeftWnd() const { return _LeftWnd; }
 	void LeftWnd(VtOrderLeftWndHd* val) { _LeftWnd = val; }
 	VtOrderConfigManager* OrderConfigMgr() const { return _OrderConfigMgr; }
 	void OrderConfigMgr(VtOrderConfigManager* val) { _OrderConfigMgr = val; }
 	int Mode() const { return _Mode; }
 	void Mode(int val) { _Mode = val; }
-	void SetRemain();
-	void SetCurrent();
-	void SetExpected();
+	
 	void SetRemain(VtPosition* posi);
 	void SetRemain(VtOrder* order);
 
@@ -90,8 +87,8 @@ public:
 	std::pair<int, int> FindValueStartRow(int height);
 private:
 	int _ValueStartRow = 0;
-	int _EqualCol;
-	int _EqualRow;
+	//int _EqualCol;
+	//int _EqualRow;
 	int _Mode = 1;
 	std::set<VtCellPos> _RemainPos;
 	void ResetRemainCells();

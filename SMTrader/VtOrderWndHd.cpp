@@ -305,6 +305,15 @@ void VtOrderWndHd::RemoveRealTickWnd(VtRealTickWnd* realWnd)
 	}
 }
 
+void VtOrderWndHd::SetDefaultCenterWnd()
+{
+	// 중앙창 갯수가 2개이상일때 첫번째를 선택해줌
+	if (_CenterWndVector.size() > 1) {
+		SmOrderPanel* centerWnd = _CenterWndVector.front();
+		centerWnd->Activated(true);
+	}
+}
+
 void VtOrderWndHd::ResetByCenterRow()
 {
  	for (auto it = _CenterWndVector.begin(); it != _CenterWndVector.end(); ++it) {
@@ -1624,8 +1633,6 @@ void VtOrderWndHd::Load(simple::file_istream<same_endian_type>& ss)
 		// 중앙창 목록에 추가
 		_CenterWndVector.push_back(centerWnd);
 	}
-	// 중앙창 갯수 대입
-	//_CenterWndCount = _CenterWndVector.size();
 }
 
 void VtOrderWndHd::SetAccount(VtAccount* acnt)

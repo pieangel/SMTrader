@@ -1008,6 +1008,7 @@ void VtOrderDialogManager::Load(simple::file_istream<same_endian_type>& ss)
 		orderWnd = new VtOrderWndHd();
 		orderWnd->Load(ss);
 		CreateOrderDialog(orderWnd);
+		orderWnd->SetDefaultCenterWnd();
 	}
 }
 

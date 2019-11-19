@@ -82,6 +82,7 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
+	void OnSymbolMaster(VtSymbol* sym);
 	void InitSymbol();
 	void SetSymbol(VtSymbol* sym);
 	void AddSymbolToCombo(VtSymbol* symbol);

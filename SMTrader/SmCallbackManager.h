@@ -30,9 +30,16 @@ public:
 
 	void OnOrderEvent( VtOrder* order);
 
+	void SubscribeMasterCallback(long id, std::function <void(VtSymbol* symbol)> callback) {
+		_MasterMap[id] = callback;
+	}
+	void UnsubscribeMasterCallback(long id);
+	void OnMasterEvent(VtSymbol* symbol);
+
 private:
 	std::map<long, std::function<void( VtSymbol* symbol)>> _QuoteMap;
 	std::map<long, std::function<void( VtSymbol* symbol)>> _HogaMap;
 	std::map<int, std::function<void( VtOrder* order)>> _OrderMap;
+	std::map<int, std::function<void(VtSymbol* symbol)>> _MasterMap;
 };
 

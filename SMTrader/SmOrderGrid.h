@@ -42,6 +42,7 @@ public:
 	int OrderAmount() const { return _OrderAmount; }
 	void OrderAmount(int val) { _OrderAmount = val; }
 public:
+	void OnSymbolMaster(VtSymbol* symbol);
 	void SetAutoStopOnFilled(VtOrder* order);
 	void UnregisterAllCallback();
 	void RegisterQuoteCallback();

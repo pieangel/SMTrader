@@ -591,8 +591,7 @@ bool VtSaveManager::IsAccountFileExist()
 
 void VtSaveManager::GetSymbolMasters()
 {
-	for (auto it = _SymbolVector.begin(); it != _SymbolVector.end(); ++it)
-	{
+	for (auto it = _SymbolVector.begin(); it != _SymbolVector.end(); ++it) {
 		VtSymbol* sym = *it;
 		sym->GetSymbolMaster();
 	}

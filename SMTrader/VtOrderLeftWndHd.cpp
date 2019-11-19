@@ -118,8 +118,6 @@ BOOL VtOrderLeftWndHd::OnInitDialog()
 		((CButton*)GetDlgItem(IDC_RADIO_EXPECT))->SetCheck(BST_CHECKED);
 	}
 
-	_SymbolOptionGrid.GetSymbolMaster();
-
 	CRect rcRect;
 	_ComboProduct.GetClientRect(rcRect);
 
@@ -196,7 +194,7 @@ void VtOrderLeftWndHd::OnBnClickedRadioBalance()
 	_SymbolFutureGrid.Mode(0);
 	_SymbolFutureGrid.InitGrid();
 	_SymbolOptionGrid.Mode(0);
-	_SymbolOptionGrid.InitGrid();
+	_SymbolOptionGrid.RefreshMode();
 }
 
 
@@ -207,9 +205,9 @@ void VtOrderLeftWndHd::OnBnClickedRadioCurrent()
 	_SymbolFutureGrid.Mode(1);
 	_SymbolFutureGrid.InitGrid();
 	_SymbolOptionGrid.Mode(1);
-	_SymbolOptionGrid.InitGrid();
+	_SymbolOptionGrid.RefreshMode();
 	_SymbolOptionGrid.GetSymbolMaster();
-	_SymbolOptionGrid.SetCurrent();
+	_SymbolOptionGrid.SetCurrent2();
 }
 
 
@@ -220,7 +218,7 @@ void VtOrderLeftWndHd::OnBnClickedRadioExpect()
 	_SymbolFutureGrid.Mode(2);
 	_SymbolFutureGrid.InitGrid();
 	_SymbolOptionGrid.Mode(2);
-	_SymbolOptionGrid.InitGrid();
+	_SymbolOptionGrid.RefreshMode();
 }
 
 void VtOrderLeftWndHd::OnSymbolMaster(VtSymbol* sym)
@@ -284,6 +282,7 @@ void VtOrderLeftWndHd::OnResizeWnd()
 		_SymbolOptionGrid.GetWindowRect(rcGrid);
 		_SymbolOptionGrid.SetWindowPos(nullptr, 0, 0, rcGrid.Width(), rcWnd.Height() - 313, SWP_NOMOVE);
 		_SymbolOptionGrid.InitGrid(rcWnd.Height() - 313);
+		_SymbolOptionGrid.GetSymbolMaster();
 	}
 }
 
