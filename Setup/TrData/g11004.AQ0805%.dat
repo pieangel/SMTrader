@@ -1,0 +1,24 @@
+[TRINFO]
+TRName    =해외계좌간이체약정조회
+TRCode    =g11004.AQ0805%;
+ScreenNo  = ; 실제 화면 번호
+Server    =1; 접속 서버
+Compress  =1; 압축 	0/1
+Encrypt   =0; 암호화	0/1
+PublicAuth=0; 공인인증 0/1
+OutputCnt =1;Fid 출력값 갯수
+DataHeader=3; 2:해외주문, 3:해외조회, 4:국내주문, 5:국내조회
+
+[INPUT]
+계좌번호    =  0,  6, 0, A;
+비밀번호    =  6,  8, 0, E;
+
+[OUTPUT]
+처리코드  = 0,  5, 0, A;
+처리메시지= 5, 80, 0, A;
+
+@START_OutRec1=*,  5, 0, A;		/* rowcnt        */
+	계좌번호	= *, 06, 0, A ; 
+	계좌명      = *, 50, 0, A ; 
+	약정일자    = *, 08, 0, A ; 
+@END_OutRec1

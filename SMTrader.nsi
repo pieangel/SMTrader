@@ -102,7 +102,7 @@ SetOutPath "$INSTDIR"
 ReadRegStr $1 HKLM "Software\Microsoft\DevDiv\vc\Servicing\14.0\RuntimeMinimum" Install
     StrCmp $1 "1" InstallVCRedist11_32bitFinish
 
-    MESSAGEBOX MB_OK "test"
+    ;MESSAGEBOX MB_OK "test"
     ; Install 32-bit Visual Studio 2015 Redistributable
     !insertmacro _VCRedist11_SetStatus "Extracting Visual C++ Redistributable (32-bit)"
     SetOutPath "$INSTDIR"

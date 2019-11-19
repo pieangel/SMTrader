@@ -526,7 +526,7 @@ void SmOptionGrid::ShowExpected(VtSymbol* sym)
 	}
 }
 
-void SmOptionGrid::ShowExpected(int col, int row, VtSymbol* sym)
+void SmOptionGrid::ShowExpected(int row, int col, VtSymbol* sym)
 {
 	CGridCellBase* pCell = GetCell(row, col);
 	if (pCell) {

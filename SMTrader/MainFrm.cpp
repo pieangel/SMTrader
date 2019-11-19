@@ -892,7 +892,6 @@ void CMainFrame::UpdateSysLog()
 	{
 		std::string error = e.what();
 	}
-	
 }
 
 void CMainFrame::ResetSysLogDlg()

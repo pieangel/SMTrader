@@ -1,0 +1,25 @@
+[TRINFO]
+TRName    =해외인출가능금액조회
+TRCode    =g11004.AQ0824%;
+ScreenNo  = ; 실제 화면 번호
+Server    =1; 접속 서버
+Compress  =1; 압축 	0/1
+Encrypt   =0; 암호화	0/1
+PublicAuth=0; 공인인증 0/1
+OutputCnt =1;Fid 출력값 갯수
+DataHeader=3; 2:해외주문, 3:해외조회, 4:국내주문, 5:국내조회
+
+[INPUT]
+계좌번호    =  0,  6, 0, A;
+비밀번호    =  6,  8, 0, E;
+처리구분    = 14,  1, 0, A;
+
+[OUTPUT]
+처리코드  = 0,  5, 0, A;
+처리메시지= 5, 80, 0, A;
+
+@START_OutRec1=*,  5, 0, A;		/* rowcnt        */
+	통화코드      = *, 03, 0, A ; 
+	인출가능현금  = *, 15, 0, A ; 
+	예탁총액      = *, 15, 0, A ; 
+@END_OutRec1
