@@ -1514,6 +1514,7 @@
     <ClInclude Include="SmFutureGrid.h" />
     <ClInclude Include="SmOptionGrid.h" />
     <ClInclude Include="SmPLGrid.h" />
+    <ClInclude Include="SmAssetGrid.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ChildFrm.cpp">
@@ -2708,6 +2709,7 @@
     <ClCompile Include="SmFutureGrid.cpp" />
     <ClCompile Include="SmOptionGrid.cpp" />
     <ClCompile Include="SmPLGrid.cpp" />
+    <ClCompile Include="SmAssetGrid.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="SMTrader.rc">

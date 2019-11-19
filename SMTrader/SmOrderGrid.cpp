@@ -759,7 +759,7 @@ int SmOrderGrid::FindCenterRow()
 {
 	int count = GetMaxRow();
 
-	return (count - 3) / 2;
+	return count / 2;
 }
 
 int SmOrderGrid::GetMaxRow()

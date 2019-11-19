@@ -8,6 +8,7 @@
 #include "SmOptionGrid.h"
 #include "SmFutureGrid.h"
 #include "SmPLGrid.h"
+#include "SmAssetGrid.h"
 // VtOrderLeftHd dialog
 class VtOrderConfigManager;
 class VtSymbol;
@@ -49,7 +50,8 @@ private:
 	SmFutureGrid _SymbolFutureGrid;
 	//HdProfitLossGrid _ProfitLossGrid;
 	SmPLGrid _ProfitLossGrid;
-	HdAssetGrid      _AssetGrid;
+	//HdAssetGrid      _AssetGrid;
+	SmAssetGrid      _AssetGrid;
 	//HdSymbolOptionGrid _SymbolOptionGrid;
 	SmOptionGrid _SymbolOptionGrid;
 	VtOrderConfigManager* _OrderConfigMgr = nullptr;

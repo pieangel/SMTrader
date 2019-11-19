@@ -331,6 +331,7 @@
     <ClInclude Include="ShadeButtonST.h" />
     <ClInclude Include="SimpleBinStream.h" />
     <ClInclude Include="Skel\VtGrid.h" />
+    <ClInclude Include="SmAssetGrid.h" />
     <ClInclude Include="SmCallbackManager.h" />
     <ClInclude Include="SmFutureGrid.h" />
     <ClInclude Include="SmOptionGrid.h" />
@@ -765,6 +766,7 @@
     <ClCompile Include="ResizableLib\ResizableWndState.cpp" />
     <ClCompile Include="ShadeButtonST.cpp" />
     <ClCompile Include="Skel\VtGrid.cpp" />
+    <ClCompile Include="SmAssetGrid.cpp" />
     <ClCompile Include="SmCallbackManager.cpp" />
     <ClCompile Include="SmFutureGrid.cpp" />
     <ClCompile Include="SmOptionGrid.cpp" />

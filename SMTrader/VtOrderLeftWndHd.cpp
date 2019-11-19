@@ -69,6 +69,7 @@ void VtOrderLeftWndHd::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_CUSTOM_OPTION, _SymbolOptionGrid);
 	DDX_Control(pDX, IDC_CUSTOM_FUTURE, _SymbolFutureGrid);
 	DDX_Control(pDX, IDC_CUSTOM_PL, _ProfitLossGrid);
+	DDX_Control(pDX, IDC_CUSTOM_ASSET, _AssetGrid);
 }
 
 
@@ -99,7 +100,7 @@ BOOL VtOrderLeftWndHd::OnInitDialog()
 	_ProfitLossGrid.OrderConfigMgr(_OrderConfigMgr);
 	//_ProfitLossGrid.AttachGrid(this, IDC_PROFIT_LOSS);
 	_AssetGrid.OrderConfigMgr(_OrderConfigMgr);
-	_AssetGrid.AttachGrid(this, IDC_ASSET);
+	//_AssetGrid.AttachGrid(this, IDC_ASSET);
 	if (_OrderConfigMgr->Type() == 0) {
 		_AssetGrid.ShowWindow(SW_SHOW);
 	}
@@ -110,6 +111,7 @@ BOOL VtOrderLeftWndHd::OnInitDialog()
 	_SymbolOptionGrid.Init();
 	_SymbolFutureGrid.Init();
 	_ProfitLossGrid.Init();
+	_AssetGrid.Init();
 	if (_FutureSymbolMode == 0)
 	{
 		((CButton*)GetDlgItem(IDC_RADIO_BALANCE))->SetCheck(BST_CHECKED);
@@ -290,13 +292,28 @@ void VtOrderLeftWndHd::OnResizeWnd()
 		_SymbolOptionGrid.GetSymbolMaster();
 		_SymbolFutureGrid.InitGrid();
 		_ProfitLossGrid.InitGrid();
+		_AssetGrid.InitGrid();
 	}
 }
 
 void VtOrderLeftWndHd::OnAccountChanged()
 {
-	_SymbolFutureGrid.InitGrid();
-	_SymbolOptionGrid.InitGrid();
+	//_SymbolFutureGrid.InitGrid();
+	//_SymbolOptionGrid.InitGrid();
+	CRect rcWnd;
+	if (GetSafeHwnd()) {
+		if (!_OrderConfigMgr->_HdCenterWnd->GetSafeHwnd())
+			return;
+		_OrderConfigMgr->_HdOrderWnd->GetWindowRect(&rcWnd);
+		CRect rcGrid;
+		_SymbolOptionGrid.GetWindowRect(rcGrid);
+		_SymbolOptionGrid.SetWindowPos(nullptr, 0, 0, rcGrid.Width(), rcWnd.Height() - 313, SWP_NOMOVE);
+		_SymbolOptionGrid.InitGrid(rcWnd.Height() - 313);
+		_SymbolOptionGrid.GetSymbolMaster();
+		_SymbolFutureGrid.InitGrid();
+		_ProfitLossGrid.InitGrid();
+		_AssetGrid.InitGrid();
+	}
 }
 
 void VtOrderLeftWndHd::OnOrderEvent(VtOrder* order)
