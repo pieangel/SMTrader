@@ -70,6 +70,7 @@ SmOrderGrid::SmOrderGrid()
 
 	m_bMouseTracking = FALSE;
 
+	_OldIndexRow = -1;
 	_OldClickedCell.row = -1;
 	_OldClickedCell.col = -1;
 	_OldMMCell.row = -1;
@@ -174,10 +175,17 @@ void SmOrderGrid::OnQuoteEvent(const VtSymbol* symbol)
 	ClearQuotes(refreshSet);
 	// 중앙 고정일때는 종가 행을 새로 찾아서 매칭해준다.
 	if (_CenterWnd->FixedCenter()) {
-		_CloseRow = FindCenterRow();
+		_IndexRow = FindIndexRow();
 		SetCenterValue(_CenterWnd->Symbol(), refreshSet);
 	}
 	SetQuoteColor(_CenterWnd->Symbol(), refreshSet);
+
+	// 혹시 이벤트를 놓쳤을 경우를 대비하여 주문은 항상 그려준다.
+	ClearOldOrders(refreshSet);
+	SetOrderInfo(refreshSet);
+	ClearPositionInfo(refreshSet);
+	SetPositionInfo(refreshSet);
+
 	RefreshCells(refreshSet);
 }
 
@@ -252,9 +260,10 @@ void SmOrderGrid::OnOrderEvent(const VtOrder* order)
 
 void SmOrderGrid::Init()
 {
+	_CellHeight = 20;
 	UnregisterButtons();
-	_RowCount = GetMaxRow();
-	_CloseRow = FindCenterRow();
+	_RowCount = GetMaxValueRowCount() + 1;
+	_IndexRow = FindIndexRow();
 	_EndRowForValue = _RowCount - 3;
 	SetRowCount(_RowCount);
 	SetColumnCount(_ColCount);
@@ -591,7 +600,7 @@ void SmOrderGrid::SetCenterValueForFuture(const VtSymbol* sym, std::set<std::pai
 		return;
 
 	// Set the close value on the center of the center grid
-	int startValue = sym->Quote.intClose + (sym->intTickSize * (_CloseRow - _StartRowForValue));
+	int startValue = sym->Quote.intClose + (sym->intTickSize * (_IndexRow - _StartRowForValue));
 
 	ValueToRowMap.clear();
 	RowToValueMap.clear();
@@ -619,8 +628,8 @@ void SmOrderGrid::SetCenterValueForOption(const VtSymbol* sym, std::set<std::pai
 	int endValue = sym->Quote.intClose;
 	int endRow = _EndRowForValue - 1;
 	int zeroRow = _EndRowForValue;
-	if (_CloseRow < endRow) {
-		for (int r = _CloseRow; r < endRow; ++r) {
+	if (_IndexRow < endRow) {
+		for (int r = _IndexRow; r < endRow; ++r) {
 			if (endValue == 0) {
 				zeroRow = r;
 				break;
@@ -632,22 +641,21 @@ void SmOrderGrid::SetCenterValueForOption(const VtSymbol* sym, std::set<std::pai
 		}
 
 		if (zeroRow < endRow) {
-			_CloseRow = endRow - (zeroRow - _CloseRow);
-			//SetCenterRow(_CloseRow);
+			_IndexRow = endRow - (zeroRow - _IndexRow);
 		}
 	}
 
 	int startValue = sym->Quote.intClose;
-	if (_CloseRow > _StartRowForValue) {
-		for (int r = _CloseRow; r > _StartRowForValue; --r) {
+	if (_IndexRow > _StartRowForValue) {
+		for (int r = _IndexRow; r > _StartRowForValue; --r) {
 			if (startValue < 1000)
 				startValue += sym->intTickSize;
 			else
 				startValue += 5;
 		}
 	}
-	else if (_CloseRow <= _StartRowForValue) {
-		for (int r = _CloseRow; r < _StartRowForValue; ++r) {
+	else if (_IndexRow <= _StartRowForValue) {
+		for (int r = _IndexRow; r < _StartRowForValue; ++r) {
 			if (startValue <= 1000)
 				startValue -= sym->intTickSize;
 			else
@@ -681,12 +689,14 @@ void SmOrderGrid::SetCenterValueByFixedForFuture(const VtSymbol* sym, std::set<s
 	if (!sym)
 		return;
 
-	_CloseRow = FindCenterRow();
+	_IndexRow = FindIndexRow();
 	// Set the close value on the center of the center grid
-	int startValue = sym->Quote.intClose + (sym->intTickSize * (_CloseRow - _StartRowForValue));
+	int startValue = sym->Quote.intClose + (sym->intTickSize * (_IndexRow - _StartRowForValue));
 
-	int rangeStart = std::max(_HighRow - 1, _StartRowForValue);
-	int rangeEnd = std::min(_LowRow + 1, _EndRowForValue);
+	int lowRow = FindRowFromCenterValue(sym, sym->Quote.intLow);
+	int highRow = FindRowFromCenterValue(sym, sym->Quote.intHigh);
+	int rangeStart = std::max(highRow - 1, _StartRowForValue);
+	int rangeEnd = std::min(lowRow + 1, _EndRowForValue);
 	ValueToRowMap.clear();
 	RowToValueMap.clear();
 	for (int i = _StartRowForValue; i <= _EndRowForValue; i++) {
@@ -710,19 +720,19 @@ void SmOrderGrid::SetCenterValueByFixedForOption(const VtSymbol* sym, std::set<s
 	if (!sym)
 		return;
 
-	_CloseRow = FindCenterRow();
-	_CloseRow = -1 * _CloseRow;
+	_IndexRow = FindIndexRow();
+	_IndexRow = -1 * _IndexRow;
 
 	int Row10 = 0;
 	if (1000 <= sym->Quote.intClose) {
 		int delta = sym->Quote.intClose - 1000;
 		int deltaRow = delta / 5;
-		Row10 = _CloseRow - deltaRow;
+		Row10 = _IndexRow - deltaRow;
 	}
 	else {
 		int delta = 1000 - sym->Quote.intClose;
 		int deltaRow = delta / sym->intTickSize;
-		Row10 = _CloseRow + deltaRow;
+		Row10 = _IndexRow + deltaRow;
 	}
 
 	int startValue = 0;
@@ -755,20 +765,20 @@ void SmOrderGrid::SetCenterValueByFixedForOption(const VtSymbol* sym, std::set<s
 	}
 }
 
-int SmOrderGrid::FindCenterRow()
+int SmOrderGrid::FindIndexRow()
 {
-	int count = GetMaxRow();
+	int count = GetMaxValueRowCount();
 
-	return count / 2;
+	return ((int)(count / 2) + 1);
 }
 
-int SmOrderGrid::GetMaxRow()
+int SmOrderGrid::GetMaxValueRowCount()
 {
 	RECT rect;
 	GetClientRect(&rect);
 
 
-	double pureHeight = rect.bottom - rect.top;
+	double pureHeight = rect.bottom - rect.top - _HeadHeight;
 
 	int count = (int)(pureHeight / _CellHeight);
 
@@ -1047,8 +1057,26 @@ void SmOrderGrid::SetQuoteColor(const VtSymbol* sym, std::set<std::pair<int, int
 	// 이전 종가 레이블 설정
 	SetSiseLabel(preCloseRow, "C", RGB(0, 0, 0));
 	
-	for (auto it = ValueToRowMap.begin(); it != ValueToRowMap.end(); ++it) {
-		refreshSet.insert(std::make_pair(it->second, CenterCol));
+	if (_CenterWnd->FixedCenter()) {
+		for (auto it = ValueToRowMap.begin(); it != ValueToRowMap.end(); ++it) {
+			refreshSet.insert(std::make_pair(it->second, CenterCol));
+		}
+	}
+	else {
+		int min_row = std::min(closeRow, _OldIndexRow);
+		int max_row = std::max(closeRow, _OldIndexRow);
+		if (min_row < _StartRowForValue)
+			min_row = _StartRowForValue;
+		if (max_row > _EndRowForValue)
+			max_row = _EndRowForValue;
+		_OldIndexRow = closeRow;
+		// 표시 범위를 벗어날을 때는 갱신하지 않는다.
+		if (max_row < _StartRowForValue || min_row > _EndRowForValue)
+			return;
+		// 표시 범위 안에 있는 것만 업데이트 한다.
+		for (int i = min_row; i <= max_row; ++i) {
+			refreshSet.insert(std::make_pair(i, CenterCol));
+		}
 	}
 }
 
@@ -1186,7 +1214,36 @@ void SmOrderGrid::SetStopOrderInfo(std::set<std::pair<int, int>>& refreshSet)
 	CGridCellBase* pCell = nullptr;
 	std::string strVal;
 	int buy_count = 0, sell_count = 0;
+	// 일반 스탑주문을 표시해 준다.
 	for (auto it = _StopOrderMgr->StopOrderMapHd.begin(); it != _StopOrderMgr->StopOrderMapHd.end(); ++it) {
+		HdOrderRequest* order = it->second;
+		order->Position == VtPositionType::Buy ? buy_count += order->Amount : sell_count += order->Amount;
+		int row = FindRowFromCenterValue(order->Price);
+		if (row >= _StartRowForValue && row <= _EndRowForValue) {
+			if (order->Position == VtPositionType::Sell) {
+				pCell = GetCell(row, CenterCol - 4);
+				pCell->AddStopOrder(order);
+				pCell->SetFormat(DT_CENTER | DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX);
+				_StopOrderPos.insert(std::make_pair(row, CenterCol - 4));
+				refreshSet.insert(std::make_pair(row, CenterCol - 4));
+			}
+			else if (order->Position == VtPositionType::Buy) {
+				pCell = GetCell(row, CenterCol + 4);
+				pCell->AddStopOrder(order);
+				pCell->SetFormat(DT_CENTER | DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX);
+				_StopOrderPos.insert(std::make_pair(row, CenterCol + 4));
+				refreshSet.insert(std::make_pair(row, CenterCol + 4));
+			}
+			// 스탑 주문 갯수 설정
+			strVal = fmt::format("{}({})", pCell->GetStopOrderCount(), _StopOrderMgr->Slip());
+			pCell->SetText(strVal.c_str());
+		}
+	}
+
+	// 자동 손절로 인한 스탑주문은 따로 추가해 준다.
+	std::map<int, HdOrderRequest*>& profitLossMap = _CutMgr->GetStopOrderMap();
+	for (auto it = profitLossMap.begin(); it != profitLossMap.end(); ++it)
+	{
 		HdOrderRequest* order = it->second;
 		order->Position == VtPositionType::Buy ? buy_count += order->Amount : sell_count += order->Amount;
 		int row = FindRowFromCenterValue(order->Price);
@@ -1214,14 +1271,14 @@ void SmOrderGrid::SetStopOrderInfo(std::set<std::pair<int, int>>& refreshSet)
 	// 전체 주문 갯수 설정
 	pCell = GetCell(1, CenterCol + 4);
 	pCell->SetFormat(DT_RIGHT | DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX);
-	_OrderPos.insert(std::make_pair(1, CenterCol + 4));
+	_StopOrderPos.insert(std::make_pair(1, CenterCol + 4));
 	refreshSet.insert(std::make_pair(1, CenterCol + 4));
 	strVal = fmt::format("{}", buy_count);
 	pCell->SetText(strVal.c_str());
 
 	pCell = GetCell(1, CenterCol - 4);
 	pCell->SetFormat(DT_RIGHT | DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX);
-	_OrderPos.insert(std::make_pair(1, CenterCol - 4));
+	_StopOrderPos.insert(std::make_pair(1, CenterCol - 4));
 	refreshSet.insert(std::make_pair(1, CenterCol - 4));
 	strVal = fmt::format("{}", sell_count);
 	pCell->SetText(strVal.c_str());
@@ -1549,7 +1606,7 @@ void SmOrderGrid::OrderBySpaceBar()
 			}
 		}
 		else {
-			int newCenter = FindCenterRow();
+			int newCenter = FindIndexRow();
 			//SetCenterRow(newCenter);
 			//ChangeCenter(_CloseRow, newCenter);
 		}
@@ -1561,9 +1618,12 @@ void SmOrderGrid::OrderBySpaceBar()
 void SmOrderGrid::ResizeGrid()
 {
 	UnregisterButtons();
-	_RowCount = GetMaxRow();
+	_RowCount = GetMaxValueRowCount() + 1;
 	_EndRowForValue = _RowCount - 3;
 	SetRowCount(_RowCount);
+	for (int i = 1; i < m_nRows; ++i) {
+		SetRowHeight(i, _CellHeight);
+	}
 	SetOrderAreaColor();
 	SetCenterValue();
 	RegisterButtons();
@@ -1574,13 +1634,13 @@ void SmOrderGrid::ResizeGrid(int cellHeight, int orderAreaWidth)
 	_CellHeight = cellHeight;
 	_OrderWidth = orderAreaWidth;
 	UnregisterButtons();
-	_RowCount = GetMaxRow();
+	_RowCount = GetMaxValueRowCount() + 1;
 	_EndRowForValue = _RowCount - 3;
 	SetRowCount(_RowCount);
 	for (int i = 1; i < m_nRows; ++i) {
 		SetRowHeight(i, _CellHeight);
 	}
-	_CloseRow = FindCenterRow();
+	_IndexRow = FindIndexRow();
 	SetOrderAreaColor();
 	SetCenterValue();
 	RegisterButtons();
@@ -1722,7 +1782,7 @@ BOOL SmOrderGrid::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 		distance = zDelta / 120;
 	else
 		distance = zDelta / 40;
-	_CloseRow =_CloseRow + (distance);
+	_IndexRow =_IndexRow + (distance);
 	InvalidateClickedCell();
 	SetCenterValue();
 	return CGridCtrl::OnMouseWheel(nFlags, zDelta, pt);
@@ -2625,6 +2685,6 @@ void SmOrderGrid::ApplyProfitLossForPosition()
 
 void SmOrderGrid::ResetByCenterRow()
 {
-	_CloseRow = FindCenterRow();
+	_IndexRow = FindIndexRow();
 	SetCenterValue();
 }

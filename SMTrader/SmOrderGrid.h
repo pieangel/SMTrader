@@ -90,7 +90,7 @@ private:
 	std::map<SmOrderGridCol, int> _GridColMap;
 	int _ColCount = 9;
 	int _RowCount = 60;
-	int _HeadHeight = 30;
+	int _HeadHeight = 20;
 	int _FixedCol = 0;
 	int _FixedRow = 1;
 
@@ -103,12 +103,10 @@ private:
 	int _StartRowForValue = 2;
 	int _EndRowForValue = 0;
 
-	int _CloseRow = 0;
-	int _HighRow = 0;
-	int _LowRow = 0;
-	int _OpenRow = 0;
-	int _PreCloseRow = 0;
-	int _CellHeight = 18;
+	// 이 행을 기준으로 시세를 그려나간다.
+	int _IndexRow = 0;
+	int _OldIndexRow = -1;
+	int _CellHeight = 0;
 
 	SmOrderPanel* _CenterWnd;
 	std::map<int, int> ValueToRowMap;
@@ -128,9 +126,9 @@ private:
 	// 시세 고정시 옵션 중간값 설정
 	void SetCenterValueByFixedForOption(const VtSymbol* symbol, std::set<std::pair<int, int>>& refreshSet);
 	// 중간값 찾기 함수
-	int FindCenterRow();
+	int FindIndexRow();
 	// 현재 최대 행갯수 구하기
-	int GetMaxRow();
+	int GetMaxValueRowCount();
 	// 호가 정보 설정
 	void SetHogaInfo(const VtSymbol* symbol, std::set<std::pair<int, int>>& refreshSet);
 	int FindRowFromCenterValue(int value);

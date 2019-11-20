@@ -493,6 +493,7 @@ BOOL CGridCellBase::Draw(CDC* pDC, int nRow, int nCol, CRect rect,  BOOL bEraseB
     rect.right++;    
     rect.bottom++;
 
+
     DrawText(pDC->m_hDC, GetText(), -1, rect, GetFormat() | DT_NOPREFIX);
 
 	// 레이블 표시
@@ -804,6 +805,17 @@ BOOL CGridCellBase::GetTextRect( LPRECT pRect)  // i/o:  i=dims of cell rect; o=
             pRect->left += nImageWidth + GetMargin();
         }
     }
+
+	int order_gap = 3;
+	if (OrderMap.size() > 0) {
+		VtOrder* order = OrderMap.begin()->second;
+		if (order->orderPosition == VtPositionType::Sell) {
+			pRect->left += order_gap;
+		}
+		else if (order->orderPosition == VtPositionType::Buy) {
+			pRect->right -= order_gap;
+		}
+	}
 
     return TRUE;
 }

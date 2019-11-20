@@ -51,6 +51,8 @@ void SmTickGrid::OnQuoteEvent(VtSymbol* sym)
 		VtQuoteItem item = *it;
 		CGridCellBase* pCell = nullptr;
 		pCell = GetCell(i, 0);
+		if (!pCell)
+			break;
 		pCell->SetText(item.Time.c_str());
 		InvalidateCellRect(i, 0);
 		std::string close = NumberFormatter::format(item.ClosePrice / std::pow(10, sym->IntDecimal), sym->IntDecimal);
@@ -67,8 +69,6 @@ void SmTickGrid::OnQuoteEvent(VtSymbol* sym)
 			pCell->SetTextClr(RGB(0, 0, 255));
 		InvalidateCellRect(i, 2);
 		i++;
-		if (m_nRows == i)
-			break;
 	}
 
 	if (sym->Quote.QuoteItemQ.size() > m_nRows)
@@ -195,7 +195,24 @@ void SmTickGrid::ClearText()
 
 void SmTickGrid::MaxRow(int val)
 {
-	m_nRows = val;
+	_RowCount = val;
+	SetRowCount(val);
+	for (int i = 1; i < _RowCount; i++) {
+		SetRowHeight(i, _CellHeight);
+		for (int j = 0; j < 3; ++j) {
+			CGridCellBase* pCell = GetCell(i, j);
+			if (pCell) {
+				// 텍스트 정렬
+				pCell->SetFormat(DT_CENTER | DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX);
+				// 셀 배경 색 설정
+				pCell->SetBackClr(RGB(255, 255, 255));
+				// 셀 글자색 설정
+				pCell->SetTextClr(RGB(0, 0, 0));
+
+				InvalidateCellRect(i, j);
+			}
+		}
+	}
 }
 
 void SmTickGrid::ClearValues()
