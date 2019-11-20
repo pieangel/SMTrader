@@ -875,10 +875,9 @@ void VtOrderWndHd::RemoveLastWindow()
 
 void VtOrderWndHd::OnClose()
 {
-	for (auto it = _CenterWndVector.begin(); it != _CenterWndVector.end(); ++it)
-	{
+	for (auto it = _CenterWndVector.begin(); it != _CenterWndVector.end(); ++it) {
 		SmOrderPanel* curWnd = *it;
-		curWnd->UnregisterOrderWnd();
+		curWnd->BlockEvent();
 	}
 	
 	CDialog::OnClose();

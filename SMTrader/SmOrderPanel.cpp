@@ -195,7 +195,7 @@ void SmOrderPanel::OnBnClickedButtonSetting()
 
 void SmOrderPanel::OnDestroy()
 {
-
+	
 }
 
 void SmOrderPanel::OnDeltaposSpinExpand(NMHDR *pNMHDR, LRESULT *pResult)
@@ -1278,6 +1278,7 @@ bool SmOrderPanel::ShowTickWnd()
 
 void SmOrderPanel::BlockEvent()
 {
+	SmCallbackManager::GetInstance()->UnsubscribeMasterCallback((long)this);
 	m_Grid.UnregisterAllCallback();
 	_ProductRemainGrid.UnregisterAllCallback();
 	_TickGrid.UnregisterAllCallback();
@@ -1410,10 +1411,7 @@ void SmOrderPanel::ChangeSymbol(VtSymbol* symbol)
 
 void SmOrderPanel::UnregisterOrderWnd()
 {
-	SmCallbackManager::GetInstance()->UnsubscribeMasterCallback((long)this);
-	m_Grid.UnregisterAllCallback();
-	_ProductRemainGrid.UnregisterAllCallback();
-	_TickGrid.UnregisterAllCallback();
+	
 }
 
 BOOL SmOrderPanel::PreTranslateMessage(MSG* pMsg)

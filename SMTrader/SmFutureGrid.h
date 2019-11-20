@@ -44,7 +44,6 @@ public:
 	void Mode(int val) { _Mode = val; }
 private:
 	VtOrderConfigManager* _OrderConfigMgr = nullptr;
-	std::map<std::string, int> SymbolMap;
 	std::map<std::string, std::tuple<int, int, VtSymbol*>> _FutureCurrentValueRowMap;
 	int _Mode = 1;
 	COLORREF _SellColor;
