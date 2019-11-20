@@ -143,7 +143,6 @@ public:
 	void Save(simple::file_ostream<same_endian_type>& ss);
 	void Load(simple::file_istream<same_endian_type>& ss);
 	void ChangeSymbol(VtSymbol* symbol);
-	void UnregisterOrderWnd();
 	void ResetRemainFund();
 public:
 	virtual BOOL PreTranslateMessage(MSG* pMsg);

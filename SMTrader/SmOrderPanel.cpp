@@ -1408,12 +1408,6 @@ void SmOrderPanel::ChangeSymbol(VtSymbol* symbol)
 	InitPosition();
 }
 
-
-void SmOrderPanel::UnregisterOrderWnd()
-{
-	
-}
-
 BOOL SmOrderPanel::PreTranslateMessage(MSG* pMsg)
 {
 	if (pMsg->message == WM_KEYDOWN) {
