@@ -143,6 +143,9 @@
     <Filter Include="Grid">
       <UniqueIdentifier>{23548760-9f99-4d2e-aba2-e5a47ce7c7ee}</UniqueIdentifier>
     </Filter>
+    <Filter Include="OrderUI">
+      <UniqueIdentifier>{363aad9c-60ff-4a3b-b514-ca401fcbdfc7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -1507,14 +1510,30 @@
     <ClInclude Include="Grid\TitleTip.h">
       <Filter>Grid</Filter>
     </ClInclude>
-    <ClInclude Include="SmOrderGrid.h" />
-    <ClInclude Include="SmOrderPanel.h" />
-    <ClInclude Include="SmCallbackManager.h" />
-    <ClInclude Include="SmTickGrid.h" />
-    <ClInclude Include="SmFutureGrid.h" />
-    <ClInclude Include="SmOptionGrid.h" />
-    <ClInclude Include="SmPLGrid.h" />
-    <ClInclude Include="SmAssetGrid.h" />
+    <ClInclude Include="SmAssetGrid.h">
+      <Filter>OrderUI</Filter>
+    </ClInclude>
+    <ClInclude Include="SmCallbackManager.h">
+      <Filter>OrderUI</Filter>
+    </ClInclude>
+    <ClInclude Include="SmFutureGrid.h">
+      <Filter>OrderUI</Filter>
+    </ClInclude>
+    <ClInclude Include="SmOptionGrid.h">
+      <Filter>OrderUI</Filter>
+    </ClInclude>
+    <ClInclude Include="SmOrderGrid.h">
+      <Filter>OrderUI</Filter>
+    </ClInclude>
+    <ClInclude Include="SmOrderPanel.h">
+      <Filter>OrderUI</Filter>
+    </ClInclude>
+    <ClInclude Include="SmPLGrid.h">
+      <Filter>OrderUI</Filter>
+    </ClInclude>
+    <ClInclude Include="SmTickGrid.h">
+      <Filter>OrderUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ChildFrm.cpp">
@@ -2702,14 +2721,30 @@
     <ClCompile Include="Grid\TitleTip.cpp">
       <Filter>Grid</Filter>
     </ClCompile>
-    <ClCompile Include="SmOrderGrid.cpp" />
-    <ClCompile Include="SmOrderPanel.cpp" />
-    <ClCompile Include="SmCallbackManager.cpp" />
-    <ClCompile Include="SmTickGrid.cpp" />
-    <ClCompile Include="SmFutureGrid.cpp" />
-    <ClCompile Include="SmOptionGrid.cpp" />
-    <ClCompile Include="SmPLGrid.cpp" />
-    <ClCompile Include="SmAssetGrid.cpp" />
+    <ClCompile Include="SmAssetGrid.cpp">
+      <Filter>OrderUI</Filter>
+    </ClCompile>
+    <ClCompile Include="SmCallbackManager.cpp">
+      <Filter>OrderUI</Filter>
+    </ClCompile>
+    <ClCompile Include="SmFutureGrid.cpp">
+      <Filter>OrderUI</Filter>
+    </ClCompile>
+    <ClCompile Include="SmOptionGrid.cpp">
+      <Filter>OrderUI</Filter>
+    </ClCompile>
+    <ClCompile Include="SmOrderGrid.cpp">
+      <Filter>OrderUI</Filter>
+    </ClCompile>
+    <ClCompile Include="SmOrderPanel.cpp">
+      <Filter>OrderUI</Filter>
+    </ClCompile>
+    <ClCompile Include="SmPLGrid.cpp">
+      <Filter>OrderUI</Filter>
+    </ClCompile>
+    <ClCompile Include="SmTickGrid.cpp">
+      <Filter>OrderUI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="SMTrader.rc">

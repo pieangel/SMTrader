@@ -42,9 +42,13 @@ public:
 	int OrderAmount() const { return _OrderAmount; }
 	void OrderAmount(int val) { _OrderAmount = val; }
 public:
+	// 심볼마스터 이벤트 처리
 	void OnSymbolMaster(VtSymbol* symbol);
+	// 자동스탑 주문 처리
 	void SetAutoStopOnFilled(VtOrder* order);
+	// 콜백 함수 취소
 	void UnregisterAllCallback();
+
 	void RegisterQuoteCallback();
 	void UnregisterQuoteCallback();
 	void OnQuoteEvent(const VtSymbol* symbol);
@@ -74,7 +78,7 @@ public:
 	void SetOrderArea(int height, int width);
 private:
 	void CheckProfitLossTouchHd(int intClose);
-	void CheckStopTouchedHd(int intClose);
+	bool CheckStopTouchedHd(int intClose);
 	int _OrderWidth = 60;
 	bool _ShowOrderQuantityCol = true;
 	// 컬럼 타이틀 설정
@@ -152,20 +156,22 @@ private:
 	void ClearOldStopOrders(std::set<std::pair<int, int>>& refreshSet);
 	// 스탑 주문 라인 그리기
 	void CalcPosStopOrders(std::set<std::pair<int, int>>& refreshSet);
-	
+	// 갱신목록에 있는 셀들을 모두 갱신한다.
 	void RefreshCells(std::set<std::pair<int, int>>& refreshSet);
-
+	// 주문을 낸다.
 	void PutOrder(int price, VtPositionType position, VtPriceType priceType = VtPriceType::Price);
-
+	// 주문영역의 셀을 색칠한다.
 	void SetOrderAreaColor();
 
 	// 포지션 표시
 	void SetPositionInfo(std::set<std::pair<int, int>>& refreshSet);
 	// 포지션 없애기
 	void ClearPositionInfo(std::set<std::pair<int, int>>& refreshSet);
+	// 포지션을 보여준다. 매도, 매수 포지션이 있을 경우
 	void ShowPosition(std::set<std::pair<int, int>>& refreshSet, VtPosition* posi, VtSymbol* sym);
-	
+	// 마우스 클릭으로 주문을 낸다.
 	void OrderByMouseClick();
+	// 마우스 위치로 주문을 낸다.
 	void OrderByMousePosition();
 public:
 	DECLARE_MESSAGE_MAP()
@@ -190,10 +196,11 @@ private:
 	CRect _DragEndRect;
 	int _DragStartCol = 0;
 	int _DragStartRow = 0;
-	
+	// 주문을 그린다.
 	void DrawArrow(int direction, POINT *point, CDC* pdc, POINT p0, POINT p1, int head_length, int head_width);
 	BOOL m_bMouseTracking;
 	void RedrawOrderTrackCells();
+	// 스탑주문을 추가한다.
 	void AddStopOrder(int price, VtPositionType posi);
 	CCellID _OldClickedCell;
 	CCellID _OldMMCell;

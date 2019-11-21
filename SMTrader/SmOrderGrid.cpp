@@ -66,7 +66,7 @@ SmOrderGrid::SmOrderGrid()
 	SellColor.push_back(RGB(221, 243, 255));
 	SellColor.push_back(RGB(230, 247, 255));
 
-	//_SymbolCode = "101PC000";
+	_CellHeight = 20;
 
 	m_bMouseTracking = FALSE;
 
@@ -165,13 +165,17 @@ void SmOrderGrid::OnQuoteEvent(const VtSymbol* symbol)
 		return;
 
 	// 잔고에 대하여 익절과 손절을 확인한다.
-	//_CutMgr->CheckProfitLoss(sym);
 	// 익절, 손절 스탑 주문이 종가에 닿았는지 검사한다.
 	CheckProfitLossTouchHd(_CenterWnd->Symbol()->Quote.intClose);
-	// 스탑 주문이 종가에 닿았는지 검사한다.
-	CheckStopTouchedHd(_CenterWnd->Symbol()->Quote.intClose);
-
 	std::set<std::pair<int, int>> refreshSet;
+	// 스탑 주문이 종가에 닿았는지 검사한다.
+	if (CheckStopTouchedHd(_CenterWnd->Symbol()->Quote.intClose)) {
+		// 스탑주문을 다시 그려준다.
+		ClearOldStopOrders(refreshSet);
+		SetStopOrderInfo(refreshSet);
+		CalcPosStopOrders(refreshSet);
+	}
+
 	ClearQuotes(refreshSet);
 	// 중앙 고정일때는 종가 행을 새로 찾아서 매칭해준다.
 	if (_CenterWnd->FixedCenter()) {
@@ -179,12 +183,6 @@ void SmOrderGrid::OnQuoteEvent(const VtSymbol* symbol)
 		SetCenterValue(_CenterWnd->Symbol(), refreshSet);
 	}
 	SetQuoteColor(_CenterWnd->Symbol(), refreshSet);
-
-	// 혹시 이벤트를 놓쳤을 경우를 대비하여 주문은 항상 그려준다.
-	ClearOldOrders(refreshSet);
-	SetOrderInfo(refreshSet);
-	ClearPositionInfo(refreshSet);
-	SetPositionInfo(refreshSet);
 
 	RefreshCells(refreshSet);
 }
@@ -260,7 +258,6 @@ void SmOrderGrid::OnOrderEvent(const VtOrder* order)
 
 void SmOrderGrid::Init()
 {
-	_CellHeight = 20;
 	UnregisterButtons();
 	_RowCount = GetMaxValueRowCount() + 1;
 	_IndexRow = FindIndexRow();
@@ -433,19 +430,15 @@ void SmOrderGrid::CheckProfitLossTouchHd(int intClose)
 
 	VtSymbol* sym = _CenterWnd->Symbol();
 
-	for (auto it = _StopOrderMgr->StopOrderMapHd.begin(), next_it = it; it != _StopOrderMgr->StopOrderMapHd.end(); it = next_it)
-	{
+	for (auto it = _StopOrderMgr->StopOrderMapHd.begin(), next_it = it; it != _StopOrderMgr->StopOrderMapHd.end(); it = next_it) {
 		HdOrderRequest* stop = it->second;
 		++next_it;
 
-		if (stop->Price == intClose)
-		{
-			if (stop->Position == VtPositionType::Buy)
-			{
+		if (stop->Price == intClose) {
+			if (stop->Position == VtPositionType::Buy) {
 				stop->Price = VtSymbolManager::GetNextValue(stop->Price, stop->slip, sym);
 			}
-			else
-			{
+			else {
 				stop->Price = VtSymbolManager::GetNextValue(stop->Price, -stop->slip, sym);
 			}
 			_OrderConfigMgr->OrderMgr()->PutOrder(std::move(*stop));
@@ -455,10 +448,10 @@ void SmOrderGrid::CheckProfitLossTouchHd(int intClose)
 	}
 }
 
-void SmOrderGrid::CheckStopTouchedHd(int intClose)
+bool SmOrderGrid::CheckStopTouchedHd(int intClose)
 {
 	if (!_CenterWnd || !_CenterWnd->Symbol() || !_CutMgr)
-		return;
+		return false;
 	std::vector<int> removeList;
 	VtSymbol* sym = _CenterWnd->Symbol();
 	std::map<int, HdOrderRequest*>& profitLossMap = _CutMgr->GetStopOrderMap();
@@ -481,10 +474,13 @@ void SmOrderGrid::CheckStopTouchedHd(int intClose)
 			_OrderConfigMgr->OrderMgr()->PutOrder(std::move(*stop));
 		}
 	}
-
+	bool result = false;
 	for (auto it = removeList.begin(); it != removeList.end(); ++it) { // 위에서 등록된 삭제 목록들을 목록에서 지워준다.
 		_CutMgr->RemoveOrderHd(*it, false);
+		result = true;
 	}
+
+	return result;
 }
 
 void SmOrderGrid::SetColTitle(bool init)
@@ -589,6 +585,7 @@ void SmOrderGrid::ClearQuotes(std::set<std::pair<int, int>>& refreshSet)
 		refreshSet.insert(std::make_pair(pos.first, pos.second));
 		CGridCellBase* pCell = GetCell(pos.first, pos.second);
 		if (pCell) {
+			pCell->SetTextClr(RGB(0, 0, 0));
 			pCell->SetLabel("");
 		}
 	}
@@ -959,7 +956,7 @@ void SmOrderGrid::SetQuoteColor(const VtSymbol* sym, std::set<std::pair<int, int
 		return;
 
 	CUGCell cell;
-	
+
 	int lowRow = FindRowFromCenterValue(sym, sym->Quote.intLow);
 	int highRow = FindRowFromCenterValue(sym, sym->Quote.intHigh);
 	int closeRow = FindRowFromCenterValue(sym, sym->Quote.intClose);
@@ -970,22 +967,27 @@ void SmOrderGrid::SetQuoteColor(const VtSymbol* sym, std::set<std::pair<int, int
 		for (auto it = ValueToRowMap.rbegin(); it != ValueToRowMap.rend(); ++it) {
 			if (it->second < highRow) {
 				CGridCellBase* pCell = GetCell(it->second, CenterCol);
+				//pCell->SetTextClr(RGB(0, 0, 0));
 				pCell->SetBackClr(RGB(242, 242, 242));
-			} 
+			}
 			else if (it->second < closeRow) {
 				CGridCellBase* pCell = GetCell(it->second, CenterCol);
+				//pCell->SetTextClr(RGB(0, 0, 0));
 				pCell->SetBackClr(RGB(255, 255, 255));
 			}
 			else if (it->second <= openRow) {
 				CGridCellBase* pCell = GetCell(it->second, CenterCol);
+				//pCell->SetTextClr(RGB(0, 0, 0));
 				pCell->SetBackClr(RGB(252, 226, 228));
 			}
 			else if (it->second < lowRow + 1) {
 				CGridCellBase* pCell = GetCell(it->second, CenterCol);
+				//pCell->SetTextClr(RGB(0, 0, 0));
 				pCell->SetBackClr(RGB(255, 255, 255));
 			}
 			else {
 				CGridCellBase* pCell = GetCell(it->second, CenterCol);
+				//pCell->SetTextClr(RGB(0, 0, 0));
 				pCell->SetBackClr(RGB(242, 242, 242));
 			}
 		}
@@ -995,22 +997,27 @@ void SmOrderGrid::SetQuoteColor(const VtSymbol* sym, std::set<std::pair<int, int
 		for (auto it = ValueToRowMap.rbegin(); it != ValueToRowMap.rend(); ++it) {
 			if (it->second < highRow) {
 				CGridCellBase* pCell = GetCell(it->second, CenterCol);
+				//pCell->SetTextClr(RGB(0, 0, 0));
 				pCell->SetBackClr(RGB(242, 242, 242));
 			}
 			else if (it->second < openRow) {
 				CGridCellBase* pCell = GetCell(it->second, CenterCol);
+				//pCell->SetTextClr(RGB(0, 0, 0));
 				pCell->SetBackClr(RGB(255, 255, 255));
 			}
 			else if (it->second <= closeRow) {
 				CGridCellBase* pCell = GetCell(it->second, CenterCol);
+				//pCell->SetTextClr(RGB(0, 0, 0));
 				pCell->SetBackClr(RGB(218, 226, 245));
 			}
 			else if (it->second < lowRow + 1) {
 				CGridCellBase* pCell = GetCell(it->second, CenterCol);
+				//pCell->SetTextClr(RGB(0, 0, 0));
 				pCell->SetBackClr(RGB(255, 255, 255));
 			}
 			else {
 				CGridCellBase* pCell = GetCell(it->second, CenterCol);
+				//pCell->SetTextClr(RGB(0, 0, 0));
 				pCell->SetBackClr(RGB(242, 242, 242));
 			}
 		}
@@ -1019,22 +1026,27 @@ void SmOrderGrid::SetQuoteColor(const VtSymbol* sym, std::set<std::pair<int, int
 		for (auto it = ValueToRowMap.rbegin(); it != ValueToRowMap.rend(); ++it) {
 			if (it->second < highRow) {
 				CGridCellBase* pCell = GetCell(it->second, CenterCol);
+				//pCell->SetTextClr(RGB(0, 0, 0));
 				pCell->SetBackClr(RGB(242, 242, 242));
 			}
 			else if (it->second < closeRow) {
 				CGridCellBase* pCell = GetCell(it->second, CenterCol);
+				//pCell->SetTextClr(RGB(0, 0, 0));
 				pCell->SetBackClr(RGB(255, 255, 255));
 			}
 			else if (it->second <= openRow) {
 				CGridCellBase* pCell = GetCell(it->second, CenterCol);
+				//pCell->SetTextClr(RGB(0, 0, 0));
 				pCell->SetBackClr(RGB(252, 226, 228));
 			}
 			else if (it->second < lowRow + 1) {
 				CGridCellBase* pCell = GetCell(it->second, CenterCol);
-				pCell->SetBackClr(RGB(255, 255, 255)); 
+				//pCell->SetTextClr(RGB(0, 0, 0));
+				pCell->SetBackClr(RGB(255, 255, 255));
 			}
 			else {
 				CGridCellBase* pCell = GetCell(it->second, CenterCol);
+				//pCell->SetTextClr(RGB(0, 0, 0));
 				pCell->SetBackClr(RGB(242, 242, 242));
 			}
 		}
@@ -1042,9 +1054,10 @@ void SmOrderGrid::SetQuoteColor(const VtSymbol* sym, std::set<std::pair<int, int
 
 	// 종가 색상 입히기
 	CGridCellBase* pCell = GetCell(closeRow, CenterCol);
-	if (pCell && closeRow >= _StartRowForValue && closeRow <= _EndRowForValue)
+	if (pCell && closeRow >= _StartRowForValue && closeRow <= _EndRowForValue) {
 		pCell->SetBackClr(RGB(255, 255, 0));
-
+		_QuotePos.insert(std::make_pair(closeRow, CenterCol));
+	}
 	// 고가 텍스트 색상 설정
 	SetSiseLabel(highRow, "H", RGB(255, 0, 0));
 	
@@ -1242,8 +1255,7 @@ void SmOrderGrid::SetStopOrderInfo(std::set<std::pair<int, int>>& refreshSet)
 
 	// 자동 손절로 인한 스탑주문은 따로 추가해 준다.
 	std::map<int, HdOrderRequest*>& profitLossMap = _CutMgr->GetStopOrderMap();
-	for (auto it = profitLossMap.begin(); it != profitLossMap.end(); ++it)
-	{
+	for (auto it = profitLossMap.begin(); it != profitLossMap.end(); ++it) {
 		HdOrderRequest* order = it->second;
 		order->Position == VtPositionType::Buy ? buy_count += order->Amount : sell_count += order->Amount;
 		int row = FindRowFromCenterValue(order->Price);
@@ -1318,6 +1330,40 @@ void SmOrderGrid::CalcPosStopOrders(std::set<std::pair<int, int>>& refreshSet)
 			slip_cell.row  < _StartRowForValue || slip_cell.row > _EndRowForValue)
 			continue;
 	
+		PutStopOrderVector(std::make_pair(order_cell, slip_cell));
+
+		int min_row = min(order_cell.row, slip_cell.row);
+		int max_row = max(order_cell.row, slip_cell.row);
+		int min_col = min(order_cell.col, slip_cell.col);
+		int max_col = max(order_cell.col, slip_cell.col);
+		for (int r = min_row; r <= max_row; ++r) {
+			for (int c = min_col; c <= max_col; ++c) {
+				refreshSet.insert(std::make_pair(r, c));
+			}
+		}
+	}
+
+	std::map<int, HdOrderRequest*>& profitLossMap = _CutMgr->GetStopOrderMap();
+	for (auto it = profitLossMap.begin(); it != profitLossMap.end(); ++it) {
+		HdOrderRequest* order = it->second;
+		int order_row = FindRowFromCenterValue(order->Price);
+		CCellID order_cell, slip_cell;
+		order_cell.row = order_row;
+		if (order->Position == VtPositionType::Buy) {
+			order_cell.col = CenterCol + 4;
+			slip_cell.col = CenterCol + 3;
+			order->slip > 0 ? slip_cell.row = order_row - order->slip : slip_cell.row = order_row + order->slip;
+		}
+		else if (order->Position == VtPositionType::Sell) {
+			order_cell.col = CenterCol - 4;
+			slip_cell.col = CenterCol - 3;
+			order->slip > 0 ? slip_cell.row = order_row + order->slip : slip_cell.row = order_row - order->slip;
+		}
+
+		if (order_cell.row < _StartRowForValue || order_cell.row > _EndRowForValue ||
+			slip_cell.row  < _StartRowForValue || slip_cell.row > _EndRowForValue)
+			continue;
+
 		PutStopOrderVector(std::make_pair(order_cell, slip_cell));
 
 		int min_row = min(order_cell.row, slip_cell.row);
@@ -1957,6 +2003,7 @@ void SmOrderGrid::OnRButtonUp(UINT nFlags, CPoint point)
 		std::map<int, HdOrderRequest*>& stopOrderMap = pSrcCell->GetStopOrderMap();
 		for (auto it = stopOrderMap.begin(); it != stopOrderMap.end(); ++it) {
 			_StopOrderMgr->RemoveOrderHd(it->first);
+			_CutMgr->RemoveOrderHd(it->first);
 		}
 
 		pSrcCell->ClearStopOrders();
@@ -2055,38 +2102,6 @@ void SmOrderGrid::RedrawOrderTrackCells()
 		}
 	}
 }
-
-/*
-void SmOrderGrid::AddStopOrder(int price, VtPositionType posi)
-{
-	if (!_OrderConfigMgr->Account() || !_OrderConfigMgr->Symbol() || !_OrderConfigMgr->OrderMgr())
-		return;
-
-	VtOrderManager* orderMgr = VtOrderManagerSelector::GetInstance()->FindAddOrderManager(_OrderConfigMgr->Account()->AccountNo);
-	HdOrderRequest* request = new HdOrderRequest();
-	request->Type = 0;
-	request->AccountNo = _OrderConfigMgr->Account()->AccountNo;
-	request->Password = _OrderConfigMgr->Account()->Password;
-	request->Price = price;
-	request->Position = posi;
-	request->Amount = 1;
-	request->SymbolCode = _OrderConfigMgr->Symbol()->ShortCode;
-	request->FillCondition = VtFilledCondition::Fas;
-	request->PriceType = VtPriceType::Price;
-	request->slip = 2;
-	request->RequestId = orderMgr->GetOrderRequestID();
-	request->SourceId = (long)this;
-	request->SubAccountNo = _T("");
-	request->FundName = _T("");
-	_StopOrderMgr->AddOrderHd(request);
-
-	std::set<std::pair<int, int>> refreshSet;
-	ClearOldStopOrders(refreshSet);
-	SetStopOrderInfo(refreshSet);
-	CalcPosStopOrders(refreshSet);
-	RefreshCells(refreshSet);
-}
-*/
 
 void SmOrderGrid::AddStopOrder(int price, VtPositionType posi)
 {

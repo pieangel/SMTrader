@@ -297,7 +297,7 @@ void SmFutureGrid::OnSymbolMaster(VtSymbol* sym)
 	auto it = _FutureCurrentValueRowMap.find(sym->ShortCode);
 	if (it != _FutureCurrentValueRowMap.end()) {
 		auto pos = _FutureCurrentValueRowMap[sym->ShortCode];
-		ShowCurrent(sym, std::get<1>(pos));
+		ShowCurrent(sym, std::get<0>(pos));
 	}
 }
 
@@ -444,7 +444,7 @@ void SmFutureGrid::OnExpected(VtSymbol* sym)
 		auto it = _FutureCurrentValueRowMap.find(sym->ShortCode);
 		if (it != _FutureCurrentValueRowMap.end()) {
 			auto pos = _FutureCurrentValueRowMap[sym->ShortCode];
-			ShowExpected(sym, std::get<1>(pos));
+			ShowExpected(sym, std::get<0>(pos));
 		}
 	}
 }
