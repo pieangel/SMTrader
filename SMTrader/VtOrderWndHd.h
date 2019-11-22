@@ -12,6 +12,7 @@
 //#include "TTComboBox.h"
 #include "ShadeButtonST.h"
 #include "SmOrderPanel.h"
+#include "Xml/pugixml.hpp"
 using same_endian_type = std::is_same<simple::LittleEndian, simple::LittleEndian>;
 
 using Poco::BasicEvent;
@@ -240,4 +241,7 @@ protected:
 public:
 	CEdit _EditPwd;
 	afx_msg void OnEnChangeEditPwd();
+public:
+	void SaveToXml(pugi::xml_node& node);
+	void LoadFromXml(pugi::xml_node& node);
 };

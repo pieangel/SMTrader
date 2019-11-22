@@ -36,6 +36,60 @@ VtSaveManager::~VtSaveManager()
 {
 }
 
+void VtSaveManager::WriteSettings()
+{
+	ZmConfigManager* configMgr = ZmConfigManager::GetInstance();
+	std::string appPath;
+	appPath = configMgr->GetAppPath();
+	appPath.append(_T("\\"));
+	appPath.append(_T("env"));
+	appPath.append(_T("\\"));
+	appPath.append(VtStringUtil::getTimeStr());
+	appPath.append(_T(".xml"));
+	filesystem::path path1(appPath);
+	if (!path1.exists()) {
+		/// [create new xml file]
+		// Generate new XML document within memory
+		pugi::xml_document doc;
+		// Alternatively store as shared pointer if tree shall be used for longer
+		// time or multiple client calls:
+		// std::shared_ptr<pugi::xml_document> spDoc = std::make_shared<pugi::xml_document>();
+		// Generate XML declaration
+		auto declarationNode = doc.append_child(pugi::node_declaration);
+		declarationNode.append_attribute("version") = "1.0";
+		declarationNode.append_attribute("encoding") = "ISO-8859-1";
+		declarationNode.append_attribute("standalone") = "yes";
+		// A valid XML doc must contain a single root node of any name
+		auto root = doc.append_child("application");
+		// Save XML tree to file.
+		// Remark: second optional param is indent string to be used;
+		// default indentation is tab character.
+		bool saveSucceeded = doc.save_file(appPath.c_str(), PUGIXML_TEXT("  "));
+		assert(saveSucceeded);
+	}
+
+	/// [load xml file]
+	// Create empty XML document within memory
+	pugi::xml_document doc;
+	// Load XML file into memory
+	// Remark: to fully read declaration entries you have to specify
+	// "pugi::parse_declaration"
+	pugi::xml_parse_result result = doc.load_file(appPath.c_str(),
+		pugi::parse_default | pugi::parse_declaration);
+	if (!result)
+	{
+		std::cout << "Parse error: " << result.description()
+			<< ", character pos= " << result.offset;
+	}
+	
+	pugi::xml_node application = doc.child("application");
+	application.remove_child("order_window_list");
+	pugi::xml_node window_list = application.append_child("order_window_list");
+	VtOrderDialogManager::GetInstance()->SaveToXml(window_list);
+
+	doc.save_file(appPath.c_str());
+}
+
 void VtSaveManager::SaveOrders()
 {
 	SaveOrders(_T("orderlist.dat"));
@@ -69,6 +123,12 @@ void VtSaveManager::SaveFundList(std::string fileName)
 	appPath.append(VtGlobal::LoginUserID);
 	appPath.append(_T("\\"));
 	appPath.append(fileName);	
+
+	filesystem::path path1(appPath);
+	if (!path1.exists()) {
+		std::ofstream outfile(appPath);
+		outfile.close();
+	}
 
 	simple::file_ostream<same_endian_type> outfile(appPath.c_str());
 	

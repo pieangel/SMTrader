@@ -42,6 +42,9 @@
 #include "FileWatch/IoCompletionPort.h"
 #include "FileWatch/ThreadSafeQueue.h"
 
+#include "Format/format_string.h"
+
+
 #ifndef OVERRIDE
 #if _MSC_VER >= 1600
 // Visual Studio 2010 and later support override.

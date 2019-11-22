@@ -1161,6 +1161,55 @@ bool VtOrderDialogManager::FindFund(VtFund* oldFund)
 	return false;
 }
 
+void VtOrderDialogManager::SaveToXml(pugi::xml_node& node)
+{
+	/*
+	/// [load xml file]
+	/// [add child elements]
+	// Append some child elements below root
+	// Add as last element
+	pugi::xml_node nodeChild = node.append_child("MyChild");
+ 	nodeChild.append_attribute("hint") = "inserted as last child";
+ 	nodeChild.append_attribute("intVal") = 1;
+ 	// Add as last element
+ 	nodeChild = node.append_child("MyChild");
+	nodeChild.append_attribute("hint") = "also inserted as last child";
+	nodeChild.append_attribute("doubleVal") = 12.34;
+
+	pugi::xml_node found_node = node.child("MyChild");
+	std::string temp = found_node.attribute("doubleVal").as_string();
+	double dv = node.child("MyChild").attribute("doubleVal").as_double();
+
+	double doubleVal = nodeChild.attribute("doubleVal").as_double();
+	// Add as first element
+	nodeChild = node.prepend_child("MyChild");
+	nodeChild.append_attribute("hint") = "inserted at front";
+	nodeChild.append_attribute("boolVal") = true;
+
+	// Add child of type integer
+	nodeChild = node.append_child("MyChildWithIntValue");
+	nodeChild.append_child(pugi::node_pcdata).set_value(std::to_string(4712).c_str());
+	// Add child of type double
+	nodeChild = node.append_child("MyChildWithDoubleValue");
+	nodeChild.append_child(pugi::node_pcdata).set_value(std::to_string(3.18).c_str());
+	// Add child of type bool
+	nodeChild = node.append_child("MyChildWithBoolValue");
+	nodeChild.append_child(pugi::node_pcdata).set_value(std::to_string(false).c_str());
+	*/
+	
+	for (auto it = _OrderWndMap.begin(); it != _OrderWndMap.end(); ++it) {
+		VtOrderWndHd* orderWnd = it->second;
+		//orderWnd->Save(ss);
+		pugi::xml_node order_window = node.append_child("order_window");
+		orderWnd->SaveToXml(order_window);
+	}
+}
+
+void VtOrderDialogManager::LoadFromXml(pugi::xml_node& node)
+{
+
+}
+
 void VtOrderDialogManager::OnReceiveSymbolMaster(VtSymbolMaster* master)
 {
 	auto it = SymbolDispatcherMap.find(master->FullCode);

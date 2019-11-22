@@ -255,6 +255,7 @@
     <ClInclude Include="Format\core.h" />
     <ClInclude Include="Format\format-inl.h" />
     <ClInclude Include="Format\format.h" />
+    <ClInclude Include="Format\format_string.h" />
     <ClInclude Include="Format\ostream.h" />
     <ClInclude Include="Format\posix.h" />
     <ClInclude Include="Format\printf.h" />

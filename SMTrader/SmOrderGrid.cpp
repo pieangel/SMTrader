@@ -235,17 +235,27 @@ void SmOrderGrid::OnOrderEvent(const VtOrder* order)
 		return;
 	}
 
-	// 심볼과 계좌가 같지 않으면 진행하지 않는다.
-	if (_CenterWnd->Symbol()->ShortCode.compare(order->shortCode) != 0 ||
-		_OrderConfigMgr->Account()->AccountNo.compare(order->AccountNo) != 0)
-		return;
+	if (order->SubAccountNo.length() > 0) {
+		// 심볼과 계좌가 같지 않으면 진행하지 않는다.
+		if (_CenterWnd->Symbol()->ShortCode.compare(order->shortCode) != 0 ||
+			_OrderConfigMgr->Account()->AccountNo.compare(order->SubAccountNo) != 0)
+			return;
+	}
+	else {
+		// 심볼과 계좌가 같지 않으면 진행하지 않는다.
+		if (_CenterWnd->Symbol()->ShortCode.compare(order->shortCode) != 0 ||
+			_OrderConfigMgr->Account()->AccountNo.compare(order->AccountNo) != 0)
+			return;
+	}
+
+	
 
 	std::set<std::pair<int, int>> refreshSet;
 	ClearOldOrders(refreshSet);
 	SetOrderInfo(refreshSet);
 	ClearPositionInfo(refreshSet);
 	SetPositionInfo(refreshSet);
-
+	
 	if (order->state == VtOrderState::Filled) {
 		_CutMgr->AddStopOrderForFilled(_CenterWnd->Symbol(), (VtOrder*)order);
 		ClearOldStopOrders(refreshSet);
@@ -967,27 +977,22 @@ void SmOrderGrid::SetQuoteColor(const VtSymbol* sym, std::set<std::pair<int, int
 		for (auto it = ValueToRowMap.rbegin(); it != ValueToRowMap.rend(); ++it) {
 			if (it->second < highRow) {
 				CGridCellBase* pCell = GetCell(it->second, CenterCol);
-				//pCell->SetTextClr(RGB(0, 0, 0));
 				pCell->SetBackClr(RGB(242, 242, 242));
 			}
 			else if (it->second < closeRow) {
 				CGridCellBase* pCell = GetCell(it->second, CenterCol);
-				//pCell->SetTextClr(RGB(0, 0, 0));
 				pCell->SetBackClr(RGB(255, 255, 255));
 			}
 			else if (it->second <= openRow) {
 				CGridCellBase* pCell = GetCell(it->second, CenterCol);
-				//pCell->SetTextClr(RGB(0, 0, 0));
 				pCell->SetBackClr(RGB(252, 226, 228));
 			}
 			else if (it->second < lowRow + 1) {
 				CGridCellBase* pCell = GetCell(it->second, CenterCol);
-				//pCell->SetTextClr(RGB(0, 0, 0));
 				pCell->SetBackClr(RGB(255, 255, 255));
 			}
 			else {
 				CGridCellBase* pCell = GetCell(it->second, CenterCol);
-				//pCell->SetTextClr(RGB(0, 0, 0));
 				pCell->SetBackClr(RGB(242, 242, 242));
 			}
 		}
@@ -997,27 +1002,22 @@ void SmOrderGrid::SetQuoteColor(const VtSymbol* sym, std::set<std::pair<int, int
 		for (auto it = ValueToRowMap.rbegin(); it != ValueToRowMap.rend(); ++it) {
 			if (it->second < highRow) {
 				CGridCellBase* pCell = GetCell(it->second, CenterCol);
-				//pCell->SetTextClr(RGB(0, 0, 0));
 				pCell->SetBackClr(RGB(242, 242, 242));
 			}
 			else if (it->second < openRow) {
 				CGridCellBase* pCell = GetCell(it->second, CenterCol);
-				//pCell->SetTextClr(RGB(0, 0, 0));
 				pCell->SetBackClr(RGB(255, 255, 255));
 			}
 			else if (it->second <= closeRow) {
 				CGridCellBase* pCell = GetCell(it->second, CenterCol);
-				//pCell->SetTextClr(RGB(0, 0, 0));
 				pCell->SetBackClr(RGB(218, 226, 245));
 			}
 			else if (it->second < lowRow + 1) {
 				CGridCellBase* pCell = GetCell(it->second, CenterCol);
-				//pCell->SetTextClr(RGB(0, 0, 0));
 				pCell->SetBackClr(RGB(255, 255, 255));
 			}
 			else {
 				CGridCellBase* pCell = GetCell(it->second, CenterCol);
-				//pCell->SetTextClr(RGB(0, 0, 0));
 				pCell->SetBackClr(RGB(242, 242, 242));
 			}
 		}
@@ -1026,27 +1026,22 @@ void SmOrderGrid::SetQuoteColor(const VtSymbol* sym, std::set<std::pair<int, int
 		for (auto it = ValueToRowMap.rbegin(); it != ValueToRowMap.rend(); ++it) {
 			if (it->second < highRow) {
 				CGridCellBase* pCell = GetCell(it->second, CenterCol);
-				//pCell->SetTextClr(RGB(0, 0, 0));
 				pCell->SetBackClr(RGB(242, 242, 242));
 			}
 			else if (it->second < closeRow) {
 				CGridCellBase* pCell = GetCell(it->second, CenterCol);
-				//pCell->SetTextClr(RGB(0, 0, 0));
 				pCell->SetBackClr(RGB(255, 255, 255));
 			}
 			else if (it->second <= openRow) {
 				CGridCellBase* pCell = GetCell(it->second, CenterCol);
-				//pCell->SetTextClr(RGB(0, 0, 0));
 				pCell->SetBackClr(RGB(252, 226, 228));
 			}
 			else if (it->second < lowRow + 1) {
 				CGridCellBase* pCell = GetCell(it->second, CenterCol);
-				//pCell->SetTextClr(RGB(0, 0, 0));
 				pCell->SetBackClr(RGB(255, 255, 255));
 			}
 			else {
 				CGridCellBase* pCell = GetCell(it->second, CenterCol);
-				//pCell->SetTextClr(RGB(0, 0, 0));
 				pCell->SetBackClr(RGB(242, 242, 242));
 			}
 		}
@@ -2392,37 +2387,51 @@ void SmOrderGrid::ChangeOrder(VtOrder* order, int newPrice)
 
 void SmOrderGrid::ChangeOrder()
 {
-	CGridCellBase* pSrcCell = GetCell(OrderCellStart.row, OrderCellStart.col);
-	if (pSrcCell->GetOrderCount() > 0) {
-		auto it = RowToValueMap.find(OrderCellEnd.row);
-		int price = it->second;
-		std::map<int, VtOrder*>& orderMap = pSrcCell->GetOrderMap();
-		for (auto it = orderMap.begin(); it != orderMap.end(); ++it) {
-			VtOrder* order = it->second;
-			ChangeOrder(order, price);
-		}
+	try
+	{
+		CGridCellBase* pSrcCell = GetCell(OrderCellStart.row, OrderCellStart.col);
+		if (pSrcCell->GetOrderCount() > 0) {
+			auto it = RowToValueMap.find(OrderCellEnd.row);
+			int price = it->second;
+			std::map<int, VtOrder*>& orderMap = pSrcCell->GetOrderMap();
+			for (auto it = orderMap.begin(); it != orderMap.end(); ++it) {
+				VtOrder* order = it->second;
+				ChangeOrder(order, price);
+			}
 
-		pSrcCell->ClearOrders();
+			pSrcCell->ClearOrders();
+		}
+	}
+	catch (std::exception& e)
+	{
+		std::string error = e.what();
 	}
 }
 
 void SmOrderGrid::ChangeStopOrder()
 {
-	CGridCellBase* pSrcCell = GetCell(OrderCellStart.row, OrderCellStart.col);
-	CGridCellBase* pTgtCell = GetCell(OrderCellEnd.row, OrderCellEnd.col);
-	if (pSrcCell->GetStopOrderCount() > 0) {
-		auto it = RowToValueMap.find(OrderCellEnd.row);
-		int price = it->second;
-		std::map<int, HdOrderRequest*>& stopOrderMap = pSrcCell->GetStopOrderMap();
-		for (auto it = stopOrderMap.begin(); it != stopOrderMap.end(); ++it) {
-			HdOrderRequest* order = it->second;
-			order->Price = price;
+	try
+	{
+		CGridCellBase* pSrcCell = GetCell(OrderCellStart.row, OrderCellStart.col);
+		CGridCellBase* pTgtCell = GetCell(OrderCellEnd.row, OrderCellEnd.col);
+		if (pSrcCell->GetStopOrderCount() > 0) {
+			auto it = RowToValueMap.find(OrderCellEnd.row);
+			int price = it->second;
+			std::map<int, HdOrderRequest*>& stopOrderMap = pSrcCell->GetStopOrderMap();
+			for (auto it = stopOrderMap.begin(); it != stopOrderMap.end(); ++it) {
+				HdOrderRequest* order = it->second;
+				order->Price = price;
+			}
+			std::set<std::pair<int, int>> refreshSet;
+			ClearOldStopOrders(refreshSet);
+			SetStopOrderInfo(refreshSet);
+			CalcPosStopOrders(refreshSet);
+			RefreshCells(refreshSet);
 		}
-		std::set<std::pair<int, int>> refreshSet;
-		ClearOldStopOrders(refreshSet);
-		SetStopOrderInfo(refreshSet);
-		CalcPosStopOrders(refreshSet);
-		RefreshCells(refreshSet);
+	}
+	catch (std::exception& e)
+	{
+		std::string error = e.what();
 	}
 }
 
@@ -2430,111 +2439,121 @@ void SmOrderGrid::CancelOrder(VtOrder* order)
 {
 	if (!order || !_OrderConfigMgr || !_OrderConfigMgr->OrderMgr())
 		return;
-
-	if (_OrderConfigMgr->Type() == 0)
+	try
 	{
-		if (!_OrderConfigMgr->Account())
-			return;
 
-		if (!_OrderConfigMgr->Account())
-			return;
-		VtAccount* acnt = _OrderConfigMgr->Account();
-
-		HdOrderRequest request;
-		request.Price = order->intOrderPrice;
-		request.Position = order->orderPosition;
-		request.Amount = order->amount;
-		request.RequestType = order->RequestType;
-
-		if (acnt->AccountLevel() == 0)
+		if (_OrderConfigMgr->Type() == 0)
 		{
-			request.AccountNo = acnt->AccountNo;
-			request.Password = acnt->Password;
-		}
-		else
-		{
-			VtAccount* parentAcnt = acnt->ParentAccount();
-			if (parentAcnt)
-			{
-				request.AccountNo = parentAcnt->AccountNo;
-				request.Password = parentAcnt->Password;
-			}
-		}
-		request.SymbolCode = order->shortCode;
-		request.FillCondition = VtFilledCondition::Fas;
-		request.PriceType = VtPriceType::Price;
-		request.OrderNo = order->orderNo;
-		request.RequestId = _OrderConfigMgr->OrderMgr()->GetOrderRequestID();
-		request.SourceId = (long)this;
-		if (acnt->AccountLevel() == 0)
-		{
-			request.SubAccountNo = order->SubAccountNo;
-			request.FundName = order->FundName;
-		}
-		else
-			request.SubAccountNo = acnt->AccountNo;
-
-		request.orderType = VtOrderType::Cancel;
-
-		_OrderConfigMgr->OrderMgr()->CancelOrder(std::move(request));
-	}
-	else
-	{
-		if (_OrderConfigMgr->Fund())
-		{
-			VtSubAccountManager* subAcntMgr = VtSubAccountManager::GetInstance();
-			VtAccount* subAcnt = subAcntMgr->FindAccount(order->SubAccountNo);
-			if (!subAcnt)
+			if (!_OrderConfigMgr->Account())
 				return;
-			VtAccount* parentAcnt = subAcnt->ParentAccount();
-			if (!parentAcnt)
-				return;
+			VtAccount* acnt = _OrderConfigMgr->Account();
 
 			HdOrderRequest request;
-			request.RequestType = order->RequestType;
 			request.Price = order->intOrderPrice;
 			request.Position = order->orderPosition;
 			request.Amount = order->amount;
-			request.AccountNo = parentAcnt->AccountNo;
-			request.Password = parentAcnt->Password;
+			request.RequestType = order->RequestType;
+
+			if (acnt->AccountLevel() == 0)
+			{
+				request.AccountNo = acnt->AccountNo;
+				request.Password = acnt->Password;
+			}
+			else
+			{
+				VtAccount* parentAcnt = acnt->ParentAccount();
+				if (parentAcnt)
+				{
+					request.AccountNo = parentAcnt->AccountNo;
+					request.Password = parentAcnt->Password;
+				}
+			}
 			request.SymbolCode = order->shortCode;
 			request.FillCondition = VtFilledCondition::Fas;
 			request.PriceType = VtPriceType::Price;
 			request.OrderNo = order->orderNo;
 			request.RequestId = _OrderConfigMgr->OrderMgr()->GetOrderRequestID();
 			request.SourceId = (long)this;
-			request.SubAccountNo = subAcnt->AccountNo;
-			request.FundName = _OrderConfigMgr->Fund()->Name;
+			if (acnt->AccountLevel() == 0)
+			{
+				request.SubAccountNo = order->SubAccountNo;
+				request.FundName = order->FundName;
+			}
+			else
+				request.SubAccountNo = acnt->AccountNo;
+
 			request.orderType = VtOrderType::Cancel;
 
 			_OrderConfigMgr->OrderMgr()->CancelOrder(std::move(request));
 		}
+		else
+		{
+			if (_OrderConfigMgr->Fund())
+			{
+				VtSubAccountManager* subAcntMgr = VtSubAccountManager::GetInstance();
+				VtAccount* subAcnt = subAcntMgr->FindAccount(order->SubAccountNo);
+				if (!subAcnt)
+					return;
+				VtAccount* parentAcnt = subAcnt->ParentAccount();
+				if (!parentAcnt)
+					return;
+
+				HdOrderRequest request;
+				request.RequestType = order->RequestType;
+				request.Price = order->intOrderPrice;
+				request.Position = order->orderPosition;
+				request.Amount = order->amount;
+				request.AccountNo = parentAcnt->AccountNo;
+				request.Password = parentAcnt->Password;
+				request.SymbolCode = order->shortCode;
+				request.FillCondition = VtFilledCondition::Fas;
+				request.PriceType = VtPriceType::Price;
+				request.OrderNo = order->orderNo;
+				request.RequestId = _OrderConfigMgr->OrderMgr()->GetOrderRequestID();
+				request.SourceId = (long)this;
+				request.SubAccountNo = subAcnt->AccountNo;
+				request.FundName = _OrderConfigMgr->Fund()->Name;
+				request.orderType = VtOrderType::Cancel;
+
+				_OrderConfigMgr->OrderMgr()->CancelOrder(std::move(request));
+			}
+		}
+	}
+	catch (std::exception& e) {
+		std::string error = e.what();
 	}
 }
 
 void SmOrderGrid::CancelOrder()
 {
-	CGridCellBase* pSrcCell = GetCell(OrderCellStart.row, OrderCellStart.col);
-	if (pSrcCell->GetOrderCount() > 0) {
-		std::map<int, VtOrder*>& orderMap = pSrcCell->GetOrderMap();
-		for (auto it = orderMap.begin(); it != orderMap.end(); ++it) {
-			VtOrder* order = it->second;
-			CancelOrder(order);
+	try
+	{
+		CGridCellBase* pSrcCell = GetCell(OrderCellStart.row, OrderCellStart.col);
+		if (pSrcCell->GetOrderCount() > 0) {
+			std::map<int, VtOrder*>& orderMap = pSrcCell->GetOrderMap();
+			for (auto it = orderMap.begin(); it != orderMap.end(); ++it) {
+				VtOrder* order = it->second;
+				CancelOrder(order);
+			}
+			pSrcCell->ClearOrders();
 		}
-		pSrcCell->ClearOrders();
-	}
 
-	if (pSrcCell->GetStopOrderCount() > 0) {
-		std::map<int, HdOrderRequest*>& stopOrderMap = pSrcCell->GetStopOrderMap();
-		for (auto it = stopOrderMap.begin(); it != stopOrderMap.end(); ++it) {
-			_StopOrderMgr->RemoveOrderHd(it->first);
+		if (pSrcCell->GetStopOrderCount() > 0) {
+			std::map<int, HdOrderRequest*>& stopOrderMap = pSrcCell->GetStopOrderMap();
+			for (auto it = stopOrderMap.begin(); it != stopOrderMap.end(); ++it) {
+				_StopOrderMgr->RemoveOrderHd(it->first);
+			}
+			pSrcCell->ClearStopOrders();
+			std::set<std::pair<int, int>> refreshSet;
+			ClearOldStopOrders(refreshSet);
+			SetStopOrderInfo(refreshSet);
+			CalcPosStopOrders(refreshSet);
+			RefreshCells(refreshSet);
 		}
-		pSrcCell->ClearStopOrders();
-		std::set<std::pair<int, int>> refreshSet;
-		ClearOldStopOrders(refreshSet);
-		SetStopOrderInfo(refreshSet);
-		CalcPosStopOrders(refreshSet);
-		RefreshCells(refreshSet);
+	}
+	catch (std::exception& e)
+	{
+		std::string error = e.what();
 	}
 }
 

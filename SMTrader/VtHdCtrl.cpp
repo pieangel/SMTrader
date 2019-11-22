@@ -1292,11 +1292,12 @@ void VtHdCtrl::OnOrderAcceptedHd(CString& strKey, LONG& nRealType)
 	// 주문 처리
 	orderMgr->OnOrderAcceptedHd(order);
 	order->orderEvent = VtOrderEvent::Accepted;
-	SmCallbackManager::GetInstance()->OnOrderEvent(order);
 
 	SendOrderMessage(VtOrderEvent::Accepted, order);
 
 	OnSubAccountOrder(VtOrderEvent::Accepted, strSubAcntNo, strFundName, order, prevState);
+
+	SmCallbackManager::GetInstance()->OnOrderEvent(order);
 
 	LOG_F(INFO, _T("사용자정의 필드 = %s"), strCustom);
 
@@ -1470,11 +1471,13 @@ void VtHdCtrl::OnOrderUnfilledHd(CString& strKey, LONG& nRealType)
 	orderMgr->OnOrderUnfilledHd(order);
 
 	order->orderEvent = VtOrderEvent::Unfilled;
-	SmCallbackManager::GetInstance()->OnOrderEvent(order);
 
 	SendOrderMessage(VtOrderEvent::Unfilled, order);
 
 	OnSubAccountOrder(VtOrderEvent::Unfilled, strSubAcntNo, strFundName, order, prevState);
+
+	SmCallbackManager::GetInstance()->OnOrderEvent(order);
+
 
 	LOG_F(INFO, _T("미체결 수신 : 주문가격 = %s, 원요청번호 %d, 선물사 요청번호 = %d, 종목이름 = %s, 주문 번호 = %s, 원주문 번호 = %s, 계좌번호 = %s, 서브계좌번호 = %s, 펀드 이름 = %s, 주문종류 = %s, 주문갯수 = %s, 요청 타입 = %d"), strPrice, oriReqNo, order->HtsOrderReqID, strSeries, strOrdNo, strOriOrderNo, strAcctNo, strSubAcntNo, strFundName, strPosition.Compare(_T("1")) == 0 ? _T("매수") : _T("매도"), strAmount, order->RequestType);
 
@@ -1590,7 +1593,6 @@ void VtHdCtrl::OnOrderFilledHd(CString& strKey, LONG& nRealType)
 	orderMgr->OnOrderFilledHd(order);
 
 	order->orderEvent = VtOrderEvent::Filled;
-	SmCallbackManager::GetInstance()->OnOrderEvent(order);
 
 	HdWindowManager* wndMgr = HdWindowManager::GetInstance();
 	std::map<CWnd*, std::pair<HdWindowType, CWnd*>>& wndMap = wndMgr->GetWindowMap();
@@ -1609,6 +1611,8 @@ void VtHdCtrl::OnOrderFilledHd(CString& strKey, LONG& nRealType)
 	SendOrderMessage(VtOrderEvent::Filled, order);
 
 	OnSubAccountOrder(VtOrderEvent::Filled, strSubAcntNo, strFundName, order, prevState);
+
+	SmCallbackManager::GetInstance()->OnOrderEvent(order);
 
 
 	LOG_F(INFO, _T("체결 확인 : 체결가격 = %s, 원요청번호 %d, 선물사 요청번호 = %d, 종목이름 = %s, 주문 번호 = %s, 계좌번호 = %s, 서브계좌번호 = %s, 펀드 이름 = %s, 주문종류 = %s, 체결갯수 = %s, 요청 타입 = %d"), strFillPrice, oriReqNo, order->HtsOrderReqID, strSeries, strOrdNo, strAcctNo, strSubAcntNo, strFundName, strPosition.Compare(_T("1")) == 0 ? _T("매수") : _T("매도"), strFillAmount, order->RequestType);

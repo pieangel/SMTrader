@@ -82,6 +82,7 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
+	void OnEntered();
 	void OnSymbolMaster(VtSymbol* sym);
 	void InitSymbol();
 	void SetSymbol(VtSymbol* sym);

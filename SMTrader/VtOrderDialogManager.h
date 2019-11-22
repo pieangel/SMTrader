@@ -6,6 +6,7 @@
 #include "VtQuoteEvent.h"
 #include "VtOrderWndEvent.h"
 #include "SimpleBinStream.h"
+#include "Xml/pugixml.hpp"
 using same_endian_type = std::is_same<simple::LittleEndian, simple::LittleEndian>;
 
 class CVtOrderWnd;
@@ -150,6 +151,10 @@ public:
 	std::map<VtOrderWndHd*, VtOrderWndHd*>& GetWndMap() {
 		return _OrderWndMap;
 	}
+
+	void SaveToXml(pugi::xml_node& node);
+	void LoadFromXml(pugi::xml_node& node);
+
 private:
 	std::map<VtOrderWndHd*, VtOrderWndHd*> _OrderWndMap;
 	CMainFrame* _MainFrm;

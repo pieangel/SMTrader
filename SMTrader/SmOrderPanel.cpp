@@ -778,6 +778,20 @@ CRect SmOrderPanel::GetClientArea(int resourceID)
 	return rcWnd;
 }
 
+void SmOrderPanel::OnEntered()
+{
+	if (_CurBtn)
+	{
+		CString strText;
+		_EditAmt.GetWindowText(strText);
+		_CurBtn->SetWindowText(strText);
+		_EditAmt.ShowWindow(SW_HIDE);
+		_CurBtn->ShowWindow(SW_SHOW);
+		_CurBtn->SetFocus();
+		_CurBtn = nullptr;
+	}
+}
+
 void SmOrderPanel::OnSymbolMaster(VtSymbol* sym)
 {
 	if (!sym || !_Symbol)
@@ -1411,7 +1425,11 @@ void SmOrderPanel::ChangeSymbol(VtSymbol* symbol)
 BOOL SmOrderPanel::PreTranslateMessage(MSG* pMsg)
 {
 	if (pMsg->message == WM_KEYDOWN) {
-		if (pMsg->wParam == VK_SPACE ) {
+		if (pMsg->wParam == VK_RETURN || pMsg->wParam == VK_ESCAPE) {
+			OnEntered();
+			return TRUE;
+		}
+		else if (pMsg->wParam == VK_SPACE ) {
 			m_Grid.OrderBySpaceBar();
 			return TRUE;
 		}

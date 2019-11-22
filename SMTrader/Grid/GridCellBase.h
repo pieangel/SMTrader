@@ -201,10 +201,10 @@ public:
 	void RemoveStopOrder(int reqNo);
 	void ClearStopOrders();
 	int GetStopOrderCount();
-	std::map<int, VtOrder*>& GetOrderMap() {
+	std::map<int, VtOrder*> GetOrderMap() {
 		return OrderMap;
 	}
-	std::map<int, HdOrderRequest*>& GetStopOrderMap() {
+	std::map<int, HdOrderRequest*> GetStopOrderMap() {
 		return StopOrderMap;
 	}
 	

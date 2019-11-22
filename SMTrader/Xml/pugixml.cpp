@@ -5835,6 +5835,17 @@ namespace pugi
 		return n;
 	}
 
+	PUGI__FN pugi::xml_node xml_node::append_child_with_value(const char_t* name_ , const char_t* value_)
+	{
+		xml_node result = append_child(node_element);
+
+		result.set_name(name_);
+
+		result.set_value(value_);
+
+		return result;
+	}
+
 	PUGI__FN xml_node xml_node::insert_child_after(xml_node_type type_, const xml_node& node)
 	{
 		if (!impl::allow_insert_child(type(), type_)) return xml_node();

@@ -928,6 +928,7 @@ void CMainFrame::SaveSettings()
 	saveMgr->SaveSystems(_T("systemlist.dat"));
 	saveMgr->SaveOutSignal(_T("outsignal.dat"));
 	saveMgr->SaveOutSystems(_T("outsystemlist.dat"));
+	saveMgr->WriteSettings();
 }
 
 void CMainFrame::LoadSettings()

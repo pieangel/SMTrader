@@ -10,6 +10,7 @@ class VtSaveManager : public TemplateSingleton<VtSaveManager>
 public:
 	VtSaveManager();
 	~VtSaveManager();
+	void WriteSettings();
 	void SaveAccountList();
 	void SaveFundList();
 	void SaveOrders();

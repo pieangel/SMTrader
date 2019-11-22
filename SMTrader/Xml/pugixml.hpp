@@ -553,6 +553,8 @@ namespace pugi
 		xml_node insert_child_after(const char_t* name, const xml_node& node);
 		xml_node insert_child_before(const char_t* name, const xml_node& node);
 
+		xml_node append_child_with_value(const char_t* name, const char_t* value);
+
 		// Add a copy of the specified node as a child. Returns added node, or empty node on errors.
 		xml_node append_copy(const xml_node& proto);
 		xml_node prepend_copy(const xml_node& proto);
