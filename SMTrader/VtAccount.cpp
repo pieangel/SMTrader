@@ -161,6 +161,45 @@ void VtAccount::Load(simple::file_istream<same_endian_type>& ss)
 	}
 }
 
+void VtAccount::SaveToXml(pugi::xml_node& node_account)
+{
+	auto enc_ParentAccountNo = cryptor::encrypt(ParentAccountNo);
+	auto enc_AccountName = cryptor::encrypt(AccountName);
+	auto enc_AccountNo = cryptor::encrypt(AccountNo);
+	auto enc_Password = cryptor::encrypt(Password);
+
+	pugi::xml_node account_child = node_account.append_child("parent_account_no");
+	account_child.append_child(pugi::node_pcdata).set_value(ParentAccountNo.c_str());
+	account_child = node_account.append_child("account_name");
+	account_child.append_child(pugi::node_pcdata).set_value(AccountName.c_str());
+	account_child = node_account.append_child("account_no");
+	account_child.append_child(pugi::node_pcdata).set_value(AccountNo.c_str());
+	account_child = node_account.append_child("password");
+	account_child.append_child(pugi::node_pcdata).set_value(Password.c_str());
+	account_child = node_account.append_child("seungsu");
+	account_child.append_child(pugi::node_pcdata).set_value(std::to_string(SeungSu).c_str());
+	account_child = node_account.append_child("ratio");
+	account_child.append_child(pugi::node_pcdata).set_value(std::to_string(Ratio).c_str());
+	account_child = node_account.append_child("account_level");
+	account_child.append_child(pugi::node_pcdata).set_value(std::to_string(_AccountLevel).c_str());
+	account_child = node_account.append_child("prime");
+	account_child.append_child(pugi::node_pcdata).set_value(std::to_string(_Prime).c_str());
+	if (_SubAccountList.size() > 0) {
+		account_child = node_account.append_child("sub_account_list");
+		for (auto it = _SubAccountList.begin(); it != _SubAccountList.end(); ++it)
+		{
+			VtAccount* subAcnt = *it;
+			pugi::xml_node sub_account = account_child.append_child("sub_account");
+			subAcnt->SaveToXml(sub_account);
+		}
+	}
+}
+
+void VtAccount::LoadFromXml(pugi::xml_node& node)
+{
+
+}
+
 VtPosition* VtAccount::FindPosition(std::string symbolCode)
 {
 	if (symbolCode.length() == 0)

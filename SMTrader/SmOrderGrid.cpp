@@ -2393,10 +2393,11 @@ void SmOrderGrid::ChangeOrder()
 		if (pSrcCell->GetOrderCount() > 0) {
 			auto it = RowToValueMap.find(OrderCellEnd.row);
 			int price = it->second;
-			std::map<int, VtOrder*>& orderMap = pSrcCell->GetOrderMap();
+			std::map<int, VtOrder*> orderMap = pSrcCell->GetOrderMap();
 			for (auto it = orderMap.begin(); it != orderMap.end(); ++it) {
 				VtOrder* order = it->second;
-				ChangeOrder(order, price);
+				if (order->state == VtOrderState::Accepted)
+					ChangeOrder(order, price);
 			}
 
 			pSrcCell->ClearOrders();
@@ -2417,7 +2418,7 @@ void SmOrderGrid::ChangeStopOrder()
 		if (pSrcCell->GetStopOrderCount() > 0) {
 			auto it = RowToValueMap.find(OrderCellEnd.row);
 			int price = it->second;
-			std::map<int, HdOrderRequest*>& stopOrderMap = pSrcCell->GetStopOrderMap();
+			std::map<int, HdOrderRequest*> stopOrderMap = pSrcCell->GetStopOrderMap();
 			for (auto it = stopOrderMap.begin(); it != stopOrderMap.end(); ++it) {
 				HdOrderRequest* order = it->second;
 				order->Price = price;
@@ -2530,10 +2531,11 @@ void SmOrderGrid::CancelOrder()
 	{
 		CGridCellBase* pSrcCell = GetCell(OrderCellStart.row, OrderCellStart.col);
 		if (pSrcCell->GetOrderCount() > 0) {
-			std::map<int, VtOrder*>& orderMap = pSrcCell->GetOrderMap();
+			std::map<int, VtOrder*> orderMap = pSrcCell->GetOrderMap();
 			for (auto it = orderMap.begin(); it != orderMap.end(); ++it) {
 				VtOrder* order = it->second;
-				CancelOrder(order);
+				if (order->state == VtOrderState::Accepted)
+					CancelOrder(order);
 			}
 			pSrcCell->ClearOrders();
 		}

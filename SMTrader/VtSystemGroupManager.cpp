@@ -108,3 +108,17 @@ void VtSystemGroupManager::InitSystemGroup()
 	
 	_SystemGroupVec.push_back(sysGrp);
 }
+
+void VtSystemGroupManager::SaveToXml(pugi::xml_node& node_system_group_list)
+{
+	for (auto it = _SystemGroupVec.begin(); it != _SystemGroupVec.end(); ++it) {
+		VtSystemGroup& sysGrp = *it;
+		pugi::xml_node node_system_group = node_system_group_list.append_child("system_group");
+		sysGrp.SaveToXml(node_system_group);
+	}
+}
+
+void VtSystemGroupManager::LoadFromXml(pugi::xml_node& node)
+{
+
+}

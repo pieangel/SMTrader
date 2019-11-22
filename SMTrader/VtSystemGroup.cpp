@@ -69,3 +69,24 @@ void VtSystemGroup::Load(simple::file_istream<same_endian_type>& ss)
 		sys->ReadExtraArgs();
 	}
 }
+
+void VtSystemGroup::SaveToXml(pugi::xml_node& node_system_group)
+{
+	pugi::xml_node system_group_child = node_system_group.append_child("system_group_name");
+	system_group_child.append_child(pugi::node_pcdata).set_value(_Name.c_str());
+	system_group_child = node_system_group.append_child("system_group_type");
+	system_group_child.append_child(pugi::node_pcdata).set_value(std::to_string((int)_Type).c_str());
+	if (_SystemList.size() > 0) {
+		system_group_child = node_system_group.append_child("system_list");
+		for (auto it = _SystemList.begin(); it != _SystemList.end(); ++it) {
+			VtSystem* sys = *it;
+			pugi::xml_node node_system = system_group_child.append_child("system");
+			sys->SaveToXml(node_system);
+		}
+	}
+}
+
+void VtSystemGroup::LoadFromXml(pugi::xml_node& node)
+{
+
+}

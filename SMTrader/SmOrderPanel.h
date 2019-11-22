@@ -18,6 +18,7 @@
 #include "GradientStatic.h"
 #include <thread>
 #include "SmTickGrid.h"
+#include "Xml/pugixml.hpp"
 
 
 using same_endian_type = std::is_same<simple::LittleEndian, simple::LittleEndian>;
@@ -295,4 +296,7 @@ public:
 	void ShowOrderAreaInGrid(bool flag);
 	void ShowStopAreaInGrid(bool flag);
 	void SetTickWndPos(int pos);
+public:
+	void SaveToXml(pugi::xml_node& node);
+	void LoadFromXml(pugi::xml_node& node);
 };

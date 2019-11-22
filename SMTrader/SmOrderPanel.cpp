@@ -1540,3 +1540,66 @@ void SmOrderPanel::SetTickWndPos(int pos)
 {
 	_TickWndPos = pos;
 }
+
+void SmOrderPanel::SaveToXml(pugi::xml_node& node_center_window)
+{
+	/*
+	if (!_Symbol)
+		return;
+	// 종목코드
+	ss << _Symbol->ShortCode;
+	// 배열 요소를 직접 저장하지 말것.원하는 대로 저장되지 않음
+	// 반드시 변수에 넣은 다음 저장할 것.
+	// 그리드 주문열 표시여부
+	bool val = _OrderGridColOption[0];
+	ss << val;
+	// 그리도 스탑열 표시여부
+	val = _OrderGridColOption[1];
+	ss << val;
+	// 그리드 건수열 표시여부
+	val = _OrderGridColOption[2];
+	ss << val;
+	// 틱윈도우 표시여부
+	ss << _ShowTickWnd;
+	// 틱 윈도우 위치
+	ss << _TickWndPos;
+	// 주문 수량
+	ss << _OrderAmount;
+	// 셀 높이
+	ss << _OrderPanelGrid.CellHeight();
+	// 셀 너비
+	ss << _OrderPanelGrid.OrderWidth();
+	// 손절 익절창 표시여부
+	ss << _ShowRemainConfig;
+	*/
+	if (!_Symbol)
+		return;
+	pugi::xml_node center_window_child = node_center_window.append_child("symbol_code");
+	center_window_child.append_child(pugi::node_pcdata).set_value(_Symbol->ShortCode.c_str());
+	bool val = _OrderGridColOption[0];
+	center_window_child = node_center_window.append_child("show_order_area");
+	center_window_child.append_child(pugi::node_pcdata).set_value(std::to_string(val).c_str());
+	val = _OrderGridColOption[1];
+	center_window_child = node_center_window.append_child("show_stop_area");
+	center_window_child.append_child(pugi::node_pcdata).set_value(std::to_string(val).c_str());
+	val = _OrderGridColOption[2];
+	center_window_child = node_center_window.append_child("show_count_area");
+	center_window_child.append_child(pugi::node_pcdata).set_value(std::to_string(val).c_str());
+	center_window_child = node_center_window.append_child("show_tick_window");
+	center_window_child.append_child(pugi::node_pcdata).set_value(std::to_string(_ShowTickWnd).c_str());
+	center_window_child = node_center_window.append_child("tick_window_pos");
+	center_window_child.append_child(pugi::node_pcdata).set_value(std::to_string(_TickWndPos).c_str());
+	center_window_child = node_center_window.append_child("order_amount");
+	center_window_child.append_child(pugi::node_pcdata).set_value(std::to_string(_OrderAmount).c_str());
+	center_window_child = node_center_window.append_child("order_area_width");
+	center_window_child.append_child(pugi::node_pcdata).set_value(std::to_string(m_Grid.OrderWidth()).c_str());
+	center_window_child = node_center_window.append_child("order_row_height");
+	center_window_child.append_child(pugi::node_pcdata).set_value(std::to_string(m_Grid.CellHeight()).c_str());
+	center_window_child = node_center_window.append_child("show_profitloss_config");
+	center_window_child.append_child(pugi::node_pcdata).set_value(std::to_string(_ShowRemainConfig).c_str());
+}
+
+void SmOrderPanel::LoadFromXml(pugi::xml_node& node)
+{
+
+}

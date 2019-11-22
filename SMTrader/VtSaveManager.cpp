@@ -83,6 +83,18 @@ void VtSaveManager::WriteSettings()
 	}
 	
 	pugi::xml_node application = doc.child("application");
+	application.remove_child("account_list");
+	pugi::xml_node account_list = application.append_child("account_list");
+	VtAccountManager::GetInstance()->SaveToXml(account_list);
+
+	application.remove_child("fund_list");
+	pugi::xml_node fund_list = application.append_child("fund_list");
+	VtFundManager::GetInstance()->SaveToXml(fund_list);
+
+	application.remove_child("system_group_list");
+	pugi::xml_node system_group_list = application.append_child("system_group_list");
+	VtSystemGroupManager::GetInstance()->SaveToXml(system_group_list);
+
 	application.remove_child("order_window_list");
 	pugi::xml_node window_list = application.append_child("order_window_list");
 	VtOrderDialogManager::GetInstance()->SaveToXml(window_list);

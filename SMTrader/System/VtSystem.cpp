@@ -2720,17 +2720,133 @@ void VtSystem::SaveToXml(pugi::xml_node& node)
 
 	msg.Format(_T("%d"), _SystemType);
 	value = (LPCTSTR)msg;
-	pugi::xml_node system_type = node.append_child("system_type");
-	system_type.append_child(pugi::node_pcdata).set_value(value.c_str());
+	pugi::xml_node system_child = node.append_child("system_type");
+	system_child.append_child(pugi::node_pcdata).set_value(value.c_str());
 
-	pugi::xml_node system_name = node.append_child("system_name");
+	system_child = node.append_child("system_name");
 	value = _Name;
-	system_name.append_child(pugi::node_pcdata).set_value(value.c_str());
+	system_child.append_child(pugi::node_pcdata).set_value(value.c_str());
 
-	pugi::xml_node system_custom_name = node.append_child("system_custom_name");
+	system_child = node.append_child("system_custom_name");
 	value = _CustomName;
-	system_custom_name.append_child(pugi::node_pcdata).set_value(value.c_str());
+	system_child.append_child(pugi::node_pcdata).set_value(value.c_str());
 
+	system_child = node.append_child("system_target_type");
+	system_child.append_child(pugi::node_pcdata).set_value(std::to_string((int)_SysTargetType).c_str());
+
+	system_child = node.append_child("system_start_hour");
+	system_child.append_child(pugi::node_pcdata).set_value(std::to_string(_EntranceStartTime.hour).c_str());
+
+	system_child = node.append_child("system_start_min");
+	system_child.append_child(pugi::node_pcdata).set_value(std::to_string(_EntranceStartTime.min).c_str());
+
+	system_child = node.append_child("system_start_sec");
+	system_child.append_child(pugi::node_pcdata).set_value(std::to_string(_EntranceStartTime.sec).c_str());
+
+	system_child = node.append_child("system_end_hour");
+	system_child.append_child(pugi::node_pcdata).set_value(std::to_string(_EntranceEndTime.hour).c_str());
+
+	system_child = node.append_child("system_end_min");
+	system_child.append_child(pugi::node_pcdata).set_value(std::to_string(_EntranceEndTime.min).c_str());
+
+	system_child = node.append_child("system_end_sec");
+	system_child.append_child(pugi::node_pcdata).set_value(std::to_string(_EntranceEndTime.sec).c_str());
+
+	system_child = node.append_child("system_liq_hour");
+	system_child.append_child(pugi::node_pcdata).set_value(std::to_string(_LiqTime.hour).c_str());
+
+	system_child = node.append_child("system_liq_min");
+	system_child.append_child(pugi::node_pcdata).set_value(std::to_string(_LiqTime.min).c_str());
+
+	system_child = node.append_child("system_liq_sec");
+	system_child.append_child(pugi::node_pcdata).set_value(std::to_string(_LiqTime.sec).c_str());
+
+	system_child = node.append_child("enable_trail_stop");
+	system_child.append_child(pugi::node_pcdata).set_value(std::to_string(_EnableTrailStop).c_str());
+
+	system_child = node.append_child("enable_loss_cut");
+	system_child.append_child(pugi::node_pcdata).set_value(std::to_string(_EnableLossCut).c_str());
+
+	system_child = node.append_child("enable_target_cut");
+	system_child.append_child(pugi::node_pcdata).set_value(std::to_string(_EnableTargetCut).c_str());
+
+	system_child = node.append_child("loss_cut_type");
+	system_child.append_child(pugi::node_pcdata).set_value(std::to_string((int)_LossCutType).c_str());
+
+	system_child = node.append_child("target_profit_type");
+	system_child.append_child(pugi::node_pcdata).set_value(std::to_string((int)_TargetProfitType).c_str());
+
+	system_child = node.append_child("trail_stop_min_profit");
+	system_child.append_child(pugi::node_pcdata).set_value(std::to_string(_TrailStop.MinProfit).c_str());
+
+	system_child = node.append_child("trail_stop_trail_percent");
+	system_child.append_child(pugi::node_pcdata).set_value(std::to_string(_TrailStop.TrailingPercent).c_str());
+
+	system_child = node.append_child("loss_cut_value");
+	system_child.append_child(pugi::node_pcdata).set_value(std::to_string(_LossCut).c_str());
+
+	system_child = node.append_child("target_profit");
+	system_child.append_child(pugi::node_pcdata).set_value(std::to_string(_TargetProfit).c_str());
+	
+	system_child = node.append_child("max_entrance");
+	system_child.append_child(pugi::node_pcdata).set_value(std::to_string(_MaxEntrance).c_str());
+	
+	system_child = node.append_child("liq_price_type");
+	system_child.append_child(pugi::node_pcdata).set_value(std::to_string((int)(_LiqPriceType)).c_str());
+
+	system_child = node.append_child("order_amount");
+	system_child.append_child(pugi::node_pcdata).set_value(std::to_string(_OrderAmount).c_str());
+
+	system_child = node.append_child("filled_condition");
+	system_child.append_child(pugi::node_pcdata).set_value(std::to_string((int)_FillCondition).c_str());
+
+	system_child = node.append_child("price_type");
+	system_child.append_child(pugi::node_pcdata).set_value(std::to_string((int)_PriceType).c_str());
+
+	system_child = node.append_child("symbol_code");
+	system_child.append_child(pugi::node_pcdata).set_value(_SymbolCode.c_str());
+
+	system_child = node.append_child("system_cycle");
+	system_child.append_child(pugi::node_pcdata).set_value(std::to_string((int)(_Cycle)).c_str());
+
+	system_child = node.append_child("entrybar_index");
+	system_child.append_child(pugi::node_pcdata).set_value(std::to_string(_EntryBarIndex).c_str());
+
+	system_child = node.append_child("atr_time_hour");
+	system_child.append_child(pugi::node_pcdata).set_value(std::to_string(_ATRTime.hour).c_str());
+
+	system_child = node.append_child("atr_time_min");
+	system_child.append_child(pugi::node_pcdata).set_value(std::to_string(_ATRTime.min).c_str());
+
+	system_child = node.append_child("atr_time_sec");
+	system_child.append_child(pugi::node_pcdata).set_value(std::to_string(_ATRTime.sec).c_str());
+
+	system_child = node.append_child("atr");
+	system_child.append_child(pugi::node_pcdata).set_value(std::to_string(_ATR).c_str());
+
+	system_child = node.append_child("atr_multi");
+	system_child.append_child(pugi::node_pcdata).set_value(std::to_string(_ATRMulti).c_str());
+
+	system_child = node.append_child("band_multi");
+	system_child.append_child(pugi::node_pcdata).set_value(std::to_string(_BandMulti).c_str());
+
+	system_child = node.append_child("filter_multi");
+	system_child.append_child(pugi::node_pcdata).set_value(std::to_string(_FilterMulti).c_str());
+
+	system_child = node.append_child("out_signal_name");
+	system_child.append_child(pugi::node_pcdata).set_value(_OutSignalName.c_str());
+
+	system_child = node.append_child("order_tick");
+	system_child.append_child(pugi::node_pcdata).set_value(std::to_string(_OrderTick).c_str());
+
+	if (_ArgGroupMap.size() > 0) {
+		system_child = node.append_child("argument_group_list");
+		for (auto it = _ArgGroupMap.begin(); it != _ArgGroupMap.end(); ++it) {
+			VtSystemArgGroup& grp = *it;
+			pugi::xml_node argument_group = system_child.append_child("argument_group");
+			grp.SaveToXml(argument_group);
+		}
+	}
 }
 
 void VtSystem::LoadFromXml(pugi::xml_node& node)

@@ -4,6 +4,7 @@
 #include <map>
 #include <vector>
 #include "SimpleBinStream.h"
+#include "Xml/pugixml.hpp"
 using same_endian_type = std::is_same<simple::LittleEndian, simple::LittleEndian>;
 
 class VtSystemArgGroup
@@ -21,6 +22,9 @@ public:
 
 	void Save(simple::file_ostream<same_endian_type>& ss);
 	void Load(simple::file_istream<same_endian_type>& ss);
+
+	void SaveToXml(pugi::xml_node& node);
+	void LoadFromXml(pugi::xml_node& node);
 
 private:
 	std::string _Name;

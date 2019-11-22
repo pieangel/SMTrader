@@ -7,6 +7,7 @@
 #include "VtAccountEvent.h"
 #include "Poco/BasicEvent.h"
 #include "SimpleBinStream.h"
+#include "Xml/pugixml.hpp"
 using same_endian_type = std::is_same<simple::LittleEndian, simple::LittleEndian>;
 using Poco::BasicEvent;
 
@@ -71,6 +72,10 @@ public:
 	std::vector<std::string> GetEmptyPasswordAccountList();
 	std::set<std::string> ServerAccountSet;
 	std::map<std::string, VtAccountInfo> ServerAccountMap;
+
+	void SaveToXml(pugi::xml_node& node);
+	void LoadFromXml(pugi::xml_node& node);
+
 private:
 	VtAccount* _ActiveAccount = nullptr;
 };

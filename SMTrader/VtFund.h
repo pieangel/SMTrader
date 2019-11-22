@@ -8,6 +8,7 @@
 #include <set>
 #include <vector>
 #include "VtPosition.h"
+#include "Xml/pugixml.hpp"
 using same_endian_type = std::is_same<simple::LittleEndian, simple::LittleEndian>;
 
 class VtAccount;
@@ -62,6 +63,9 @@ public:
 	/// </summary>
 	/// <returns></returns>
 	int GetTotalSeungSu();
+
+	void SaveToXml(pugi::xml_node& node);
+	void LoadFromXml(pugi::xml_node& node);
 private:
 	VtFundMap _FundMap;
 	std::map<std::string, std::string> _SymbolList;

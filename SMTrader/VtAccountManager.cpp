@@ -223,3 +223,17 @@ std::vector<std::string> VtAccountManager::GetEmptyPasswordAccountList()
 
 	return empty_list;
 }
+
+void VtAccountManager::SaveToXml(pugi::xml_node& node_account_list)
+{
+	for (auto it = AccountMap.begin(); it != AccountMap.end(); ++it) {
+		VtAccount* acnt = it->second;
+		pugi::xml_node node_account = node_account_list.append_child("account");
+		acnt->SaveToXml(node_account);
+	}
+}
+
+void VtAccountManager::LoadFromXml(pugi::xml_node& node)
+{
+
+}

@@ -234,3 +234,17 @@ VtAccount* VtFundManager::FindFromUsedAccountList(std::string acntNo)
 	else
 		return nullptr;
 }
+
+void VtFundManager::SaveToXml(pugi::xml_node& node_fund_list)
+{
+	for (auto it = _FundList.begin(); it != _FundList.end(); ++it) {
+		VtFund* fund = it->second;
+		pugi::xml_node node_fund = node_fund_list.append_child("fund");
+		fund->SaveToXml(node_fund);
+	}
+}
+
+void VtFundManager::LoadFromXml(pugi::xml_node& node)
+{
+
+}

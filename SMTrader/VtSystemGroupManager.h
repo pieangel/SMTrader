@@ -6,6 +6,7 @@
 #include "VtSystemGroup.h"
 #include "VtSystemDef.h"
 #include "SimpleBinStream.h"
+#include "Xml/pugixml.hpp"
 using same_endian_type = std::is_same<simple::LittleEndian, simple::LittleEndian>;
 
 class VtSystemGroupManager : public TemplateSingleton<VtSystemGroupManager>
@@ -23,6 +24,9 @@ public:
 	void Load(simple::file_istream<same_endian_type>& ss);
 	
 	void InitSystemGroup();
+
+	void SaveToXml(pugi::xml_node& node);
+	void LoadFromXml(pugi::xml_node& node);
 private:
 	std::vector<VtSystemGroup> _SystemGroupVec;
 };

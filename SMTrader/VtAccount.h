@@ -5,6 +5,7 @@
 #include "HdTaskArg.h"
 #include "VtPosition.h"
 #include "SimpleBinStream.h"
+#include "Xml/pugixml.hpp"
 using same_endian_type = std::is_same<simple::LittleEndian, simple::LittleEndian>;
 
 // One account belongs to only one fund.
@@ -48,6 +49,8 @@ public:
 	void ResetPosition(std::string symCode);
 	void Save(simple::file_ostream<same_endian_type>& ss);
 	void Load(simple::file_istream<same_endian_type>& ss);
+	void SaveToXml(pugi::xml_node& node);
+	void LoadFromXml(pugi::xml_node& node);
 public:
 	double InAmt = 0; //	15	double	입금금액
 	double OutAmt = 0; //	15	double	출금금액

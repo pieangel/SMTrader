@@ -13,6 +13,7 @@
 #include "../VtOutSignalDefManager.h"
 #include <mutex>
 #include <chrono>
+
 using same_endian_type = std::is_same<simple::LittleEndian, simple::LittleEndian>;
 class VtSignal;
 class VtChartData;

@@ -2015,7 +2015,7 @@ void VtOrderWndHd::SaveToXml(pugi::xml_node& node_order_window)
 			center_window_child.append_attribute("right") = rcWnd.right;
 			center_window_child.append_attribute("bottom") = rcWnd.bottom;
 			// 중앙창 옵션 저장
-			//centerWnd->Save(ss);
+			centerWnd->SaveToXml(node_center_window);
 		}
 	}
 }

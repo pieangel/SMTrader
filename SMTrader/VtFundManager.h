@@ -5,6 +5,7 @@
 #include <sstream>
 #include <msgpack.hpp>
 #include "SimpleBinStream.h"
+#include "Xml/pugixml.hpp"
 using same_endian_type = std::is_same<simple::LittleEndian, simple::LittleEndian>;
 
 class VtFund;
@@ -41,6 +42,9 @@ public:
 	{
 		return _UnusedAccountMap;
 	}
+
+	void SaveToXml(pugi::xml_node& node);
+	void LoadFromXml(pugi::xml_node& node);
 private:
 	// Key : Fund Name, Value : VtFund object.
 	std::map<std::string, VtFund*> _FundList;

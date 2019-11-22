@@ -66,3 +66,30 @@ void VtSystemArgGroup::Load(simple::file_istream<same_endian_type>& ss)
 		AddSystemArg(arg.Name, arg);
 	}
 }
+
+void VtSystemArgGroup::SaveToXml(pugi::xml_node& node_argument_group)
+{
+	pugi::xml_node argument_group_child = node_argument_group.append_child("name");
+	argument_group_child.append_child(pugi::node_pcdata).set_value(_Name.c_str());
+	
+	if (_ArgMap.size() > 0) {
+		pugi::xml_node argument_list = node_argument_group.append_child("argement_list");
+		for (auto it = _ArgMap.begin(); it != _ArgMap.end(); ++it) {
+			VtSystemArg& arg = *it;
+			pugi::xml_node argument_child = argument_list.append_child("argument");
+			argument_child.append_attribute("bvalue") = arg.bValue;
+			argument_child.append_attribute("desc") = arg.Desc.c_str();
+			argument_child.append_attribute("dvalue") = arg.dValue;
+			argument_child.append_attribute("enable") = arg.Enable;
+			argument_child.append_attribute("ivalue") = arg.iValue;
+			argument_child.append_attribute("name") = arg.Name.c_str();
+			argument_child.append_attribute("svalue") = arg.sValue.c_str();
+			argument_child.append_attribute("type") = (int)arg.Type;
+		}
+	}
+}
+
+void VtSystemArgGroup::LoadFromXml(pugi::xml_node& node)
+{
+
+}

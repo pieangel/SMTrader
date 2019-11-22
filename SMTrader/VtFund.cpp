@@ -361,3 +361,22 @@ int VtFund::GetTotalSeungSu()
 	}
 	return total;
 }
+
+void VtFund::SaveToXml(pugi::xml_node& node_fund)
+{
+	pugi::xml_node fund_child = node_fund.append_child("fund_name");
+	fund_child.append_child(pugi::node_pcdata).set_value(Name.c_str());
+	fund_child = node_fund.append_child("fund_account_list");
+	if (_FundMap.GetAccountVector().size() > 0) {
+		for (auto it = _FundMap.GetAccountVector().begin(); it != _FundMap.GetAccountVector().end(); ++it) {
+			VtAccount* fund_account = *it;
+			pugi::xml_node node_fund_account = fund_child.append_child("fund_account");
+			node_fund_account.append_child(pugi::node_pcdata).set_value(fund_account->AccountNo.c_str());
+		}
+	}
+}
+
+void VtFund::LoadFromXml(pugi::xml_node& node)
+{
+
+}
