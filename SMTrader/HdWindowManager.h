@@ -4,6 +4,7 @@
 #include <map>
 #include <string>
 #include "SimpleBinStream.h"
+#include "Xml/pugixml.hpp"
 using same_endian_type = std::is_same<simple::LittleEndian, simple::LittleEndian>;
 
 typedef std::map<CWnd*, std::pair<HdWindowType, CWnd*>> WindowMap;
@@ -26,7 +27,10 @@ public:
 	void Load(simple::file_istream<same_endian_type>& ss, HdWindowType wndType);
 	CMainFrame* MainFrm() const { return _MainFrm; }
 	void MainFrm(CMainFrame* val) { _MainFrm = val; }
+	void SaveToXml(pugi::xml_node& node);
+	void LoadFromXml(pugi::xml_node& node);
 private:
+	void SaveToXml(pugi::xml_node& node, HdWindowType wndType, CWnd* wnd);
 	std::map<CWnd*, std::pair<HdWindowType, CWnd*>> _WindowMap;
 	void AddWindow(HdWindowType wndType, CWnd* wnd);
 	void RemoveWindow(CWnd* wnd);

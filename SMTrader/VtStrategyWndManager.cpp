@@ -127,6 +127,55 @@ void VtStrategyWndManager::UpdateDialog(VtSystem* sys)
 	}
 }
 
+/*
+// 대화상자 갯수 저장
+ss << (int)_WindowMap.size();
+// 개별 윈도우 타입과 위치 저장
+for (auto it = _WindowMap.begin(); it != _WindowMap.end(); ++it) {
+auto item = it->second;
+
+int dlgType = (int)std::get<0>(item);
+CRect rcWnd;
+std::get<1>(item)->GetWindowRect(rcWnd);
+ss << dlgType;
+ss << rcWnd.left << rcWnd.top << rcWnd.right << rcWnd.bottom;
+if (std::get<1>(item)->System())
+ss << std::get<1>(item)->System()->Name();
+else
+ss << _T("NoSystem");
+}
+*/
+void VtStrategyWndManager::SaveToXml(pugi::xml_node& stratege_window_list_node)
+{
+	for (auto it = _WindowMap.begin(); it != _WindowMap.end(); ++it) {
+		auto item = it->second;
+
+		int dlgType = (int)std::get<0>(item);
+		CRect rcWnd;
+		std::get<1>(item)->GetWindowRect(rcWnd);
+		pugi::xml_node stratege_window_node = stratege_window_list_node.append_child("stratege_window");	
+		pugi::xml_node stratege_window_child_node = stratege_window_node.append_child("stratege_window_pos");
+		stratege_window_child_node.append_attribute("left") = rcWnd.left;
+		stratege_window_child_node.append_attribute("top") = rcWnd.top;
+		stratege_window_child_node.append_attribute("right") = rcWnd.right;
+		stratege_window_child_node.append_attribute("bottom") = rcWnd.bottom;
+		stratege_window_child_node = stratege_window_node.append_child("dialog_type");
+		stratege_window_child_node.append_child(pugi::node_pcdata).set_value(std::to_string(dlgType).c_str());
+		stratege_window_child_node = stratege_window_node.append_child("system_name");
+		if (std::get<1>(item)->System()) {
+			stratege_window_child_node.append_child(pugi::node_pcdata).set_value(std::get<1>(item)->System()->Name().c_str());
+		}
+		else {
+			stratege_window_child_node.append_child(pugi::node_pcdata).set_value("no_system");
+		}
+	}
+}
+
+void VtStrategyWndManager::LoadFromXml(pugi::xml_node& node)
+{
+
+}
+
 void VtStrategyWndManager::AddWindow(HdWindowType wndType, VtUsdStrategyConfigDlg* wnd)
 {
 	if (!wnd)

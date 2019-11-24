@@ -59,16 +59,12 @@ void HdWindowManager::Save(simple::file_ostream<same_endian_type>& ss)
 		int dlgType = (int)std::get<0>(item);
 		ss << dlgType;
 		Save(ss, std::get<0>(item), std::get<1>(item));
-// 		int dlgType = (int)std::get<0>(item);
-// 		CRect rcWnd;
-// 		std::get<1>(item)->GetWindowRect(rcWnd);
-// 		ss << dlgType;
-// 		ss << rcWnd.left << rcWnd.top << rcWnd.right << rcWnd.bottom;
 	}
 }
 
 void HdWindowManager::Save(simple::file_ostream<same_endian_type>& ss, HdWindowType wndType, CWnd* wnd)
 {
+
 	if (!wnd)
 		return;
 
@@ -105,10 +101,6 @@ void HdWindowManager::Load(simple::file_istream<same_endian_type>& ss)
 		ss >> type;
 		HdWindowType wndType = (HdWindowType)type;
 		Load(ss, wndType);
-// 		CRect rcWnd;
-// 		ss >> rcWnd.left >> rcWnd.top >> rcWnd.right >> rcWnd.bottom;
-// 		std::string info;
-// 		RestoreDialog(wndType, rcWnd, info);
 	}
 }
 
@@ -147,6 +139,67 @@ void HdWindowManager::Load(simple::file_istream<same_endian_type>& ss, HdWindowT
 	}
 	break;
 	}
+}
+
+void HdWindowManager::SaveToXml(pugi::xml_node& window_list_node)
+{
+	for (auto it = _WindowMap.begin(); it != _WindowMap.end(); ++it) {
+		auto item = it->second;
+		std::string window_type = "";
+		switch (std::get<0>(item)) {
+		case HdWindowType::ChartWindow:
+			window_type = "chart_window";
+			break;
+		case HdWindowType::FundMiniJangoWindow:
+			window_type = "fund_mini_jango_window";
+			break;
+		case HdWindowType::MiniJangoWindow:
+			window_type = "account_mini_jango_window";
+			break;
+		case HdWindowType::AssetWindow:
+			window_type = "asset_window";
+			break;
+		case HdWindowType::StrategyToolWindow:
+			window_type = "stratege_tool_window";
+			break;
+		}
+		pugi::xml_node window_node = window_list_node.append_child(window_type.c_str());
+		SaveToXml(window_node, std::get<0>(item), std::get<1>(item));
+	}
+}
+
+void HdWindowManager::SaveToXml(pugi::xml_node& window_node, HdWindowType wndType, CWnd* wnd)
+{
+	if (!wnd)
+		return;
+
+	switch (wndType) {
+		case HdWindowType::ChartWindow: {
+			((VtChartWindow*)wnd)->SaveToXml(window_node);
+		}
+		break;
+		case HdWindowType::FundMiniJangoWindow: {
+			((VtFundMiniJango*)wnd)->SaveToXml(window_node);
+		}
+		break;
+		case HdWindowType::MiniJangoWindow: {
+			((HdAccountPLDlg*)wnd)->SaveToXml(window_node);
+		}
+		break;
+		case HdWindowType::AssetWindow: {
+			((VtAccountAssetDlg*)wnd)->SaveToXml(window_node);
+		}
+		break;
+		case HdWindowType::StrategyToolWindow: {
+			((VtStrategyToolWnd*)wnd)->SaveToXml(window_node);
+		}
+		break;
+	}
+}
+
+void HdWindowManager::LoadFromXml(pugi::xml_node& node)
+{
+
 }
 
 void HdWindowManager::AddWindow(HdWindowType wndType, CWnd* wnd)

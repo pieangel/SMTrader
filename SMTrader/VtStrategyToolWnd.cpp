@@ -41,6 +41,22 @@ END_MESSAGE_MAP()
 // VtStrategyToolWnd message handlers
 
 
+void VtStrategyToolWnd::SaveToXml(pugi::xml_node& window_node)
+{
+	CRect rcWnd;
+	GetWindowRect(rcWnd);
+	pugi::xml_node window_child = window_node.append_child("window_pos");
+	window_child.append_attribute("left") = rcWnd.left;
+	window_child.append_attribute("top") = rcWnd.top;
+	window_child.append_attribute("right") = rcWnd.right;
+	window_child.append_attribute("bottom") = rcWnd.bottom;
+}
+
+void VtStrategyToolWnd::LoadFromXml(pugi::xml_node& node)
+{
+
+}
+
 void VtStrategyToolWnd::Save(simple::file_ostream<same_endian_type>& ss)
 {
 	CRect rcWnd;

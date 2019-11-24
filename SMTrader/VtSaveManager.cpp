@@ -23,6 +23,7 @@
 #include "VtOutSystemManager.h"
 #include "VtGlobal.h"
 #include "cryptor.hpp"
+#include "VtLoginManager.h"
 
 using namespace std;
 using same_endian_type = std::is_same<simple::LittleEndian, simple::LittleEndian>;
@@ -83,6 +84,11 @@ void VtSaveManager::WriteSettings()
 	}
 	
 	pugi::xml_node application = doc.child("application");
+
+	application.remove_child("login_info");
+	pugi::xml_node login_info = application.append_child("login_info");
+	VtLoginManager::GetInstance()->SaveToXml(login_info);
+
 	application.remove_child("account_list");
 	pugi::xml_node account_list = application.append_child("account_list");
 	VtAccountManager::GetInstance()->SaveToXml(account_list);
@@ -98,6 +104,18 @@ void VtSaveManager::WriteSettings()
 	application.remove_child("order_window_list");
 	pugi::xml_node window_list = application.append_child("order_window_list");
 	VtOrderDialogManager::GetInstance()->SaveToXml(window_list);
+
+	application.remove_child("stratege_window_list");
+	pugi::xml_node stratege_window_list = application.append_child("stratege_window_list");
+	VtStrategyWndManager::GetInstance()->SaveToXml(stratege_window_list);
+
+	application.remove_child("etc_window_list");
+	pugi::xml_node etc_window_list = application.append_child("etc_window_list");
+	HdWindowManager::GetInstance()->SaveToXml(etc_window_list);
+
+	application.remove_child("external_system_list");
+	pugi::xml_node external_system_list = application.append_child("external_system_list");
+	VtOutSystemManager::GetInstance()->SaveToXml(external_system_list);
 
 	doc.save_file(appPath.c_str());
 }

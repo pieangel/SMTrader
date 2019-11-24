@@ -6,6 +6,26 @@
 VtPriceType VtOutSystemManager::PriceType = VtPriceType::Price;
 int VtOutSystemManager::OrderTick = 5;
 
+void VtOutSystemManager::SaveToXml(pugi::xml_node& external_system_list_node)
+{
+	external_system_list_node.append_attribute("price_type") = (int)VtOutSystemManager::PriceType;
+	external_system_list_node.append_attribute("order_tick") = VtOutSystemManager::OrderTick;
+	
+	if (_SystemVec.size() > 0) {
+		pugi::xml_node system_list_child = external_system_list_node.append_child("system_list");
+		for (auto it = _SystemVec.begin(); it != _SystemVec.end(); ++it) {
+			SharedSystem sys = *it;
+			pugi::xml_node node_system = system_list_child.append_child("system");
+			sys->SaveToXml(node_system);
+		}
+	}
+}
+
+void VtOutSystemManager::LoadFromXml(pugi::xml_node& node)
+{
+
+}
+
 void VtOutSystemManager::AddSystem(SharedSystem sys)
 {
 	if (!sys)

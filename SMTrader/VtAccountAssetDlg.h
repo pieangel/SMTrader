@@ -5,6 +5,7 @@
 #include "HdWindowEvent.h"
 #include "Poco/BasicEvent.h"
 #include "SimpleBinStream.h"
+#include "Xml/pugixml.hpp"
 using same_endian_type = std::is_same<simple::LittleEndian, simple::LittleEndian>;
 using Poco::BasicEvent;
 
@@ -28,6 +29,8 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
+	void SaveToXml(pugi::xml_node& node);
+	void LoadFromXml(pugi::xml_node& node);
 	void Save(simple::file_ostream<same_endian_type>& ss);
 	void Load(simple::file_istream<same_endian_type>& ss);
 	BasicEvent<HdWindowEventArgs> _WindowEvent;

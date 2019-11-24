@@ -600,6 +600,10 @@ void CMainFrame::OnShowWindow(BOOL bShow, UINT nStatus)
 			LoadSettings();
 			saveMgr->SaveLoginInfo(_T("SmTrader.cfg"), (LPCTSTR)loginDlg.id, (LPCTSTR)loginDlg.pwd, (LPCTSTR)loginDlg.cert, loginDlg.Save);
 
+			VtLoginManager::GetInstance()->ID = (LPCTSTR)loginDlg.id;
+			VtLoginManager::GetInstance()->Password = (LPCTSTR)loginDlg.pwd;
+			VtLoginManager::GetInstance()->Cert = (LPCTSTR)loginDlg.cert;
+
 			ZmConfigManager* configMgr = ZmConfigManager::GetInstance();
 			std::string section = _T("ACCOUNT_INFO");
 			std::string name, value;

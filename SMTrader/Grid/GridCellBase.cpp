@@ -469,7 +469,7 @@ BOOL CGridCellBase::Draw(CDC* pDC, int nRow, int nCol, CRect rect,  BOOL bEraseB
 	if (_Style == 1)
 	{
 		CPen pen, *oldPen = NULL;
-		pen.CreatePen(PS_SOLID, 2, RGB(0, 0, 0));
+		pen.CreatePen(PS_SOLID, 1, RGB(0, 0, 0));
 
 		oldPen = pDC->SelectObject(&pen);
 

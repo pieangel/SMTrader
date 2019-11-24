@@ -4,6 +4,7 @@
 #include <map>
 #include <string>
 #include "SimpleBinStream.h"
+#include "Xml/pugixml.hpp"
 using same_endian_type = std::is_same<simple::LittleEndian, simple::LittleEndian>;
 class VtUsdStrategyConfigDlg;
 typedef std::map<VtUsdStrategyConfigDlg*, std::pair<HdWindowType, VtUsdStrategyConfigDlg*>> StrategyWindowMap;
@@ -29,6 +30,8 @@ public:
 	void UpdateDialog(VtSystem* sys);
 	int WndCnt() const { return _WndCnt; }
 	void WndCnt(int val) { _WndCnt = val; }
+	void SaveToXml(pugi::xml_node& node);
+	void LoadFromXml(pugi::xml_node& node);
 private:
 	std::map<std::string, std::map<VtUsdStrategyConfigDlg*, VtUsdStrategyConfigDlg*>> _SystemToSetDialogMap;
 	StrategyWindowMap _WindowMap;

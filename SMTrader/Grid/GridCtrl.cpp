@@ -1874,7 +1874,7 @@ void CGridCtrl::OnDraw(CDC* pDC)
 	{
 		CPen pen, *oldPen = NULL;
 		if (_Selected)
-			pen.CreatePen(PS_SOLID, 3, RGB(255, 0, 0));
+			pen.CreatePen(PS_SOLID, 2, RGB(255, 0, 0));
 		else
 			pen.CreatePen(PS_SOLID, 1, RGB(127, 127, 127));
 

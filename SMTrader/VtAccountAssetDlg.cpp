@@ -43,6 +43,26 @@ END_MESSAGE_MAP()
 // VtAccountAssetDlg message handlers
 
 
+void VtAccountAssetDlg::SaveToXml(pugi::xml_node& window_node)
+{
+	CRect rcWnd;
+	GetWindowRect(rcWnd);
+	pugi::xml_node window_child = window_node.append_child("window_pos");
+	window_child.append_attribute("left") = rcWnd.left;
+	window_child.append_attribute("top") = rcWnd.top;
+	window_child.append_attribute("right") = rcWnd.right;
+	window_child.append_attribute("bottom") = rcWnd.bottom;
+	if (_AssetPage.GetSafeHwnd() && _AssetPage.Account()) {
+		window_child = window_node.append_child("account_no");
+		window_child.append_child(pugi::node_pcdata).set_value(_AssetPage.Account()->AccountNo.c_str());
+	}
+}
+
+void VtAccountAssetDlg::LoadFromXml(pugi::xml_node& node)
+{
+
+}
+
 void VtAccountAssetDlg::Save(simple::file_ostream<same_endian_type>& ss)
 {
 	CRect rcWnd;

@@ -22,6 +22,7 @@
 #include "Xml/pugixml.hpp"
 #include "Sound/Pipe.h"
 #include "SimpleBinStream.h"
+#include "Xml/pugixml.hpp"
 using same_endian_type = std::is_same<simple::LittleEndian, simple::LittleEndian>;
 
 #define WM_CHARTDATA_RECEIVED (WM_USER + 1000)
@@ -75,6 +76,8 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 public:
+	void SaveToXml(pugi::xml_node& node);
+	void LoadFromXml(pugi::xml_node& node);
 	void Save(simple::file_ostream<same_endian_type>& ss);
 	void Load(simple::file_istream<same_endian_type>& ss);
 
@@ -96,8 +99,6 @@ public:
 	CChartViewer m_ChartViewer;
 	CSSplitter* ParentSplit = nullptr;
 	void RecalcLayout();
-	void SaveToXml(pugi::xml_node& node);
-	void LoadFromXml(pugi::xml_node& node);
 private:
 	void RegisterRealtimeDataRequest(VtChartData* data);
 	void RegisterCyclicDataRequest(VtChartData* data);

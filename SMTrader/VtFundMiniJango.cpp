@@ -46,6 +46,26 @@ END_MESSAGE_MAP()
 // VtFundMiniJango message handlers
 
 
+void VtFundMiniJango::SaveToXml(pugi::xml_node& window_node)
+{
+	CRect rcWnd;
+	GetWindowRect(rcWnd);
+	pugi::xml_node window_child = window_node.append_child("window_pos");
+	window_child.append_attribute("left") = rcWnd.left;
+	window_child.append_attribute("top") = rcWnd.top;
+	window_child.append_attribute("right") = rcWnd.right;
+	window_child.append_attribute("bottom") = rcWnd.bottom;
+	if (_Fund) {
+		window_child = window_node.append_child("fund_name");
+		window_child.append_child(pugi::node_pcdata).set_value(_Fund->Name.c_str());
+	}
+}
+
+void VtFundMiniJango::LoadFromXml(pugi::xml_node& node)
+{
+
+}
+
 void VtFundMiniJango::Save(simple::file_ostream<same_endian_type>& ss)
 {
 	CRect rcWnd;
