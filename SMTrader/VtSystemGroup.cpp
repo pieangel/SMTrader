@@ -86,7 +86,17 @@ void VtSystemGroup::SaveToXml(pugi::xml_node& node_system_group)
 	}
 }
 
-void VtSystemGroup::LoadFromXml(pugi::xml_node& node)
+void VtSystemGroup::LoadFromXml(pugi::xml_node& node_system_group)
 {
-
+	_Name = node_system_group.child_value("system_group_name");
+	_Type = (VtSystemGroupType)std::stoi(node_system_group.child_value("system_group_type"));
+	pugi::xml_node system_list_node = node_system_group.child("system_list");
+	if (system_list_node) {
+		for (pugi::xml_node system_node = system_list_node.child("system"); system_node; system_node = system_node.next_sibling("system")) {
+			VtSystemType system_type = (VtSystemType)std::stoi(system_node.child_value("system_type"));
+			VtSystem* system = AddSystem(system_type);
+			system->LoadFromXml(system_node);
+			system->ReadExtraArgs();
+		}
+	}
 }

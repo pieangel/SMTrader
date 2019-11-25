@@ -2849,13 +2849,52 @@ void VtSystem::SaveToXml(pugi::xml_node& node)
 	}
 }
 
-void VtSystem::LoadFromXml(pugi::xml_node& node)
+void VtSystem::LoadFromXml(pugi::xml_node& node_system)
 {
-	std::string system_type = node.child_value("system_type");
-
-	_SystemType = (VtSystemType)std::stoi(system_type);
-	_Name = node.child_value("system_name");
-
-	_CustomName = node.child_value("system_custom_name");
-
+	_Name = node_system.child_value("system_name");
+	_CustomName = node_system.child_value("system_custom_name");
+	_SysTargetType = (TargetType)std::stoi(node_system.child_value("system_target_type"));
+	_EntranceStartTime.hour = std::stoi(node_system.child_value("system_start_hour"));
+	_EntranceStartTime.min = std::stoi(node_system.child_value("system_start_min"));
+	_EntranceStartTime.sec = std::stoi(node_system.child_value("system_start_sec"));
+	_EntranceEndTime.hour = std::stoi(node_system.child_value("system_end_hour"));
+	_EntranceEndTime.min = std::stoi(node_system.child_value("system_end_min"));
+	_EntranceEndTime.sec = std::stoi(node_system.child_value("system_end_sec"));
+	_LiqTime.hour = std::stoi(node_system.child_value("system_liq_hour"));
+	_LiqTime.min = std::stoi(node_system.child_value("system_liq_min"));
+	_LiqTime.sec = std::stoi(node_system.child_value("system_liq_sec"));
+	std::stoi(node_system.child_value("enable_trail_stop")) == 0 ? _EnableTrailStop = false : _EnableTrailStop = true;
+	std::stoi(node_system.child_value("enable_loss_cut")) == 0 ? _EnableLossCut = false : _EnableLossCut = true;
+	std::stoi(node_system.child_value("enable_target_cut")) == 0 ? _EnableTargetCut = false : _EnableTargetCut = true;
+	_LossCutType = (ValueType)std::stoi(node_system.child_value("loss_cut_type"));
+	_TargetProfitType = (ValueType)std::stoi(node_system.child_value("target_profit_type"));
+	_TrailStop.MinProfit = std::stod(node_system.child_value("trail_stop_min_profit"));
+	_TrailStop.TrailingPercent = std::stod(node_system.child_value("trail_stop_trail_percent"));
+	_LossCut = std::stod(node_system.child_value("loss_cut_value"));
+	_TargetProfit = std::stod(node_system.child_value("target_profit"));
+	_MaxEntrance = std::stoi(node_system.child_value("max_entrance"));
+	_LiqPriceType = (VtPriceType)std::stoi(node_system.child_value("liq_price_type"));
+	_OrderAmount = std::stoi(node_system.child_value("order_amount"));
+	_FillCondition = (VtFilledCondition)std::stoi(node_system.child_value("filled_condition"));
+	_PriceType = (VtPriceType)std::stoi(node_system.child_value("price_type"));
+	_SymbolCode = node_system.child_value("symbol_code");
+	_Cycle = std::stoi(node_system.child_value("system_cycle"));
+	_EntryBarIndex = std::stoi(node_system.child_value("entrybar_index"));
+	_ATRTime.hour = std::stoi(node_system.child_value("atr_time_hour"));
+	_ATRTime.min = std::stoi(node_system.child_value("atr_time_min"));
+	_ATRTime.sec = std::stoi(node_system.child_value("atr_time_sec"));
+	_ATR = std::stoi(node_system.child_value("atr"));
+	_ATRMulti = std::stoi(node_system.child_value("atr_multi"));
+	_BandMulti = std::stoi(node_system.child_value("band_multi"));
+	_FilterMulti = std::stoi(node_system.child_value("filter_multi"));
+	_OutSignalName = node_system.child_value("out_signal_name");
+	_OrderTick = std::stoi(node_system.child_value("order_tick"));
+	pugi::xml_node argement_group_list_node = node_system.child("argument_group_list");
+	if (argement_group_list_node) {
+		_ArgGroupMap.clear();
+		for (pugi::xml_node argument_group_node = argement_group_list_node.child("argument_group"); argument_group_node; argument_group_node = argument_group_node.next_sibling("argument_group")) {
+			VtSystemArgGroup arg_group;
+			arg_group.LoadFromXml(argument_group_node);
+		}
+	}
 }

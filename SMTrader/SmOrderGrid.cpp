@@ -315,8 +315,13 @@ void SmOrderGrid::RegisterButtons()
 	RegisterButton(1, 0, CenterCol, GetSysColor(COLOR_BTNFACE), RGB(0, 0, 0), "정렬");
 	MergeCells(1, CenterCol - 2, 1, CenterCol - 1);
 	MergeCells(_EndRowForValue + 2, CenterCol - 2, _EndRowForValue + 2, CenterCol - 1);
-	// 시장가 매도 
-	RegisterButton(2, 1, CenterCol - 2, RGB(19, 137, 255), RGB(255, 255, 255), "시장가매도");
+	// 시장가 매도
+	std::string title;
+	if (_CenterWnd && _CenterWnd->ShowOrderCountArea())
+		title = "시장가매도";
+	else
+		title = "시장가";
+	RegisterButton(2, 1, CenterCol - 2, RGB(19, 137, 255), RGB(255, 255, 255), title.c_str());
 	CGridCellBase* pCell = GetCell(1, CenterCol);
 	if (pCell) {
 		pCell->SetText("시장가");
@@ -328,7 +333,11 @@ void SmOrderGrid::RegisterButtons()
 	MergeCells(1, CenterCol + 1, 1, CenterCol + 2);
 	MergeCells(_EndRowForValue + 2, CenterCol + 1, _EndRowForValue + 2, CenterCol + 2);
 	// 시장가 매수 
-	RegisterButton(3, 1, CenterCol + 1, RGB(240, 51, 58), RGB(255, 255, 255), "시장가매수");
+	if (_CenterWnd && _CenterWnd->ShowOrderCountArea())
+		title = "시장가매수";
+	else
+		title = "시장가";
+	RegisterButton(3, 1, CenterCol + 1, RGB(240, 51, 58), RGB(255, 255, 255), title.c_str());
 	// 매도스탑 취소 
 	RegisterButton(4, _EndRowForValue + 2, CenterCol - 4, RGB(190, 190, 245), "ST취소");
 	// 매도주문 취소 

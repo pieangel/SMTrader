@@ -165,15 +165,21 @@ void VtStrategyWndManager::SaveToXml(pugi::xml_node& stratege_window_list_node)
 		if (std::get<1>(item)->System()) {
 			stratege_window_child_node.append_child(pugi::node_pcdata).set_value(std::get<1>(item)->System()->Name().c_str());
 		}
-		else {
-			stratege_window_child_node.append_child(pugi::node_pcdata).set_value("no_system");
-		}
 	}
 }
 
-void VtStrategyWndManager::LoadFromXml(pugi::xml_node& node)
+void VtStrategyWndManager::LoadFromXml(pugi::xml_node& stratege_window_list_node)
 {
-
+	for (pugi::xml_node stratege_window_node = stratege_window_list_node.child("stratege_window"); stratege_window_node; stratege_window_node = stratege_window_node.next_sibling("stratege_window")) {
+		pugi::xml_node window_pos_node = stratege_window_node.child("stratege_window_pos");
+		CRect rcWnd;
+		rcWnd.left = window_pos_node.attribute("left").as_int();
+		rcWnd.top = window_pos_node.attribute("top").as_int();
+		rcWnd.right = window_pos_node.attribute("right").as_int();
+		rcWnd.bottom = window_pos_node.attribute("bottom").as_int();
+		std::string system_name = stratege_window_node.child_value("system_name");
+		RestoreDialog(system_name, rcWnd);
+	}
 }
 
 void VtStrategyWndManager::AddWindow(HdWindowType wndType, VtUsdStrategyConfigDlg* wnd)

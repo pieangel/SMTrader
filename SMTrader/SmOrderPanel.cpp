@@ -1543,35 +1543,6 @@ void SmOrderPanel::SetTickWndPos(int pos)
 
 void SmOrderPanel::SaveToXml(pugi::xml_node& node_center_window)
 {
-	/*
-	if (!_Symbol)
-		return;
-	// 종목코드
-	ss << _Symbol->ShortCode;
-	// 배열 요소를 직접 저장하지 말것.원하는 대로 저장되지 않음
-	// 반드시 변수에 넣은 다음 저장할 것.
-	// 그리드 주문열 표시여부
-	bool val = _OrderGridColOption[0];
-	ss << val;
-	// 그리도 스탑열 표시여부
-	val = _OrderGridColOption[1];
-	ss << val;
-	// 그리드 건수열 표시여부
-	val = _OrderGridColOption[2];
-	ss << val;
-	// 틱윈도우 표시여부
-	ss << _ShowTickWnd;
-	// 틱 윈도우 위치
-	ss << _TickWndPos;
-	// 주문 수량
-	ss << _OrderAmount;
-	// 셀 높이
-	ss << _OrderPanelGrid.CellHeight();
-	// 셀 너비
-	ss << _OrderPanelGrid.OrderWidth();
-	// 손절 익절창 표시여부
-	ss << _ShowRemainConfig;
-	*/
 	if (!_Symbol)
 		return;
 	pugi::xml_node center_window_child = node_center_window.append_child("symbol_code");
@@ -1599,7 +1570,22 @@ void SmOrderPanel::SaveToXml(pugi::xml_node& node_center_window)
 	center_window_child.append_child(pugi::node_pcdata).set_value(std::to_string(_ShowRemainConfig).c_str());
 }
 
-void SmOrderPanel::LoadFromXml(pugi::xml_node& node)
+void SmOrderPanel::LoadFromXml(pugi::xml_node& node_center_window)
 {
-
+	std::string symbol_code = node_center_window.child_value("symbol_code");
+	std::stoi(node_center_window.child_value("show_order_area")) == 0 ? _OrderGridColOption[0] = false : _OrderGridColOption[0] = true;
+	std::stoi(node_center_window.child_value("show_stop_area")) == 0 ? _OrderGridColOption[1] = false : _OrderGridColOption[0] = true;
+	std::stoi(node_center_window.child_value("show_count_area")) == 0 ? _OrderGridColOption[2] = false : _OrderGridColOption[0] = true;
+	std::stoi(node_center_window.child_value("show_tick_window")) == 0 ? _ShowTickWnd = false : _ShowTickWnd = true;
+	_TickWndPos = std::stoi(node_center_window.child_value("tick_window_pos"));
+	_OrderAmount = std::stoi(node_center_window.child_value("order_amount"));
+	int order_area_width = std::stoi(node_center_window.child_value("order_area_width"));
+	int order_area_height = std::stoi(node_center_window.child_value("order_row_height"));
+	m_Grid.OrderWidth(order_area_width);
+	m_Grid.CellHeight(order_area_height);
+	std::stoi(node_center_window.child_value("show_profitloss_config")) == 0 ? _ShowRemainConfig = false : _ShowRemainConfig = true;
+	// 주문창 그리드 속성 대입
+	_ShowOrderArea = _OrderGridColOption[0];
+	_ShowStopArea = _OrderGridColOption[1];
+	_ShowOrderCountArea = _OrderGridColOption[2];
 }

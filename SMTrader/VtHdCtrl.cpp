@@ -5387,7 +5387,7 @@ void VtHdCtrl::OnGetMsgWithRqId(int nRqId, CString strCode, CString strMsg)
 		syslog.LogText = (LPCTSTR)strMsg;
 		VtGlobal::PushLog(std::move(syslog));
 		CMainFrame* mainFrm = (CMainFrame*)AfxGetMainWnd();
-		mainFrm->UpdateSysLog();
+		//mainFrm->UpdateSysLog();
 	}
 }
 

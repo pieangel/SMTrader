@@ -78,6 +78,8 @@ public:
 	void FixedCenter(bool val);
 	bool OrderByRemain() const { return _OrderByRemain; }
 	void OrderByRemain(bool val) { _OrderByRemain = val; }
+	bool ShowOrderCountArea() const { return _ShowOrderCountArea; }
+	void ShowOrderCountArea(bool val) { _ShowOrderCountArea = val; }
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 

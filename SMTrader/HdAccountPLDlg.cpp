@@ -92,9 +92,21 @@ void HdAccountPLDlg::SaveToXml(pugi::xml_node& window_node)
 	}
 }
 
-void HdAccountPLDlg::LoadFromXml(pugi::xml_node& node)
+void HdAccountPLDlg::LoadFromXml(pugi::xml_node& window_node)
 {
-
+	pugi::xml_node window_pos_node = window_node.child("window_pos");
+	CRect rcWnd;
+	rcWnd.left = window_pos_node.attribute("left").as_int();
+	rcWnd.top = window_pos_node.attribute("top").as_int();
+	rcWnd.right = window_pos_node.attribute("right").as_int();
+	rcWnd.bottom = window_pos_node.attribute("bottom").as_int();
+	pugi::xml_node account_no_node = window_node.child("account_no");
+	if (account_no_node) {
+		_DefaultAccount = window_node.child_value("account_no");
+		SetDefaultAccount();
+	}
+	MoveWindow(rcWnd);
+	ShowWindow(SW_SHOW);
 }
 
 void HdAccountPLDlg::Save(simple::file_ostream<same_endian_type>& ss)

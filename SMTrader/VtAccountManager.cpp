@@ -233,7 +233,10 @@ void VtAccountManager::SaveToXml(pugi::xml_node& node_account_list)
 	}
 }
 
-void VtAccountManager::LoadFromXml(pugi::xml_node& node)
+void VtAccountManager::LoadFromXml(pugi::xml_node& account_list_node)
 {
-
+	for (pugi::xml_node account_node = account_list_node.child("account"); account_node; account_node = account_node.next_sibling("account")) {
+		VtAccount* account = new VtAccount();
+		account->LoadFromXml(account_node);
+	}
 }

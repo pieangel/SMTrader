@@ -11,6 +11,8 @@ public:
 	VtSaveManager();
 	~VtSaveManager();
 	void WriteSettings();
+	void ReadSettings();
+	std::string GetLastestFile(std::string ext);
 	void SaveAccountList();
 	void SaveFundList();
 	void SaveOrders();

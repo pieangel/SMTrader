@@ -21,9 +21,20 @@ void VtOutSystemManager::SaveToXml(pugi::xml_node& external_system_list_node)
 	}
 }
 
-void VtOutSystemManager::LoadFromXml(pugi::xml_node& node)
+void VtOutSystemManager::LoadFromXml(pugi::xml_node& external_system_list_node)
 {
-
+	VtOutSystemManager::PriceType = (VtPriceType)external_system_list_node.attribute("price_type").as_int();
+	VtOutSystemManager::OrderTick = external_system_list_node.attribute("order_tick").as_int();
+	pugi::xml_node system_list_node = external_system_list_node.child("system_list");
+	if (system_list_node) {
+		for (pugi::xml_node system_node = system_list_node.child("system"); system_node; system_node = system_node.next_sibling("system")) {
+			SharedSystem sys = std::make_shared<VtSystem>();
+			sys->LoadFromXml(system_node);
+			sys->ReadExtraArgs();
+			sys->RegisterRealtimeAccountEvent();
+			AddSystem(sys);
+		}
+	}
 }
 
 void VtOutSystemManager::AddSystem(SharedSystem sys)

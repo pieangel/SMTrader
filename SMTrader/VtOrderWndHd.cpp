@@ -2020,7 +2020,39 @@ void VtOrderWndHd::SaveToXml(pugi::xml_node& node_order_window)
 	}
 }
 
-void VtOrderWndHd::LoadFromXml(pugi::xml_node& node)
+void VtOrderWndHd::LoadFromXml(pugi::xml_node& node_order_window)
 {
+	if (!_OrderConfigMgr)
+		return;
+	int order_window_type = std::stoi(node_order_window.child_value("order_window_type"));
+	_OrderConfigMgr->Type(order_window_type);
+	if (order_window_type == 0) {
+		_DefaultAccountNo = node_order_window.child_value("account_no");
+	}
+	else {
+		_DefaultFundName = node_order_window.child_value("fund_name");
+	}
 
+	pugi::xml_node window_pos = node_order_window.child("window_pos");
+
+	// 윈도우 위치 대입
+	_XPos = window_pos.attribute("left").as_int();
+	_YPos = window_pos.attribute("top").as_int();
+	// 윈도우 높이 대입
+	_WindowHeight = window_pos.attribute("right").as_int() - _XPos;
+	// 윈도우 너비 대입
+	_WindowWidth = window_pos.attribute("bottom").as_int() - _YPos;
+
+	std::stoi(node_order_window.child_value("show_left_window")) == 0 ? _ShowLeftWnd = false : _ShowLeftWnd = true;
+
+	pugi::xml_node center_window_list_node = node_order_window.child("center_window_list");
+	if (center_window_list_node) {
+		for (pugi::xml_node center_window_node = center_window_list_node.child("center_window"); center_window_node; center_window_node = center_window_node.next_sibling("center_window")) {
+			SmOrderPanel* centerWnd = new SmOrderPanel();
+			// 중앙창 모든 옵션 복원
+			centerWnd->LoadFromXml(center_window_node);
+			// 중앙창 목록에 추가
+			_CenterWndVector.push_back(centerWnd);
+		}
+	}
 }

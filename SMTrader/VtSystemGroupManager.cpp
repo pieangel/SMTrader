@@ -118,7 +118,11 @@ void VtSystemGroupManager::SaveToXml(pugi::xml_node& node_system_group_list)
 	}
 }
 
-void VtSystemGroupManager::LoadFromXml(pugi::xml_node& node)
+void VtSystemGroupManager::LoadFromXml(pugi::xml_node& node_system_group_list)
 {
-
+	for (pugi::xml_node system_group_node = node_system_group_list.child("system_group"); system_group_node; system_group_node = system_group_node.next_sibling("system_group")) {
+		VtSystemGroup system_group;
+		system_group.LoadFromXml(system_group_node);
+		_SystemGroupVec.push_back(system_group);
+	}
 }

@@ -163,7 +163,9 @@ void HdWindowManager::SaveToXml(pugi::xml_node& window_list_node)
 			window_type = "stratege_tool_window";
 			break;
 		}
-		pugi::xml_node window_node = window_list_node.append_child(window_type.c_str());
+		pugi::xml_node window_node = window_list_node.append_child("window");
+		window_node.append_attribute("window_type") = (int)std::get<0>(item);
+		window_node.append_attribute("window_type_name") = window_type.c_str();
 		SaveToXml(window_node, std::get<0>(item), std::get<1>(item));
 	}
 }
@@ -197,9 +199,49 @@ void HdWindowManager::SaveToXml(pugi::xml_node& window_node, HdWindowType wndTyp
 	}
 }
 
-void HdWindowManager::LoadFromXml(pugi::xml_node& node)
+void HdWindowManager::LoadFromXml(pugi::xml_node& etc_window_list_node)
 {
+	for (pugi::xml_node window_node = etc_window_list_node.child("window"); window_node; window_node = window_node.next_sibling("window")) {
+		HdWindowType window_type = (HdWindowType)window_node.attribute("window_type").as_int();
+		LoadFromXml(window_node, window_type);
+	}
+}
 
+void HdWindowManager::LoadFromXml(pugi::xml_node& window_node, HdWindowType wndType)
+{
+	
+	switch (wndType) {
+	case HdWindowType::ChartWindow: {
+		VtChartWindow* dlg = new VtChartWindow((CWnd*)_MainFrm);
+		dlg->Create(IDD_DIALOG_CHART, (CWnd*)_MainFrm);
+		dlg->LoadFromXml(window_node);
+	}
+									break;
+	case HdWindowType::FundMiniJangoWindow: {
+		VtFundMiniJango* dlg = new VtFundMiniJango((CWnd*)_MainFrm);
+		dlg->Create(IDD_MINI_JANGO_FUND, (CWnd*)_MainFrm);
+		dlg->LoadFromXml(window_node);
+	}
+											break;
+	case HdWindowType::MiniJangoWindow: {
+		HdAccountPLDlg* dlg = new HdAccountPLDlg((CWnd*)_MainFrm);
+		dlg->Create(IDD_MINI_JANGO, (CWnd*)_MainFrm);
+		dlg->LoadFromXml(window_node);
+	}
+										break;
+	case HdWindowType::AssetWindow: {
+		VtAccountAssetDlg* dlg = new VtAccountAssetDlg((CWnd*)_MainFrm);
+		dlg->Create(IDD_ACCOUNT_ASSET, (CWnd*)_MainFrm);
+		dlg->LoadFromXml(window_node);
+	}
+									break;
+	case HdWindowType::StrategyToolWindow: {
+		VtStrategyToolWnd* dlg = new VtStrategyToolWnd((CWnd*)_MainFrm);
+		dlg->Create(IDD_STRATEGE_TOOLS, (CWnd*)_MainFrm);
+		dlg->LoadFromXml(window_node);
+	}
+										   break;
+	}
 }
 
 void HdWindowManager::AddWindow(HdWindowType wndType, CWnd* wnd)

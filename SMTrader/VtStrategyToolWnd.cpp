@@ -52,9 +52,16 @@ void VtStrategyToolWnd::SaveToXml(pugi::xml_node& window_node)
 	window_child.append_attribute("bottom") = rcWnd.bottom;
 }
 
-void VtStrategyToolWnd::LoadFromXml(pugi::xml_node& node)
+void VtStrategyToolWnd::LoadFromXml(pugi::xml_node& window_node)
 {
-
+	pugi::xml_node window_pos_node = window_node.child("window_pos");
+	CRect rcWnd;
+	rcWnd.left = window_pos_node.attribute("left").as_int();
+	rcWnd.top = window_pos_node.attribute("top").as_int();
+	rcWnd.right = window_pos_node.attribute("right").as_int();
+	rcWnd.bottom = window_pos_node.attribute("bottom").as_int();
+	MoveWindow(rcWnd);
+	ShowWindow(SW_SHOW);
 }
 
 void VtStrategyToolWnd::Save(simple::file_ostream<same_endian_type>& ss)

@@ -29,6 +29,7 @@ public:
 	void MainFrm(CMainFrame* val) { _MainFrm = val; }
 	void SaveToXml(pugi::xml_node& node);
 	void LoadFromXml(pugi::xml_node& node);
+	void LoadFromXml(pugi::xml_node& node, HdWindowType wndType);
 private:
 	void SaveToXml(pugi::xml_node& node, HdWindowType wndType, CWnd* wnd);
 	std::map<CWnd*, std::pair<HdWindowType, CWnd*>> _WindowMap;

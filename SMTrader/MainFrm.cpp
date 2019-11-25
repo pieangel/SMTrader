@@ -941,6 +941,8 @@ void CMainFrame::LoadSettings()
 	saveMgr->LoadAccountList(_T("accountlist.dat"));
 
 	saveMgr->LoadFundList(_T("fundlist.dat"));
+
+	saveMgr->ReadSettings();
 }
 
 

@@ -244,7 +244,10 @@ void VtFundManager::SaveToXml(pugi::xml_node& node_fund_list)
 	}
 }
 
-void VtFundManager::LoadFromXml(pugi::xml_node& node)
+void VtFundManager::LoadFromXml(pugi::xml_node& node_fund_list)
 {
-
+	for (pugi::xml_node fund_node = node_fund_list.child("fund"); fund_node; fund_node = fund_node.next_sibling("fund")) {
+		VtFund* fund = new VtFund();
+		fund->LoadFromXml(fund_node);
+	}
 }

@@ -58,7 +58,7 @@ void VtSaveManager::WriteSettings()
 		// Generate XML declaration
 		auto declarationNode = doc.append_child(pugi::node_declaration);
 		declarationNode.append_attribute("version") = "1.0";
-		declarationNode.append_attribute("encoding") = "ISO-8859-1";
+		declarationNode.append_attribute("encoding") = "euc-kr";
 		declarationNode.append_attribute("standalone") = "yes";
 		// A valid XML doc must contain a single root node of any name
 		auto root = doc.append_child("application");
@@ -97,6 +97,10 @@ void VtSaveManager::WriteSettings()
 	pugi::xml_node fund_list = application.append_child("fund_list");
 	VtFundManager::GetInstance()->SaveToXml(fund_list);
 
+	application.remove_child("external_system_list");
+	pugi::xml_node external_system_list = application.append_child("external_system_list");
+	VtOutSystemManager::GetInstance()->SaveToXml(external_system_list);
+
 	application.remove_child("system_group_list");
 	pugi::xml_node system_group_list = application.append_child("system_group_list");
 	VtSystemGroupManager::GetInstance()->SaveToXml(system_group_list);
@@ -113,11 +117,100 @@ void VtSaveManager::WriteSettings()
 	pugi::xml_node etc_window_list = application.append_child("etc_window_list");
 	HdWindowManager::GetInstance()->SaveToXml(etc_window_list);
 
-	application.remove_child("external_system_list");
-	pugi::xml_node external_system_list = application.append_child("external_system_list");
-	VtOutSystemManager::GetInstance()->SaveToXml(external_system_list);
-
 	doc.save_file(appPath.c_str());
+}
+
+void VtSaveManager::ReadSettings()
+{
+	ZmConfigManager* configMgr = ZmConfigManager::GetInstance();
+	std::string appPath;
+	appPath = configMgr->GetAppPath();
+	appPath.append(_T("\\"));
+	appPath.append(_T("env"));
+	appPath.append(_T("\\"));
+	std::string config_path = appPath;
+	appPath.append(_T("*.xml"));
+	
+	// 가장 최근에 저장된 설정 파일을 찾는다.
+	std::string file_name = GetLastestFile(appPath);
+	// 파일을 찾지 못하면 그냥 나온다.
+	if (file_name.length() == 0)
+		return;
+	config_path.append(file_name);
+	/// [load xml file]
+	// Create empty XML document within memory
+	pugi::xml_document doc;
+	// Load XML file into memory
+	// Remark: to fully read declaration entries you have to specify
+	// "pugi::parse_declaration"
+	pugi::xml_parse_result result = doc.load_file(config_path.c_str(),
+		pugi::parse_default | pugi::parse_declaration);
+	if (!result)
+	{
+		std::cout << "Parse error: " << result.description()
+			<< ", character pos= " << result.offset;
+	}
+
+	pugi::xml_node application = doc.child("application");
+	pugi::xml_node login_info = application.child("login_info");
+	if (login_info) {
+		VtLoginManager::GetInstance()->LoadFromXml(login_info);
+	}
+	pugi::xml_node account_list = application.child("account_list");
+	if (account_list) {
+		VtAccountManager::GetInstance()->LoadFromXml(account_list);
+	}
+
+	pugi::xml_node fund_list = application.child("fund_list");
+	if (fund_list) {
+		VtFundManager::GetInstance()->LoadFromXml(fund_list);
+	}
+
+	pugi::xml_node system_group_list = application.child("system_group_list");
+	if (system_group_list) {
+		VtSystemGroupManager::GetInstance()->LoadFromXml(system_group_list);
+	}
+
+	pugi::xml_node external_system_list = application.child("external_system_list");
+	if (external_system_list) {
+		VtOutSystemManager::GetInstance()->LoadFromXml(external_system_list);
+	}
+
+	pugi::xml_node order_window_list = application.child("order_window_list");
+	if (order_window_list) {
+		VtOrderDialogManager::GetInstance()->LoadFromXml(order_window_list);
+	}
+
+	pugi::xml_node stratege_window_list = application.child("stratege_window_list");
+	if (stratege_window_list) {
+		VtStrategyWndManager::GetInstance()->LoadFromXml(stratege_window_list);
+	}
+
+	pugi::xml_node etc_window_list = application.child("etc_window_list");
+	if (etc_window_list) {
+		HdWindowManager::GetInstance()->LoadFromXml(etc_window_list);
+	}
+}
+
+std::string VtSaveManager::GetLastestFile(std::string file_name)
+{
+	FILETIME bestDate = { 0, 0 };
+	FILETIME curDate;
+	string name = "";
+	CFileFind finder;
+
+	finder.FindFile(file_name.c_str());
+	while (finder.FindNextFile())
+	{
+		finder.GetCreationTime(&curDate);
+
+		if (CompareFileTime(&curDate, &bestDate) > 0)
+		{
+			bestDate = curDate;
+			name = finder.GetFileName().GetString();
+		}
+	}
+	return name;
 }
 
 void VtSaveManager::SaveOrders()

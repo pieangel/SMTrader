@@ -17,6 +17,7 @@
 #include "VtTotalOrderManager.h"
 #include "VtHdClient.h"
 #include "cryptor.hpp"
+#include "VtAccountManager.h"
 
 bool VtAccount::hasValidPassword()
 {
@@ -186,8 +187,7 @@ void VtAccount::SaveToXml(pugi::xml_node& node_account)
 	account_child.append_child(pugi::node_pcdata).set_value(std::to_string(_Prime).c_str());
 	if (_SubAccountList.size() > 0) {
 		account_child = node_account.append_child("sub_account_list");
-		for (auto it = _SubAccountList.begin(); it != _SubAccountList.end(); ++it)
-		{
+		for (auto it = _SubAccountList.begin(); it != _SubAccountList.end(); ++it) {
 			VtAccount* subAcnt = *it;
 			pugi::xml_node sub_account = account_child.append_child("sub_account");
 			subAcnt->SaveToXml(sub_account);
@@ -195,9 +195,38 @@ void VtAccount::SaveToXml(pugi::xml_node& node_account)
 	}
 }
 
-void VtAccount::LoadFromXml(pugi::xml_node& node)
+void VtAccount::LoadFromXml(pugi::xml_node& account_node)
 {
+	_AccountLevel = std::stoi(account_node.child_value("account_level"));
+	ParentAccountNo = account_node.child_value("parent_account_no");
+	AccountName = account_node.child_value("account_name");
+	AccountNo = account_node.child_value("account_no");
+	Password = account_node.child_value("password");
+	SeungSu = std::stoi(account_node.child_value("seungsu"));
+	Ratio = std::stod(account_node.child_value("ratio"));
+	std::stoi(account_node.child_value("prime")) == 0 ? _Prime = false : _Prime = true;
+	if (_AccountLevel == 0) {
+		VtAccountManager::GetInstance()->AddAccount(this);
+	}
+	else {
+		_ParentAccount = VtAccountManager::GetInstance()->FindAccount(ParentAccountNo);
+	}
 
+	pugi::xml_node sub_account_list_node = account_node.child("sub_account_list");
+	// 서브 계좌가 있는 경우
+	if (sub_account_list_node) {
+		for (pugi::xml_node sub_account_node = sub_account_list_node.child("sub_account"); sub_account_node; sub_account_node = sub_account_node.next_sibling("sub_account")) {
+			VtAccount* sub_account = new VtAccount();
+			sub_account->LoadFromXml(sub_account_node);
+			_SubAccountList.push_back(sub_account);
+			VtSubAccountManager::GetInstance()->AddAccount(sub_account);
+		}
+	}
+	else {
+		// 서브 계좌가 없지만 최상위 레벨 계좌이면 기본 서브 계좌를 만들어 준다.
+		if (_AccountLevel == 0)
+			CreateDefaultSubAccount();
+	}
 }
 
 VtPosition* VtAccount::FindPosition(std::string symbolCode)
@@ -221,8 +250,7 @@ void VtAccount::SumOpenPL()
 	TradePL = 0;
 	OpenPL = 0;
 	VtSymbolManager* symMgr = VtSymbolManager::GetInstance();
-	for (auto it = PositionMap.begin(); it != PositionMap.end(); ++it)
-	{
+	for (auto it = PositionMap.begin(); it != PositionMap.end(); ++it) {
 		VtPosition* posi = it->second;
 		OpenPL += posi->OpenProfitLoss;
 		TradePL += posi->TradePL;
@@ -233,8 +261,7 @@ void VtAccount::SumOpenPL()
 
 void VtAccount::CalcOpenPL(VtSymbol* sym)
 {
-	if (sym)
-	{
+	if (sym) {
 		double curClose = sym->Quote.intClose / std::pow(10, sym->IntDecimal);
 		VtPosition* posi = FindPosition(sym->ShortCode);
 		if (posi)
@@ -244,8 +271,7 @@ void VtAccount::CalcOpenPL(VtSymbol* sym)
 
 void VtAccount::SumOpenPL(VtSymbol* sym, VtPosition* posi)
 {
-	if (sym && posi)
-	{
+	if (sym && posi) {
 		double curClose = sym->Quote.intClose / std::pow(10, sym->IntDecimal);
 		posi->OpenProfitLoss = posi->OpenQty * (curClose - posi->AvgPrice)*sym->seungsu;
 	}

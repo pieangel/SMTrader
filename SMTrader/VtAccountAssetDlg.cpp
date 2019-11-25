@@ -58,9 +58,21 @@ void VtAccountAssetDlg::SaveToXml(pugi::xml_node& window_node)
 	}
 }
 
-void VtAccountAssetDlg::LoadFromXml(pugi::xml_node& node)
+void VtAccountAssetDlg::LoadFromXml(pugi::xml_node& window_node)
 {
-
+	pugi::xml_node window_pos_node = window_node.child("window_pos");
+	CRect rcWnd;
+	rcWnd.left = window_pos_node.attribute("left").as_int();
+	rcWnd.top = window_pos_node.attribute("top").as_int();
+	rcWnd.right = window_pos_node.attribute("right").as_int();
+	rcWnd.bottom = window_pos_node.attribute("bottom").as_int();
+	pugi::xml_node account_no_node = window_node.child("account_no");
+	if (account_no_node) {
+		std::string account_no = window_node.child_value("account_no");
+		SetAccount(account_no);
+	}
+	MoveWindow(rcWnd);
+	ShowWindow(SW_SHOW);
 }
 
 void VtAccountAssetDlg::Save(simple::file_ostream<same_endian_type>& ss)

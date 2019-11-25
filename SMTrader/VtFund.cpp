@@ -7,6 +7,7 @@
 #include "VtOrderManagerSelector.h"
 #include "VtOrderManager.h"
 #include "VtProductOrderManager.h"
+#include "VtSubAccountManager.h"
 VtFund::VtFund()
 {
 	_FundMap.Fund(this);
@@ -376,7 +377,42 @@ void VtFund::SaveToXml(pugi::xml_node& node_fund)
 	}
 }
 
-void VtFund::LoadFromXml(pugi::xml_node& node)
+/*
+int count;
+ss >> count;
+VtAccount* acnt = nullptr;
+for (int i = 0; i < count; i++)
 {
+std::string acntNo;
+ss >> acntNo;
+VtSubAccountManager* subAcntMgr = VtSubAccountManager::GetInstance();
+VtAccount* subAcnt = subAcntMgr->FindAccount(acntNo);
+if (subAcnt)
+{
+AddAccount(subAcnt);
+subAcnt->Fund(_Fund);
+if (subAcnt->ParentAccount())
+{
+subAcnt->ParentAccount()->AddToFundMap(_Fund->Name, subAcnt);
+}
+}
+}
+*/
 
+void VtFund::LoadFromXml(pugi::xml_node& node_fund)
+{
+	Name = node_fund.child_value("fund_name");
+	pugi::xml_node fund_account_list_node = node_fund.child("fund_account_list");
+	if (fund_account_list_node) {
+		for (pugi::xml_node fund_account_node = fund_account_list_node.child("fund_account"); fund_account_node; fund_account_node = fund_account_node.next_sibling("fund_account")) {
+			std::string fund_account_no = fund_account_node.child_value();
+			VtAccount* fund_account = VtSubAccountManager::GetInstance()->FindAccount(fund_account_no);
+			if (fund_account) {
+				_FundMap.AddAccount(fund_account);
+				if (fund_account->ParentAccount()) {
+					fund_account->ParentAccount()->AddToFundMap(Name, fund_account);
+				}
+			}
+		}
+	}
 }

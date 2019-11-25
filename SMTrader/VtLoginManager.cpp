@@ -48,7 +48,12 @@ void VtLoginManager::SaveToXml(pugi::xml_node& login_info_node)
 	login_info_child.append_child(pugi::node_pcdata).set_value(Cert.c_str());
 }
 
-void VtLoginManager::LoadFromXml(pugi::xml_node& node)
+void VtLoginManager::LoadFromXml(pugi::xml_node& login_info_node)
 {
-
+	std::string id = login_info_node.child_value("login_id");
+	std::string pwd = login_info_node.child_value("login_password");
+	std::string cert = login_info_node.child_value("login_cert");
+	ID = id;
+	Password = pwd;
+	Cert = cert;
 }
