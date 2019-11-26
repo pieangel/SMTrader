@@ -55,7 +55,7 @@ void SmTickGrid::OnQuoteEvent(VtSymbol* sym)
 			break;
 		pCell->SetText(item.Time.c_str());
 		InvalidateCellRect(i, 0);
-		std::string close = NumberFormatter::format(item.ClosePrice / std::pow(10, sym->IntDecimal), sym->IntDecimal);
+		std::string close = NumberFormatter::format(item.ClosePrice / std::pow(10, sym->Decimal), sym->Decimal);
 		pCell = GetCell(i, 1);
 		pCell->SetText(close.c_str());
 		InvalidateCellRect(i, 1);
@@ -155,7 +155,7 @@ void SmTickGrid::OnReceiveQuote(VtSymbol* sym)
 		pCell = GetCell(i, 0);
 		pCell->SetText(item.Time.c_str());
 		InvalidateCellRect(i, 0);
-		std::string close = NumberFormatter::format(item.ClosePrice / std::pow(10, sym->IntDecimal), sym->IntDecimal);
+		std::string close = NumberFormatter::format(item.ClosePrice / std::pow(10, sym->Decimal), sym->Decimal);
 		pCell = GetCell(i, 1);
 		pCell->SetText(close.c_str());
 		InvalidateCellRect(i, 1);

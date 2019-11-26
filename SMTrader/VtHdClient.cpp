@@ -231,6 +231,16 @@ void VtHdClient::RegisterRealtimeDataKey(std::string symCode, std::string dataKe
 		_HdCtrl->RegisterRealtimeDataKey(symCode, dataKey);
 }
 
+void VtHdClient::DownloadMasterFiles(std::string param)
+{
+	_HdCtrl->DownloadMasterFiles(param);
+}
+
+void VtHdClient::DownloadDomesticMasterFile(std::string file_name)
+{
+	_HdCtrl->DownloadDomesticMasterFile(file_name);
+}
+
 void VtHdClient::GetOutstandingHistory(std::string accountNo, std::string pwd)
 {
 	if (_HdCtrl)

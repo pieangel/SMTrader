@@ -301,6 +301,11 @@
     <ClInclude Include="IniFile.h" />
     <ClInclude Include="Log\loguru.hpp" />
     <ClInclude Include="MainFrm.h" />
+    <ClInclude Include="Market\SmMarket.h" />
+    <ClInclude Include="Market\SmMarketManager.h" />
+    <ClInclude Include="Market\SmProduct.h" />
+    <ClInclude Include="Market\SmProductYearMonth.h" />
+    <ClInclude Include="Market\SmSymbolReader.h" />
     <ClInclude Include="memdc.h" />
     <ClInclude Include="OutputWnd.h" />
     <ClInclude Include="PropertiesWnd.h" />
@@ -744,6 +749,21 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="MainFrm.cpp" />
+    <ClCompile Include="Market\SmMarket.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Market\SmMarketManager.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Market\SmProduct.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Market\SmProductYearMonth.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Market\SmSymbolReader.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="OutputWnd.cpp" />
     <ClCompile Include="PropertiesWnd.cpp" />
     <ClCompile Include="RemainOrderWnd.cpp" />

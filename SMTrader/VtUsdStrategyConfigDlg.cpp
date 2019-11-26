@@ -430,11 +430,23 @@ void VtUsdStrategyConfigDlg::SetTargetAcntOrFund(std::tuple<int, VtAccount*, VtF
 		_Account = std::get<1>(selItem);
 		_StaticAccount.SetWindowText(_Account->AccountNo.c_str());
 		_Fund = nullptr;
+		if (_System) {
+			_System->Account(_Account);
+			_Type == 0 ? _System->SysTargetType(TargetType::RealAccount) : _System->SysTargetType(TargetType::SubAccount);
+			_System->SysTargetName(_Account->AccountNo);
+			_System->Fund(nullptr);
+		}
 	}
 	else {
 		_Fund = std::get<2>(selItem);
 		_StaticAccount.SetWindowText(_Fund->Name.c_str());
 		_Account = nullptr;
+		if (_System) {
+			_System->Fund(_Fund);
+			_System->SysTargetType(TargetType::Fund);
+			_System->SysTargetName(_Fund->Name);
+			_System->Account(nullptr);
+		}
 	}
 }
 
@@ -455,6 +467,10 @@ void VtUsdStrategyConfigDlg::SetSymbol(VtSymbol* sym)
 		return;
 	_SelSymbol = sym;
 	_StaticSymbol.SetWindowText(sym->ShortCode.c_str());
+	if (_System) {
+		_System->Symbol(_SelSymbol);
+		_System->SymbolCode(_SelSymbol->ShortCode);
+	}
 }
 
 
@@ -789,8 +805,8 @@ void VtUsdStrategyConfigDlg::OnRealTimeEvent()
 	_EntCntToday.SetWindowText(profit);
 
 	if (_System->Symbol()) {
-		temp = NumberFormatter::format(_System->LatestEntPrice() / std::pow(10, _System->Symbol()->IntDecimal), _System->Symbol()->IntDecimal);
-		profitLoss = XFormatNumber(temp.c_str(), _System->Symbol()->IntDecimal);
+		temp = NumberFormatter::format(_System->LatestEntPrice() / std::pow(10, _System->Symbol()->Decimal), _System->Symbol()->Decimal);
+		profitLoss = XFormatNumber(temp.c_str(), _System->Symbol()->Decimal);
 	}
 	else {
 		profitLoss.Format(_T("%d"), _System->LatestEntPrice());

@@ -211,7 +211,7 @@ void VtRealtimeTickQuoteGrid::OnReceiveQuote(VtSymbol* sym)
 	for (auto it = sym->Quote.QuoteItemQ.begin(); it != sym->Quote.QuoteItemQ.end(); ++it) {
 		VtQuoteItem item = *it;
 		QuickSetText(0, i, item.Time.c_str());
-		std::string close = NumberFormatter::format(item.ClosePrice / std::pow(10, sym->IntDecimal), sym->IntDecimal);
+		std::string close = NumberFormatter::format(item.ClosePrice / std::pow(10, sym->Decimal), sym->Decimal);
 		QuickSetText(1, i, close.c_str());
 		QuickSetNumber(2, i, item.ContQty);
 		if (item.MatchKind == 1)

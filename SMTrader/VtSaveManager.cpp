@@ -134,8 +134,9 @@ void VtSaveManager::ReadSettings()
 	// 가장 최근에 저장된 설정 파일을 찾는다.
 	std::string file_name = GetLastestFile(appPath);
 	// 파일을 찾지 못하면 그냥 나온다.
-	if (file_name.length() == 0)
+	if (file_name.length() == 0) {
 		return;
+	}
 	config_path.append(file_name);
 	/// [load xml file]
 	// Create empty XML document within memory
@@ -166,16 +167,68 @@ void VtSaveManager::ReadSettings()
 		VtFundManager::GetInstance()->LoadFromXml(fund_list);
 	}
 
+	/*
+	pugi::xml_node order_window_list = application.child("order_window_list");
+	if (order_window_list) {
+		VtOrderDialogManager::GetInstance()->LoadFromXml(order_window_list);
+	}
+
+	pugi::xml_node stratege_window_list = application.child("stratege_window_list");
+	if (stratege_window_list) {
+		VtStrategyWndManager::GetInstance()->LoadFromXml(stratege_window_list);
+	}
+
+	pugi::xml_node etc_window_list = application.child("etc_window_list");
+	if (etc_window_list) {
+		HdWindowManager::GetInstance()->LoadFromXml(etc_window_list);
+	}
+	*/
+}
+
+void VtSaveManager::ReadWindows()
+{
+	ZmConfigManager* configMgr = ZmConfigManager::GetInstance();
+	std::string appPath;
+	appPath = configMgr->GetAppPath();
+	appPath.append(_T("\\"));
+	appPath.append(_T("env"));
+	appPath.append(_T("\\"));
+	std::string config_path = appPath;
+	appPath.append(_T("*.xml"));
+
+	// 가장 최근에 저장된 설정 파일을 찾는다.
+	std::string file_name = GetLastestFile(appPath);
+	// 파일을 찾지 못하면 그냥 나온다.
+	if (file_name.length() == 0)
+		return;
+	config_path.append(file_name);
+	/// [load xml file]
+	// Create empty XML document within memory
+	pugi::xml_document doc;
+	// Load XML file into memory
+	// Remark: to fully read declaration entries you have to specify
+	// "pugi::parse_declaration"
+	pugi::xml_parse_result result = doc.load_file(config_path.c_str(),
+		pugi::parse_default | pugi::parse_declaration);
+	if (!result)
+	{
+		std::cout << "Parse error: " << result.description()
+			<< ", character pos= " << result.offset;
+	}
+
+	pugi::xml_node application = doc.child("application");
+
 	pugi::xml_node system_group_list = application.child("system_group_list");
 	if (system_group_list) {
 		VtSystemGroupManager::GetInstance()->LoadFromXml(system_group_list);
 	}
 
+
 	pugi::xml_node external_system_list = application.child("external_system_list");
 	if (external_system_list) {
 		VtOutSystemManager::GetInstance()->LoadFromXml(external_system_list);
 	}
-
+	
 	pugi::xml_node order_window_list = application.child("order_window_list");
 	if (order_window_list) {
 		VtOrderDialogManager::GetInstance()->LoadFromXml(order_window_list);

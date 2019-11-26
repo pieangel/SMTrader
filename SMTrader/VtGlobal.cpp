@@ -58,24 +58,24 @@ std::pair<int, int> VtGlobal::GetScaleFact()
 int VtGlobal::GetHorWidthByScaleFactor(int width)
 {
 	HDC desktopDc = ::GetDC(nullptr);
-	// Get native resolution
-	int horizontalDPI = GetDeviceCaps(desktopDc, LOGPIXELSX);
-	switch (horizontalDPI)
-	{
-	case 96:
-		width *= 1.0;
-		break;
-	case 120:
-		width *= 1.25;
-		break;
-	case 144:
-		width *= 1.50;
-	case 192:
-		width *= 2.00;
-	default:
-		width *= 1.0;
-		break;
-	}
+// 	// Get native resolution
+// 	int horizontalDPI = GetDeviceCaps(desktopDc, LOGPIXELSX);
+// 	switch (horizontalDPI)
+// 	{
+// 	case 96:
+// 		width *= 1.0;
+// 		break;
+// 	case 120:
+// 		width *= 1.25;
+// 		break;
+// 	case 144:
+// 		width *= 1.50;
+// 	case 192:
+// 		width *= 2.00;
+// 	default:
+// 		width *= 1.0;
+// 		break;
+// 	}
 
 	return (int)width;
 }
@@ -84,24 +84,24 @@ int VtGlobal::GetVerHeightByScaleFactor(int height)
 {
 	HDC desktopDc = ::GetDC(nullptr);
 	// Get native resolution
-	int verticalDPI = GetDeviceCaps(desktopDc, LOGPIXELSY);
-
-	switch (verticalDPI)
-	{
-	case 96:
-		height *= 1.0;
-		break;
-	case 120:
-		height *= 1.25;
-		break;
-	case 144:
-		height *= 1.50;
-	case 192:
-		height *= 2.00;
-	default:
-		height *= 1.0;
-		break;
-	}
+// 	int verticalDPI = GetDeviceCaps(desktopDc, LOGPIXELSY);
+// 
+// 	switch (verticalDPI)
+// 	{
+// 	case 96:
+// 		height *= 1.0;
+// 		break;
+// 	case 120:
+// 		height *= 1.25;
+// 		break;
+// 	case 144:
+// 		height *= 1.50;
+// 	case 192:
+// 		height *= 2.00;
+// 	default:
+// 		height *= 1.0;
+// 		break;
+// 	}
 
 	return (int)height;
 }

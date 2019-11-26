@@ -1984,12 +1984,16 @@ void VtOrderWndHd::SaveToXml(pugi::xml_node& node_order_window)
 		order_window_child.append_child(pugi::node_pcdata).set_value(std::to_string(_OrderConfigMgr->Type()).c_str());
 				// 주문창 타입에 따라 계좌번호 혹은 펀드 이름 저장
 		if (_OrderConfigMgr->Type() == 0) {
-			order_window_child = node_order_window.append_child("account_no");
-			order_window_child.append_child(pugi::node_pcdata).set_value(_OrderConfigMgr->Account()->AccountNo.c_str());
+			if (_OrderConfigMgr->Account()) {
+				order_window_child = node_order_window.append_child("account_no");
+				order_window_child.append_child(pugi::node_pcdata).set_value(_OrderConfigMgr->Account()->AccountNo.c_str());
+			}
 		}
 		else {
-			order_window_child = node_order_window.append_child("fund_name");
-			order_window_child.append_child(pugi::node_pcdata).set_value(_OrderConfigMgr->Fund()->Name.c_str());
+			if (_OrderConfigMgr->Fund()) {
+				order_window_child = node_order_window.append_child("fund_name");
+				order_window_child.append_child(pugi::node_pcdata).set_value(_OrderConfigMgr->Fund()->Name.c_str());
+			}
 		}
 
 		CRect rcWnd;

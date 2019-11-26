@@ -393,7 +393,7 @@ std::pair<int, int> SmOptionGrid::FindValueStartRow(int height)
 			VtSymbol* sym = opSec->_SymbolVector[i];
 			std::string centerVal = sym->ShortCode.substr(5, 3);
 			char centerTip = sym->ShortCode.at(7);
-			intCenter = std::stoi(centerVal) * static_cast<int>(std::pow(10, sym->IntDecimal));
+			intCenter = std::stoi(centerVal) * static_cast<int>(std::pow(10, sym->Decimal));
 			if (centerTip == '2' || centerTip == '7')
 				intCenter += 50;
 			delta = std::abs(symMgr->Kospi200Current - intCenter);
@@ -531,7 +531,7 @@ void SmOptionGrid::ShowExpected(int row, int col, VtSymbol* sym)
 	CGridCellBase* pCell = GetCell(row, col);
 	if (pCell) {
 		int curValue = sym->Quote.intExpected;
-		std::string strVal = NumberFormatter::format(curValue / std::pow(10, sym->IntDecimal), sym->IntDecimal);
+		std::string strVal = NumberFormatter::format(curValue / std::pow(10, sym->Decimal), sym->Decimal);
 		pCell->SetText(strVal.c_str());
 		InvalidateCellRect(row, col);
 	}
@@ -554,7 +554,7 @@ void SmOptionGrid::ShowCurrent(int row, int col, VtSymbol* sym)
 	CGridCellBase* pCell = GetCell(row, col);
 	if (pCell) {
 		int curValue = sym->Quote.intClose;
-		std::string strVal = NumberFormatter::format(curValue / std::pow(10, sym->IntDecimal), sym->IntDecimal);
+		std::string strVal = NumberFormatter::format(curValue / std::pow(10, sym->Decimal), sym->Decimal);
 		pCell->SetText(strVal.c_str());
 		InvalidateCellRect(row, col);
 	}
@@ -822,12 +822,12 @@ void SmOptionGrid::MakeSymbolRowMap(int start_index, int max_row)
 
 			std::string centerVal = call_sym->ShortCode.substr(5, 3);
 			char centerTip = call_sym->ShortCode.at(7);
-			int intCenter = std::stoi(centerVal) * static_cast<int>(std::pow(10, call_sym->IntDecimal));
+			int intCenter = std::stoi(centerVal) * static_cast<int>(std::pow(10, call_sym->Decimal));
 			if (centerTip == '2' || centerTip == '7')
 				intCenter += 50;
 			
 			// 중앙값을 설정한다.
-			std::string strVal = NumberFormatter::format(intCenter / std::pow(10, call_sym->IntDecimal), call_sym->IntDecimal);
+			std::string strVal = NumberFormatter::format(intCenter / std::pow(10, call_sym->Decimal), call_sym->Decimal);
 			CGridCellBase* pCell = GetCell(j, 1);
 			if (pCell) {
 				// 새로운 등가를 설정한다.

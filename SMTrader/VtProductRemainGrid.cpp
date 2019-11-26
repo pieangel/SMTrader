@@ -252,8 +252,8 @@ void VtProductRemainGrid::ShowPosition(VtPosition* posi, VtSymbol* sym)
 	QuickSetNumber(2, 0, std::abs(posi->OpenQty));
 	QuickRedrawCell(2, 0);
 	CString thVal;
-	std::string temp = NumberFormatter::format(posi->AvgPrice, sym->IntDecimal);
-	thVal = XFormatNumber(temp.c_str(), sym->IntDecimal);
+	std::string temp = NumberFormatter::format(posi->AvgPrice, sym->Decimal);
+	thVal = XFormatNumber(temp.c_str(), sym->Decimal);
 	QuickSetText(3, 0, thVal);
 	QuickRedrawCell(3, 0);
 
@@ -261,9 +261,9 @@ void VtProductRemainGrid::ShowPosition(VtPosition* posi, VtSymbol* sym)
 	CUGCell cell;
 	GetCell(4, 0, &cell);
 	int curValue = sym->Quote.intClose;
-	cell.SetNumberDecimals(sym->IntDecimal);
-	temp = NumberFormatter::format(curValue / std::pow(10, sym->IntDecimal), sym->IntDecimal);
-	thVal = XFormatNumber(temp.c_str(), sym->IntDecimal);
+	cell.SetNumberDecimals(sym->Decimal);
+	temp = NumberFormatter::format(curValue / std::pow(10, sym->Decimal), sym->Decimal);
+	thVal = XFormatNumber(temp.c_str(), sym->Decimal);
 	cell.SetText(thVal);
 	cell.LongValue(curValue);
 	SetCell(4, 0, &cell);

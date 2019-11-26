@@ -3082,7 +3082,7 @@ void VtOrderPanelGrid::ShowPosition(VtPosition* posi, VtSymbol* sym)
 	int bigVal = itr->first;
 
 
-	int intAvg = static_cast<int>(ROUNDING(posi->AvgPrice * 100.0, sym->IntDecimal));
+	int intAvg = static_cast<int>(ROUNDING(posi->AvgPrice * 100.0, sym->Decimal));
 
 	if (intAvg > bigVal || intAvg < smallVal)
 		return;
@@ -3467,7 +3467,7 @@ int VtOrderPanelGrid::FindNearestCellPos(VtPosition* posi)
 	int bigVal = itr->first;
 
 
-	int intAvg = static_cast<int>(ROUNDING(posi->AvgPrice * std::pow(10, sym->IntDecimal), sym->IntDecimal));
+	int intAvg = static_cast<int>(ROUNDING(posi->AvgPrice * std::pow(10, sym->Decimal), sym->Decimal));
 
 	if (intAvg > bigVal || intAvg < smallVal)
 		return -1;
@@ -3500,7 +3500,7 @@ int VtOrderPanelGrid::FindNearestCellRow(VtPosition* posi)
 	if (!sym)
 		return -1;
 
-	int intAvg = static_cast<int>(ROUNDING(posi->AvgPrice * std::pow(10, sym->IntDecimal), sym->IntDecimal));
+	int intAvg = static_cast<int>(ROUNDING(posi->AvgPrice * std::pow(10, sym->Decimal), sym->Decimal));
 	intAvg = intAvg - intAvg % sym->intTickSize;
 	
 	auto it = RowToValueMap.find(intAvg);
@@ -3899,7 +3899,7 @@ void VtOrderPanelGrid::SetCenterValue()
 		//cell.SetNumberDecimals(sym->IntDecimal);
 		//cell.SetNumber(curValue / std::pow(10, sym->IntDecimal));
 		//std::string strVal = NumberFormatter::format(curValue / std::pow(10, sym->IntDecimal), sym->IntDecimal);
-		std::string strVal = fmt::format("{:.{}f}", curValue / std::pow(10, sym->IntDecimal), sym->IntDecimal);
+		std::string strVal = fmt::format("{:.{}f}", curValue / std::pow(10, sym->Decimal), sym->Decimal);
 		cell.SetText(strVal.c_str());
 		cell.LongValue(curValue);
 		SetCell(CenterCol, i, &cell);
@@ -3934,8 +3934,8 @@ void VtOrderPanelGrid::SetCenterValue(CellPosMap& refreshMap)
 	for (int i = _StartRowForValue; i < _EndRowForValue; i++) {
 		GetCell(CenterCol, i, &cell);
 		int curValue = startValue - sym->intTickSize * (i - 1);
-		std::string strVal = fmt::format("{:.{}f}", curValue / std::pow(10, sym->IntDecimal), sym->IntDecimal);
-		CString thVal = XFormatNumber(strVal.c_str(), sym->IntDecimal);
+		std::string strVal = fmt::format("{:.{}f}", curValue / std::pow(10, sym->Decimal), sym->Decimal);
+		CString thVal = XFormatNumber(strVal.c_str(), sym->Decimal);
 		cell.SetText(thVal);
 		cell.LongValue(curValue);
 		SetCell(CenterCol, i, &cell);
@@ -5510,7 +5510,7 @@ void VtOrderPanelGrid::SetQuoteInfo()
 			cell.SetTextColor(RGB(0, 0, 255));
 			SetCell(CenterCol, _LowRow, &cell);
 			
-			std::string strVal = NumberFormatter::format(sym->Quote.intLow / std::pow(10, sym->IntDecimal), sym->IntDecimal);
+			std::string strVal = NumberFormatter::format(sym->Quote.intLow / std::pow(10, sym->Decimal), sym->Decimal);
 			cell.SetText(strVal.c_str());
 			pos.Col = CenterCol;
 			pos.Row = _LowRow;
@@ -5531,7 +5531,7 @@ void VtOrderPanelGrid::SetQuoteInfo()
 			//cell.SetBackColor(RGB(255, 0, 0));
 			cell.SetTextColor(RGB(255, 0, 0));
 			
-			std::string strVal = NumberFormatter::format(sym->Quote.intHigh / std::pow(10, sym->IntDecimal), sym->IntDecimal);
+			std::string strVal = NumberFormatter::format(sym->Quote.intHigh / std::pow(10, sym->Decimal), sym->Decimal);
 			cell.SetText(strVal.c_str());
 			SetCell(CenterCol, _HighRow, &cell);
 			pos.Col = CenterCol;
@@ -5555,7 +5555,7 @@ void VtOrderPanelGrid::SetQuoteInfo()
 		//cell.SetBorderColor(&m_ClosePen);
 		SetCell(CenterCol, _CloseRow, &cell);
 
-		std::string strVal = NumberFormatter::format(sym->Quote.intClose / std::pow(10, sym->IntDecimal), sym->IntDecimal);
+		std::string strVal = NumberFormatter::format(sym->Quote.intClose / std::pow(10, sym->Decimal), sym->Decimal);
 		cell.SetText(strVal.c_str());
 		pos.Col = CenterCol;
 		pos.Row = _CloseRow;
@@ -5577,7 +5577,7 @@ void VtOrderPanelGrid::SetQuoteInfo()
 		//cell.SetBorderColor(&m_ClosePen);
 		SetCell(CenterCol, _PreCloseRow, &cell);
 
-		std::string strVal = NumberFormatter::format(sym->Quote.intPreClose / std::pow(10, sym->IntDecimal), sym->IntDecimal);
+		std::string strVal = NumberFormatter::format(sym->Quote.intPreClose / std::pow(10, sym->Decimal), sym->Decimal);
 		cell.SetText(strVal.c_str());
 		pos.Col = CenterCol;
 		pos.Row = _PreCloseRow;
@@ -5596,7 +5596,7 @@ void VtOrderPanelGrid::SetQuoteInfo()
 		cell.SetTextColor(RGB(0, 0, 0));
 		SetCell(CenterCol, _OpenRow, &cell);
 
-		std::string strVal = NumberFormatter::format(sym->Quote.intOpen / std::pow(10, sym->IntDecimal), sym->IntDecimal);
+		std::string strVal = NumberFormatter::format(sym->Quote.intOpen / std::pow(10, sym->Decimal), sym->Decimal);
 		cell.SetText(strVal.c_str());
 		pos.Col = CenterCol;
 		pos.Row = _OpenRow;
@@ -5699,7 +5699,7 @@ void VtOrderPanelGrid::SetQuoteInfo(CellPosMap& refreshMap)
 			cell.SetTextColor(RGB(0, 0, 255));
 			SetCell(CenterCol, _LowRow, &cell);
 
-			std::string strVal = NumberFormatter::format(sym->Quote.intLow / std::pow(10, sym->IntDecimal), sym->IntDecimal);
+			std::string strVal = NumberFormatter::format(sym->Quote.intLow / std::pow(10, sym->Decimal), sym->Decimal);
 			cell.SetText(strVal.c_str());
 			pos.Col = CenterCol;
 			pos.Row = _LowRow;
@@ -5719,7 +5719,7 @@ void VtOrderPanelGrid::SetQuoteInfo(CellPosMap& refreshMap)
 			//cell.SetBackColor(RGB(255, 0, 0));
 			cell.SetTextColor(RGB(255, 0, 0));
 
-			std::string strVal = NumberFormatter::format(sym->Quote.intHigh / std::pow(10, sym->IntDecimal), sym->IntDecimal);
+			std::string strVal = NumberFormatter::format(sym->Quote.intHigh / std::pow(10, sym->Decimal), sym->Decimal);
 			cell.SetText(strVal.c_str());
 			SetCell(CenterCol, _HighRow, &cell);
 			pos.Col = CenterCol;
@@ -5743,7 +5743,7 @@ void VtOrderPanelGrid::SetQuoteInfo(CellPosMap& refreshMap)
 		//cell.SetBorderColor(&m_ClosePen);
 		SetCell(CenterCol, _CloseRow, &cell);
 
-		std::string strVal = NumberFormatter::format(sym->Quote.intClose / std::pow(10, sym->IntDecimal), sym->IntDecimal);
+		std::string strVal = NumberFormatter::format(sym->Quote.intClose / std::pow(10, sym->Decimal), sym->Decimal);
 		cell.SetText(strVal.c_str());
 		pos.Col = CenterCol;
 		pos.Row = _CloseRow;
@@ -5765,7 +5765,7 @@ void VtOrderPanelGrid::SetQuoteInfo(CellPosMap& refreshMap)
 		//cell.SetBorderColor(&m_ClosePen);
 		SetCell(CenterCol, _PreCloseRow, &cell);
 
-		std::string strVal = NumberFormatter::format(sym->Quote.intPreClose / std::pow(10, sym->IntDecimal), sym->IntDecimal);
+		std::string strVal = NumberFormatter::format(sym->Quote.intPreClose / std::pow(10, sym->Decimal), sym->Decimal);
 		cell.SetText(strVal.c_str());
 		pos.Col = CenterCol;
 		pos.Row = _PreCloseRow;
@@ -5784,7 +5784,7 @@ void VtOrderPanelGrid::SetQuoteInfo(CellPosMap& refreshMap)
 		cell.SetTextColor(RGB(0, 0, 0));
 		SetCell(CenterCol, _OpenRow, &cell);
 
-		std::string strVal = NumberFormatter::format(sym->Quote.intOpen / std::pow(10, sym->IntDecimal), sym->IntDecimal);
+		std::string strVal = NumberFormatter::format(sym->Quote.intOpen / std::pow(10, sym->Decimal), sym->Decimal);
 		cell.SetText(strVal.c_str());
 		pos.Col = CenterCol;
 		pos.Row = _OpenRow;
@@ -6868,7 +6868,7 @@ void VtOrderPanelGrid::ShowCenterValueForOption()
 	int curVal = startValue;
 	for (int i = _StartRowForValue; i < _EndRowForValue; ++i) {
 		GetCell(CenterCol, i, &cell);
-		std::string strVal = NumberFormatter::format(curVal / std::pow(10, sym->IntDecimal), sym->IntDecimal);
+		std::string strVal = NumberFormatter::format(curVal / std::pow(10, sym->Decimal), sym->Decimal);
 		cell.SetText(strVal.c_str());
 		cell.LongValue(curVal);
 		RowToValueMap[curVal] = i;
@@ -6932,7 +6932,7 @@ void VtOrderPanelGrid::ShowCenterValueForOption(CellPosMap& refreshMap)
 	int curVal = startValue;
 	for (int i = _StartRowForValue; i < _EndRowForValue; ++i) {
 		GetCell(CenterCol, i, &cell);
-		std::string strVal = NumberFormatter::format(curVal / std::pow(10, sym->IntDecimal), sym->IntDecimal);
+		std::string strVal = NumberFormatter::format(curVal / std::pow(10, sym->Decimal), sym->Decimal);
 		cell.SetText(strVal.c_str());
 		cell.LongValue(curVal);
 		RowToValueMap[curVal] = i;
@@ -6982,7 +6982,7 @@ void VtOrderPanelGrid::ShowCenterValueForOptionFixed()
 	int curVal = startValue;
 	for (int i = _StartRowForValue; i < _EndRowForValue; ++i) {
 		GetCell(CenterCol, i, &cell);
-		std::string strVal = NumberFormatter::format(curVal / std::pow(10, sym->IntDecimal), sym->IntDecimal);
+		std::string strVal = NumberFormatter::format(curVal / std::pow(10, sym->Decimal), sym->Decimal);
 		cell.SetText(strVal.c_str());
 		cell.LongValue(curVal);
 		RowToValueMap[curVal] = i;
@@ -7014,7 +7014,7 @@ void VtOrderPanelGrid::RefreshCenterValue()
 		int curValue = startValue - sym->intTickSize * (i - 1);
 		//cell.SetNumberDecimals(sym->IntDecimal);
 		//cell.SetNumber(curValue / std::pow(10, sym->IntDecimal));
-		std::string strVal = NumberFormatter::format(curValue / std::pow(10, sym->IntDecimal), sym->IntDecimal);
+		std::string strVal = NumberFormatter::format(curValue / std::pow(10, sym->Decimal), sym->Decimal);
 		cell.SetText(strVal.c_str());
 		cell.LongValue(curValue);
 		SetCell(CenterCol, i, &cell);
@@ -7041,8 +7041,8 @@ void VtOrderPanelGrid::RefreshCenterValue(CellPosMap& refreshMap)
 	for (int i = _StartRowForValue; i < _EndRowForValue; i++) {
 		GetCell(CenterCol, i, &cell);
 		int curValue = startValue - sym->intTickSize * (i - 1);
-		std::string strVal = NumberFormatter::format(curValue / std::pow(10, sym->IntDecimal), sym->IntDecimal);
-		CString thVal = XFormatNumber(strVal.c_str(), sym->IntDecimal);
+		std::string strVal = NumberFormatter::format(curValue / std::pow(10, sym->Decimal), sym->Decimal);
+		CString thVal = XFormatNumber(strVal.c_str(), sym->Decimal);
 		cell.SetText(thVal);
 		cell.LongValue(curValue);
 		SetCell(CenterCol, i, &cell);
@@ -7078,7 +7078,7 @@ void VtOrderPanelGrid::ShowCenterValueByFixed()
 		int curValue = startValue - sym->intTickSize * (i - 1);
 		//cell.SetNumberDecimals(sym->IntDecimal);
 		//cell.SetNumber(curValue / std::pow(10, sym->IntDecimal));
-		std::string strVal = NumberFormatter::format(curValue / std::pow(10, sym->IntDecimal), sym->IntDecimal);
+		std::string strVal = NumberFormatter::format(curValue / std::pow(10, sym->Decimal), sym->Decimal);
 		cell.SetText(strVal.c_str());
 		cell.LongValue(curValue);
 		SetCell(CenterCol, i, &cell);
@@ -7115,7 +7115,7 @@ void VtOrderPanelGrid::ShowCenterValueByFixed(CellPosMap& refreshMap)
 		int curValue = startValue - sym->intTickSize * (i - 1);
 		//cell.SetNumberDecimals(sym->IntDecimal);
 		//cell.SetNumber(curValue / std::pow(10, sym->IntDecimal));
-		std::string strVal = NumberFormatter::format(curValue / std::pow(10, sym->IntDecimal), sym->IntDecimal);
+		std::string strVal = NumberFormatter::format(curValue / std::pow(10, sym->Decimal), sym->Decimal);
 		cell.SetText(strVal.c_str());
 		cell.LongValue(curValue);
 		SetCell(CenterCol, i, &cell);

@@ -53,7 +53,7 @@ void VtProductOrderManager::OnRemain(VtPosition&& curPosi)
 	// 여기서 잔고를 갱신해 준다.
 	VtPosition* oldPosi = acnt->FindPosition(curPosi.ShortCode);
 
-	double curClose = sym->Quote.intClose / std::pow(10, sym->IntDecimal);
+	double curClose = sym->Quote.intClose / std::pow(10, sym->Decimal);
 	// 아무것도 없는 경우
 	if (!oldPosi)
 	{
@@ -64,7 +64,7 @@ void VtProductOrderManager::OnRemain(VtPosition&& curPosi)
 		if (curPosi.Position == VtPositionType::Sell)
 			buho = -1;
 		oldPosi->OpenQty = buho *curPosi.OpenQty;
-		oldPosi->OpenProfitLoss = oldPosi->OpenQty * (curClose - oldPosi->AvgPrice)*sym->seungsu;
+		oldPosi->OpenProfitLoss = oldPosi->OpenQty * (curClose - oldPosi->AvgPrice)*sym->Seungsu;
 		return;
 	}
 	else {
@@ -72,45 +72,45 @@ void VtProductOrderManager::OnRemain(VtPosition&& curPosi)
 			if (oldPosi->OpenQty > 0) { // 보유수량이 매수			
 				if (oldPosi->OpenQty >= curPosi.OpenQty) { //보유수량이 큰경우
 					oldPosi->OpenQty = oldPosi->OpenQty - curPosi.OpenQty;
-					oldPosi->TradePL += double(-curPosi.OpenQty * (oldPosi->AvgPrice - curPosi.AvgPrice)*sym->seungsu);
+					oldPosi->TradePL += double(-curPosi.OpenQty * (oldPosi->AvgPrice - curPosi.AvgPrice)*sym->Seungsu);
 					if (oldPosi->OpenQty == 0) {
 						oldPosi->AvgPrice = 0;
 						oldPosi->OpenProfitLoss = 0;
 					}
 				}
 				else { //체결수량이 큰 경우
-					oldPosi->TradePL += double(oldPosi->OpenQty * (curPosi.AvgPrice - oldPosi->AvgPrice)*sym->seungsu);
+					oldPosi->TradePL += double(oldPosi->OpenQty * (curPosi.AvgPrice - oldPosi->AvgPrice)*sym->Seungsu);
 					oldPosi->AvgPrice = curPosi.AvgPrice;
 					oldPosi->OpenQty = oldPosi->OpenQty - curPosi.OpenQty;
-					oldPosi->OpenProfitLoss = oldPosi->OpenQty * (curClose - oldPosi->AvgPrice)*sym->seungsu;
+					oldPosi->OpenProfitLoss = oldPosi->OpenQty * (curClose - oldPosi->AvgPrice)*sym->Seungsu;
 				}
 			}
 			else { // 보유수량이 매도 ( 매도/매도 인경우 로직 동일)
 				oldPosi->AvgPrice = double((oldPosi->OpenQty * oldPosi->AvgPrice - curPosi.OpenQty* curPosi.AvgPrice) / (oldPosi->OpenQty - curPosi.OpenQty));
 				oldPosi->OpenQty = oldPosi->OpenQty - curPosi.OpenQty;
-				oldPosi->OpenProfitLoss = oldPosi->OpenQty * (curClose - oldPosi->AvgPrice)*sym->seungsu;
+				oldPosi->OpenProfitLoss = oldPosi->OpenQty * (curClose - oldPosi->AvgPrice)*sym->Seungsu;
 			}
 		}
 		else { //체결수량이 매수
 			if (oldPosi->OpenQty >= 0) { // 보유수량이 매수
 				oldPosi->AvgPrice = double((oldPosi->OpenQty * oldPosi->AvgPrice + curPosi.OpenQty * curPosi.AvgPrice) / (oldPosi->OpenQty + curPosi.OpenQty));
 				oldPosi->OpenQty = oldPosi->OpenQty + curPosi.OpenQty;
-				oldPosi->OpenProfitLoss = oldPosi->OpenQty * (curClose - oldPosi->AvgPrice)*sym->seungsu;
+				oldPosi->OpenProfitLoss = oldPosi->OpenQty * (curClose - oldPosi->AvgPrice)*sym->Seungsu;
 			}
 			else { //보유수량이 매도
 				if (abs(oldPosi->OpenQty) >= curPosi.OpenQty) { //보유수량이 큰경우
 					oldPosi->OpenQty = oldPosi->OpenQty + curPosi.OpenQty;
-					oldPosi->TradePL += double(curPosi.OpenQty * (oldPosi->AvgPrice - curPosi.AvgPrice)*sym->seungsu);
+					oldPosi->TradePL += double(curPosi.OpenQty * (oldPosi->AvgPrice - curPosi.AvgPrice)*sym->Seungsu);
 					if (oldPosi->OpenQty == 0) {
 						oldPosi->AvgPrice = 0;
 						oldPosi->OpenProfitLoss = 0;
 					}
 				}
 				else { //체결수량이 큰 경우				
-					oldPosi->TradePL += double(oldPosi->OpenQty * (curPosi.AvgPrice - oldPosi->AvgPrice)*sym->seungsu);
+					oldPosi->TradePL += double(oldPosi->OpenQty * (curPosi.AvgPrice - oldPosi->AvgPrice)*sym->Seungsu);
 					oldPosi->AvgPrice = curPosi.AvgPrice;
 					oldPosi->OpenQty = oldPosi->OpenQty + curPosi.OpenQty;
-					oldPosi->OpenProfitLoss = oldPosi->OpenQty * (curClose - oldPosi->AvgPrice)*sym->seungsu;
+					oldPosi->OpenProfitLoss = oldPosi->OpenQty * (curClose - oldPosi->AvgPrice)*sym->Seungsu;
 				}
 			}
 		}
@@ -181,7 +181,7 @@ void VtProductOrderManager::OnFilled(VtOrder* order)
 	// 계좌에서 현재 포지션을 가져온다.
 	VtPosition* posi = acnt->FindPosition(order->shortCode);
 
-	double curClose = sym->Quote.intClose / std::pow(10, sym->IntDecimal);
+	double curClose = sym->Quote.intClose / std::pow(10, sym->Decimal);
 	// 주문 포지션에 따른 부호 결정
 	int buho = order->orderPosition == VtPositionType::Buy ? 1 : -1;
 	if (!posi) { // 포지션이 없는 경우
@@ -189,7 +189,7 @@ void VtProductOrderManager::OnFilled(VtOrder* order)
 		posi->Position = order->orderPosition;
 		posi->AvgPrice = order->filledPrice;
 		posi->OpenQty = buho *order->filledQty;
-		posi->OpenProfitLoss = posi->OpenQty * (curClose - posi->AvgPrice)*sym->seungsu;
+		posi->OpenProfitLoss = posi->OpenQty * (curClose - posi->AvgPrice)*sym->Seungsu;
 		// 잔고 수량에 넣어 준다. 매도는 음수, 매수는 양수, 포지션 없으면 0
 		order->remainQty = buho *order->filledQty;
 		// 잔고 주문에 넣는다.
@@ -201,7 +201,7 @@ void VtProductOrderManager::OnFilled(VtOrder* order)
 			if (posi->OpenQty > 0) { // 보유수량이 매수			
 				if (posi->OpenQty >= order->filledQty) { //보유수량이 크거나 같은 경우
 					posi->OpenQty = posi->OpenQty - order->filledQty;
-					posi->TradePL += double(-order->filledQty * (posi->AvgPrice - order->filledPrice)*sym->seungsu);
+					posi->TradePL += double(-order->filledQty * (posi->AvgPrice - order->filledPrice)*sym->Seungsu);
 					// 들어온 주문은 상쇄 된다.
 					order->state = VtOrderState::Settled;
 					order->remainQty = 0;
@@ -219,10 +219,10 @@ void VtProductOrderManager::OnFilled(VtOrder* order)
 						AdjustRemainQ(-1 * order->filledQty);
 					}
 				} else { //체결수량이 큰 경우
-					posi->TradePL += double(posi->OpenQty * (order->filledPrice - posi->AvgPrice)*sym->seungsu);
+					posi->TradePL += double(posi->OpenQty * (order->filledPrice - posi->AvgPrice)*sym->Seungsu);
 					posi->AvgPrice = order->filledPrice;
 					posi->OpenQty = posi->OpenQty - order->filledQty;
-					posi->OpenProfitLoss = posi->OpenQty * (curClose - posi->AvgPrice)*sym->seungsu;
+					posi->OpenProfitLoss = posi->OpenQty * (curClose - posi->AvgPrice)*sym->Seungsu;
 					// 보유수량과 상쇄되고 남은 갯수가 잔고가 된다. - 여기서는 잔고가 매도 포지션이 된다.
 					order->remainQty = posi->OpenQty - order->filledQty;
 					// 이경우 기존 잔고 목록은 모두 사라진다.
@@ -231,7 +231,7 @@ void VtProductOrderManager::OnFilled(VtOrder* order)
 			} else { // 보유수량이 매도 ( 보유수량이매도/체결수량이매도 인 경우)
 				posi->AvgPrice = double((posi->OpenQty * posi->AvgPrice - order->filledQty* order->filledPrice) / (posi->OpenQty - order->filledQty));
 				posi->OpenQty = posi->OpenQty - order->filledQty;
-				posi->OpenProfitLoss = posi->OpenQty * (curClose - posi->AvgPrice)*sym->seungsu;
+				posi->OpenProfitLoss = posi->OpenQty * (curClose - posi->AvgPrice)*sym->Seungsu;
 				// 이경우 포지션이 같으므로 더해 주지 않는다.
 				// 잔고 수량에 넣어 준다. 매도는 음수, 매수는 양수, 포지션 없으면 0
 				order->remainQty = buho *order->filledQty;
@@ -240,14 +240,14 @@ void VtProductOrderManager::OnFilled(VtOrder* order)
 			if (posi->OpenQty >= 0) { // 보유수량이 매수/체결수량이매수 인 경우
 				posi->AvgPrice = double((posi->OpenQty * posi->AvgPrice + order->filledQty * order->filledPrice) / (posi->OpenQty + order->filledQty));
 				posi->OpenQty = posi->OpenQty + order->filledQty;
-				posi->OpenProfitLoss = posi->OpenQty * (curClose - posi->AvgPrice)*sym->seungsu;
+				posi->OpenProfitLoss = posi->OpenQty * (curClose - posi->AvgPrice)*sym->Seungsu;
 				// 이경우 포지션이 같으므로 더해 주지 않는다.
 				// 잔고 수량에 넣어 준다. 매도는 음수, 매수는 양수, 포지션 없으면 0
 				order->remainQty = buho *order->filledQty;
 			} else { //보유수량이 매도
 				if (abs(posi->OpenQty) >= order->filledQty) { //보유수량이 큰경우
 					posi->OpenQty = posi->OpenQty + order->filledQty;
-					posi->TradePL += double(order->filledQty * (posi->AvgPrice - order->filledPrice)*sym->seungsu);
+					posi->TradePL += double(order->filledQty * (posi->AvgPrice - order->filledPrice)*sym->Seungsu);
 					order->state = VtOrderState::Settled;
 					// 들어온 주문은 상쇄되고 포지션을 상실한다.
 					order->remainQty = 0;
@@ -265,10 +265,10 @@ void VtProductOrderManager::OnFilled(VtOrder* order)
 						RemoveAllRemain();
 					}
 				} else { //체결수량이 큰 경우				
-					posi->TradePL += double(posi->OpenQty * (order->filledPrice - posi->AvgPrice)*sym->seungsu);
+					posi->TradePL += double(posi->OpenQty * (order->filledPrice - posi->AvgPrice)*sym->Seungsu);
 					posi->AvgPrice = order->filledPrice;
 					posi->OpenQty = posi->OpenQty + order->filledQty;
-					posi->OpenProfitLoss = posi->OpenQty * (curClose - posi->AvgPrice)*sym->seungsu;
+					posi->OpenProfitLoss = posi->OpenQty * (curClose - posi->AvgPrice)*sym->Seungsu;
 					// 이경우 기존의 매도 포지션 잔고 갯수가 상쇄되고 남은 주문의 잔고는 매수 포지션이 된다.
 					order->remainQty = posi->OpenQty + order->filledQty;
 					// 이 경우 잔고 목록을 상쇄시켜 줘야 한다.
@@ -499,9 +499,9 @@ double VtProductOrderManager::CalcOpenPL(VtOrder* order, double avgPrice, int co
 	VtSymbol* sym = symMgr->FindHdSymbol(order->shortCode);
 	if (!sym)
 		return result;
-	int intAvgPrice = (int)(avgPrice * std::pow(10, sym->IntDecimal));
+	int intAvgPrice = (int)(avgPrice * std::pow(10, sym->Decimal));
 	int diff = VtSymbolManager::GetTickDiff(sym->Quote.intClose, intAvgPrice, sym);
-	result = abs(diff) * sym->intTickValue * count;
+	result = abs(diff) * sym->TickValue * count;
 	return result;
 }
 
@@ -518,7 +518,7 @@ double VtProductOrderManager::CalcOpenPL(VtOrder* order, int avgPrice, int count
 
 	
 	int diff = VtSymbolManager::GetTickDiff(sym->Quote.intClose, avgPrice, sym);
-	result = abs(diff) * sym->intTickValue * count;
+	result = abs(diff) * sym->TickValue * count;
 	return result;
 }
 
@@ -552,7 +552,7 @@ double VtProductOrderManager::CalcOpenPLHd(double close, VtPosition* posi, VtSym
 		return 0.0;
 
 	double result = 0;
-	result = posi->OpenQty * (close - posi->AvgPrice)*sym->seungsu;
+	result = posi->OpenQty * (close - posi->AvgPrice)*sym->Seungsu;
 
 	return result;
 }

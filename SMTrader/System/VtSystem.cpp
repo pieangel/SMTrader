@@ -2734,6 +2734,9 @@ void VtSystem::SaveToXml(pugi::xml_node& node)
 	system_child = node.append_child("system_target_type");
 	system_child.append_child(pugi::node_pcdata).set_value(std::to_string((int)_SysTargetType).c_str());
 
+	system_child = node.append_child("system_target_name");
+	system_child.append_child(pugi::node_pcdata).set_value(_SysTargetName.c_str());
+
 	system_child = node.append_child("system_start_hour");
 	system_child.append_child(pugi::node_pcdata).set_value(std::to_string(_EntranceStartTime.hour).c_str());
 
@@ -2854,6 +2857,7 @@ void VtSystem::LoadFromXml(pugi::xml_node& node_system)
 	_Name = node_system.child_value("system_name");
 	_CustomName = node_system.child_value("system_custom_name");
 	_SysTargetType = (TargetType)std::stoi(node_system.child_value("system_target_type"));
+	_SysTargetName = node_system.child_value("system_target_name");
 	_EntranceStartTime.hour = std::stoi(node_system.child_value("system_start_hour"));
 	_EntranceStartTime.min = std::stoi(node_system.child_value("system_start_min"));
 	_EntranceStartTime.sec = std::stoi(node_system.child_value("system_start_sec"));
@@ -2889,12 +2893,35 @@ void VtSystem::LoadFromXml(pugi::xml_node& node_system)
 	_FilterMulti = std::stoi(node_system.child_value("filter_multi"));
 	_OutSignalName = node_system.child_value("out_signal_name");
 	_OrderTick = std::stoi(node_system.child_value("order_tick"));
+
+	if (_SysTargetType == TargetType::RealAccount) {
+		VtAccountManager* acntMgr = VtAccountManager::GetInstance();
+		_Account = acntMgr->FindAccount(_SysTargetName);
+	}
+	else if (_SysTargetType == TargetType::SubAccount) {
+		VtSubAccountManager* subAcntMgr = VtSubAccountManager::GetInstance();
+		_Account = subAcntMgr->FindAccount(_SysTargetName);
+	}
+	else if (_SysTargetType == TargetType::Fund) {
+		VtFundManager* fundMgr = VtFundManager::GetInstance();
+		_Fund = fundMgr->FindFund(_SysTargetName);
+	}
+
+	VtOutSignalDefManager* outSigMgr = VtOutSignalDefManager::GetInstance();
+	SharedOutSigDef outSig = outSigMgr->FindOutSigDef(_OutSignalName);
+	if (outSig) _OutSignal = outSig;
+
+	VtSymbolManager* symMgr = VtSymbolManager::GetInstance();
+	_Symbol = symMgr->FindSymbol(_SymbolCode);
+
 	pugi::xml_node argement_group_list_node = node_system.child("argument_group_list");
 	if (argement_group_list_node) {
 		_ArgGroupMap.clear();
 		for (pugi::xml_node argument_group_node = argement_group_list_node.child("argument_group"); argument_group_node; argument_group_node = argument_group_node.next_sibling("argument_group")) {
 			VtSystemArgGroup arg_group;
 			arg_group.LoadFromXml(argument_group_node);
+			AddSystemArgGroup(arg_group.Name(), arg_group);
 		}
+		_ArgsLoaded = true;
 	}
 }

@@ -142,7 +142,7 @@ HdOrderRequest* VtCutManager::MakePositionStopOrderRequest(int mode, VtPosition*
 	if (!(posi->Position == VtPositionType::Buy || posi->Position == VtPositionType::Sell))
 		return nullptr;
 
-	int intAvg = static_cast<int>(ROUNDING(posi->AvgPrice * std::pow(10, sym->IntDecimal), sym->IntDecimal));
+	int intAvg = static_cast<int>(ROUNDING(posi->AvgPrice * std::pow(10, sym->Decimal), sym->Decimal));
 	// ÀûÀýÇÑ °ªÀ» ¼¿¿¡¼­ Ã£±â À§ÇÏ¿© ³ª¸ÓÁö¸¦ »©ÁØ´Ù.
 	intAvg = intAvg - intAvg % sym->intTickSize;
 
@@ -534,10 +534,10 @@ bool VtCutManager::CheckCutLoss(VtPosition* posi, VtSymbol* sym, int tickCount)
 	if (!posi || posi->OpenQty == 0)
 		return false;
 	// Æ½Å©±â * Æ½¼ö * ½Â¼ö = ½ÇÁ¦ ¼öÀÍ
-	int target = sym->intTickSize * tickCount * sym->seungsu;
+	int target = sym->intTickSize * tickCount * sym->Seungsu;
 
 	target = -1 * target;
-	if (posi->OpenProfitLoss * std::pow(10, sym->IntDecimal) <= (double)target)
+	if (posi->OpenProfitLoss * std::pow(10, sym->Decimal) <= (double)target)
 		return true;
 	else
 		return false;
@@ -584,9 +584,9 @@ bool VtCutManager::CheckCutProfit(VtPosition* posi, VtSymbol* sym, int size)
 	if (!posi)
 		return false;
 	// Æ½Å©±â * Æ½¼ö * ½Â¼ö = ½ÇÁ¦ ¼öÀÍ
-	int target = sym->intTickSize * size * sym->seungsu;
+	int target = sym->intTickSize * size * sym->Seungsu;
 
-	if (posi->OpenProfitLoss * std::pow(10, sym->IntDecimal) >= (double)target)
+	if (posi->OpenProfitLoss * std::pow(10, sym->Decimal) >= (double)target)
 		return true;
 	else
 		return false;
@@ -630,7 +630,7 @@ bool VtCutManager::CheckCutLossByPercent(VtPosition* posi, VtSymbol* sym, double
 {
 	double avg = posi->AvgPrice;
 	double dif = avg * percent / 100.0;
-	double curPrice = sym->Quote.intClose / std::pow(10, sym->IntDecimal);
+	double curPrice = sym->Quote.intClose / std::pow(10, sym->Decimal);
 	if (posi->Position == VtPositionType::Buy) {
 		if (curPrice <= avg - dif) {
 			return true;
@@ -648,7 +648,7 @@ bool VtCutManager::CheckCutProfitByPercent(VtPosition* posi, VtSymbol* sym, doub
 {
 	double avg = posi->AvgPrice;
 	double dif = avg * percent / 100.0;
-	double curPrice = sym->Quote.intClose / std::pow(10, sym->IntDecimal);
+	double curPrice = sym->Quote.intClose / std::pow(10, sym->Decimal);
 	if (posi->Position == VtPositionType::Buy) {
 		if (curPrice >= avg + dif) {
 			return true;

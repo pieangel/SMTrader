@@ -12,6 +12,7 @@ public:
 	~VtSaveManager();
 	void WriteSettings();
 	void ReadSettings();
+	void ReadWindows();
 	std::string GetLastestFile(std::string ext);
 	void SaveAccountList();
 	void SaveFundList();

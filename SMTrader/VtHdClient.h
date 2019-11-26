@@ -71,6 +71,9 @@ public:
 
 	void GetServerTime();
 	void RegisterRealtimeDataKey(std::string symCode, std::string dataKey);
+
+	void DownloadMasterFiles(std::string param);
+	void DownloadDomesticMasterFile(std::string file_name);
 private:
 	VtHdCtrl* _HdCtrl = nullptr;
 };

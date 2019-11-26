@@ -27,7 +27,10 @@ public:
 
 	void SaveToXml(pugi::xml_node& node);
 	void LoadFromXml(pugi::xml_node& node);
+	bool SystemGroupLoaded() const { return _SystemGroupLoaded; }
+	void SystemGroupLoaded(bool val) { _SystemGroupLoaded = val; }
 private:
 	std::vector<VtSystemGroup> _SystemGroupVec;
+	bool _SystemGroupLoaded = false;
 };
 

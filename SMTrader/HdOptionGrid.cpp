@@ -188,7 +188,7 @@ void HdOptionGrid::InitGrid()
 			GetCell(0, i, &cell);
 			//cell.SetText(sym->ShortCode.c_str());
 			int curValue = sym->Quote.intClose;
-			std::string strVal = NumberFormatter::format(curValue / std::pow(10, sym->IntDecimal), sym->IntDecimal);
+			std::string strVal = NumberFormatter::format(curValue / std::pow(10, sym->Decimal), sym->Decimal);
 			cell.SetText(strVal.c_str());
 			cell.Tag(sym);
 			SetCell(0, i, &cell);
@@ -199,7 +199,7 @@ void HdOptionGrid::InitGrid()
 			GetCell(1, i, &centerCell);
 			std::string centerVal = sym->ShortCode.substr(5, 3);
 			char centerTip = sym->ShortCode.at(7);
-			int intCenter = static_cast<int>(std::stoi(centerVal) * std::pow(10, sym->IntDecimal));
+			int intCenter = static_cast<int>(std::stoi(centerVal) * std::pow(10, sym->Decimal));
 			if (centerTip == '2' || centerTip == '7')
 				intCenter += 50;
 
@@ -210,8 +210,8 @@ void HdOptionGrid::InitGrid()
 				eIndex = i;
 			}
 
-			centerCell.SetNumberDecimals(sym->IntDecimal);
-			centerCell.SetNumber(intCenter / std::pow(10, sym->IntDecimal));
+			centerCell.SetNumberDecimals(sym->Decimal);
+			centerCell.SetNumber(intCenter / std::pow(10, sym->Decimal));
 			SetCell(1, i, &centerCell);
 
 			RedrawCell(1, i);
@@ -237,7 +237,7 @@ void HdOptionGrid::InitGrid()
 			GetCell(2, i, &cell);
 			//cell.SetText(sym->ShortCode.c_str());
 			int curValue = sym->Quote.intClose;
-			std::string strVal = NumberFormatter::format(curValue / std::pow(10, sym->IntDecimal), sym->IntDecimal);
+			std::string strVal = NumberFormatter::format(curValue / std::pow(10, sym->Decimal), sym->Decimal);
 			cell.SetText(strVal.c_str());
 			cell.Tag(sym);
 			SetCell(2, i, &cell);
@@ -428,7 +428,7 @@ void HdOptionGrid::OnSymbolMaster(VtSymbol* sym)
 		auto pos = _CallSymbolRowMap[sym];
 		GetCell(pos.first, pos.second, &cell);
 		int curValue = sym->Quote.intClose;
-		std::string strVal = NumberFormatter::format(curValue / std::pow(10, sym->IntDecimal), sym->IntDecimal);
+		std::string strVal = NumberFormatter::format(curValue / std::pow(10, sym->Decimal), sym->Decimal);
 		
 		cell.SetText(strVal.c_str());
 		SetCell(pos.first, pos.second, &cell);
@@ -441,7 +441,7 @@ void HdOptionGrid::OnSymbolMaster(VtSymbol* sym)
 		auto pos = _PutSymbolRowMap[sym];
 		GetCell(pos.first, pos.second, &cell);
 		int curValue = sym->Quote.intClose;
-		std::string strVal = NumberFormatter::format(curValue / std::pow(10, sym->IntDecimal), sym->IntDecimal);
+		std::string strVal = NumberFormatter::format(curValue / std::pow(10, sym->Decimal), sym->Decimal);
 		cell.SetText(strVal.c_str());
 		SetCell(pos.first, pos.second, &cell);
 		RedrawCell(pos.first, pos.second);

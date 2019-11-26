@@ -94,15 +94,17 @@ void VtSystemArgGroup::LoadFromXml(pugi::xml_node& node_argument_group)
 	_Name = node_argument_group.child_value("name");
 	pugi::xml_node argument_list_node = node_argument_group.child("argument_list");
 	if (argument_list_node) {
-		pugi::xml_node argument_node = argument_list_node.child("argument");
-		VtSystemArg arg;
-		arg.bValue = argument_node.attribute("bvalue").as_bool();
-		arg.Desc = argument_node.attribute("desc").as_string();
-		arg.dValue = argument_node.attribute("dvalue").as_double();
-		arg.Enable = argument_node.attribute("enable").as_bool();
-		arg.iValue = argument_node.attribute("ivalue").as_int();
-		arg.Name = argument_node.attribute("name").as_string();
-		arg.sValue = argument_node.attribute("svalue").as_string();
-		arg.Type = (VtParamType)argument_node.attribute("type").as_int();
+		for (pugi::xml_node argument_node = argument_list_node.child("argument"); argument_node; argument_node = argument_node.next_sibling("argument")) {
+			VtSystemArg arg;
+			arg.bValue = argument_node.attribute("bvalue").as_bool();
+			arg.Desc = argument_node.attribute("desc").as_string();
+			arg.dValue = argument_node.attribute("dvalue").as_double();
+			arg.Enable = argument_node.attribute("enable").as_bool();
+			arg.iValue = argument_node.attribute("ivalue").as_int();
+			arg.Name = argument_node.attribute("name").as_string();
+			arg.sValue = argument_node.attribute("svalue").as_string();
+			arg.Type = (VtParamType)argument_node.attribute("type").as_int();
+			AddSystemArg(arg.Name, arg);
+		}
 	}
 }

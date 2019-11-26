@@ -262,18 +262,18 @@ void VtAccount::SumOpenPL()
 void VtAccount::CalcOpenPL(VtSymbol* sym)
 {
 	if (sym) {
-		double curClose = sym->Quote.intClose / std::pow(10, sym->IntDecimal);
+		double curClose = sym->Quote.intClose / std::pow(10, sym->Decimal);
 		VtPosition* posi = FindPosition(sym->ShortCode);
 		if (posi)
-			posi->OpenProfitLoss = posi->OpenQty * (curClose - posi->AvgPrice)*sym->seungsu;
+			posi->OpenProfitLoss = posi->OpenQty * (curClose - posi->AvgPrice)*sym->Seungsu;
 	}
 }
 
 void VtAccount::SumOpenPL(VtSymbol* sym, VtPosition* posi)
 {
 	if (sym && posi) {
-		double curClose = sym->Quote.intClose / std::pow(10, sym->IntDecimal);
-		posi->OpenProfitLoss = posi->OpenQty * (curClose - posi->AvgPrice)*sym->seungsu;
+		double curClose = sym->Quote.intClose / std::pow(10, sym->Decimal);
+		posi->OpenProfitLoss = posi->OpenQty * (curClose - posi->AvgPrice)*sym->Seungsu;
 	}
 }
 
@@ -327,8 +327,8 @@ VtPosition* VtAccount::CreatePosition(VtOrder* order)
 	position->ShortCode = order->shortCode;
 	position->Position = order->orderPosition;
 	position->OpenQty = order->filledQty;
-	position->AvgPrice = order->intFilledPrice / std::pow(10, sym->IntDecimal);
-	position->CurPrice = order->intFilledPrice / std::pow(10, sym->IntDecimal);
+	position->AvgPrice = order->intFilledPrice / std::pow(10, sym->Decimal);
+	position->CurPrice = order->intFilledPrice / std::pow(10, sym->Decimal);
 	position->SubAccountNo = order->SubAccountNo;
 	position->FundName = order->FundName;
 	position->orderType = order->type;
@@ -531,11 +531,11 @@ bool VtAccount::CheckCutLoss(VtSymbol* sym, int size)
 	if (!posi)
 		return false;
 
-	double target = sym->intTickSize * size * sym->seungsu;
+	double target = sym->intTickSize * size * sym->Seungsu;
 	//target = target / std::pow(10, sym->IntDecimal);
 
 	target = -1 * target;
-	if (posi->OpenProfitLoss * std::pow(10, sym->IntDecimal) <= target)
+	if (posi->OpenProfitLoss * std::pow(10, sym->Decimal) <= target)
 		return true;
 	else
 		return false;
@@ -548,11 +548,11 @@ bool VtAccount::CheckCutLoss(VtPosition* posi, VtSymbol* sym, int size)
 	if (!posi)
 		return false;
 
-	double target = sym->intTickSize * size * sym->seungsu;
+	double target = sym->intTickSize * size * sym->Seungsu;
 	//target = target / std::pow(10, sym->IntDecimal);
 
 	target = -1 * target;
-	if (posi->OpenProfitLoss * std::pow(10, sym->IntDecimal) <= target)
+	if (posi->OpenProfitLoss * std::pow(10, sym->Decimal) <= target)
 		return true;
 	else
 		return false;
@@ -567,10 +567,10 @@ bool VtAccount::CheckCutProfit(VtSymbol* sym, int size)
 	if (!posi)
 		return false;
 
-	double target = sym->intTickSize * size * sym->seungsu;
+	double target = sym->intTickSize * size * sym->Seungsu;
 	//target = target / std::pow(10, sym->IntDecimal);
 
-	if (posi->OpenProfitLoss * std::pow(10, sym->IntDecimal) >= target)
+	if (posi->OpenProfitLoss * std::pow(10, sym->Decimal) >= target)
 		return true;
 	else
 		return false;
@@ -584,10 +584,10 @@ bool VtAccount::CheckCutProfit(VtPosition* posi, VtSymbol* sym, int size)
 	if (!posi)
 		return false;
 
-	double target = sym->intTickSize * size * sym->seungsu;
+	double target = sym->intTickSize * size * sym->Seungsu;
 	//target = target / std::pow(10, sym->IntDecimal);
 
-	if (posi->OpenProfitLoss * std::pow(10, sym->IntDecimal) >= target)
+	if (posi->OpenProfitLoss * std::pow(10, sym->Decimal) >= target)
 		return true;
 	else
 		return false;

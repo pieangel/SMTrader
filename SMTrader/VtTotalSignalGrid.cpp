@@ -121,8 +121,8 @@ void VtTotalSignalGrid::RefreshOrders()
 		CString thVal;
 		std::string temp;
 		if (sys->Symbol()) {
-			temp = NumberFormatter::format(posi.AvgPrice, sys->Symbol()->IntDecimal);
-			thVal = XFormatNumber(temp.c_str(), sys->Symbol()->IntDecimal);
+			temp = NumberFormatter::format(posi.AvgPrice, sys->Symbol()->Decimal);
+			thVal = XFormatNumber(temp.c_str(), sys->Symbol()->Decimal);
 		}
 		else {
 			temp = NumberFormatter::format(0, 0);
@@ -136,8 +136,8 @@ void VtTotalSignalGrid::RefreshOrders()
 		GetCell(4, i, &cell);
 		int curValue = sys->Symbol() ? sys->Symbol()->Quote.intClose : 0;
 		if (sys->Symbol()) {
-			temp = NumberFormatter::format(curValue / std::pow(10, sys->Symbol()->IntDecimal), sys->Symbol()->IntDecimal);
-			thVal = XFormatNumber(temp.c_str(), sys->Symbol()->IntDecimal);
+			temp = NumberFormatter::format(curValue / std::pow(10, sys->Symbol()->Decimal), sys->Symbol()->Decimal);
+			thVal = XFormatNumber(temp.c_str(), sys->Symbol()->Decimal);
 		}
 		else {
 			temp = NumberFormatter::format(0, 0);
@@ -203,8 +203,8 @@ void VtTotalSignalGrid::InitGrid()
 		CString thVal;
 		std::string temp;
 		if (sys->Symbol()) {
-			temp = NumberFormatter::format(posi.AvgPrice, sys->Symbol()->IntDecimal);
-			thVal = XFormatNumber(temp.c_str(), sys->Symbol()->IntDecimal);
+			temp = NumberFormatter::format(posi.AvgPrice, sys->Symbol()->Decimal);
+			thVal = XFormatNumber(temp.c_str(), sys->Symbol()->Decimal);
 		}
 		else {
 			temp = NumberFormatter::format(0, 0);
@@ -218,8 +218,8 @@ void VtTotalSignalGrid::InitGrid()
 		GetCell(4, i, &cell);
 		int curValue = sys->Symbol() ? sys->Symbol()->Quote.intClose : 0;
 		if (sys->Symbol()) {
-			temp = NumberFormatter::format(curValue / std::pow(10, sys->Symbol()->IntDecimal), sys->Symbol()->IntDecimal);
-			thVal = XFormatNumber(temp.c_str(), sys->Symbol()->IntDecimal);
+			temp = NumberFormatter::format(curValue / std::pow(10, sys->Symbol()->Decimal), sys->Symbol()->Decimal);
+			thVal = XFormatNumber(temp.c_str(), sys->Symbol()->Decimal);
 		}
 		else {
 			temp = NumberFormatter::format(0, 0);

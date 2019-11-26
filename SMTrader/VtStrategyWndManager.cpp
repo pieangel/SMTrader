@@ -127,24 +127,6 @@ void VtStrategyWndManager::UpdateDialog(VtSystem* sys)
 	}
 }
 
-/*
-// 대화상자 갯수 저장
-ss << (int)_WindowMap.size();
-// 개별 윈도우 타입과 위치 저장
-for (auto it = _WindowMap.begin(); it != _WindowMap.end(); ++it) {
-auto item = it->second;
-
-int dlgType = (int)std::get<0>(item);
-CRect rcWnd;
-std::get<1>(item)->GetWindowRect(rcWnd);
-ss << dlgType;
-ss << rcWnd.left << rcWnd.top << rcWnd.right << rcWnd.bottom;
-if (std::get<1>(item)->System())
-ss << std::get<1>(item)->System()->Name();
-else
-ss << _T("NoSystem");
-}
-*/
 void VtStrategyWndManager::SaveToXml(pugi::xml_node& stratege_window_list_node)
 {
 	for (auto it = _WindowMap.begin(); it != _WindowMap.end(); ++it) {

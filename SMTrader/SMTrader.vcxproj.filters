@@ -146,6 +146,9 @@
     <Filter Include="OrderUI">
       <UniqueIdentifier>{363aad9c-60ff-4a3b-b514-ca401fcbdfc7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Market">
+      <UniqueIdentifier>{3f102f6b-2307-4ea3-ade4-208e3f2b3d1e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -1537,6 +1540,21 @@
     <ClInclude Include="Format\format_string.h">
       <Filter>Format</Filter>
     </ClInclude>
+    <ClInclude Include="Market\SmMarket.h">
+      <Filter>Market</Filter>
+    </ClInclude>
+    <ClInclude Include="Market\SmMarketManager.h">
+      <Filter>Market</Filter>
+    </ClInclude>
+    <ClInclude Include="Market\SmProduct.h">
+      <Filter>Market</Filter>
+    </ClInclude>
+    <ClInclude Include="Market\SmProductYearMonth.h">
+      <Filter>Market</Filter>
+    </ClInclude>
+    <ClInclude Include="Market\SmSymbolReader.h">
+      <Filter>Market</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ChildFrm.cpp">
@@ -2747,6 +2765,21 @@
     </ClCompile>
     <ClCompile Include="SmTickGrid.cpp">
       <Filter>OrderUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Market\SmMarket.cpp">
+      <Filter>Market</Filter>
+    </ClCompile>
+    <ClCompile Include="Market\SmMarketManager.cpp">
+      <Filter>Market</Filter>
+    </ClCompile>
+    <ClCompile Include="Market\SmProduct.cpp">
+      <Filter>Market</Filter>
+    </ClCompile>
+    <ClCompile Include="Market\SmProductYearMonth.cpp">
+      <Filter>Market</Filter>
+    </ClCompile>
+    <ClCompile Include="Market\SmSymbolReader.cpp">
+      <Filter>Market</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

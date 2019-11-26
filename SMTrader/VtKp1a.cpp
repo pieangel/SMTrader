@@ -353,8 +353,6 @@ void VtKp1a::SaveToXml(pugi::xml_node& node)
 void VtKp1a::LoadFromXml(pugi::xml_node& node)
 {
 	VtSystem::LoadFromXml(node);
-
-
 }
 
 /// <summary>

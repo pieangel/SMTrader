@@ -300,7 +300,7 @@ void VtChartData::OnReceiveQuoteHd(VtSymbol* sym)
 	if (!sym)
 		return;
 	if (_Filled) {
-		double close = sym->Quote.intClose/std::pow(10, sym->IntDecimal);
+		double close = sym->Quote.intClose/std::pow(10, sym->Decimal);
 		_RealTimeClose = close;
 		VtChartDataItem item = GetChartData(ChartDataSize - 1);
 		item.Close = close;

@@ -77,6 +77,7 @@ public:
 	void OpenFundJango();
 	void UpdateSysLog();
 private:
+	bool _SymbolFileDownloaded = false;
 	VtSystemLogDlg* _SysLogDlg = nullptr;
 	bool _Init = false;
 	bool bCreating = false;

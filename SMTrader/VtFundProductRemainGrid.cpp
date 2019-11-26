@@ -243,8 +243,8 @@ void VtFundProductRemainGrid::ShowPosition(VtPosition* posi, int index)
 		strValue.Format(_T("%d"), posi->OpenQty);
 		QuickSetText(1, index, strValue);
 
-		std::string temp = NumberFormatter::format(posi->AvgPrice, sym->IntDecimal);
-		CString thVal = XFormatNumber(temp.c_str(), sym->IntDecimal);
+		std::string temp = NumberFormatter::format(posi->AvgPrice, sym->Decimal);
+		CString thVal = XFormatNumber(temp.c_str(), sym->Decimal);
 		QuickSetText(2, index, thVal);
 
 		temp = NumberFormatter::format(posi->OpenProfitLoss, 0);
@@ -269,8 +269,8 @@ void VtFundProductRemainGrid::ShowPosition(VtPosition* posi, int index)
 		strValue.Format(_T("%d"), posi->OpenQty);
 		QuickSetText(2, index, strValue);
 
-		std::string temp = NumberFormatter::format(posi->AvgPrice, sym->IntDecimal);
-		CString thVal = XFormatNumber(temp.c_str(), sym->IntDecimal);
+		std::string temp = NumberFormatter::format(posi->AvgPrice, sym->Decimal);
+		CString thVal = XFormatNumber(temp.c_str(), sym->Decimal);
 		QuickSetText(3, index, thVal);
 	}
 

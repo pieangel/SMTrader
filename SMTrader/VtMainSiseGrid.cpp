@@ -113,15 +113,15 @@ void VtMainSiseGrid::ShowCurrent(VtSymbol* sym, int col, int row)
 {
 	if (!sym)
 		return;
-	std::string val = fmt::format("{:.{}f}", sym->Quote.intClose / std::pow(10, sym->IntDecimal), sym->IntDecimal);
-	CString thVal = XFormatNumber(val.c_str(), sym->IntDecimal);
+	std::string val = fmt::format("{:.{}f}", sym->Quote.intClose / std::pow(10, sym->Decimal), sym->Decimal);
+	CString thVal = XFormatNumber(val.c_str(), sym->Decimal);
 	
 	QuickSetText(col, row, thVal);
 	QuickSetBackColor(col, row, RGB(255, 255, 255));
 	QuickRedrawCell(col, row);
 
-	val = fmt::format("{:.{}f}", sym->ComToPrev / std::pow(10, sym->IntDecimal), sym->IntDecimal);
-	thVal = XFormatNumber(val.c_str(), sym->IntDecimal);
+	val = fmt::format("{:.{}f}", sym->ComToPrev / std::pow(10, sym->Decimal), sym->Decimal);
+	thVal = XFormatNumber(val.c_str(), sym->Decimal);
 	CUGCell cell;
 	GetCell(col + 1, row, &cell);
 	if (sym->UpdownRate > 0) {

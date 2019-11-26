@@ -218,8 +218,8 @@ void HdFutureGrid::InitGrid()
 
 			GetCell(2, i, &centerCell);
 			int intCenter = sym->Quote.intClose;
-			centerCell.SetNumberDecimals(sym->IntDecimal);
-			centerCell.SetNumber(intCenter / std::pow(10, sym->IntDecimal));
+			centerCell.SetNumberDecimals(sym->Decimal);
+			centerCell.SetNumber(intCenter / std::pow(10, sym->Decimal));
 			centerCell.Tag(sym);
 			SetCell(2, i, &centerCell);
 

@@ -120,9 +120,15 @@ void VtSystemGroupManager::SaveToXml(pugi::xml_node& node_system_group_list)
 
 void VtSystemGroupManager::LoadFromXml(pugi::xml_node& node_system_group_list)
 {
+	int count = 0;
 	for (pugi::xml_node system_group_node = node_system_group_list.child("system_group"); system_group_node; system_group_node = system_group_node.next_sibling("system_group")) {
 		VtSystemGroup system_group;
 		system_group.LoadFromXml(system_group_node);
 		_SystemGroupVec.push_back(system_group);
+		count++;
+	}
+	// 시스템이 아무것도 없을 때는 기본 시스템을 만들어 준다.
+	if (count > 0) {
+		VtSystemGroupManager::GetInstance()->SystemGroupLoaded(true);
 	}
 }

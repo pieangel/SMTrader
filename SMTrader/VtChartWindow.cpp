@@ -1404,7 +1404,7 @@ void VtChartWindow::SetDefaultChartData()
 	req.domestic = true;
 	req.keyvalue = _T("");
 	req.initial = _T("KP");
-	req.decimal = sym->IntDecimal;
+	req.decimal = sym->Decimal;
 	req.colorIndex = _ColorMgr->GetNextColorIndex();
 	_ChartDataReqVector.push_back(req);
 
@@ -1463,7 +1463,7 @@ void VtChartWindow::SetDefaultRefChartData()
 			sym = new VtSymbol();
 			sym->ShortCode = symList[i];
 			sym->Name = nameList[i];
-			sym->IntDecimal = 2;
+			sym->Decimal = 2;
 			symMgr->AddHdSymbol(sym);
 		}
 
@@ -1479,7 +1479,7 @@ void VtChartWindow::SetDefaultRefChartData()
 		//req.domestic = true;
 		req.keyvalue = _T("");
 		req.initial = initialList[i];
-		req.decimal = sym->IntDecimal;
+		req.decimal = sym->Decimal;
 		req.colorIndex = _ColorMgr->GetNextColorIndex();
 		_ChartDataReqVector.push_back(req);
 		chartData = chartDataMgr->Add(req);

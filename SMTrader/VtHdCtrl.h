@@ -202,7 +202,11 @@ public:
 
 	void GetServerTime();
 	void RegisterRealtimeDataKey(std::string symCode, std::string dataKey);
+
+	void DownloadMasterFiles(std::string param);
+	void DownloadDomesticMasterFile(std::string file_name);
 private:
+	bool _FileDownloading = false;
 	std::map<std::string, std::set<std::string>> _DataKeyMap;
 	void OnReceiveRealTimeValue(std::string symCode);
 	void OnReceiveHoga(int time, VtSymbol* sym);

@@ -351,8 +351,8 @@ void HdSymbolFutureGrid::ShowCurrent(VtSymbol* sym, int row)
 {
 	if (!sym)
 		return;
-	std::string val = fmt::format("{:.{}f}", sym->Quote.intClose / std::pow(10, sym->IntDecimal), sym->IntDecimal);
-	CString thVal = XFormatNumber(val.c_str(), sym->IntDecimal);
+	std::string val = fmt::format("{:.{}f}", sym->Quote.intClose / std::pow(10, sym->Decimal), sym->Decimal);
+	CString thVal = XFormatNumber(val.c_str(), sym->Decimal);
 	QuickSetText(2, row, thVal);
 	if (sym->Quote.intOpen == 0) {
 		QuickSetTextColor(2, row, RGB(0, 0, 0));
@@ -469,8 +469,8 @@ void HdSymbolFutureGrid::ShowExpected(VtSymbol* sym, int row)
 {
 	if (!sym)
 		return;
-	std::string val = fmt::format("{:.{}f}", sym->Quote.intExpected / std::pow(10, sym->IntDecimal), sym->IntDecimal);
-	CString thVal = XFormatNumber(val.c_str(), sym->IntDecimal);
+	std::string val = fmt::format("{:.{}f}", sym->Quote.intExpected / std::pow(10, sym->Decimal), sym->Decimal);
+	CString thVal = XFormatNumber(val.c_str(), sym->Decimal);
 	QuickSetText(2, row, thVal);
 	QuickSetTextColor(2, row, RGB(0, 0, 0));
 	QuickSetBackColor(2, row, RGB(255, 255, 255));

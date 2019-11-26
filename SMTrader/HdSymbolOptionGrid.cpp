@@ -203,7 +203,7 @@ void HdSymbolOptionGrid::InitGrid()
 			GetCell(1, i, &centerCell);
 			std::string centerVal = sym->ShortCode.substr(5, 3);
 			char centerTip = sym->ShortCode.at(7);
-			int intCenter = std::stoi(centerVal) * static_cast<int>(std::pow(10, sym->IntDecimal));
+			int intCenter = std::stoi(centerVal) * static_cast<int>(std::pow(10, sym->Decimal));
 			if (centerTip == '2' || centerTip == '7')
 				intCenter += 50;
 			delta = std::abs(symMgr->Kospi200Current - intCenter);
@@ -212,8 +212,8 @@ void HdSymbolOptionGrid::InitGrid()
 				eIndex = i;
 			}
 
-			centerCell.SetNumberDecimals(sym->IntDecimal);
-			centerCell.SetNumber(intCenter / std::pow(10, sym->IntDecimal));
+			centerCell.SetNumberDecimals(sym->Decimal);
+			centerCell.SetNumber(intCenter / std::pow(10, sym->Decimal));
 			SetCell(1, i, &centerCell);
 
 			QuickRedrawCell(1, i);
@@ -665,7 +665,7 @@ int HdSymbolOptionGrid::FindValueStartRow(int height)
 			VtSymbol* sym = opSec->_SymbolVector[i];
 			std::string centerVal = sym->ShortCode.substr(5, 3);
 			char centerTip = sym->ShortCode.at(7);
-			int intCenter = std::stoi(centerVal) * static_cast<int>(std::pow(10, sym->IntDecimal));
+			int intCenter = std::stoi(centerVal) * static_cast<int>(std::pow(10, sym->Decimal));
 			if (centerTip == '2' || centerTip == '7')
 				intCenter += 50;
 			delta = std::abs(symMgr->Kospi200Current - intCenter);
@@ -894,7 +894,7 @@ void HdSymbolOptionGrid::ShowCurrent(int col, int row, VtSymbol* sym)
 	GetCell(col, row, &cell);
 	int curValue = sym->Quote.intClose;
 	
-	std::string strVal = NumberFormatter::format(curValue / std::pow(10, sym->IntDecimal), sym->IntDecimal);
+	std::string strVal = NumberFormatter::format(curValue / std::pow(10, sym->Decimal), sym->Decimal);
 
 	cell.SetText(strVal.c_str());
 	SetCell(col, row, &cell);
@@ -927,7 +927,7 @@ void HdSymbolOptionGrid::ShowExpected(int col, int row, VtSymbol* sym)
 	GetCell(col, row, &cell);
 	int curValue = sym->Quote.intExpected;
 
-	std::string strVal = NumberFormatter::format(curValue / std::pow(10, sym->IntDecimal), sym->IntDecimal);
+	std::string strVal = NumberFormatter::format(curValue / std::pow(10, sym->Decimal), sym->Decimal);
 
 	cell.SetText(strVal.c_str());
 	SetCell(col, row, &cell);

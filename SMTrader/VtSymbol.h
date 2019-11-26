@@ -7,25 +7,38 @@ class VtSymbol
 public:
 	VtSymbol();
 	~VtSymbol();
+
+	int Index;
+	int NearMonth;
+	std::string ProductCode;
+	std::string MarketName;
+	double CtrUnit;
+	std::string LastDate;
+	// 풀코드
 	std::string FullCode;
+	// 짧은 코드
 	std::string ShortCode;
+	// 종목명
 	std::string Name;
 	std::string ShortName;
+	// 종목명 - 영문
 	std::string EngName;
 	std::string BriefName;
 	std::string Initial;
 
-	std::string Decimal;
-	std::string TickSize;
-	std::string TickValue;
+	// 틱크기
+	double TickSize;
 	std::string UserDefinedName;
+	// 틱크기 - 정수로 바꾼것
 	int intTickSize;
-	int IntDecimal;
+	// 소수점 자릿수 - 정수
+	int Decimal;
+
 	int SymbolDate;
-	int ValueWidth;
-	int intTickValue;
-	int intValueWidth;
-	int seungsu = 250000;
+	// 틱가치
+	double TickValue;
+	// 거래 승수
+	int Seungsu = 250000;
 	int ExpireYear;
 	int ExpireMonth;
 	int ComToPrev;

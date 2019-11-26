@@ -8,6 +8,7 @@
 #include "HdWindowManager.h"
 #include "Poco/Delegate.h"
 #include "VtGlobal.h"
+#include "VtSystemGroupManager.h"
 using Poco::Delegate;
 
 // VtStrategyToolWnd dialog
@@ -17,7 +18,9 @@ IMPLEMENT_DYNAMIC(VtStrategyToolWnd, CDialogEx)
 VtStrategyToolWnd::VtStrategyToolWnd(CWnd* pParent /*=NULL*/)
 	: CDialogEx(IDD_STRATEGE_TOOLS, pParent)
 {
-
+	if (!VtSystemGroupManager::GetInstance()->SystemGroupLoaded()) {
+		VtSystemGroupManager::GetInstance()->InitSystemGroup();
+	}
 }
 
 VtStrategyToolWnd::~VtStrategyToolWnd()

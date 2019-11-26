@@ -57,6 +57,7 @@
 #include "Log/loguru.hpp"
 #include "VtStringUtil.h"
 #include "SmCallbackManager.h"
+#include "Market/SmSymbolReader.h"
 using namespace std;
 
 using Poco::Delegate;
@@ -1113,7 +1114,7 @@ void VtHdCtrl::OnReceiveSise(int time, VtSymbol* sym)
 	VtChartDataCollector* dataCollector = VtChartDataCollector::GetInstance();
 	std::string symCode = sym->ShortCode;
 	std::string code = symCode + _T(":5:1");
-	double close = sym->Quote.intClose / std::pow(10, sym->IntDecimal);
+	double close = sym->Quote.intClose / std::pow(10, sym->Decimal);
 	dataCollector->OnReceiveData(code, time, close);
 	code = symCode + _T(":1:1");
 	dataCollector->OnReceiveData(code, time, close);
@@ -1751,6 +1752,22 @@ void VtHdCtrl::RegisterRealtimeDataKey(std::string symCode, std::string dataKey)
 	}
 }
 
+void VtHdCtrl::DownloadMasterFiles(std::string param)
+{
+	m_CommAgent.CommReqMakeCod(param.c_str(), 0);
+}
+
+void VtHdCtrl::DownloadDomesticMasterFile(std::string file_name)
+{
+	if (_FileDownloading)
+		return;
+	_FileDownloading = true;
+	CString sTrCode = "v90001";
+	CString sInput = file_name.c_str();
+	CString strNextKey = "";
+	int nRqID = m_CommAgent.CommRqData(sTrCode, sInput, sInput.GetLength(), strNextKey);
+}
+
 void VtHdCtrl::OnAcceptedHistory(CString& sTrCode, LONG& nRqID)
 {
 	VtOrderManagerSelector* orderMgrSeledter = VtOrderManagerSelector::GetInstance();
@@ -1789,7 +1806,7 @@ void VtHdCtrl::OnAcceptedHistory(CString& sTrCode, LONG& nRqID)
 			std::string temp;
 			strPrice.TrimLeft('0');
 			if (sym)
-				temp = NumberFormatter::format(_ttof(strPrice), 20, sym->IntDecimal);
+				temp = NumberFormatter::format(_ttof(strPrice), 20, sym->Decimal);
 			else
 				return;
 
@@ -2134,7 +2151,7 @@ void VtHdCtrl::OnOutstandingHistory(CString& sTrCode, LONG& nRqID)
 			VtSymbol* sym = symMgr->FindHdSymbol((LPCTSTR)strSymbol.TrimRight());
 			if (sym)
 			{
-				posi->CurPrice = sym->Quote.intClose / std::pow(10, sym->IntDecimal);
+				posi->CurPrice = sym->Quote.intClose / std::pow(10, sym->Decimal);
 			}
 		}
 	}
@@ -2181,9 +2198,9 @@ void VtHdCtrl::OnOutstanding(CString& sTrCode, LONG& nRqID)
 			posi->AvgPrice = _ttof(strUnitPrice);
 			VtSymbol* sym = symMgr->FindHdSymbol((LPCTSTR)strSymbol.TrimRight());
 			if (sym && sym->Quote.intClose > 0) {
-				posi->CurPrice = sym->Quote.intClose / std::pow(10, sym->IntDecimal);
-				double curClose = sym->Quote.intClose / std::pow(10, sym->IntDecimal);
-				posi->OpenProfitLoss = posi->OpenQty * (curClose - posi->AvgPrice)*sym->seungsu;
+				posi->CurPrice = sym->Quote.intClose / std::pow(10, sym->Decimal);
+				double curClose = sym->Quote.intClose / std::pow(10, sym->Decimal);
+				posi->OpenProfitLoss = posi->OpenQty * (curClose - posi->AvgPrice)*sym->Seungsu;
 				acnt->TempOpenPL += posi->OpenProfitLoss;
 				if (i == nRepeatCnt - 1) {
 					acnt->OpenPL = acnt->TempOpenPL;
@@ -2418,11 +2435,11 @@ void VtHdCtrl::OnSymbolMaster(CString& sTrCode, LONG& nRqID)
 	std::string code = sym->ShortCode.substr(0, 3);
 	HdProductInfo* prdtInfo = symMgr->FindProductInfo(code);
 	if (prdtInfo) {
-		sym->IntDecimal = prdtInfo->decimal;
-		sym->seungsu = prdtInfo->tradeWin;
+		sym->Decimal = prdtInfo->decimal;
+		sym->Seungsu = prdtInfo->tradeWin;
 		sym->intTickSize = prdtInfo->intTickSize;
-		sym->intTickValue = prdtInfo->tickValue;
-		sym->TickSize = prdtInfo->tickSize;
+		sym->TickValue = prdtInfo->tickValue;
+		sym->TickSize = _ttof(prdtInfo->tickSize.c_str());
 	}
 	strCom.TrimRight();
 	strUpRate.TrimRight();
@@ -2972,10 +2989,10 @@ void VtHdCtrl::OnRealFutureQuote(CString& strKey, LONG& nRealType)
 	sym->Quote.intHigh = _ttoi(strData053);
 	sym->Quote.intLow = _ttoi(strData054);
 
-	sym->Quote.close = sym->Quote.intClose / std::pow(10, sym->IntDecimal);
-	sym->Quote.open = sym->Quote.intOpen / std::pow(10, sym->IntDecimal);
-	sym->Quote.high = sym->Quote.intHigh / std::pow(10, sym->IntDecimal);
-	sym->Quote.low = sym->Quote.intLow / std::pow(10, sym->IntDecimal);
+	sym->Quote.close = sym->Quote.intClose / std::pow(10, sym->Decimal);
+	sym->Quote.open = sym->Quote.intOpen / std::pow(10, sym->Decimal);
+	sym->Quote.high = sym->Quote.intHigh / std::pow(10, sym->Decimal);
+	sym->Quote.low = sym->Quote.intLow / std::pow(10, sym->Decimal);
 
 	OnReceiveSise(_ttoi(strTime), sym);
 
@@ -2997,7 +3014,7 @@ void VtHdCtrl::OnRealFutureQuote(CString& strKey, LONG& nRealType)
 	quoteItem.ContQty = _ttoi(strVolume);
 
 
-	quoteItem.Decimal = sym->IntDecimal;
+	quoteItem.Decimal = sym->Decimal;
 
 	sym->Quote.QuoteItemQ.push_front(quoteItem);
 
@@ -3066,10 +3083,10 @@ void VtHdCtrl::OnRealOptionQuote(CString& strKey, LONG& nRealType)
 	sym->Quote.intHigh = _ttoi(strData053);
 	sym->Quote.intLow = _ttoi(strData054);
 
-	sym->Quote.close = sym->Quote.intClose / std::pow(10, sym->IntDecimal);
-	sym->Quote.open = sym->Quote.intOpen / std::pow(10, sym->IntDecimal);
-	sym->Quote.high = sym->Quote.intHigh / std::pow(10, sym->IntDecimal);
-	sym->Quote.low = sym->Quote.intLow / std::pow(10, sym->IntDecimal);
+	sym->Quote.close = sym->Quote.intClose / std::pow(10, sym->Decimal);
+	sym->Quote.open = sym->Quote.intOpen / std::pow(10, sym->Decimal);
+	sym->Quote.high = sym->Quote.intHigh / std::pow(10, sym->Decimal);
+	sym->Quote.low = sym->Quote.intLow / std::pow(10, sym->Decimal);
 
 	OnReceiveSise(_ttoi(strTime), sym);
 
@@ -3094,7 +3111,7 @@ void VtHdCtrl::OnRealOptionQuote(CString& strKey, LONG& nRealType)
 	quoteItem.ContQty = _ttoi(strVolume);
 
 
-	quoteItem.Decimal = sym->IntDecimal;
+	quoteItem.Decimal = sym->Decimal;
 
 	sym->Quote.QuoteItemQ.push_front(quoteItem);
 	SmCallbackManager::GetInstance()->OnQuoteEvent(sym);
@@ -3156,10 +3173,10 @@ void VtHdCtrl::OnRealProductQuote(CString& strKey, LONG& nRealType)
 	sym->Quote.intHigh = _ttoi(strData053);
 	sym->Quote.intLow = _ttoi(strData054);
 
-	sym->Quote.close = sym->Quote.intClose / std::pow(10, sym->IntDecimal);
-	sym->Quote.open = sym->Quote.intOpen / std::pow(10, sym->IntDecimal);
-	sym->Quote.high = sym->Quote.intHigh / std::pow(10, sym->IntDecimal);
-	sym->Quote.low = sym->Quote.intLow / std::pow(10, sym->IntDecimal);
+	sym->Quote.close = sym->Quote.intClose / std::pow(10, sym->Decimal);
+	sym->Quote.open = sym->Quote.intOpen / std::pow(10, sym->Decimal);
+	sym->Quote.high = sym->Quote.intHigh / std::pow(10, sym->Decimal);
+	sym->Quote.low = sym->Quote.intLow / std::pow(10, sym->Decimal);
 
 	OnReceiveSise(_ttoi(strTime), sym);
 
@@ -3184,7 +3201,7 @@ void VtHdCtrl::OnRealProductQuote(CString& strKey, LONG& nRealType)
 	quoteItem.ContQty = _ttoi(strVolume);
 
 
-	quoteItem.Decimal = sym->IntDecimal;
+	quoteItem.Decimal = sym->Decimal;
 
 	sym->Quote.QuoteItemQ.push_front(quoteItem);
 	SmCallbackManager::GetInstance()->OnQuoteEvent(sym);
@@ -4716,18 +4733,12 @@ void VtHdCtrl::OnDataRecv(CString sTrCode, LONG nRqID)
 
 		if (strProcCd == "REOK")
 		{
-			TCHAR iniFileName[500];
-
-			GetModuleFileNameA(NULL, iniFileName, MAX_PATH);
-			CString strFileName;
-			const CString strExeName = "HDFCommClient.exe";
-			strFileName.Format("%s", iniFileName);
-			int nDel = strExeName.GetLength();
-			int nFind = strFileName.Find(strExeName);
-			strFileName.Delete(nFind, nDel);
-			strFileName = strFileName + "mst/" + strFileNm;
-
-			CString strCommonFileName = strFileName;
+			ZmConfigManager* configMgr = ZmConfigManager::GetInstance();
+			std::string appPath = configMgr->GetAppPath();
+			std::string configPath = appPath;
+			configPath.append(_T("\\mst\\"));
+			configPath.append(strFileNm);
+			CString strCommonFileName = configPath.c_str();
 
 			CFile commonfile;
 			// open file
@@ -4737,7 +4748,7 @@ void VtHdCtrl::OnDataRecv(CString sTrCode, LONG nRqID)
 				{
 					CString strMsg;
 					strMsg.Format("%s화일 생성에 실패하였습니다. ", strCommonFileName);
-					//WriteLog(strMsg);
+					LOG_F(INFO, "symbol file download error :: file_name = %s", strMsg);
 					return;
 				}
 			}
@@ -4745,6 +4756,15 @@ void VtHdCtrl::OnDataRecv(CString sTrCode, LONG nRqID)
 			CString strBuff = m_CommAgent.CommGetDataDirect(sTrCode, -1, 128 + 4 + 8, nFileSize, 0, "A");
 			commonfile.Write(strBuff, nFileSize);
 			commonfile.Close();
+
+			LOG_F(INFO, "symbol file download success :: file_name = %s", strFileNm);
+
+			auto it = SmSymbolReader::GetInstance()->DomesticSymbolMasterFileSet.find((LPCTSTR)strFileNm);
+			if (it != SmSymbolReader::GetInstance()->DomesticSymbolMasterFileSet.end()) {
+				SmSymbolReader::GetInstance()->DomesticSymbolMasterFileSet.erase(it);
+			}
+
+			_FileDownloading = false;
 		}
 
 		//WriteLog("처리완료");
@@ -5073,7 +5093,7 @@ void VtHdCtrl::OnGetBroadData(CString strKey, LONG nRealType)
 		quoteItem.ContQty = _ttoi(strVolume);
 
 
-		quoteItem.Decimal = sym->IntDecimal;
+		quoteItem.Decimal = sym->Decimal;
 
 		sym->Quote.QuoteItemQ.push_front(quoteItem);
 

@@ -623,7 +623,7 @@ void SmOrderGrid::SetCenterValueForFuture(const VtSymbol* sym, std::set<std::pai
 	for (int i = _StartRowForValue; i <= _EndRowForValue; i++) {
 		int curValue = startValue - sym->intTickSize * (i - 1);
 		CGridCellBase* pCell = GetCell(i, CenterCol);
-		std::string strVal = fmt::format("{:.{}f}", curValue / std::pow(10, sym->IntDecimal), sym->IntDecimal);
+		std::string strVal = fmt::format("{:.{}f}", curValue / std::pow(10, sym->Decimal), sym->Decimal);
 		pCell->SetText(strVal.c_str());
 		pCell->SetLongValue(curValue);
 		pCell->SetTextClr(RGB(0, 0, 0));
@@ -685,7 +685,7 @@ void SmOrderGrid::SetCenterValueForOption(const VtSymbol* sym, std::set<std::pai
 		CGridCellBase* pCell = GetCell(i, CenterCol);
 		ValueToRowMap[curVal] = i;
 		RowToValueMap[i] = curVal;
-		std::string strVal = NumberFormatter::format(curVal / std::pow(10, sym->IntDecimal), sym->IntDecimal);
+		std::string strVal = NumberFormatter::format(curVal / std::pow(10, sym->Decimal), sym->Decimal);
 		pCell->SetText(strVal.c_str());
 		pCell->SetLongValue(curVal);
 		pCell->SetTextClr(RGB(0, 0, 0));
@@ -718,7 +718,7 @@ void SmOrderGrid::SetCenterValueByFixedForFuture(const VtSymbol* sym, std::set<s
 	for (int i = _StartRowForValue; i <= _EndRowForValue; i++) {
 		int curValue = startValue - sym->intTickSize * (i - 1);
 		CGridCellBase* pCell = GetCell(i, CenterCol);
-		std::string strVal = NumberFormatter::format(curValue / std::pow(10, sym->IntDecimal), sym->IntDecimal);
+		std::string strVal = NumberFormatter::format(curValue / std::pow(10, sym->Decimal), sym->Decimal);
 		pCell->SetText(strVal.c_str());
 		pCell->SetLongValue(curValue);
 		pCell->SetTextClr(RGB(0, 0, 0));
@@ -766,7 +766,7 @@ void SmOrderGrid::SetCenterValueByFixedForOption(const VtSymbol* sym, std::set<s
 		ValueToRowMap[curVal] = i;
 		RowToValueMap[i] = curVal;
 		CGridCellBase* pCell = GetCell(i, CenterCol);
-		std::string strVal = NumberFormatter::format(curVal / std::pow(10, sym->IntDecimal), sym->IntDecimal);
+		std::string strVal = NumberFormatter::format(curVal / std::pow(10, sym->Decimal), sym->Decimal);
 		pCell->SetText(strVal.c_str());
 		pCell->SetLongValue(curVal);
 		pCell->SetTextClr(RGB(0, 0, 0));
@@ -2621,7 +2621,7 @@ int SmOrderGrid::FindPositionRow(VtPosition* posi)
 	if (!sym)
 		return -1;
 
-	int intAvg = static_cast<int>(ROUNDING(posi->AvgPrice * std::pow(10, sym->IntDecimal), sym->IntDecimal));
+	int intAvg = static_cast<int>(ROUNDING(posi->AvgPrice * std::pow(10, sym->Decimal), sym->Decimal));
 	intAvg = intAvg - intAvg % sym->intTickSize;
 
 	auto it = ValueToRowMap.find(intAvg);

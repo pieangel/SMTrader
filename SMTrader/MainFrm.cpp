@@ -62,7 +62,7 @@
 #include "VtSystemOrderConfig.h"
 #include "SmOrderPanel.h"
 #include "SmCallbackManager.h"
-
+#include "Market/SmSymbolReader.h"
 
 extern TApplicationFont g_Font;
 
@@ -583,12 +583,13 @@ void CMainFrame::OnClose()
 void CMainFrame::OnShowWindow(BOOL bShow, UINT nStatus)
 {
 	CMDIFrameWndEx::OnShowWindow(bShow, nStatus);
+	
 	if (!_Init) {
 		_Init = true;
 		// 증권사 클라이언트 초기회
 		VtHdClient* client = VtHdClient::GetInstance();
 		client->Init();
-
+		SmSymbolReader::GetInstance()->ReadSymbolFileList();
 		// 로그인 대화상자를 띄운다.
 		VtLogInDlg loginDlg;
 		VtSaveManager* saveMgr = VtSaveManager::GetInstance();
@@ -680,6 +681,7 @@ void CMainFrame::OnShowWindow(BOOL bShow, UINT nStatus)
 			VtHdClient* client = VtHdClient::GetInstance();
 			std::string fileName = _T("product.cod");
 			client->GetMasterFile(fileName);
+			SetTimer(1, 500, 0);
 			GetSymbolCode();
 		}
 		else {
@@ -704,10 +706,11 @@ void CMainFrame::OnReceiveComplete()
 		sysMgr->InitDataSources();
 
 		VtSaveManager* saveMgr = VtSaveManager::GetInstance();
-		saveMgr->LoadOutSignal(_T("outsignal.dat"));
-		saveMgr->LoadSystems(_T("systemlist.dat"));
-		saveMgr->LoadOutSystems(_T("outsystemlist.dat"));
-		saveMgr->LoadOrderWndList(_T("orderwndlist.dat"), this);
+		//saveMgr->LoadOutSignal(_T("outsignal.dat"));
+		//saveMgr->LoadSystems(_T("systemlist.dat"));
+		//saveMgr->LoadOutSystems(_T("outsystemlist.dat"));
+		//saveMgr->LoadOrderWndList(_T("orderwndlist.dat"), this);
+		saveMgr->ReadWindows();
 
 		SetTimer(SysLiqTimer, 5000, NULL);
 
@@ -782,6 +785,7 @@ void CMainFrame::CreateFileWatch()
 
 bool CMainFrame::ClearAllResources()
 {
+	SmSymbolReader::DestroyInstance();
 	SmCallbackManager::DestroyInstance();
 	VtScheduler::DestroyInstance();
 	HdScheduler* sch = HdScheduler::GetInstance();
@@ -926,21 +930,21 @@ void CMainFrame::SaveSettings()
 		return;
 
 	VtSaveManager* saveMgr = VtSaveManager::GetInstance();
-	saveMgr->SaveFundList(_T("fundlist.dat"));
-	saveMgr->SaveAccountList(_T("accountlist.dat"));
-	saveMgr->SaveOrderWndList(_T("orderwndlist.dat"), this);
-	saveMgr->SaveSystems(_T("systemlist.dat"));
-	saveMgr->SaveOutSignal(_T("outsignal.dat"));
-	saveMgr->SaveOutSystems(_T("outsystemlist.dat"));
+// 	saveMgr->SaveFundList(_T("fundlist.dat"));
+// 	saveMgr->SaveAccountList(_T("accountlist.dat"));
+// 	saveMgr->SaveOrderWndList(_T("orderwndlist.dat"), this);
+// 	saveMgr->SaveSystems(_T("systemlist.dat"));
+// 	saveMgr->SaveOutSignal(_T("outsignal.dat"));
+// 	saveMgr->SaveOutSystems(_T("outsystemlist.dat"));
 	saveMgr->WriteSettings();
 }
 
 void CMainFrame::LoadSettings()
 {
 	VtSaveManager* saveMgr = VtSaveManager::GetInstance();
-	saveMgr->LoadAccountList(_T("accountlist.dat"));
+	//saveMgr->LoadAccountList(_T("accountlist.dat"));
 
-	saveMgr->LoadFundList(_T("fundlist.dat"));
+	//saveMgr->LoadFundList(_T("fundlist.dat"));
 
 	saveMgr->ReadSettings();
 }
@@ -1061,10 +1065,17 @@ void CMainFrame::OnSettimeToServer()
 
 void CMainFrame::OnTimer(UINT_PTR nIDEvent)
 {
-// 	if (nIDEvent == SysLiqTimer) {
-// 		VtSystemManager* sysMgr = VtSystemManager::GetInstance();
-// 		sysMgr->OnRegularTimer();
-// 	}
+	SmSymbolReader* symReader = SmSymbolReader::GetInstance();
+	VtHdClient* hdClient = VtHdClient::GetInstance();
+	if (symReader->DomesticSymbolMasterFileSet.size() > 0) {
+		std::string file_name = *(symReader->DomesticSymbolMasterFileSet.begin());
+		hdClient->DownloadDomesticMasterFile(file_name);
+	}
+	else {
+		KillTimer(1);
+		hdClient->DownloadMasterFiles("futures");
+		//GetSymbolCode();
+	}
 
 	CMDIFrameWndEx::OnTimer(nIDEvent);
 }

@@ -46,11 +46,9 @@ void VtSymbol::Begin()
 	Quote.intLow = 0;
 
 	intTickSize = 5;
-	IntDecimal = 2;
-	ValueWidth = 8;
-	intTickValue = 12500;
-	intValueWidth = 5;
-	seungsu = 250000;
+	Decimal = 2;
+	TickValue = 12500;
+	Seungsu = 250000;
 }
 
 void VtSymbol::End()

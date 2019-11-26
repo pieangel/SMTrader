@@ -161,8 +161,8 @@ void VtOrderListGrid::InitGrid()
 		VtSymbol* sym = symMgr->FindSymbol(order->shortCode);
 		CUGCell cell;
 		GetCell(2, i, &cell);
-		std::string temp = NumberFormatter::format(order->orderPrice, sym->IntDecimal);
-		CString thVal = XFormatNumber(temp.c_str(), sym->IntDecimal);
+		std::string temp = NumberFormatter::format(order->orderPrice, sym->Decimal);
+		CString thVal = XFormatNumber(temp.c_str(), sym->Decimal);
 		cell.SetText(thVal);
 		SetCell(2, i, &cell);
 		QuickRedrawCell(2, i);
@@ -179,8 +179,8 @@ void VtOrderListGrid::InitGrid()
 		// 체결 가격
 		cell;
 		GetCell(6, i, &cell);
-		temp = NumberFormatter::format(order->filledPrice, sym->IntDecimal);
-		thVal = XFormatNumber(temp.c_str(), sym->IntDecimal);
+		temp = NumberFormatter::format(order->filledPrice, sym->Decimal);
+		thVal = XFormatNumber(temp.c_str(), sym->Decimal);
 		cell.SetText(thVal);
 		SetCell(6, i, &cell);
 		QuickRedrawCell(6, i);
@@ -245,8 +245,8 @@ void VtOrderListGrid::InitGrid(std::vector<VtOrder*>&& orderMap)
 		VtSymbol* sym = symMgr->FindSymbol(order->shortCode);
 		CUGCell cell;
 		GetCell(2, i, &cell);
-		std::string temp = NumberFormatter::format(order->orderPrice, sym->IntDecimal);
-		CString thVal = XFormatNumber(temp.c_str(), sym->IntDecimal);
+		std::string temp = NumberFormatter::format(order->orderPrice, sym->Decimal);
+		CString thVal = XFormatNumber(temp.c_str(), sym->Decimal);
 		cell.SetText(thVal);
 		SetCell(2, i, &cell);
 		QuickRedrawCell(2, i);
@@ -263,8 +263,8 @@ void VtOrderListGrid::InitGrid(std::vector<VtOrder*>&& orderMap)
 		// 체결 가격
 		cell;
 		GetCell(6, i, &cell);
-		temp = NumberFormatter::format(order->filledPrice, sym->IntDecimal);
-		thVal = XFormatNumber(temp.c_str(), sym->IntDecimal);
+		temp = NumberFormatter::format(order->filledPrice, sym->Decimal);
+		thVal = XFormatNumber(temp.c_str(), sym->Decimal);
 		cell.SetText(thVal);
 		SetCell(6, i, &cell);
 		QuickRedrawCell(6, i);
