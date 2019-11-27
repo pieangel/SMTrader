@@ -2042,10 +2042,10 @@ void VtOrderWndHd::LoadFromXml(pugi::xml_node& node_order_window)
 	// 윈도우 위치 대입
 	_XPos = window_pos.attribute("left").as_int();
 	_YPos = window_pos.attribute("top").as_int();
+	// 윈도우 너이 대입
+	_WindowWidth = window_pos.attribute("right").as_int() - _XPos;
 	// 윈도우 높이 대입
-	_WindowHeight = window_pos.attribute("right").as_int() - _XPos;
-	// 윈도우 너비 대입
-	_WindowWidth = window_pos.attribute("bottom").as_int() - _YPos;
+	_WindowHeight = window_pos.attribute("bottom").as_int() - _YPos;
 
 	std::stoi(node_order_window.child_value("show_left_window")) == 0 ? _ShowLeftWnd = false : _ShowLeftWnd = true;
 

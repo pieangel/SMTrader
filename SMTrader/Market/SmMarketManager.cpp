@@ -9,6 +9,7 @@
 #include "SmProduct.h"
 #include "SmProductYearMonth.h"
 #include "../ZmConfigManager.h"
+#include <iostream>
 
 SmMarketManager::SmMarketManager()
 {
