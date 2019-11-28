@@ -366,6 +366,9 @@ public:
 	void OnOrderUnfilledHd(VtOrder* order);
 	void OnOrderFilledHd(VtOrder* order);
 
+	void RemoveAcceptedHd(VtOrder* order);
+	void RemoveAcceptedHd(std::string symbol_code, int order_no);
+
 	void OnReceiveQuoteHd(VtSymbol* sym);
 	std::string AccountNo;
 	int AccountLevel;

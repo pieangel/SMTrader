@@ -1361,6 +1361,35 @@ void VtOrderManager::OnOrderFilledHd(VtOrder* order)
 
 }
 
+void VtOrderManager::RemoveAcceptedHd(VtOrder* order)
+{
+	if (!order)
+		return;
+
+	VtTotalOrderManager* totalOrderMgr = VtTotalOrderManager::GetInstance();
+	totalOrderMgr->RemoveAcceptedOrder(order->orderNo);
+
+	VtProductOrderManager* prdtOrderMgr = _ProductOrderManagerSelector->FindAdd(order->shortCode);
+
+	// 상품별 주문 관리자의 접수 주문 목록에서 제거한다.
+	prdtOrderMgr->RemoveAcceptedOrder(order->orderNo);
+	// 접수 주문은 제거한다.
+	RemoveAccepted(order->orderNo);
+}
+
+void VtOrderManager::RemoveAcceptedHd(std::string symbol_code, int order_no)
+{
+	VtTotalOrderManager* totalOrderMgr = VtTotalOrderManager::GetInstance();
+	totalOrderMgr->RemoveAcceptedOrder(order_no);
+
+	VtProductOrderManager* prdtOrderMgr = _ProductOrderManagerSelector->FindAdd(symbol_code);
+
+	// 상품별 주문 관리자의 접수 주문 목록에서 제거한다.
+	prdtOrderMgr->RemoveAcceptedOrder(order_no);
+	// 접수 주문은 제거한다.
+	RemoveAccepted(order_no);
+}
+
 void VtOrderManager::OnReceiveQuoteHd(VtSymbol* sym)
 {
 	CalcTotalProfitLoss(sym);

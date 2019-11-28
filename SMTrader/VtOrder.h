@@ -340,6 +340,8 @@ struct HdOrderRequest
 	int Amount;
 	// 정정이나 취소시 원 주문 번호
 	int OrderNo = -1;
+	// 정정이나 취소로 새로 생성된 주문번호
+	int NewOrderNo = -1;
 	// 서브 계좌 번호
 	std::string SubAccountNo = _T("";)
 	// 주문요청 아이디
