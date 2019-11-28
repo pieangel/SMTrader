@@ -98,6 +98,7 @@ public:
 	}
 
 private:
+	int GetIntOrderPrice(CString symbol_code, CString strPrice, CString strOrderPrice);
 	bool CheckPassword(HdOrderRequest& request);
 	void OnReceiveChartData(CString& sTrCode, LONG& nRqID);
 	virtual void OnChartData(CString& sTrCode, LONG& nRqID);
@@ -223,10 +224,16 @@ private:
 	std::map<int, HdTaskArg> RequestMap;
 	// 선물사 요청 번호 : 차트 데이터 키
 	std::map<int, std::string> _ChartDataRequestMap;
-	// 선물사 요청 번호 : 주문 요청 정보
-	std::map<int, HdOrderRequest> _OrderRequestMap;
-	// 주문 번호 : 주문 요청 정보
-	std::map<int, HdOrderRequest> _ReceivedRequestMap;
+	// 선물사 요청 번호 와 주문 요청 정보 매칭 맵 
+	std::map<int, HdOrderRequest> _ReqIdToRequestMap;
+	// 주문 번호와 주문 요청 정보 매칭 맵
+	std::map<int, HdOrderRequest> _OrderNoToRequestMap;
+	// 주문번호로 원래 요청을 찾아 낸다.
+	// 주문번호로 원래 요청을 찾을 수 없다면 외부에서 이루어진 주문이다.
+	HdOrderRequest* GetOrderRequestByOrderNo(int order_no);
+	// 주문요청번호로 원래 요청을 찾아 낸다.
+	// 요청번호가 없는 것은 전부 외부에서 이루어진 주문이다.
+	HdOrderRequest* GetOrderRequestByOrderReqId(int req_id);
 	void AddRequest(int reqId, HdTaskType taskType);
 	void AddRequest(int reqId, HdTaskType taskType, std::string acntNo);
 	void AddRequest(int reqId, HdTaskType taskType, std::string acntNo, std::string symCode);

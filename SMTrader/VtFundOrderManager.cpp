@@ -29,8 +29,7 @@ std::vector<VtOrder*> VtFundOrderManager::GetAcceptedOrders(std::string symbolCo
 
 	// 각각의 펀드 계좌에 대한 주문 관리자가 만들어져 있다고 가정한다.
 	// 각각의 펀드 계좌 주문 관리자는 주문이 나가기전에 미리 만들어져야 한다.
-	for (auto it = _OrderMgrMap.begin(); it != _OrderMgrMap.end(); ++it)
-	{
+	for (auto it = _OrderMgrMap.begin(); it != _OrderMgrMap.end(); ++it) {
 		VtOrderManager* orderMgr = it->second;
 		orderMgr->GetAcceptedOrders(symbolCode, acptList);
 	}

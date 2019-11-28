@@ -165,7 +165,7 @@ void VtProductOrderManager::OnFilled(VtOrder* order)
 		return;
 
 	VtAccount* acnt = nullptr;
-	if (order->type == 0) { // 일반 계좌 주문일 경우
+	if (order->Type == 0 || order->Type == -1) { // 일반 계좌 주문일 경우
 		VtAccountManager* acntMgr = VtAccountManager::GetInstance();
 		acnt = acntMgr->FindAccount(order->AccountNo);
 	} else { // 서브 계좌 혹은 펀드 주문일 경우
@@ -178,6 +178,8 @@ void VtProductOrderManager::OnFilled(VtOrder* order)
 	VtSymbol* sym = symMgr->FindHdSymbol(order->shortCode);
 	if (!sym)
 		return;
+	
+	order->state = VtOrderState::Filled;
 	// 계좌에서 현재 포지션을 가져온다.
 	VtPosition* posi = acnt->FindPosition(order->shortCode);
 
@@ -441,14 +443,14 @@ void VtProductOrderManager::RegisterOrderPosition(VtOrder* order, VtPosition* po
 	}
 
 	VtTotalOrderManager* totalOrderMgr = VtTotalOrderManager::GetInstance();
-	if (order->type == 0) {
-		totalOrderMgr->AddPosition(order->type, position->AccountNo, position->ShortCode, position);
+	if (order->Type == 0) {
+		totalOrderMgr->AddPosition(order->Type, position->AccountNo, position->ShortCode, position);
 	}
-	else if (order->type == 1) {
-		totalOrderMgr->AddPosition(order->type, position->SubAccountNo, position->ShortCode, position);
+	else if (order->Type == 1) {
+		totalOrderMgr->AddPosition(order->Type, position->SubAccountNo, position->ShortCode, position);
 	}
-	else if (order->type == 2) {
-		totalOrderMgr->AddPosition(order->type, position->SubAccountNo, position->ShortCode, position);
+	else if (order->Type == 2) {
+		totalOrderMgr->AddPosition(order->Type, position->SubAccountNo, position->ShortCode, position);
 	}
 }
 

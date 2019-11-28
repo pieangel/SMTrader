@@ -390,9 +390,9 @@ void VtOrderDialogManager::OnOrderReceivedHd(VtOrder* order)
 		return;
 
 	std::string key;
-	if (order->type == 0 || order->type == 1) // 실계좌 혹은 서브계좌 주문 
+	if (order->Type == 0 || order->Type == 1) // 실계좌 혹은 서브계좌 주문 
 	{
-		if (order->type == 0)
+		if (order->Type == 0)
 		{
 			// 실계좌 혹은 서브계좌에 대한 주문 메시지 처리
 			// 이 계좌가 속한 서브 계좌와 펀드에 메시지를 보내야 한다.
@@ -445,7 +445,7 @@ void VtOrderDialogManager::OnOrderReceivedHd(VtOrder* order)
 		// 이 서브 계좌를 가지고 있는 펀드는 실시간으로 업데이트가 되어야 한다.
 		// 서브 계좌는 자기가 속한 펀드가 있는지 확인하고 펀드가 있으면 
 		// 그쪽으로 메시지를 보낸다.
-		if (order->type == 1)
+		if (order->Type == 1)
 		{
 			VtSubAccountManager* subAcntMgr = VtSubAccountManager::GetInstance();
 			VtAccount* subAcnt = subAcntMgr->FindAccount(order->AccountNo);
@@ -520,9 +520,9 @@ void VtOrderDialogManager::OnOrderAcceptedHd(VtOrder* order)
 		return;
 
 	std::string key;
-	if (order->type == 0 || order->type == 1) // 실계좌 혹은 서브계좌 주문 
+	if (order->Type == 0 || order->Type == 1) // 실계좌 혹은 서브계좌 주문 
 	{
-		if (order->type == 0)
+		if (order->Type == 0)
 		{
 			// 실계좌 혹은 서브계좌에 대한 주문 메시지 처리
 			// 이 계좌가 속한 서브 계좌와 펀드에 메시지를 보내야 한다.
@@ -575,7 +575,7 @@ void VtOrderDialogManager::OnOrderAcceptedHd(VtOrder* order)
 		// 이 서브 계좌를 가지고 있는 펀드는 실시간으로 업데이트가 되어야 한다.
 		// 서브 계좌는 자기가 속한 펀드가 있는지 확인하고 펀드가 있으면 
 		// 그쪽으로 메시지를 보낸다.
-		if (order->type == 1)
+		if (order->Type == 1)
 		{
 			VtSubAccountManager* subAcntMgr = VtSubAccountManager::GetInstance();
 			VtAccount* subAcnt = subAcntMgr->FindAccount(order->AccountNo);
@@ -662,9 +662,9 @@ void VtOrderDialogManager::OnOrderUnfilledHd(VtOrder* order)
 	}
 	*/
 	std::string key;
-	if (order->type == 0 || order->type == 1) // 실계좌 혹은 서브계좌 주문 
+	if (order->Type == 0 || order->Type == 1) // 실계좌 혹은 서브계좌 주문 
 	{
-		if (order->type == 0)
+		if (order->Type == 0)
 		{
 			// 실계좌 혹은 서브계좌에 대한 주문 메시지 처리
 			// 이 계좌가 속한 서브 계좌와 펀드에 메시지를 보내야 한다.
@@ -717,7 +717,7 @@ void VtOrderDialogManager::OnOrderUnfilledHd(VtOrder* order)
 		// 이 서브 계좌를 가지고 있는 펀드는 실시간으로 업데이트가 되어야 한다.
 		// 서브 계좌는 자기가 속한 펀드가 있는지 확인하고 펀드가 있으면 
 		// 그쪽으로 메시지를 보낸다.
-		if (order->type == 1)
+		if (order->Type == 1)
 		{
 			VtSubAccountManager* subAcntMgr = VtSubAccountManager::GetInstance();
 			VtAccount* subAcnt = subAcntMgr->FindAccount(order->AccountNo);
@@ -809,9 +809,9 @@ void VtOrderDialogManager::OnOrderFilledHd(VtOrder* order)
 	*/
 
 	std::string key;
-	if (order->type == 0 || order->type == 1) // 실계좌 혹은 서브계좌 주문 
+	if (order->Type == 0 || order->Type == 1) // 실계좌 혹은 서브계좌 주문 
 	{
-		if (order->type == 0)
+		if (order->Type == 0)
 		{
 			// 실계좌 혹은 서브계좌에 대한 주문 메시지 처리
 			// 이 계좌가 속한 서브 계좌와 펀드에 메시지를 보내야 한다.
@@ -864,7 +864,7 @@ void VtOrderDialogManager::OnOrderFilledHd(VtOrder* order)
 		// 이 서브 계좌를 가지고 있는 펀드는 실시간으로 업데이트가 되어야 한다.
 		// 서브 계좌는 자기가 속한 펀드가 있는지 확인하고 펀드가 있으면 
 		// 그쪽으로 메시지를 보낸다.
-		if (order->type == 1)
+		if (order->Type == 1)
 		{
 			VtSubAccountManager* subAcntMgr = VtSubAccountManager::GetInstance();
 			VtAccount* subAcnt = subAcntMgr->FindAccount(order->AccountNo);
@@ -1077,7 +1077,7 @@ void VtOrderDialogManager::SendOrderMessage(VtOrderEvent event, VtOrder* order)
 	std::string key;
 	std::vector<std::string> keyList;
 	keyList.push_back(order->AccountNo);
-	if (order->type == 0) { // 실계좌
+	if (order->Type == 0) { // 실계좌
 		if (order->SubAccountNo.length() > 0)
 			keyList.push_back(order->SubAccountNo);
 		if (order->FundName.length() > 0)

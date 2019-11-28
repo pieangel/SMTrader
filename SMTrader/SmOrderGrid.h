@@ -76,6 +76,9 @@ public:
 	void PutOrder(VtPosition* posi, int price, bool liqud = false);
 	void RefreshOrderPosition();
 	void SetOrderArea(int height, int width);
+	void AddOrderToCell(VtOrder* order);
+	void RemoveOrderFromCell(VtOrder* order);
+	void RefreshTotalOrderCount(VtOrder* order);
 private:
 	void CheckProfitLossTouchHd(int intClose);
 	bool CheckStopTouchedHd(int intClose);

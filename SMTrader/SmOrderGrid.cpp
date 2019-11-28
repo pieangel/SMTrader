@@ -235,18 +235,32 @@ void SmOrderGrid::OnOrderEvent(const VtOrder* order)
 		return;
 	}
 
-	if (order->SubAccountNo.length() > 0) {
-		// 심볼과 계좌가 같지 않으면 진행하지 않는다.
-		if (_CenterWnd->Symbol()->ShortCode.compare(order->shortCode) != 0 ||
-			_OrderConfigMgr->Account()->AccountNo.compare(order->SubAccountNo) != 0)
+	if (order->Type == -1 || order->Type == 0) {
+		if (!_OrderConfigMgr->Account())
 			return;
-	}
-	else {
 		// 심볼과 계좌가 같지 않으면 진행하지 않는다.
 		if (_CenterWnd->Symbol()->ShortCode.compare(order->shortCode) != 0 ||
 			_OrderConfigMgr->Account()->AccountNo.compare(order->AccountNo) != 0)
 			return;
 	}
+	else if (order->Type == 1) {
+		if (!_OrderConfigMgr->Account())
+			return;
+		// 심볼과 계좌가 같지 않으면 진행하지 않는다.
+		if (_CenterWnd->Symbol()->ShortCode.compare(order->shortCode) != 0 ||
+			_OrderConfigMgr->Account()->AccountNo.compare(order->SubAccountNo) != 0)
+			return;
+	}
+	else if (order->Type == 2) {
+		if (!_OrderConfigMgr->Fund())
+			return;
+		// 심볼과 계좌가 같지 않으면 진행하지 않는다.
+		if (_CenterWnd->Symbol()->ShortCode.compare(order->shortCode) != 0 ||
+			_OrderConfigMgr->Fund()->Name.compare(order->FundName) != 0)
+			return;
+	}
+	else
+		return;
 
 	
 
@@ -1409,6 +1423,7 @@ void SmOrderGrid::PutOrder(int price, VtPositionType position, VtPriceType price
 			if (acnt->AccountLevel() == 0) { // 실계좌 일 때
 				request.AccountNo = acnt->AccountNo;
 				request.Password = acnt->Password;
+				request.Type = 0;
 			}
 			else { // 서브 계좌 일 때
 				VtAccount* parentAcnt = acnt->ParentAccount();
@@ -1416,6 +1431,7 @@ void SmOrderGrid::PutOrder(int price, VtPositionType position, VtPriceType price
 					request.AccountNo = parentAcnt->AccountNo;
 					request.Password = parentAcnt->Password;
 				}
+				request.Type = 1;
 			}
 			request.SymbolCode = _CenterWnd->Symbol()->ShortCode;
 			request.FillCondition = _CenterWnd->FillCondition();
@@ -1453,6 +1469,7 @@ void SmOrderGrid::PutOrder(int price, VtPositionType position, VtPriceType price
 				VtOrderManager* orderMgr = orderMgrSelector->FindAddOrderManager(subAcnt->AccountNo);
 
 				HdOrderRequest request;
+				request.Type = 2;
 				request.Price = price;
 				request.Position = position;
 				request.Amount = _CenterWnd->OrderAmount() * subAcnt->SeungSu;
@@ -1499,19 +1516,30 @@ void SmOrderGrid::PutOrder(VtPosition* posi, int price, bool liqud /*= false*/)
 
 	HdOrderRequest request;
 	request.Amount = std::abs(posi->OpenQty);
-	if (acnt->AccountLevel() == 0) { // 본계좌 일 때
-		request.AccountNo = acnt->AccountNo;
-		request.Password = acnt->Password;
+	if (_OrderConfigMgr->Type() == 0) { // 본계좌나 서브 계좌일때
+		if (acnt->AccountLevel() == 0) { // 본계좌 일 때
+			request.AccountNo = acnt->AccountNo;
+			request.Password = acnt->Password;
+			request.Type = 0;
+		}
+		else { // 서브 계좌 일 때
+			VtAccount* parentAcnt = acnt->ParentAccount();
+			if (parentAcnt) { // 부모 계좌가 있는지 확인 한다.
+				request.AccountNo = parentAcnt->AccountNo;
+				request.Password = parentAcnt->Password;
+			}
+			request.Type = 1;
+		}
 	}
-	else { // 서브 계좌 일 때
+	else { // 펀드 주문일때
 		VtAccount* parentAcnt = acnt->ParentAccount();
 		if (parentAcnt) { // 부모 계좌가 있는지 확인 한다.
 			request.AccountNo = parentAcnt->AccountNo;
 			request.Password = parentAcnt->Password;
 		}
-		else
-			return;
+		request.Type = 2;
 	}
+	
 	request.SymbolCode = _CenterWnd->Symbol()->ShortCode;
 	request.FillCondition = _CenterWnd->FillCondition();
 
@@ -1566,6 +1594,118 @@ void SmOrderGrid::SetOrderArea(int height, int width)
 {
 	_CellHeight = height;
 	_GridColMap[SmOrderGridCol::ORDER] = width;
+}
+
+void SmOrderGrid::AddOrderToCell(VtOrder* order)
+{
+	if (!order)
+		return;
+	if (order->amount == 0)
+		return;
+	if (!_CenterWnd || !_CenterWnd->Symbol())
+		return;
+	VtSymbol* sym = _CenterWnd->Symbol();
+	CGridCellBase* pCell = nullptr;
+	int row = FindRowFromCenterValue(sym, order->intOrderPrice);
+	if (row >= _StartRowForValue && row <= _EndRowForValue) {
+		if (order->orderPosition == VtPositionType::Sell) {
+			pCell = GetCell(row, CenterCol - 3);
+			pCell->SetFormat(DT_LEFT | DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX);
+			pCell->AddOrder(order);
+			_OrderPos.insert(std::make_pair(row, CenterCol - 3));
+			// 주문 갯수 설정
+			std::string strVal = fmt::format("{}", pCell->GetOrderCount());
+			pCell->SetText(strVal.c_str());
+			InvalidateCellRect(row, CenterCol - 3);
+		}
+		else if (order->orderPosition == VtPositionType::Buy) {
+			pCell = GetCell(row, CenterCol + 3);
+			pCell->SetFormat(DT_RIGHT | DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX);
+			pCell->AddOrder(order);
+			_OrderPos.insert(std::make_pair(row, CenterCol + 3));
+			// 주문 갯수 설정
+			std::string strVal = fmt::format("{}", pCell->GetOrderCount());
+			pCell->SetText(strVal.c_str());
+			InvalidateCellRect(row, CenterCol - 3);
+		}
+	}
+}
+
+void SmOrderGrid::RemoveOrderFromCell(VtOrder* order)
+{
+	if (!order)
+		return;
+	if (order->amount == 0)
+		return;
+	if (!_CenterWnd || !_CenterWnd->Symbol())
+		return;
+	VtSymbol* sym = _CenterWnd->Symbol();
+	CGridCellBase* pCell = nullptr;
+	int row = FindRowFromCenterValue(sym, order->intOrderPrice);
+	if (row >= _StartRowForValue && row <= _EndRowForValue) {
+		if (order->orderPosition == VtPositionType::Sell) {
+			pCell = GetCell(row, CenterCol - 3);
+			pCell->SetFormat(DT_LEFT | DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX);
+			pCell->RemoveOrder(order->orderNo);
+			_OrderPos.insert(std::make_pair(row, CenterCol - 3));
+			// 주문 갯수 설정
+			std::string strVal = fmt::format("{}", pCell->GetOrderCount());
+			pCell->SetText(strVal.c_str());
+			InvalidateCellRect(row, CenterCol - 3);
+		}
+		else if (order->orderPosition == VtPositionType::Buy) {
+			pCell = GetCell(row, CenterCol + 3);
+			pCell->SetFormat(DT_RIGHT | DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX);
+			pCell->RemoveOrder(order->orderNo);
+			_OrderPos.insert(std::make_pair(row, CenterCol + 3));
+			// 주문 갯수 설정
+			std::string strVal = fmt::format("{}", pCell->GetOrderCount());
+			pCell->SetText(strVal.c_str());
+			InvalidateCellRect(row, CenterCol + 3);
+		}
+	}
+}
+
+void SmOrderGrid::RefreshTotalOrderCount(VtOrder* input_order)
+{
+	if (!input_order)
+		return;
+
+	if (!_CenterWnd || !_CenterWnd->Symbol() || !_OrderConfigMgr || !_OrderConfigMgr->OrderMgr())
+		return;
+
+	VtSymbol* sym = _CenterWnd->Symbol();
+
+	std::vector<VtOrder*> acptOrderList = _OrderConfigMgr->OrderMgr()->GetAcceptedOrders(sym->ShortCode);
+
+	int buy_count = 0, sell_count = 0;
+	for (auto it = acptOrderList.begin(); it != acptOrderList.end(); ++it) {
+		VtOrder* order = *it;
+		order->orderPosition == VtPositionType::Buy ? buy_count += order->amount : sell_count += order->amount;
+	}
+
+	CGridCellBase* pCell = nullptr;
+	std::string strVal;
+	if (input_order->orderPosition == VtPositionType::Buy) {
+		// 전체 주문 갯수 설정
+		pCell = GetCell(1, CenterCol + 3);
+		if (pCell) {
+			_OrderPos.insert(std::make_pair(1, CenterCol + 3));
+			strVal = fmt::format("{}", buy_count);
+			pCell->SetText(strVal.c_str());
+			InvalidateCellRect(1, CenterCol + 3);
+		}
+	}
+
+	if (input_order->orderPosition == VtPositionType::Sell) {
+		pCell = GetCell(1, CenterCol - 3);
+		if (pCell) {
+			_OrderPos.insert(std::make_pair(1, CenterCol - 3));
+			strVal = fmt::format("{}", sell_count);
+			pCell->SetText(strVal.c_str());
+			InvalidateCellRect(1, CenterCol - 3);
+		}
+	}
 }
 
 void SmOrderGrid::SetOrderAreaColor()
@@ -2330,6 +2470,7 @@ void SmOrderGrid::ChangeOrder(VtOrder* order, int newPrice)
 
 		if (acnt->AccountLevel() == 0)
 		{
+			request.Type = 0;
 			request.AccountNo = acnt->AccountNo;
 			request.Password = acnt->Password;
 		}
@@ -2341,6 +2482,7 @@ void SmOrderGrid::ChangeOrder(VtOrder* order, int newPrice)
 				request.AccountNo = parentAcnt->AccountNo;
 				request.Password = parentAcnt->Password;
 			}
+			request.Type = 1;
 		}
 		request.SymbolCode = order->shortCode;
 		request.FillCondition = VtFilledCondition::Fas;
@@ -2373,6 +2515,7 @@ void SmOrderGrid::ChangeOrder(VtOrder* order, int newPrice)
 				return;
 
 			HdOrderRequest request;
+			request.Type = 2;
 			request.RequestType = order->RequestType;
 			request.Price = newPrice;
 			request.Position = order->orderPosition;
@@ -2401,15 +2544,21 @@ void SmOrderGrid::ChangeOrder()
 		CGridCellBase* pSrcCell = GetCell(OrderCellStart.row, OrderCellStart.col);
 		if (pSrcCell->GetOrderCount() > 0) {
 			auto it = RowToValueMap.find(OrderCellEnd.row);
-			int price = it->second;
-			std::map<int, VtOrder*> orderMap = pSrcCell->GetOrderMap();
-			for (auto it = orderMap.begin(); it != orderMap.end(); ++it) {
-				VtOrder* order = it->second;
-				if (order->state == VtOrderState::Accepted)
-					ChangeOrder(order, price);
-			}
+			if (it != RowToValueMap.end()) {
+				int price = it->second;
+				std::map<int, VtOrder*> orderMap = pSrcCell->GetOrderMap();
+				for (auto it = orderMap.begin(); it != orderMap.end(); ++it) {
+					VtOrder* order = it->second;
+					//if (order->state == VtOrderState::Accepted)
+						ChangeOrder(order, price);
+				}
 
-			pSrcCell->ClearOrders();
+				pSrcCell->ClearOrders();
+			}
+			else {
+				int i = 0;
+				i = i + 1;
+			}
 		}
 	}
 	catch (std::exception& e)
@@ -2426,17 +2575,19 @@ void SmOrderGrid::ChangeStopOrder()
 		CGridCellBase* pTgtCell = GetCell(OrderCellEnd.row, OrderCellEnd.col);
 		if (pSrcCell->GetStopOrderCount() > 0) {
 			auto it = RowToValueMap.find(OrderCellEnd.row);
-			int price = it->second;
-			std::map<int, HdOrderRequest*> stopOrderMap = pSrcCell->GetStopOrderMap();
-			for (auto it = stopOrderMap.begin(); it != stopOrderMap.end(); ++it) {
-				HdOrderRequest* order = it->second;
-				order->Price = price;
+			if (it != RowToValueMap.end()) {
+				int price = it->second;
+				std::map<int, HdOrderRequest*> stopOrderMap = pSrcCell->GetStopOrderMap();
+				for (auto it = stopOrderMap.begin(); it != stopOrderMap.end(); ++it) {
+					HdOrderRequest* order = it->second;
+					order->Price = price;
+				}
+				std::set<std::pair<int, int>> refreshSet;
+				ClearOldStopOrders(refreshSet);
+				SetStopOrderInfo(refreshSet);
+				CalcPosStopOrders(refreshSet);
+				RefreshCells(refreshSet);
 			}
-			std::set<std::pair<int, int>> refreshSet;
-			ClearOldStopOrders(refreshSet);
-			SetStopOrderInfo(refreshSet);
-			CalcPosStopOrders(refreshSet);
-			RefreshCells(refreshSet);
 		}
 	}
 	catch (std::exception& e)
@@ -2466,6 +2617,7 @@ void SmOrderGrid::CancelOrder(VtOrder* order)
 
 			if (acnt->AccountLevel() == 0)
 			{
+				request.Type = 0;
 				request.AccountNo = acnt->AccountNo;
 				request.Password = acnt->Password;
 			}
@@ -2477,6 +2629,7 @@ void SmOrderGrid::CancelOrder(VtOrder* order)
 					request.AccountNo = parentAcnt->AccountNo;
 					request.Password = parentAcnt->Password;
 				}
+				request.Type = 1;
 			}
 			request.SymbolCode = order->shortCode;
 			request.FillCondition = VtFilledCondition::Fas;
@@ -2509,6 +2662,7 @@ void SmOrderGrid::CancelOrder(VtOrder* order)
 					return;
 
 				HdOrderRequest request;
+				request.Type = 2;
 				request.RequestType = order->RequestType;
 				request.Price = order->intOrderPrice;
 				request.Position = order->orderPosition;

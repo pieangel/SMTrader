@@ -58,9 +58,31 @@ void VtProductRemainGrid::OnOrderEvent(const VtOrder* order)
 	if (!order || !_OrderConfigMgr || !_CenterWnd || !_CenterWnd->Symbol())
 		return;
 
-	// 심볼과 계좌가 같지 않으면 진행하지 않는다.
-	if (_CenterWnd->Symbol()->ShortCode.compare(order->shortCode) != 0 ||
-		_OrderConfigMgr->Account()->AccountNo.compare(order->AccountNo) != 0)
+	if (order->Type == -1 || order->Type == 0) {
+		if (!_OrderConfigMgr->Account())
+			return;
+		// 심볼과 계좌가 같지 않으면 진행하지 않는다.
+		if (_CenterWnd->Symbol()->ShortCode.compare(order->shortCode) != 0 ||
+			_OrderConfigMgr->Account()->AccountNo.compare(order->AccountNo) != 0)
+			return;
+	}
+	else if (order->Type == 1) {
+		if (!_OrderConfigMgr->Account())
+			return;
+		// 심볼과 계좌가 같지 않으면 진행하지 않는다.
+		if (_CenterWnd->Symbol()->ShortCode.compare(order->shortCode) != 0 ||
+			_OrderConfigMgr->Account()->AccountNo.compare(order->SubAccountNo) != 0)
+			return;
+	}
+	else if (order->Type == 2) {
+		if (!_OrderConfigMgr->Fund())
+			return;
+		// 심볼과 계좌가 같지 않으면 진행하지 않는다.
+		if (_CenterWnd->Symbol()->ShortCode.compare(order->shortCode) != 0 ||
+			_OrderConfigMgr->Fund()->Name.compare(order->FundName) != 0)
+			return;
+	}
+	else
 		return;
 
 	ShowPosition();

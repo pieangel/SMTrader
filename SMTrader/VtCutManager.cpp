@@ -216,7 +216,7 @@ HdOrderRequest* VtCutManager::MakePositionStopOrderRequest(int mode, VtOrder* or
 	int filledPrice = order->intFilledPrice;
 	
 	HdOrderRequest* request = nullptr;
-	std::string keyAccountNo = order->type == 0 ? order->AccountNo : order->SubAccountNo;
+	std::string keyAccountNo = order->Type == 0 ? order->AccountNo : order->SubAccountNo;
 	auto it = CutInfoMap.find(std::make_tuple(keyAccountNo, sym->ShortCode, mode));
 	if (it != CutInfoMap.end()) { // 이미 손절이나 익절 스탑이 있는 경우
 		request = it->second;
@@ -224,7 +224,7 @@ HdOrderRequest* VtCutManager::MakePositionStopOrderRequest(int mode, VtOrder* or
 		request = new HdOrderRequest();
 		// 새로운 주문요청번호를 생성하여 대입한다.
 		request->RequestId = _OrderConfigMgr->OrderMgr()->GetOrderRequestID();
-		request->Type = order->type;
+		request->Type = order->Type;
 		CutInfoMap[std::make_tuple(keyAccountNo, sym->ShortCode, mode)] = request;
 	}
 
@@ -296,7 +296,7 @@ HdOrderRequest* VtCutManager::MakePositionStopOrderRequest(int mode, VtOrder* or
 	// 새로운 주문요청번호를 생성하여 대입한다.
 	request->RequestId = _OrderConfigMgr->OrderMgr()->GetOrderRequestID();
 	// 주문타입 본계좌 0, 서브계좌 1, 펀드 2.
-	request->Type = order->type;
+	request->Type = order->Type;
 
 	if (order->orderPosition == VtPositionType::Buy) { // 매수 포지션일 때
 		if (mode == 0) { // 익절일 때
@@ -380,15 +380,15 @@ void VtCutManager::AddStopOrderForFilled(VtSymbol* sym, VtOrder* order)
 	if (_OrderConfigMgr->Type() == 0) {  // 실계좌나 서브계좌 주문일때
 		acnt = _OrderConfigMgr->Account();
 		if (acnt->AccountLevel() == 0) { //  실계좌 주문일 때
-			if (order->type != 0) // 주문타입이 실계좌 아니면 불이행
+			if (order->Type != 0) // 주문타입이 실계좌 아니면 불이행
 				return;
 		} else {
-			if (order->type != 1) // 주문 타입이 서브계좌 아니면 불이행
+			if (order->Type != 1) // 주문 타입이 서브계좌 아니면 불이행
 				return;
 			acnt = acnt->ParentAccount();
 		}
 	} else { // 펀드주문일 때
-		if (order->type != 2) // 주문 타입이 펀드 타입이 아니면 불 이행
+		if (order->Type != 2) // 주문 타입이 펀드 타입이 아니면 불 이행
 			return;
 		acnt = _OrderConfigMgr->Fund()->GetParentAccount(order->SubAccountNo);
 	}
@@ -803,7 +803,7 @@ void VtCutManager::PutOrder(VtOrder* order, VtSymbol* sym, int reqType, VtPriceT
 		return;
 
 	VtAccount* acnt = nullptr;
-	if (order->type == 0) { // 실계좌 주문
+	if (order->Type == 0) { // 실계좌 주문
 		VtAccountManager* acntMgr = VtAccountManager::GetInstance();
 		acnt = acntMgr->FindAccount(order->AccountNo);
 	} else { // 서브계좌 혹은 펀드 주문일때
@@ -873,7 +873,7 @@ void VtCutManager::LiqudOrder(VtSymbol* sym, VtOrder* order, int totalRemain, Vt
 {
 	VtAccount* acnt = nullptr;
 	VtAccountManager* acntMgr = VtAccountManager::GetInstance();
-	if (order->type == 0)
+	if (order->Type == 0)
 		acnt = acntMgr->FindAccount(order->AccountNo);
 	else { // 본계좌에 없을 경우 서브 계좌를 찾아 본다.
 		VtSubAccountManager* subAcntMgr = VtSubAccountManager::GetInstance();

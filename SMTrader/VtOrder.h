@@ -247,7 +247,7 @@ struct VtOrder
 	/// <summary>
 	/// 주문 상태
 	/// </summary>
-	VtOrderState state;
+	VtOrderState state = VtOrderState::None;
 
 	/// <summary>
 	/// 체결조건 (1.FAS 2.FOK 3.FAK 4.GTC 5.GTD)	
@@ -300,8 +300,8 @@ struct VtOrder
 	// 정산 주문이냐 청산
 	// 0 : 일반 , 1 : 익절 청산, 2 : 손절 청산
 	int RequestType = 0;
-	// 주문 타입 -> 0 : 일반 주문, 1 : 서브계좌 주문 , 2 : 펀드 주문
-	int type = 0;
+	// 주문 타입 ->-1 : 외부주문,  0 : 일반 주문, 1 : 서브계좌 주문 , 2 : 펀드 주문
+	int Type = -1;
 	// 청산 요청 번호 - 청산 주문일 경우 청산 대상 주문번호를 넣어 준다.
 	// 그 주문은 청산 주문에 의해서 상쇄 된다.
 	// 청산 주문 요청을 받으면 잔고 목록에서 즉시 제거된다. 

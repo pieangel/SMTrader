@@ -331,21 +331,21 @@ VtPosition* VtAccount::CreatePosition(VtOrder* order)
 	position->CurPrice = order->intFilledPrice / std::pow(10, sym->Decimal);
 	position->SubAccountNo = order->SubAccountNo;
 	position->FundName = order->FundName;
-	position->orderType = order->type;
+	position->orderType = order->Type;
 	PositionMap[order->shortCode] = position;
 
 	VtTotalOrderManager* totalOrderMgr = VtTotalOrderManager::GetInstance();
-	if (order->type == 0) {
-		totalOrderMgr->AddPosition(order->type, position->AccountNo, position->ShortCode, position);
+	if (order->Type == 0) {
+		totalOrderMgr->AddPosition(order->Type, position->AccountNo, position->ShortCode, position);
 	}
-	else if (order->type == 1) {
-		totalOrderMgr->AddPosition(order->type, position->SubAccountNo, position->ShortCode, position);
+	else if (order->Type == 1) {
+		totalOrderMgr->AddPosition(order->Type, position->SubAccountNo, position->ShortCode, position);
 	}
-	else if (order->type == 2) {
-		totalOrderMgr->AddPosition(order->type, position->SubAccountNo, position->ShortCode, position);
+	else if (order->Type == 2) {
+		totalOrderMgr->AddPosition(order->Type, position->SubAccountNo, position->ShortCode, position);
 	}
 
-	if (order->type == 1) {
+	if (order->Type == 1) {
 		VtFundManager* fundMgr = VtFundManager::GetInstance();
 		VtFund* fund = fundMgr->FindFund(order->FundName);
 		if (fund) {

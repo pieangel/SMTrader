@@ -712,7 +712,7 @@ void CMainFrame::OnReceiveComplete()
 		//saveMgr->LoadOrderWndList(_T("orderwndlist.dat"), this);
 		saveMgr->ReadWindows();
 
-		SetTimer(SysLiqTimer, 5000, NULL);
+		//SetTimer(SysLiqTimer, 5000, NULL);
 
 		_LoadComplete = true;
 	}
@@ -1073,7 +1073,7 @@ void CMainFrame::OnTimer(UINT_PTR nIDEvent)
 	}
 	else {
 		KillTimer(1);
-		hdClient->DownloadMasterFiles("futures");
+		//hdClient->DownloadMasterFiles("futures");
 		//GetSymbolCode();
 	}
 
