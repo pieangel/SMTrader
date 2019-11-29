@@ -408,6 +408,7 @@ void VtFund::LoadFromXml(pugi::xml_node& node_fund)
 			std::string fund_account_no = fund_account_node.child_value();
 			VtAccount* fund_account = VtSubAccountManager::GetInstance()->FindAccount(fund_account_no);
 			if (fund_account) {
+				fund_account->Fund(this);
 				_FundMap.AddAccount(fund_account);
 				if (fund_account->ParentAccount()) {
 					fund_account->ParentAccount()->AddToFundMap(Name, fund_account);

@@ -308,6 +308,7 @@ void VtProductRemainGrid::ShowPosition(VtPosition* posi, VtSymbol* sym)
 
 	_CenterWnd->SetRemain(posi->OpenQty);
 	_CenterWnd->RefreshOrderPositon();
+	//LOG_F(INFO, _T("잔고그리드 갱신"));
 }
 
 void VtProductRemainGrid::SetSymbol(VtSymbol* sym)

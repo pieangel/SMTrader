@@ -796,15 +796,56 @@ void VtHdCtrl::OnNewOrderHd(CString& sTrCode, LONG& nRqID)
 	}
 	else { // 주문이 있다는 것은 이미 거래소 접수 되었거나 체결된 경우이다. 이 부분은 특별하게 처리해야 한다.
 		if (order->state == VtOrderState::Filled) { 
-			LOG_F(INFO, _T("OnNewOrderHd 주문역전 :: 이미 체결된 주문입니다!"));
 			// 여기서 이미 체결된 주문에 대하여 혹시 접수확인 목록에 들어가 있다면 없애준다.
+			if (order_req) {
+				LOG_F(INFO, _T("OnNewOrderHd 주문역전 :: 이미 체결된 주문입니다! 주문가격 = %s, 요청번호 = %d, 종목이름 = %s, 주문 번호 = %s, 계좌번호 = %s, 주문종류 = %s, 주문갯수 = %s, 요청 타입 = %d"), strPrice, nRqID, strSeries, strOrdNo, order_req->Type == 1 ? order_req->SubAccountNo.c_str() : order_req->FundName.c_str(), strPosition.Compare(_T("1")) == 0 ? _T("매수") : _T("매도"), strAmount, order->RequestType);
+
+				VtOrderManagerSelector* orderMgrSelecter = VtOrderManagerSelector::GetInstance();
+				VtOrderManager* subOrderMgr = nullptr;
+				VtOrder* subAcntOrder = nullptr;
+
+				if (order_req->Type == 1) { // 서브계좌 주문인 경우
+					subOrderMgr = orderMgrSelecter->FindAddOrderManager(order_req->SubAccountNo);
+
+					// 본주문을 복사한다.
+					subAcntOrder = subOrderMgr->CloneOrder(order);
+					// 주문 종류를 복사해 준다. 0 : 계좌 주문, 1 : 서브계좌 주문, 2 : 펀드 주문
+					subAcntOrder->Type = order_req->Type;
+					// 서브계좌로  계좌번호를 바꿔준다.
+					subAcntOrder->AccountNo = order_req->SubAccountNo;
+					// 서브계좌 번호를 저장해 준다.
+					subAcntOrder->SubAccountNo = order_req->SubAccountNo;
+					// 부모계좌 번호를 넣어준다.
+					subAcntOrder->ParentAccountNo = order->AccountNo;
+					subOrderMgr->OnOrderFilledHd(subAcntOrder);
+					SmCallbackManager::GetInstance()->OnOrderEvent(subAcntOrder);
+				}
+				else if (order_req->Type == 2) { // 펀드 주문인 경우
+					subOrderMgr = orderMgrSelecter->FindAddOrderManager(order_req->SubAccountNo);
+					// 본주문을 복사한다.
+					subAcntOrder = subOrderMgr->CloneOrder(order);
+					// 주문 종류를 복사해 준다. 0 : 계좌 주문, 1 : 서브계좌 주문, 2 : 펀드 주문
+					subAcntOrder->Type = order_req->Type;
+					// 서브계좌로  계좌번호를 바꿔준다.
+					subAcntOrder->AccountNo = order_req->SubAccountNo;
+					// 서브계좌 번호를 저장해 준다.
+					subAcntOrder->SubAccountNo = order_req->SubAccountNo;
+					// 부모계좌 번호를 넣어준다.
+					subAcntOrder->ParentAccountNo = order->AccountNo;
+					// 펀드이름을 넣어준다.
+					subAcntOrder->FundName = order_req->FundName;
+					subOrderMgr->OnOrderFilledHd(subAcntOrder);
+					SmCallbackManager::GetInstance()->OnOrderEvent(subAcntOrder);
+				}
+			}
 		}
 		else if (order->state == VtOrderState::Accepted) {
-			LOG_F(INFO, _T("OnNewOrderHd 주문역전 :: 이미 거래소 접수된 주문입니다!"));
 
 			// 메인주문과 서브계좌 주문은 계좌만 다를 뿐 완전히 동일하다.
 			// 주문요청이 있을 경우 - 주문 요청이 없는 경우는 외부 주문이다.
 			if (order_req) {
+				LOG_F(INFO, _T("OnNewOrderHd 주문역전 :: 이미 거래소 접수된 주문입니다! 주문가격 = %s, 요청번호 = %d, 종목이름 = %s, 주문 번호 = %s, 계좌번호 = %s, 주문종류 = %s, 주문갯수 = %s, 요청 타입 = %d"), strPrice, nRqID, strSeries, strOrdNo, order_req->Type == 1 ? order_req->SubAccountNo.c_str() : order_req->FundName.c_str(), strPosition.Compare(_T("1")) == 0 ? _T("매수") : _T("매도"), strAmount, order->RequestType);
+
 				VtOrderManagerSelector* orderMgrSelecter = VtOrderManagerSelector::GetInstance();
 				VtOrderManager* subOrderMgr = nullptr;
 				VtOrder* subAcntOrder = nullptr;
@@ -842,8 +883,6 @@ void VtHdCtrl::OnNewOrderHd(CString& sTrCode, LONG& nRqID)
 					subAcntOrder->ParentAccountNo = order->AccountNo;
 					// 펀드이름을 넣어준다.
 					subAcntOrder->FundName = order_req->FundName;
-					// 주문관리자를 생성해 준다.
-					subOrderMgr = orderMgrSelecter->FindAddOrderManager(order->SubAccountNo);
 					subOrderMgr->OnOrderAcceptedHd(subAcntOrder);
 					// 주문상태를 바꿔준다.
 					subAcntOrder->state = VtOrderState::Accepted;
@@ -1063,6 +1102,46 @@ void VtHdCtrl::OnModifyOrderHd(CString& sTrCode, LONG& nRqID)
 		if (order->state == VtOrderState::Filled) {
 			LOG_F(INFO, _T("OnModifyOrderHd 주문역전 :: 이미 체결된 주문입니다!"));
 			// 여기서 이미 체결된 주문에 대하여 혹시 접수확인 목록에 들어가 있다면 없애준다.
+			// 여기서 이미 체결된 주문에 대하여 혹시 접수확인 목록에 들어가 있다면 없애준다.
+			if (order_req) {
+				VtOrderManagerSelector* orderMgrSelecter = VtOrderManagerSelector::GetInstance();
+				VtOrderManager* subOrderMgr = nullptr;
+				VtOrder* subAcntOrder = nullptr;
+
+				if (order_req->Type == 1) { // 서브계좌 주문인 경우
+					subOrderMgr = orderMgrSelecter->FindAddOrderManager(order_req->SubAccountNo);
+
+					// 본주문을 복사한다.
+					subAcntOrder = subOrderMgr->CloneOrder(order);
+					// 주문 종류를 복사해 준다. 0 : 계좌 주문, 1 : 서브계좌 주문, 2 : 펀드 주문
+					subAcntOrder->Type = order_req->Type;
+					// 서브계좌로  계좌번호를 바꿔준다.
+					subAcntOrder->AccountNo = order_req->SubAccountNo;
+					// 서브계좌 번호를 저장해 준다.
+					subAcntOrder->SubAccountNo = order_req->SubAccountNo;
+					// 부모계좌 번호를 넣어준다.
+					subAcntOrder->ParentAccountNo = order->AccountNo;
+					subOrderMgr->OnOrderFilledHd(subAcntOrder);
+					SmCallbackManager::GetInstance()->OnOrderEvent(subAcntOrder);
+				}
+				else if (order_req->Type == 2) { // 펀드 주문인 경우
+					subOrderMgr = orderMgrSelecter->FindAddOrderManager(order_req->SubAccountNo);
+					// 본주문을 복사한다.
+					subAcntOrder = subOrderMgr->CloneOrder(order);
+					// 주문 종류를 복사해 준다. 0 : 계좌 주문, 1 : 서브계좌 주문, 2 : 펀드 주문
+					subAcntOrder->Type = order_req->Type;
+					// 서브계좌로  계좌번호를 바꿔준다.
+					subAcntOrder->AccountNo = order_req->SubAccountNo;
+					// 서브계좌 번호를 저장해 준다.
+					subAcntOrder->SubAccountNo = order_req->SubAccountNo;
+					// 부모계좌 번호를 넣어준다.
+					subAcntOrder->ParentAccountNo = order->AccountNo;
+					// 펀드이름을 넣어준다.
+					subAcntOrder->FundName = order_req->FundName;
+					subOrderMgr->OnOrderFilledHd(subAcntOrder);
+					SmCallbackManager::GetInstance()->OnOrderEvent(subAcntOrder);
+				}
+			}
 		}
 		else if (order->state == VtOrderState::Accepted) {
 			LOG_F(INFO, _T("OnModifyOrderHd 주문역전 :: 이미 거래소 접수된 주문입니다!"));
@@ -1183,226 +1262,271 @@ void VtHdCtrl::OnModifyOrderHd(CString& sTrCode, LONG& nRqID)
 
 void VtHdCtrl::OnCancelOrderHd(CString& sTrCode, LONG& nRqID)
 {
-	int nRepeatCnt = m_CommAgent.CommGetRepeatCnt(sTrCode, -1, "OutRec1");
+	try
+	{
+		int nRepeatCnt = m_CommAgent.CommGetRepeatCnt(sTrCode, -1, "OutRec1");
 
-	CString strExchTp = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "접수구분");
-	CString strProcTp = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "처리구분");
-	CString strAcctNo = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "계좌번호");
-	CString strOrdNo = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "주문번호");
-	CString strSeries = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "종목코드");
-	CString strPrice = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "주문가격");
-	CString strAmount = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "주문수량");
-	CString strPosition = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매매구분");
-	CString strPriceType = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "가격구분");
-	CString strCustom = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "사용자정의필드");
-	CString strOriOrdNo = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "원주문번호");
+		CString strExchTp = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "접수구분");
+		CString strProcTp = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "처리구분");
+		CString strAcctNo = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "계좌번호");
+		CString strOrdNo = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "주문번호");
+		CString strSeries = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "종목코드");
+		CString strPrice = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "주문가격");
+		CString strAmount = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "주문수량");
+		CString strPosition = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "매매구분");
+		CString strPriceType = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "가격구분");
+		CString strCustom = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "사용자정의필드");
+		CString strOriOrdNo = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "원주문번호");
 
-	CString strMsg;
-	strMsg.Format("OnCancelOrderHd 번호[%d][%s]처리[%s]계좌번호[%s]주문번호[%s]\n", nRqID, strExchTp, strProcTp, strAcctNo, strOrdNo);
-	//WriteLog(strMsg);
-	//strMsg.Format(_T("%s\n"), strCustom);
-	//TRACE(strMsg);
+		CString strMsg;
+		strMsg.Format("OnCancelOrderHd 번호[%d][%s]처리[%s]계좌번호[%s]주문번호[%s]\n", nRqID, strExchTp, strProcTp, strAcctNo, strOrdNo);
+		//WriteLog(strMsg);
+		//strMsg.Format(_T("%s\n"), strCustom);
+		//TRACE(strMsg);
 
-	// 주문 가격
-	strPrice = strPrice.TrimLeft('0');
-	CString strOriOrderPrice;
-	// 원주문가격 저장
-	strOriOrderPrice = strPrice;
+		// 주문 가격
+		strPrice = strPrice.TrimLeft('0');
+		CString strOriOrderPrice;
+		// 원주문가격 저장
+		strOriOrderPrice = strPrice;
 
-	// 주문 가겨을 정수로 변환
-	strPrice.Remove('.');
-	// 계좌 번호
-	strAcctNo.TrimRight();
-	// 주문 번호
-	strOrdNo.TrimLeft('0');
-	// 심볼 코드
-	strSeries.TrimRight();
-	// 주문 수량
-	strAmount.TrimRight();
-	// 원주문번호
-	strOriOrdNo.TrimRight();
-
-	VtOrderManagerSelector* orderMgrSeledter = VtOrderManagerSelector::GetInstance();
-	VtOrderManager* orderMgr = orderMgrSeledter->FindAddOrderManager((LPCTSTR)strAcctNo);
-	HdOrderRequest* order_req = GetOrderRequestByOrderReqId(nRqID);
-	if (order_req) {
-		// 새로운 주문번호를 넣어 준다.
-		order_req->NewOrderNo = _ttoi(strOrdNo);
-	}
-	// 여기서 주문요청 아이디와 주문요청 객체를 매칭해 준다.
-	auto it = _ReqIdToRequestMap.find(nRqID);
-	if (it != _ReqIdToRequestMap.end()) {
-		HdOrderRequest req = it->second;
-		_OrderNoToRequestMap[_ttoi(strOrdNo)] = req;
-		_OrderNoToRequestMap[_ttoi(strOriOrdNo)] = req;
-	}
-
-	VtOrder* order = nullptr;
-	order = orderMgr->FindOrder(_ttoi(strOrdNo));
-	if (!order) {
-		order = new VtOrder();
-		// 주문 요청 번호
-		order->HtsOrderReqID = nRqID;
-		// 일반 주문인지 청산 주문인지 넣어 준다.
-		order_req != nullptr ? order->RequestType = order_req->RequestType : order->RequestType = -1;
+		// 주문 가겨을 정수로 변환
+		strPrice.Remove('.');
+		// 계좌 번호
+		strAcctNo.TrimRight();
 		// 주문 번호
-		order->AccountNo = (LPCTSTR)strAcctNo;
+		strOrdNo.TrimLeft('0');
 		// 심볼 코드
-		order->shortCode = (LPCTSTR)strSeries;
-		// 주문 번호
-		order->orderNo = _ttoi(strOrdNo);
-		// 정수로 변환된 주문 가격
-		order->intOrderPrice = _ttoi(strPrice);
+		strSeries.TrimRight();
 		// 주문 수량
-		order->amount = _ttoi(strAmount);
-		// 원 주문 번호
-		order->oriOrderNo = _ttoi(strOriOrdNo);
-		// 소수로 표시된 주문 가격
-		order->orderPrice = _ttof(strOriOrderPrice);
+		strAmount.TrimRight();
+		// 원주문번호
+		strOriOrdNo.TrimRight();
 
-		// 주문 포지션 타입 - 매수 / 매도
-		if (strPosition.Compare(_T("1")) == 0) {
-			order->orderPosition = VtPositionType::Buy;
+		VtOrderManagerSelector* orderMgrSeledter = VtOrderManagerSelector::GetInstance();
+		VtOrderManager* orderMgr = orderMgrSeledter->FindAddOrderManager((LPCTSTR)strAcctNo);
+		HdOrderRequest* order_req = GetOrderRequestByOrderReqId(nRqID);
+		if (order_req) {
+			// 새로운 주문번호를 넣어 준다.
+			order_req->NewOrderNo = _ttoi(strOrdNo);
 		}
-		else if (strPosition.Compare(_T("2")) == 0) {
-			order->orderPosition = VtPositionType::Sell;
-		}
-
-		// 주문 가격 타입 - 지정가 / 시장가
-		if (strPriceType.Compare(_T("1")) == 0) {
-			order->priceType = VtPriceType::Price;
-		}
-		else if (strPosition.Compare(_T("2")) == 0) {
-			order->priceType = VtPriceType::Market;
+		// 여기서 주문요청 아이디와 주문요청 객체를 매칭해 준다.
+		auto it = _ReqIdToRequestMap.find(nRqID);
+		if (it != _ReqIdToRequestMap.end()) {
+			HdOrderRequest req = it->second;
+			_OrderNoToRequestMap[_ttoi(strOrdNo)] = req;
+			_OrderNoToRequestMap[_ttoi(strOriOrdNo)] = req;
 		}
 
-		// 주문 유형
-		order->orderType = VtOrderType::Cancel;
+		VtOrder* order = nullptr;
+		order = orderMgr->FindOrder(_ttoi(strOrdNo));
+		if (!order) {
+			order = new VtOrder();
+			// 주문 요청 번호
+			order->HtsOrderReqID = nRqID;
+			// 일반 주문인지 청산 주문인지 넣어 준다.
+			order_req != nullptr ? order->RequestType = order_req->RequestType : order->RequestType = -1;
+			// 주문 번호
+			order->AccountNo = (LPCTSTR)strAcctNo;
+			// 심볼 코드
+			order->shortCode = (LPCTSTR)strSeries;
+			// 주문 번호
+			order->orderNo = _ttoi(strOrdNo);
+			// 정수로 변환된 주문 가격
+			order->intOrderPrice = _ttoi(strPrice);
+			// 주문 수량
+			order->amount = _ttoi(strAmount);
+			// 원 주문 번호
+			order->oriOrderNo = _ttoi(strOriOrdNo);
+			// 소수로 표시된 주문 가격
+			order->orderPrice = _ttof(strOriOrderPrice);
 
-		// 일반계좌 주문
-		order->Type = 0;
-	}
-	else {
-		if (order->state == VtOrderState::Filled) {
-			LOG_F(INFO, _T("OnCancelOrderHd 주문역전 :: 이미 체결된 주문입니다!"));
-			// 여기서 이미 체결된 주문에 대하여 혹시 접수확인 목록에 들어가 있다면 없애준다.
+			// 주문 포지션 타입 - 매수 / 매도
+			if (strPosition.Compare(_T("1")) == 0) {
+				order->orderPosition = VtPositionType::Buy;
+			}
+			else if (strPosition.Compare(_T("2")) == 0) {
+				order->orderPosition = VtPositionType::Sell;
+			}
+
+			// 주문 가격 타입 - 지정가 / 시장가
+			if (strPriceType.Compare(_T("1")) == 0) {
+				order->priceType = VtPriceType::Price;
+			}
+			else if (strPosition.Compare(_T("2")) == 0) {
+				order->priceType = VtPriceType::Market;
+			}
+
+			// 주문 유형
+			order->orderType = VtOrderType::Cancel;
+
+			// 일반계좌 주문
+			order->Type = 0;
 		}
-		else if (order->state == VtOrderState::Accepted) {
-			LOG_F(INFO, _T("OnCancelOrderHd 주문역전 :: 이미 거래소 접수된 주문입니다!"));
+		else {
+			if (order->state == VtOrderState::Filled) {
+				LOG_F(INFO, _T("OnCancelOrderHd 주문역전 :: 이미 체결된 주문입니다!"));
+				// 여기서 이미 체결된 주문에 대하여 혹시 접수확인 목록에 들어가 있다면 없애준다.
+				if (order_req) {
+					VtOrderManagerSelector* orderMgrSelecter = VtOrderManagerSelector::GetInstance();
+					VtOrderManager* subOrderMgr = nullptr;
+					VtOrder* subAcntOrder = nullptr;
 
-			// 메인주문과 서브계좌 주문은 계좌만 다를 뿐 완전히 동일하다.
-			// 주문요청이 있을 경우 - 주문 요청이 없는 경우는 외부 주문이다.
-			if (order_req) {
-				VtOrderManagerSelector* orderMgrSelecter = VtOrderManagerSelector::GetInstance();
-				VtOrderManager* subOrderMgr = nullptr;
-				VtOrder* subAcntOrder = nullptr;
+					if (order_req->Type == 1) { // 서브계좌 주문인 경우
+						subOrderMgr = orderMgrSelecter->FindAddOrderManager(order_req->SubAccountNo);
 
-				if (order_req->Type == 1) { // 서브계좌 주문인 경우
-											// 주문관리자를 생성해 준다.
-					subOrderMgr = orderMgrSelecter->FindAddOrderManager(order_req->SubAccountNo);
-					// 본주문을 복사한다.
-					subAcntOrder = subOrderMgr->CloneOrder(order);
-					// 주문 종류를 복사해 준다. 0 : 계좌 주문, 1 : 서브계좌 주문, 2 : 펀드 주문
-					subAcntOrder->Type = order_req->Type;
-					// 서브계좌로  계좌번호를 바꿔준다.
-					subAcntOrder->AccountNo = order_req->SubAccountNo;
-					// 서브계좌 번호를 저장해 준다.
-					subAcntOrder->SubAccountNo = order_req->SubAccountNo;
-					// 부모계좌 번호를 넣어준다.
-					subAcntOrder->ParentAccountNo = order->AccountNo;
-					subOrderMgr->OnOrderAcceptedHd(subAcntOrder);
-					// 주문상태를 바꿔준다.
-					subAcntOrder->state = VtOrderState::Accepted;
-					SmCallbackManager::GetInstance()->OnOrderEvent(subAcntOrder);
+						// 본주문을 복사한다.
+						subAcntOrder = subOrderMgr->CloneOrder(order);
+						// 주문 종류를 복사해 준다. 0 : 계좌 주문, 1 : 서브계좌 주문, 2 : 펀드 주문
+						subAcntOrder->Type = order_req->Type;
+						// 서브계좌로  계좌번호를 바꿔준다.
+						subAcntOrder->AccountNo = order_req->SubAccountNo;
+						// 서브계좌 번호를 저장해 준다.
+						subAcntOrder->SubAccountNo = order_req->SubAccountNo;
+						// 부모계좌 번호를 넣어준다.
+						subAcntOrder->ParentAccountNo = order->AccountNo;
+						subOrderMgr->OnOrderFilledHd(subAcntOrder);
+						SmCallbackManager::GetInstance()->OnOrderEvent(subAcntOrder);
+					}
+					else if (order_req->Type == 2) { // 펀드 주문인 경우
+						subOrderMgr = orderMgrSelecter->FindAddOrderManager(order_req->SubAccountNo);
+						// 본주문을 복사한다.
+						subAcntOrder = subOrderMgr->CloneOrder(order);
+						// 주문 종류를 복사해 준다. 0 : 계좌 주문, 1 : 서브계좌 주문, 2 : 펀드 주문
+						subAcntOrder->Type = order_req->Type;
+						// 서브계좌로  계좌번호를 바꿔준다.
+						subAcntOrder->AccountNo = order_req->SubAccountNo;
+						// 서브계좌 번호를 저장해 준다.
+						subAcntOrder->SubAccountNo = order_req->SubAccountNo;
+						// 부모계좌 번호를 넣어준다.
+						subAcntOrder->ParentAccountNo = order->AccountNo;
+						// 펀드이름을 넣어준다.
+						subAcntOrder->FundName = order_req->FundName;
+						subOrderMgr->OnOrderFilledHd(subAcntOrder);
+						SmCallbackManager::GetInstance()->OnOrderEvent(subAcntOrder);
+					}
 				}
-				else if (order_req->Type == 2) { // 펀드 주문인 경우
-												 // 주문관리자를 생성해 준다.
-					subOrderMgr = orderMgrSelecter->FindAddOrderManager(order_req->SubAccountNo);
-					// 본주문을 복사한다.
-					subAcntOrder = subOrderMgr->CloneOrder(order);
-					// 주문 종류를 복사해 준다. 0 : 계좌 주문, 1 : 서브계좌 주문, 2 : 펀드 주문
-					subAcntOrder->Type = order_req->Type;
-					// 서브계좌로  계좌번호를 바꿔준다.
-					subAcntOrder->AccountNo = order_req->SubAccountNo;
-					// 서브계좌 번호를 저장해 준다.
-					subAcntOrder->SubAccountNo = order_req->SubAccountNo;
-					// 부모계좌 번호를 넣어준다.
-					subAcntOrder->ParentAccountNo = order->AccountNo;
-					// 펀드이름을 넣어준다.
-					subAcntOrder->FundName = order_req->FundName;
-					// 주문관리자를 생성해 준다.
-					subOrderMgr = orderMgrSelecter->FindAddOrderManager(order->SubAccountNo);
-					subOrderMgr->OnOrderAcceptedHd(subAcntOrder);
-					// 주문상태를 바꿔준다.
-					subAcntOrder->state = VtOrderState::Accepted;
-					SmCallbackManager::GetInstance()->OnOrderEvent(subAcntOrder);
+			}
+			else if (order->state == VtOrderState::Accepted) {
+				LOG_F(INFO, _T("OnCancelOrderHd 주문역전 :: 이미 거래소 접수된 주문입니다!"));
+
+				// 메인주문과 서브계좌 주문은 계좌만 다를 뿐 완전히 동일하다.
+				// 주문요청이 있을 경우 - 주문 요청이 없는 경우는 외부 주문이다.
+				if (order_req) {
+					VtOrderManagerSelector* orderMgrSelecter = VtOrderManagerSelector::GetInstance();
+					VtOrderManager* subOrderMgr = nullptr;
+					VtOrder* subAcntOrder = nullptr;
+
+					if (order_req->Type == 1) { // 서브계좌 주문인 경우
+												// 주문관리자를 생성해 준다.
+						subOrderMgr = orderMgrSelecter->FindAddOrderManager(order_req->SubAccountNo);
+						// 본주문을 복사한다.
+						subAcntOrder = subOrderMgr->CloneOrder(order);
+						// 주문 종류를 복사해 준다. 0 : 계좌 주문, 1 : 서브계좌 주문, 2 : 펀드 주문
+						subAcntOrder->Type = order_req->Type;
+						// 서브계좌로  계좌번호를 바꿔준다.
+						subAcntOrder->AccountNo = order_req->SubAccountNo;
+						// 서브계좌 번호를 저장해 준다.
+						subAcntOrder->SubAccountNo = order_req->SubAccountNo;
+						// 부모계좌 번호를 넣어준다.
+						subAcntOrder->ParentAccountNo = order->AccountNo;
+						subOrderMgr->OnOrderAcceptedHd(subAcntOrder);
+						// 주문상태를 바꿔준다.
+						subAcntOrder->state = VtOrderState::Accepted;
+						SmCallbackManager::GetInstance()->OnOrderEvent(subAcntOrder);
+					}
+					else if (order_req->Type == 2) { // 펀드 주문인 경우
+													 // 주문관리자를 생성해 준다.
+						subOrderMgr = orderMgrSelecter->FindAddOrderManager(order_req->SubAccountNo);
+						// 본주문을 복사한다.
+						subAcntOrder = subOrderMgr->CloneOrder(order);
+						// 주문 종류를 복사해 준다. 0 : 계좌 주문, 1 : 서브계좌 주문, 2 : 펀드 주문
+						subAcntOrder->Type = order_req->Type;
+						// 서브계좌로  계좌번호를 바꿔준다.
+						subAcntOrder->AccountNo = order_req->SubAccountNo;
+						// 서브계좌 번호를 저장해 준다.
+						subAcntOrder->SubAccountNo = order_req->SubAccountNo;
+						// 부모계좌 번호를 넣어준다.
+						subAcntOrder->ParentAccountNo = order->AccountNo;
+						// 펀드이름을 넣어준다.
+						subAcntOrder->FundName = order_req->FundName;
+						subOrderMgr->OnOrderAcceptedHd(subAcntOrder);
+						// 주문상태를 바꿔준다.
+						subAcntOrder->state = VtOrderState::Accepted;
+						SmCallbackManager::GetInstance()->OnOrderEvent(subAcntOrder);
+					}
 				}
 			}
 		}
-	}
-	
-	// 주문 수신을 처리해 준다.
-	orderMgr->OnOrderReceivedHd(order);
-	// 주문 상태를 바꿔준다.
-	order->state = VtOrderState::OrderReceived;
-	SmCallbackManager::GetInstance()->OnOrderEvent(order);
 
-	// 메인주문과 서브계좌 주문은 계좌만 다를 뿐 완전히 동일하다.
-	// 주문요청이 있을 경우 - 주문 요청이 없는 경우는 외부 주문이다.
-	if (order_req) {
-		VtOrderManagerSelector* orderMgrSelecter = VtOrderManagerSelector::GetInstance();
-		VtOrderManager* subOrderMgr = nullptr;
-		VtOrder* subAcntOrder = nullptr;
+		// 주문 수신을 처리해 준다.
+		orderMgr->OnOrderReceivedHd(order);
+		// 주문 상태를 바꿔준다.
+		order->state = VtOrderState::OrderReceived;
+		SmCallbackManager::GetInstance()->OnOrderEvent(order);
 
-		if (order_req->Type == 1) { // 서브계좌 주문인 경우
-			// 주문관리자를 생성해 준다.
-			subOrderMgr = orderMgrSelecter->FindAddOrderManager(order_req->SubAccountNo);
-			// 본주문을 복사한다.
-			subAcntOrder = subOrderMgr->CloneOrder(order);
-			// 주문 종류를 복사해 준다. 0 : 계좌 주문, 1 : 서브계좌 주문, 2 : 펀드 주문
-			subAcntOrder->Type = order_req->Type;
-			// 서브계좌로  계좌번호를 바꿔준다.
-			subAcntOrder->AccountNo = order_req->SubAccountNo;
-			// 서브계좌 번호를 저장해 준다.
-			subAcntOrder->SubAccountNo = order_req->SubAccountNo;
-			// 부모계좌 번호를 넣어준다.
-			subAcntOrder->ParentAccountNo = order->AccountNo;
-			// 서브주문관리자는 서브주문을 처리한다.
-			subOrderMgr->OnOrderReceivedHd(subAcntOrder);
-			// 주문상태를 바꿔준다.
-			subAcntOrder->state = VtOrderState::OrderReceived;
-			SmCallbackManager::GetInstance()->OnOrderEvent(subAcntOrder);
+		// 메인주문과 서브계좌 주문은 계좌만 다를 뿐 완전히 동일하다.
+		// 주문요청이 있을 경우 - 주문 요청이 없는 경우는 외부 주문이다.
+		if (order_req) {
+			VtOrderManagerSelector* orderMgrSelecter = VtOrderManagerSelector::GetInstance();
+			VtOrderManager* subOrderMgr = nullptr;
+			VtOrder* subAcntOrder = nullptr;
+
+			if (order_req->Type == 1) { // 서브계좌 주문인 경우
+										// 주문관리자를 생성해 준다.
+				subOrderMgr = orderMgrSelecter->FindAddOrderManager(order_req->SubAccountNo);
+				// 본주문을 복사한다.
+				subAcntOrder = subOrderMgr->CloneOrder(order);
+				// 주문 종류를 복사해 준다. 0 : 계좌 주문, 1 : 서브계좌 주문, 2 : 펀드 주문
+				subAcntOrder->Type = order_req->Type;
+				// 서브계좌로  계좌번호를 바꿔준다.
+				subAcntOrder->AccountNo = order_req->SubAccountNo;
+				// 서브계좌 번호를 저장해 준다.
+				subAcntOrder->SubAccountNo = order_req->SubAccountNo;
+				// 부모계좌 번호를 넣어준다.
+				subAcntOrder->ParentAccountNo = order->AccountNo;
+				// 서브주문관리자는 서브주문을 처리한다.
+				subOrderMgr->OnOrderReceivedHd(subAcntOrder);
+				// 주문상태를 바꿔준다.
+				subAcntOrder->state = VtOrderState::OrderReceived;
+				SmCallbackManager::GetInstance()->OnOrderEvent(subAcntOrder);
+			}
+			else if (order_req->Type == 2) { // 펀드 주문인 경우
+											 // 주문관리자를 생성해 준다.
+				subOrderMgr = orderMgrSelecter->FindAddOrderManager(order_req->SubAccountNo);
+				// 본주문을 복사한다.
+				subAcntOrder = subOrderMgr->CloneOrder(order);
+				// 주문 종류를 복사해 준다. 0 : 계좌 주문, 1 : 서브계좌 주문, 2 : 펀드 주문
+				subAcntOrder->Type = order_req->Type;
+				// 서브계좌로  계좌번호를 바꿔준다.
+				subAcntOrder->AccountNo = order_req->SubAccountNo;
+				// 서브계좌 번호를 저장해 준다.
+				subAcntOrder->SubAccountNo = order_req->SubAccountNo;
+				// 부모계좌 번호를 넣어준다.
+				subAcntOrder->ParentAccountNo = order->AccountNo;
+				// 펀드이름을 넣어준다.
+				subAcntOrder->FundName = order_req->FundName;
+				// 서브주문관리자는 서브주문을 처리한다.
+				subOrderMgr->OnOrderReceivedHd(subAcntOrder);
+				// 주문상태를 바꿔준다.
+				subAcntOrder->state = VtOrderState::OrderReceived;
+				SmCallbackManager::GetInstance()->OnOrderEvent(subAcntOrder);
+			}
 		}
-		else if (order_req->Type == 2) { // 펀드 주문인 경우
-			// 주문관리자를 생성해 준다.
-			subOrderMgr = orderMgrSelecter->FindAddOrderManager(order_req->SubAccountNo);
-			// 본주문을 복사한다.
-			subAcntOrder = subOrderMgr->CloneOrder(order);
-			// 주문 종류를 복사해 준다. 0 : 계좌 주문, 1 : 서브계좌 주문, 2 : 펀드 주문
-			subAcntOrder->Type = order_req->Type;
-			// 서브계좌로  계좌번호를 바꿔준다.
-			subAcntOrder->AccountNo = order_req->SubAccountNo;
-			// 서브계좌 번호를 저장해 준다.
-			subAcntOrder->SubAccountNo = order_req->SubAccountNo;
-			// 부모계좌 번호를 넣어준다.
-			subAcntOrder->ParentAccountNo = order->AccountNo;
-			// 펀드이름을 넣어준다.
-			subAcntOrder->FundName = order_req->FundName;
-			// 서브주문관리자는 서브주문을 처리한다.
-			subOrderMgr->OnOrderReceivedHd(subAcntOrder);
-			// 주문상태를 바꿔준다.
-			subAcntOrder->state = VtOrderState::OrderReceived;
-			SmCallbackManager::GetInstance()->OnOrderEvent(subAcntOrder);
-		}
+
+		//SendOrderMessage(VtOrderEvent::Cancelled, order);
+
+		//OnOrderReceived(nRqID, order);
+
+		//OnSubAccountOrder(VtOrderEvent::Cancelled, strSubAcntNo, strFundName, order, prevState);
+
+		LOG_F(INFO, _T("취소주문서버확인 : 주문가격 = %s, 요청번호 = %d, 종목이름 = %s, 주문 번호 = %s, 원주문번호 = %s, 계좌번호 = %s, 주문종류 = %s, 주문갯수 = %s, 요청 타입 = %d"), strPrice, nRqID, strSeries, strOrdNo, strOriOrdNo, strAcctNo, strPosition.Compare(_T("1")) == 0 ? _T("매수") : _T("매도"), strAmount, order->RequestType);
+
 	}
-
-	//SendOrderMessage(VtOrderEvent::Cancelled, order);
-
-	//OnOrderReceived(nRqID, order);
-
-	//OnSubAccountOrder(VtOrderEvent::Cancelled, strSubAcntNo, strFundName, order, prevState);
-
-	LOG_F(INFO, _T("취소주문서버확인 : 주문가격 = %s, 요청번호 = %d, 종목이름 = %s, 주문 번호 = %s, 원주문번호 = %s, 계좌번호 = %s, 서브계좌번호 = %s, 펀드 이름 = %s, 주문종류 = %s, 주문갯수 = %s, 요청 타입 = %d"), strPrice, nRqID, strSeries, strOrdNo, strOriOrdNo, strAcctNo, strPosition.Compare(_T("1")) == 0 ? _T("매수") : _T("매도"), strAmount, order->RequestType);
+	catch (std::exception& e)
+	{
+		std::string error = e.what();
+	}
 }
 
 void VtHdCtrl::OnReceiveRealTimeValue(std::string symCode)
@@ -1596,14 +1720,71 @@ void VtHdCtrl::OnOrderAcceptedHd(CString& strKey, LONG& nRealType)
 		}
 	}
 	else { // 이미 주문이 있는 경우
+		// 거래소 접수되었지만 그 원주문이 이미 체결된 경우에는 현재 주문도 접수확인 목록에서 제거해 준다.
+		// 이미 체결된 상태이기 때문에 추가적인 처리는 하지 않는다.
+		VtOrder* origin_order = orderMgr->FindOrder(_ttoi(strOriOrderNo));
+		if (origin_order) {
+			if (origin_order->state == VtOrderState::Filled || origin_order->state == VtOrderState::Settled) {
+				orderMgr->RemoveAcceptedHd(order);
+				SmCallbackManager::GetInstance()->OnOrderEvent(order);
+				// 여기서 이미 체결된 주문에 대하여 혹시 접수확인 목록에 들어가 있다면 없애준다.
+				if (order_req) {
+					VtOrderManagerSelector* orderMgrSelecter = VtOrderManagerSelector::GetInstance();
+					VtOrderManager* subOrderMgr = orderMgrSelecter->FindAddOrderManager(order_req->SubAccountNo);
+					VtOrder* subAcntOrder = subOrderMgr->FindOrder(order->orderNo);
+					if (subAcntOrder) {
+						subOrderMgr->RemoveAcceptedHd(subAcntOrder);
+						SmCallbackManager::GetInstance()->OnOrderEvent(subAcntOrder);
+					}
+				}
+				return;
+			}
+		}
 		if (order->state == VtOrderState::Filled) {
 			LOG_F(INFO, _T("OnAccepted :: // 주문역전 : 주문의 상태가 체결인 경우는 역전된 경우이다."));
+			// 여기서 이미 체결된 주문에 대하여 혹시 접수확인 목록에 들어가 있다면 없애준다.
+			if (order_req) {
+				VtOrderManagerSelector* orderMgrSelecter = VtOrderManagerSelector::GetInstance();
+				VtOrderManager* subOrderMgr = nullptr;
+				VtOrder* subAcntOrder = nullptr;
+
+				if (order_req->Type == 1) { // 서브계좌 주문인 경우
+					subOrderMgr = orderMgrSelecter->FindAddOrderManager(order_req->SubAccountNo);
+
+					// 본주문을 복사한다.
+					subAcntOrder = subOrderMgr->CloneOrder(order);
+					// 주문 종류를 복사해 준다. 0 : 계좌 주문, 1 : 서브계좌 주문, 2 : 펀드 주문
+					subAcntOrder->Type = order_req->Type;
+					// 서브계좌로  계좌번호를 바꿔준다.
+					subAcntOrder->AccountNo = order_req->SubAccountNo;
+					// 서브계좌 번호를 저장해 준다.
+					subAcntOrder->SubAccountNo = order_req->SubAccountNo;
+					// 부모계좌 번호를 넣어준다.
+					subAcntOrder->ParentAccountNo = order->AccountNo;
+					subOrderMgr->OnOrderFilledHd(subAcntOrder);
+					SmCallbackManager::GetInstance()->OnOrderEvent(subAcntOrder);
+				}
+				else if (order_req->Type == 2) { // 펀드 주문인 경우
+					subOrderMgr = orderMgrSelecter->FindAddOrderManager(order_req->SubAccountNo);
+					// 본주문을 복사한다.
+					subAcntOrder = subOrderMgr->CloneOrder(order);
+					// 주문 종류를 복사해 준다. 0 : 계좌 주문, 1 : 서브계좌 주문, 2 : 펀드 주문
+					subAcntOrder->Type = order_req->Type;
+					// 서브계좌로  계좌번호를 바꿔준다.
+					subAcntOrder->AccountNo = order_req->SubAccountNo;
+					// 서브계좌 번호를 저장해 준다.
+					subAcntOrder->SubAccountNo = order_req->SubAccountNo;
+					// 부모계좌 번호를 넣어준다.
+					subAcntOrder->ParentAccountNo = order->AccountNo;
+					// 펀드이름을 넣어준다.
+					subAcntOrder->FundName = order_req->FundName;
+					subOrderMgr->OnOrderFilledHd(subAcntOrder);
+					SmCallbackManager::GetInstance()->OnOrderEvent(subAcntOrder);
+				}
+			}
 			return;
 		}
 	}
-
-	// 정수주문가격 설정
-	//order->intOrderPrice = GetIntOrderPrice(strSeries, strPrice, strOriOrderPrice);
 
 	// 주문 처리
 	orderMgr->OnOrderAcceptedHd(order);
@@ -1611,6 +1792,9 @@ void VtHdCtrl::OnOrderAcceptedHd(CString& strKey, LONG& nRealType)
 	order->state = VtOrderState::Accepted;
 
 	SmCallbackManager::GetInstance()->OnOrderEvent(order);
+
+	LOG_F(INFO, _T("본계좌 거래소 접수 : 주문가격 = %s, 요청번호 = %d, 종목이름 = %s, 주문 번호 = %s, 원주문번호 = %s, 계좌번호 = %s, 주문종류 = %s, 주문갯수 = %s, 요청 타입 = %d"), strPrice, order->HtsOrderReqID, strSeries, strOrdNo, strOriOrderNo, strAcctNo, strPosition.Compare(_T("1")) == 0 ? _T("매수") : _T("매도"), strAmount, order->RequestType);
+
 
 	// 메인주문과 서브계좌 주문은 계좌만 다를 뿐 완전히 동일하다.
 	// 주문요청이 있을 경우 - 주문 요청이 없는 경우는 외부 주문이다.
@@ -1623,22 +1807,51 @@ void VtHdCtrl::OnOrderAcceptedHd(CString& strKey, LONG& nRealType)
 		if (order_req->Type == 1) { // 서브계좌 주문인 경우
 			subOrderMgr = orderMgrSelecter->FindAddOrderManager(order_req->SubAccountNo);
 			subAcntOrder = subOrderMgr->FindOrder(_ttoi(strOrdNo));
-			if (subAcntOrder) {
-				subOrderMgr->OnOrderAcceptedHd(subAcntOrder);
-				// 주문상태를 바꿔준다.
-				subAcntOrder->state = VtOrderState::Accepted;
-				SmCallbackManager::GetInstance()->OnOrderEvent(subAcntOrder);
+			if (!subAcntOrder) {
+				// 본주문을 복사한다.
+				subAcntOrder = subOrderMgr->CloneOrder(order);
+				// 주문 종류를 복사해 준다. 0 : 계좌 주문, 1 : 서브계좌 주문, 2 : 펀드 주문
+				subAcntOrder->Type = order_req->Type;
+				// 서브계좌로  계좌번호를 바꿔준다.
+				subAcntOrder->AccountNo = order_req->SubAccountNo;
+				// 서브계좌 번호를 저장해 준다.
+				subAcntOrder->SubAccountNo = order_req->SubAccountNo;
+				// 부모계좌 번호를 넣어준다.
+				subAcntOrder->ParentAccountNo = order->AccountNo;
 			}
+			
+			subOrderMgr->OnOrderAcceptedHd(subAcntOrder);
+			// 주문상태를 바꿔준다.
+			subAcntOrder->state = VtOrderState::Accepted;
+			SmCallbackManager::GetInstance()->OnOrderEvent(subAcntOrder);
+
+			LOG_F(INFO, _T("서브계좌 거래소 접수 : 주문가격 = %s, 요청번호 = %d, 종목이름 = %s, 주문 번호 = %s, 원주문번호 = %s, 서브계좌번호 = %s, 주문종류 = %s, 주문갯수 = %s, 요청 타입 = %d"), strPrice, order->HtsOrderReqID, strSeries, strOrdNo, strOriOrderNo, order_req->SubAccountNo.c_str(), strPosition.Compare(_T("1")) == 0 ? _T("매수") : _T("매도"), strAmount, order->RequestType);
+
 		}
 		else if (order_req->Type == 2) { // 펀드 주문인 경우
 			subOrderMgr = orderMgrSelecter->FindAddOrderManager(order_req->SubAccountNo);
 			subAcntOrder = subOrderMgr->FindOrder(_ttoi(strOrdNo));
-			if (subAcntOrder) {
-				subOrderMgr->OnOrderAcceptedHd(subAcntOrder);
-				// 주문상태를 바꿔준다.
-				subAcntOrder->state = VtOrderState::Accepted;
-				SmCallbackManager::GetInstance()->OnOrderEvent(subAcntOrder);
+			if (!subAcntOrder) {
+				// 본주문을 복사한다.
+				subAcntOrder = subOrderMgr->CloneOrder(order);
+				// 주문 종류를 복사해 준다. 0 : 계좌 주문, 1 : 서브계좌 주문, 2 : 펀드 주문
+				subAcntOrder->Type = order_req->Type;
+				// 서브계좌로  계좌번호를 바꿔준다.
+				subAcntOrder->AccountNo = order_req->SubAccountNo;
+				// 서브계좌 번호를 저장해 준다.
+				subAcntOrder->SubAccountNo = order_req->SubAccountNo;
+				// 부모계좌 번호를 넣어준다.
+				subAcntOrder->ParentAccountNo = order->AccountNo;
+				// 펀드이름을 넣어준다.
+				subAcntOrder->FundName = order_req->FundName;
 			}
+			
+			subOrderMgr->OnOrderAcceptedHd(subAcntOrder);
+			// 주문상태를 바꿔준다.
+			subAcntOrder->state = VtOrderState::Accepted;
+			SmCallbackManager::GetInstance()->OnOrderEvent(subAcntOrder);
+
+			LOG_F(INFO, _T("펀드주문 거래소 접수 : 주문가격 = %s, 요청번호 = %d, 종목이름 = %s, 주문 번호 = %s, 원주문번호 = %s, 펀드이름 = %s, 주문종류 = %s, 주문갯수 = %s, 요청 타입 = %d"), strPrice, order->HtsOrderReqID, strSeries, strOrdNo, strOriOrderNo, order_req->FundName.c_str(), strPosition.Compare(_T("1")) == 0 ? _T("매수") : _T("매도"), strAmount, order->RequestType);
 		}
 	}
 
@@ -1653,7 +1866,6 @@ void VtHdCtrl::OnOrderAcceptedHd(CString& strKey, LONG& nRealType)
 
 	//LOG_F(INFO, _T("사용자정의 필드 = %s"), strCustom);
 
-	//LOG_F(INFO, _T("거래소 접수 : 주문가격 = %s, 원요청번호 %d, 선물사 요청번호 = %d, 종목이름 = %s, 주문 번호 = %s, 원주문번호 = %s, 계좌번호 = %s, 서브계좌번호 = %s, 펀드 이름 = %s, 주문종류 = %s, 주문갯수 = %s, 요청 타입 = %d"), strPrice, oriReqNo, order->HtsOrderReqID, strSeries, strOrdNo, strOriOrderNo, strAcctNo, strSubAcntNo, strFundName, strPosition.Compare(_T("1")) == 0 ? _T("매수") : _T("매도"), strAmount, order->RequestType);
 }
 
 void VtHdCtrl::OnOrderUnfilledHd(VtOrder* order)
@@ -1807,22 +2019,42 @@ void VtHdCtrl::OnOrderUnfilledHd(CString& strKey, LONG& nRealType)
 		if (order_req->Type == 1) { // 서브계좌 주문인 경우
 			subOrderMgr = orderMgrSelecter->FindAddOrderManager(order_req->SubAccountNo);
 			subAcntOrder = subOrderMgr->FindOrder(_ttoi(strOrdNo));
-			if (subAcntOrder) {
-				subOrderMgr->OnOrderUnfilledHd(subAcntOrder);
-				// 주문상태를 바꿔준다.
-				subAcntOrder->state = VtOrderState::Accepted;
-				SmCallbackManager::GetInstance()->OnOrderEvent(subAcntOrder);
+			if (!subAcntOrder) {
+				subAcntOrder = subOrderMgr->CloneOrder(order);
+				// 주문 종류를 복사해 준다. 0 : 계좌 주문, 1 : 서브계좌 주문, 2 : 펀드 주문
+				subAcntOrder->Type = order_req->Type;
+				// 서브계좌로  계좌번호를 바꿔준다.
+				subAcntOrder->AccountNo = order_req->SubAccountNo;
+				// 서브계좌 번호를 저장해 준다.
+				subAcntOrder->SubAccountNo = order_req->SubAccountNo;
+				// 부모계좌 번호를 넣어준다.
+				subAcntOrder->ParentAccountNo = order->AccountNo;
 			}
+			subOrderMgr->OnOrderUnfilledHd(subAcntOrder);
+			// 주문상태를 바꿔준다.
+			subAcntOrder->state = VtOrderState::Accepted;
+			SmCallbackManager::GetInstance()->OnOrderEvent(subAcntOrder);
 		}
 		else if (order_req->Type == 2) { // 펀드 주문인 경우
 			subOrderMgr = orderMgrSelecter->FindAddOrderManager(order_req->SubAccountNo);
 			subAcntOrder = subOrderMgr->FindOrder(_ttoi(strOrdNo));
-			if (subAcntOrder) {
-				subOrderMgr->OnOrderUnfilledHd(subAcntOrder);
-				// 주문상태를 바꿔준다.
-				subAcntOrder->state = VtOrderState::Accepted;
-				SmCallbackManager::GetInstance()->OnOrderEvent(subAcntOrder);
+			if (!subAcntOrder) {
+				subAcntOrder = subOrderMgr->CloneOrder(order);
+				// 주문 종류를 복사해 준다. 0 : 계좌 주문, 1 : 서브계좌 주문, 2 : 펀드 주문
+				subAcntOrder->Type = order_req->Type;
+				// 서브계좌로  계좌번호를 바꿔준다.
+				subAcntOrder->AccountNo = order_req->SubAccountNo;
+				// 서브계좌 번호를 저장해 준다.
+				subAcntOrder->SubAccountNo = order_req->SubAccountNo;
+				// 부모계좌 번호를 넣어준다.
+				subAcntOrder->ParentAccountNo = order->AccountNo;
+				// 펀드이름을 넣어준다.
+				subAcntOrder->FundName = order_req->FundName;
 			}
+			subOrderMgr->OnOrderUnfilledHd(subAcntOrder);
+			// 주문상태를 바꿔준다.
+			subAcntOrder->state = VtOrderState::Accepted;
+			SmCallbackManager::GetInstance()->OnOrderEvent(subAcntOrder);
 		}
 	}
 
@@ -1934,6 +2166,7 @@ void VtHdCtrl::OnOrderFilledHd(CString& strKey, LONG& nRealType)
 	orderMgr->OnOrderFilledHd(order);
 
 	SmCallbackManager::GetInstance()->OnOrderEvent(order);
+	LOG_F(INFO, _T("메인 주문 체결 확인 : 체결가격 = %s, 요청번호 = %d, 종목이름 = %s, 주문 번호 = %s, 이전주문번호 = %d, 계좌번호 = %s, 주문종류 = %s, 체결갯수 = %s, 요청 타입 = %d"), strFillPrice, order->HtsOrderReqID, strSeries, strOrdNo, order_req != nullptr ? order_req->NewOrderNo : 0, strAcctNo, strPosition.Compare(_T("1")) == 0 ? _T("매수") : _T("매도"), strFillAmount, order->RequestType);
 
 	HdWindowManager* wndMgr = HdWindowManager::GetInstance();
 	std::map<CWnd*, std::pair<HdWindowType, CWnd*>>& wndMap = wndMgr->GetWindowMap();
@@ -1960,23 +2193,68 @@ void VtHdCtrl::OnOrderFilledHd(CString& strKey, LONG& nRealType)
 		if (order_req->Type == 1) { // 서브계좌 주문인 경우
 			subOrderMgr = orderMgrSelecter->FindAddOrderManager(order_req->SubAccountNo);
 			subAcntOrder = subOrderMgr->FindOrder(_ttoi(strOrdNo));
-			if (subAcntOrder) {
-				subOrderMgr->OnOrderFilledHd(subAcntOrder);
-				SmCallbackManager::GetInstance()->OnOrderEvent(subAcntOrder);
+			if (!subAcntOrder) {
+				subAcntOrder = subOrderMgr->CloneOrder(order);
+				// 주문 종류를 복사해 준다. 0 : 계좌 주문, 1 : 서브계좌 주문, 2 : 펀드 주문
+				subAcntOrder->Type = order_req->Type;
+				// 서브계좌로  계좌번호를 바꿔준다.
+				subAcntOrder->AccountNo = order_req->SubAccountNo;
+				// 서브계좌 번호를 저장해 준다.
+				subAcntOrder->SubAccountNo = order_req->SubAccountNo;
+				// 부모계좌 번호를 넣어준다.
+				subAcntOrder->ParentAccountNo = order->AccountNo;
 			}
+
+			// 정수로 체결가격 설정
+			subAcntOrder->intFilledPrice = GetIntOrderPrice(strSeries, strFillPrice, strOriFill);
+
+			// 체결된 수량
+			subAcntOrder->filledQty = _ttoi(strFillAmount);
+			// 체결된 시각
+			subAcntOrder->filledTime = (LPCTSTR)strFillTime;
+			// 체결된 가격 - 소수로 표시된
+			subAcntOrder->filledPrice = _ttof(strOriFill);
+
+			subOrderMgr->OnOrderFilledHd(subAcntOrder);
+			SmCallbackManager::GetInstance()->OnOrderEvent(subAcntOrder);
+
+			LOG_F(INFO, _T("서브계좌 체결 확인 : 체결가격 = %s, 요청번호 = %d, 종목이름 = %s, 주문 번호 = %s, 이전주문번호 = %d, 서브계좌번호 = %s, 주문종류 = %s, 체결갯수 = %s, 요청 타입 = %d"), strFillPrice, order->HtsOrderReqID, strSeries, strOrdNo, order_req->NewOrderNo, order_req->SubAccountNo.c_str(), strPosition.Compare(_T("1")) == 0 ? _T("매수") : _T("매도"), strFillAmount, order->RequestType);
+
 		}
 		else if (order_req->Type == 2) { // 펀드 주문인 경우
 			subOrderMgr = orderMgrSelecter->FindAddOrderManager(order_req->SubAccountNo);
 			subAcntOrder = subOrderMgr->FindOrder(_ttoi(strOrdNo));
-			if (subAcntOrder) {
-				subOrderMgr->OnOrderFilledHd(subAcntOrder);
-				SmCallbackManager::GetInstance()->OnOrderEvent(subAcntOrder);
+			if (!subAcntOrder) {
+				subAcntOrder = subOrderMgr->CloneOrder(order);
+				// 주문 종류를 복사해 준다. 0 : 계좌 주문, 1 : 서브계좌 주문, 2 : 펀드 주문
+				subAcntOrder->Type = order_req->Type;
+				// 서브계좌로  계좌번호를 바꿔준다.
+				subAcntOrder->AccountNo = order_req->SubAccountNo;
+				// 서브계좌 번호를 저장해 준다.
+				subAcntOrder->SubAccountNo = order_req->SubAccountNo;
+				// 부모계좌 번호를 넣어준다.
+				subAcntOrder->ParentAccountNo = order->AccountNo;
+				// 펀드이름을 넣어준다.
+				subAcntOrder->FundName = order_req->FundName;
 			}
+
+			// 정수로 체결가격 설정
+			subAcntOrder->intFilledPrice = GetIntOrderPrice(strSeries, strFillPrice, strOriFill);
+
+			// 체결된 수량
+			subAcntOrder->filledQty = _ttoi(strFillAmount);
+			// 체결된 시각
+			subAcntOrder->filledTime = (LPCTSTR)strFillTime;
+			// 체결된 가격 - 소수로 표시된
+			subAcntOrder->filledPrice = _ttof(strOriFill);
+
+			subOrderMgr->OnOrderFilledHd(subAcntOrder);
+			SmCallbackManager::GetInstance()->OnOrderEvent(subAcntOrder);
+
+			LOG_F(INFO, _T("펀드주문 체결 확인 : 체결가격 = %s, 요청번호 = %d, 종목이름 = %s, 주문 번호 = %s, 이전주문번호 = %d, 펀드이름 = %s, 주문종류 = %s, 체결갯수 = %s, 요청 타입 = %d"), strFillPrice, order->HtsOrderReqID, strSeries, strOrdNo, order_req->NewOrderNo, order_req->FundName.c_str(), strPosition.Compare(_T("1")) == 0 ? _T("매수") : _T("매도"), strFillAmount, order->RequestType);
+
 		}
 	}
-
-
-	//LOG_F(INFO, _T("체결 확인 : 체결가격 = %s, 원요청번호 %d, 선물사 요청번호 = %d, 종목이름 = %s, 주문 번호 = %s, 계좌번호 = %s, 서브계좌번호 = %s, 펀드 이름 = %s, 주문종류 = %s, 체결갯수 = %s, 요청 타입 = %d"), strFillPrice, oriReqNo, order->HtsOrderReqID, strSeries, strOrdNo, strAcctNo, strSubAcntNo, strFundName, strPosition.Compare(_T("1")) == 0 ? _T("매수") : _T("매도"), strFillAmount, order->RequestType);
 
 	// 주문 수량과 체결수량이 같을 때만 목록에서 없애 준다.
 	// 부분 체결시 문제가 되어 지우지 않기로 결정함.
@@ -2095,7 +2373,7 @@ void VtHdCtrl::RefreshAcceptedOrderByError(int reqId)
 		HdOrderRequest& req = it->second;
 		VtOrderManagerSelector* orderMgrSeledter = VtOrderManagerSelector::GetInstance();
 		// 본계좌 주문 요청이었을 때
-		if (req.Type == 0) {
+		if (req.Type == 0 || req.Type == -1) {
 			VtOrderManager* orderMgr = orderMgrSeledter->FindAddOrderManager(req.AccountNo);
 			orderMgr->RefreshAcceptedOrder(req.OrderNo);
 		}

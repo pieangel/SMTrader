@@ -1388,6 +1388,8 @@ void VtOrderManager::RemoveAcceptedHd(std::string symbol_code, int order_no)
 	prdtOrderMgr->RemoveAcceptedOrder(order_no);
 	// 접수 주문은 제거한다.
 	RemoveAccepted(order_no);
+
+	LOG_F(INFO, _T("강제 접수 주문 제거 : 종목이름 = %s, 주문 번호 = %d"), symbol_code.c_str(), order_no);
 }
 
 void VtOrderManager::OnReceiveQuoteHd(VtSymbol* sym)

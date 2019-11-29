@@ -43,7 +43,8 @@
 #include <functional>
 #include "SmCallbackManager.h"
 #include "VtSymbol.h"
-
+#include "VtFundOrderManager.h"
+#include "Log/loguru.hpp"
 
 using Poco::trim;
 using Poco::NumberFormatter;
@@ -234,7 +235,12 @@ void SmOrderGrid::OnOrderEvent(const VtOrder* order)
 	if (!_CenterWnd || !_CutMgr || !_CenterWnd->Symbol()) {
 		return;
 	}
-
+	std::set<std::pair<int, int>> refreshSet;
+	ClearOldOrders(refreshSet);
+	SetOrderInfo(refreshSet);
+	ClearPositionInfo(refreshSet);
+	SetPositionInfo(refreshSet);
+	RefreshCells(refreshSet);
 	if (order->Type == -1 || order->Type == 0) {
 		if (!_OrderConfigMgr->Account())
 			return;
@@ -262,22 +268,14 @@ void SmOrderGrid::OnOrderEvent(const VtOrder* order)
 	else
 		return;
 
-	
-
-	std::set<std::pair<int, int>> refreshSet;
-	ClearOldOrders(refreshSet);
-	SetOrderInfo(refreshSet);
-	ClearPositionInfo(refreshSet);
-	SetPositionInfo(refreshSet);
-	
 	if (order->state == VtOrderState::Filled) {
+		refreshSet.clear();
 		_CutMgr->AddStopOrderForFilled(_CenterWnd->Symbol(), (VtOrder*)order);
 		ClearOldStopOrders(refreshSet);
 		SetStopOrderInfo(refreshSet);
 		CalcPosStopOrders(refreshSet);
+		RefreshCells(refreshSet);
 	}
-
-	RefreshCells(refreshSet);
 }
 
 void SmOrderGrid::Init()
@@ -946,7 +944,7 @@ int SmOrderGrid::FindRowFromCenterValue(int value)
 
 int SmOrderGrid::FindRowFromCenterValue(const VtSymbol* sym, int value)
 {
-	if (!sym)
+	if (!sym || ValueToRowMap.size() == 0)
 		return 0;
 	auto it = ValueToRowMap.find(value);
 	if (it != ValueToRowMap.end()) { // 값이 보이는 범위 안에 있을 때
@@ -1588,6 +1586,8 @@ void SmOrderGrid::RefreshOrderPosition()
 	ClearOldOrders(refreshSet);
 	SetOrderInfo(refreshSet);
 	RefreshCells(refreshSet);
+
+	//LOG_F(INFO, _T("주문그리드 갱신"));
 }
 
 void SmOrderGrid::SetOrderArea(int height, int width)
