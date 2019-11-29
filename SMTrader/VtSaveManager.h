@@ -45,6 +45,9 @@ public:
 		return (bool)ifile;
 	}
 	bool IsAccountFileExist();
+
+	void SaveLoginInfoToXml(std::string id, std::string pwd, std::string cert, bool save);
+	int LoadLoginInfoFromXml(std::string& id, std::string& pwd, std::string& cert, bool& save);
 private:
 	std::vector<VtSymbol*> _SymbolVector;
 	void GetSymbolMasters();

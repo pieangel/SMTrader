@@ -599,7 +599,8 @@ void CMainFrame::OnShowWindow(BOOL bShow, UINT nStatus)
 			VtGlobal::LoginUserID = loginDlg.id;
 			saveMgr->CreateUserDirectory();
 			LoadSettings();
-			saveMgr->SaveLoginInfo(_T("SmTrader.cfg"), (LPCTSTR)loginDlg.id, (LPCTSTR)loginDlg.pwd, (LPCTSTR)loginDlg.cert, loginDlg.Save);
+			//saveMgr->SaveLoginInfo(_T("SmTrader.cfg"), (LPCTSTR)loginDlg.id, (LPCTSTR)loginDlg.pwd, (LPCTSTR)loginDlg.cert, loginDlg.Save);
+			saveMgr->SaveLoginInfoToXml((LPCTSTR)loginDlg.id, (LPCTSTR)loginDlg.pwd, (LPCTSTR)loginDlg.cert, loginDlg.Save);
 
 			VtLoginManager::GetInstance()->ID = (LPCTSTR)loginDlg.id;
 			VtLoginManager::GetInstance()->Password = (LPCTSTR)loginDlg.pwd;
@@ -681,7 +682,7 @@ void CMainFrame::OnShowWindow(BOOL bShow, UINT nStatus)
 			VtHdClient* client = VtHdClient::GetInstance();
 			std::string fileName = _T("product.cod");
 			client->GetMasterFile(fileName);
-			SetTimer(1, 500, 0);
+			SetTimer(2, 500, 0);
 			GetSymbolCode();
 		}
 		else {
@@ -1065,16 +1066,18 @@ void CMainFrame::OnSettimeToServer()
 
 void CMainFrame::OnTimer(UINT_PTR nIDEvent)
 {
-	SmSymbolReader* symReader = SmSymbolReader::GetInstance();
-	VtHdClient* hdClient = VtHdClient::GetInstance();
-	if (symReader->DomesticSymbolMasterFileSet.size() > 0) {
-		std::string file_name = *(symReader->DomesticSymbolMasterFileSet.begin());
-		hdClient->DownloadDomesticMasterFile(file_name);
-	}
-	else {
-		KillTimer(1);
-		//hdClient->DownloadMasterFiles("futures");
-		//GetSymbolCode();
+	if (nIDEvent == 2) {
+		SmSymbolReader* symReader = SmSymbolReader::GetInstance();
+		VtHdClient* hdClient = VtHdClient::GetInstance();
+		if (symReader->DomesticSymbolMasterFileSet.size() > 0) {
+			std::string file_name = *(symReader->DomesticSymbolMasterFileSet.begin());
+			hdClient->DownloadDomesticMasterFile(file_name);
+		}
+		else {
+			KillTimer(2);
+			//hdClient->DownloadMasterFiles("futures");
+			//GetSymbolCode();
+		}
 	}
 
 	CMDIFrameWndEx::OnTimer(nIDEvent);

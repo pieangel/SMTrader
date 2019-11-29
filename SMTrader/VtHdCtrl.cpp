@@ -1006,7 +1006,7 @@ void VtHdCtrl::OnModifyOrderHd(CString& sTrCode, LONG& nRqID)
 	// 정정된 원주문이 체결된 경우는 더이상 처리하지 않는다.
 	VtOrder* originOrder = orderMgr->FindOrder(_ttoi(strOriOrdNo));
 	if (originOrder && originOrder->state == VtOrderState::Filled) {
-		// 현재 주문과 원주문을 제거해 준다.
+		// 원주문을 제거해 준다.
 		orderMgr->RemoveAcceptedHd(originOrder);
 		if (order_req) {
 			VtOrderManagerSelector* orderMgrSelecter = VtOrderManagerSelector::GetInstance();
@@ -1316,6 +1316,52 @@ void VtHdCtrl::OnCancelOrderHd(CString& sTrCode, LONG& nRqID)
 			HdOrderRequest req = it->second;
 			_OrderNoToRequestMap[_ttoi(strOrdNo)] = req;
 			_OrderNoToRequestMap[_ttoi(strOriOrdNo)] = req;
+		}
+
+		// 취소된 원주문이 체결된 경우는 별도로 처리해 준다.
+		VtOrder* originOrder = orderMgr->FindOrder(_ttoi(strOriOrdNo));
+		if (originOrder && originOrder->state == VtOrderState::Filled) {
+			// 원주문을 제거해 준다.
+			orderMgr->RemoveAcceptedHd(originOrder);
+			if (order_req) {
+				VtOrderManagerSelector* orderMgrSelecter = VtOrderManagerSelector::GetInstance();
+				VtOrderManager* subOrderMgr = nullptr;
+				VtOrder* subAcntOrder = nullptr;
+
+				if (order_req->Type == 1) { // 서브계좌 주문인 경우
+					subOrderMgr = orderMgrSelecter->FindAddOrderManager(order_req->SubAccountNo);
+
+					// 본주문을 복사한다.
+					subAcntOrder = subOrderMgr->CloneOrder(originOrder);
+					// 주문 종류를 복사해 준다. 0 : 계좌 주문, 1 : 서브계좌 주문, 2 : 펀드 주문
+					subAcntOrder->Type = order_req->Type;
+					// 서브계좌로  계좌번호를 바꿔준다.
+					subAcntOrder->AccountNo = order_req->SubAccountNo;
+					// 서브계좌 번호를 저장해 준다.
+					subAcntOrder->SubAccountNo = order_req->SubAccountNo;
+					// 부모계좌 번호를 넣어준다.
+					subAcntOrder->ParentAccountNo = originOrder->AccountNo;
+					subOrderMgr->OnOrderFilledHd(subAcntOrder);
+					SmCallbackManager::GetInstance()->OnOrderEvent(subAcntOrder);
+				}
+				else if (order_req->Type == 2) { // 펀드 주문인 경우
+					subOrderMgr = orderMgrSelecter->FindAddOrderManager(order_req->SubAccountNo);
+					// 본주문을 복사한다.
+					subAcntOrder = subOrderMgr->CloneOrder(originOrder);
+					// 주문 종류를 복사해 준다. 0 : 계좌 주문, 1 : 서브계좌 주문, 2 : 펀드 주문
+					subAcntOrder->Type = order_req->Type;
+					// 서브계좌로  계좌번호를 바꿔준다.
+					subAcntOrder->AccountNo = order_req->SubAccountNo;
+					// 서브계좌 번호를 저장해 준다.
+					subAcntOrder->SubAccountNo = order_req->SubAccountNo;
+					// 부모계좌 번호를 넣어준다.
+					subAcntOrder->ParentAccountNo = originOrder->AccountNo;
+					// 펀드이름을 넣어준다.
+					subAcntOrder->FundName = order_req->FundName;
+					subOrderMgr->OnOrderFilledHd(subAcntOrder);
+					SmCallbackManager::GetInstance()->OnOrderEvent(subAcntOrder);
+				}
+			}
 		}
 
 		VtOrder* order = nullptr;
@@ -1938,6 +1984,16 @@ void VtHdCtrl::OnOrderUnfilledHd(CString& strKey, LONG& nRealType)
 	VtOrderManager* orderMgr = orderMgrSeledter->FindAddOrderManager((LPCTSTR)strAcctNo);
 	HdOrderRequest* order_req = GetOrderRequestByOrderNo(_ttoi(strOrdNo));
 
+
+	// 처리할 갯수
+	int remainCnt = _ttoi(strRemain);
+	// 취소 된 갯수
+	int cancelCnt = _ttoi(strCancelCnt);
+	// 정정된 갯수
+	int modifyCnt = _ttoi(strModyCnt);
+	// 주문한 갯수
+	int orderCnt = _ttoi(strAmount);
+
 	VtOrder* order = nullptr;
 	order = orderMgr->FindOrder(_ttoi(strOrdNo));
 	if (!order) {
@@ -1973,14 +2029,6 @@ void VtHdCtrl::OnOrderUnfilledHd(CString& strKey, LONG& nRealType)
 		// 정정한 주문 갯수
 		order->modifiedOrderCount = _ttoi(strModyCnt);
 
-		// 처리할 갯수
-		int remainCnt = _ttoi(strRemain);
-		// 취소 된 갯수
-		int cancelCnt = _ttoi(strCancelCnt);
-		// 정정된 갯수
-		int modifyCnt = _ttoi(strModyCnt);
-		// 주문한 갯수
-		int orderCnt = _ttoi(strAmount);
 		// 주문 상태를 저장함
 		VtOrderState prevState = order->state;
 		if (remainCnt == orderCnt) {
@@ -2031,8 +2079,27 @@ void VtHdCtrl::OnOrderUnfilledHd(CString& strKey, LONG& nRealType)
 				subAcntOrder->ParentAccountNo = order->AccountNo;
 			}
 			subOrderMgr->OnOrderUnfilledHd(subAcntOrder);
-			// 주문상태를 바꿔준다.
-			subAcntOrder->state = VtOrderState::Accepted;
+
+			if (remainCnt == orderCnt) {
+				// 이미 체결된 주문은 설정하지 않는다.
+				if (subAcntOrder->state != VtOrderState::Filled)
+					subAcntOrder->state = VtOrderState::Accepted;
+			}
+			// 정정 주문 완료 상태 확인
+			if (remainCnt == 0 && modifyCnt == orderCnt) {
+				// 이미 체결된 주문은 설정하지 않는다.
+				if (subAcntOrder->state != VtOrderState::Filled)
+					subAcntOrder->state = VtOrderState::ConfirmModify;
+			}
+			// 취소 주문 완료 상태 확인
+			if (remainCnt == 0 && cancelCnt == orderCnt) {
+				subAcntOrder->unacceptedQty = 0;
+				subAcntOrder->amount = 0;
+				// 이미 체결된 주문은 설정하지 않는다.
+				if (subAcntOrder->state != VtOrderState::Filled)
+					subAcntOrder->state = VtOrderState::ConfirmCancel;
+			}
+
 			SmCallbackManager::GetInstance()->OnOrderEvent(subAcntOrder);
 		}
 		else if (order_req->Type == 2) { // 펀드 주문인 경우
@@ -2052,8 +2119,27 @@ void VtHdCtrl::OnOrderUnfilledHd(CString& strKey, LONG& nRealType)
 				subAcntOrder->FundName = order_req->FundName;
 			}
 			subOrderMgr->OnOrderUnfilledHd(subAcntOrder);
-			// 주문상태를 바꿔준다.
-			subAcntOrder->state = VtOrderState::Accepted;
+
+			if (remainCnt == orderCnt) {
+				// 이미 체결된 주문은 설정하지 않는다.
+				if (subAcntOrder->state != VtOrderState::Filled)
+					subAcntOrder->state = VtOrderState::Accepted;
+			}
+			// 정정 주문 완료 상태 확인
+			if (remainCnt == 0 && modifyCnt == orderCnt) {
+				// 이미 체결된 주문은 설정하지 않는다.
+				if (subAcntOrder->state != VtOrderState::Filled)
+					subAcntOrder->state = VtOrderState::ConfirmModify;
+			}
+			// 취소 주문 완료 상태 확인
+			if (remainCnt == 0 && cancelCnt == orderCnt) {
+				subAcntOrder->unacceptedQty = 0;
+				subAcntOrder->amount = 0;
+				// 이미 체결된 주문은 설정하지 않는다.
+				if (subAcntOrder->state != VtOrderState::Filled)
+					subAcntOrder->state = VtOrderState::ConfirmCancel;
+			}
+
 			SmCallbackManager::GetInstance()->OnOrderEvent(subAcntOrder);
 		}
 	}
@@ -2115,6 +2201,7 @@ void VtHdCtrl::OnOrderFilledHd(CString& strKey, LONG& nRealType)
 	HdOrderRequest* order_req = GetOrderRequestByOrderNo(_ttoi(strOrdNo));
 	// 이미 체결된 주문이 정정된 경우에 대하여 새로운 주문을 없애 준다.
 	if (order_req) {
+		// 이미 체결된 본 주문 처리
 		orderMgr->RemoveAcceptedHd((LPCTSTR)strSeries, order_req->NewOrderNo);
 
 		VtOrderManagerSelector* orderMgrSelecter = VtOrderManagerSelector::GetInstance();
@@ -2255,11 +2342,6 @@ void VtHdCtrl::OnOrderFilledHd(CString& strKey, LONG& nRealType)
 
 		}
 	}
-
-	// 주문 수량과 체결수량이 같을 때만 목록에서 없애 준다.
-	// 부분 체결시 문제가 되어 지우지 않기로 결정함.
-	//if (order->amount == order->filledQty)
-	//	RemoveOrderRequest(order);
 }
 
 HdOrderRequest* VtHdCtrl::GetOrderRequestByOrderNo(int order_no)

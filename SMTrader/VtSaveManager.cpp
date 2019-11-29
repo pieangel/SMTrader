@@ -825,6 +825,82 @@ bool VtSaveManager::IsAccountFileExist()
 		return false;
 }
 
+void VtSaveManager::SaveLoginInfoToXml(std::string id, std::string pwd, std::string cert, bool save)
+{
+	ZmConfigManager* configMgr = ZmConfigManager::GetInstance();
+	std::string appPath;
+	appPath = configMgr->GetAppPath();
+	appPath.append(_T("\\"));
+	appPath.append(_T("config.xml"));
+
+	/// [load xml file]
+	// Create empty XML document within memory
+	pugi::xml_document doc;
+	// Load XML file into memory
+	// Remark: to fully read declaration entries you have to specify
+	// "pugi::parse_declaration"
+	pugi::xml_parse_result result = doc.load_file(appPath.c_str(),
+		pugi::parse_default | pugi::parse_declaration);
+	if (!result)
+	{
+		std::cout << "Parse error: " << result.description()
+			<< ", character pos= " << result.offset;
+		return ;
+	}
+
+	pugi::xml_node application = doc.child("application");
+	application.remove_child("login_info");
+	pugi::xml_node login_info = application.append_child("login_info");
+	login_info.append_attribute("save") = save;
+	pugi::xml_node login_info_child = login_info.append_child("login_id");
+	login_info_child.append_child(pugi::node_pcdata).set_value(id.c_str());
+
+	login_info_child = login_info.append_child("login_password");
+	login_info_child.append_child(pugi::node_pcdata).set_value(pwd.c_str());
+
+	login_info_child = login_info.append_child("login_cert");
+	login_info_child.append_child(pugi::node_pcdata).set_value(cert.c_str());
+
+	doc.save_file(appPath.c_str());
+}
+
+int VtSaveManager::LoadLoginInfoFromXml(std::string& id, std::string& pwd, std::string& cert, bool& save)
+{
+	ZmConfigManager* configMgr = ZmConfigManager::GetInstance();
+	std::string appPath;
+	appPath = configMgr->GetAppPath();
+	appPath.append(_T("\\"));
+	appPath.append(_T("config.xml"));
+
+	/// [load xml file]
+	// Create empty XML document within memory
+	pugi::xml_document doc;
+	// Load XML file into memory
+	// Remark: to fully read declaration entries you have to specify
+	// "pugi::parse_declaration"
+	pugi::xml_parse_result result = doc.load_file(appPath.c_str(),
+		pugi::parse_default | pugi::parse_declaration);
+	if (!result)
+	{
+		std::cout << "Parse error: " << result.description()
+			<< ", character pos= " << result.offset;
+		return -1;
+	}
+
+	pugi::xml_node application = doc.child("application");
+	pugi::xml_node login_info = application.child("login_info");
+	if (login_info) {
+		bool save_value = login_info.attribute("save").as_bool();
+		save_value == 1 ? save = true : save = false;
+		id = login_info.child_value("login_id");
+		pwd = login_info.child_value("login_password");
+		cert = login_info.child_value("login_cert");
+	}
+	else {
+		return -1;
+	}
+}
+
 void VtSaveManager::GetSymbolMasters()
 {
 	for (auto it = _SymbolVector.begin(); it != _SymbolVector.end(); ++it) {

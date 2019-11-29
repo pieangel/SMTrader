@@ -147,26 +147,27 @@ BOOL VtLogInDlg::OnInitDialog()
 
 	VtSaveManager* saveMgr = VtSaveManager::GetInstance();
 	std::string sid, spwd, scert;
-	saveMgr->LoadLoginInfo(_T("SmTrader.cfg"), sid, spwd, scert, Save);
-	//sid = _T("yjs1974");
-	//spwd = _T("3753yang");
-	//scert = _T("#*sm1026jw");
-#ifdef _DEBUG
-	sid = _T("angelpie");
-	spwd = _T("orion1");
-	scert = _T("11orion@@@");
-#endif
-	if (Save) {
-		_EditID.SetWindowText(sid.c_str());
-		_EditPwd.SetWindowText(spwd.c_str());
-		_EditCert.SetWindowText(scert.c_str());
-		((CButton*)GetDlgItem(IDC_CHECK_SAVE))->SetCheck(BST_CHECKED);
-	}
-	else {
+	//saveMgr->LoadLoginInfo(_T("SmTrader.cfg"), sid, spwd, scert, Save);
+	int result = saveMgr->LoadLoginInfoFromXml(sid, spwd, scert, Save);
+	if (result < 0) {
 		_EditID.SetWindowText(_T(""));
 		_EditPwd.SetWindowText(_T(""));
 		_EditCert.SetWindowText(_T(""));
 		((CButton*)GetDlgItem(IDC_CHECK_SAVE))->SetCheck(BST_UNCHECKED);
+	}
+	else {
+		if (Save) {
+			_EditID.SetWindowText(sid.c_str());
+			_EditPwd.SetWindowText(spwd.c_str());
+			_EditCert.SetWindowText(scert.c_str());
+			((CButton*)GetDlgItem(IDC_CHECK_SAVE))->SetCheck(BST_CHECKED);
+		}
+		else {
+			_EditID.SetWindowText(_T(""));
+			_EditPwd.SetWindowText(_T(""));
+			_EditCert.SetWindowText(_T(""));
+			((CButton*)GetDlgItem(IDC_CHECK_SAVE))->SetCheck(BST_UNCHECKED);
+		}
 	}
 
 	return TRUE;  // return TRUE unless you set the focus to a control
