@@ -11,9 +11,10 @@ public:
 	void CreateClient(int target);
 	int Login(std::string id, std::string password, std::string cert, int serverType);
 	void Logout();
-	std::string ID = "test_id";
-	std::string Password = "test_password";
-	std::string Cert = "12345678";
+	std::string ID = "";
+	std::string Password = "";
+	std::string Cert = "";
+	bool Save = true;
 	void SaveToXml(pugi::xml_node& node);
 	void LoadFromXml(pugi::xml_node& node);
 private:

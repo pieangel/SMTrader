@@ -20,6 +20,8 @@ VtTime VtGlobal::CloseTime;
 VtStrategyToolWnd* VtGlobal::StrategyToolWnd = nullptr;
 size_t VtGlobal::_MaxLog = 200;
 std::list<VtSysLog> VtGlobal::_SysLogList;
+bool VtGlobal::EnableFileWatch = false;
+std::string VtGlobal::FileWatchPath = "";
 
 void VtGlobal::PushLog(VtSysLog&& log)
 {

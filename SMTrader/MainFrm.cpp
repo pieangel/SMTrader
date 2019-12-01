@@ -606,6 +606,8 @@ void CMainFrame::OnShowWindow(BOOL bShow, UINT nStatus)
 			VtLoginManager::GetInstance()->Password = (LPCTSTR)loginDlg.pwd;
 			VtLoginManager::GetInstance()->Cert = (LPCTSTR)loginDlg.cert;
 
+			saveMgr->LoadRunInfoFromXml();
+
 			ZmConfigManager* configMgr = ZmConfigManager::GetInstance();
 			std::string section = _T("ACCOUNT_INFO");
 			std::string name, value;
@@ -673,6 +675,8 @@ void CMainFrame::OnShowWindow(BOOL bShow, UINT nStatus)
 			}
 
 			_FleWathPath = file_watch_path;
+			VtGlobal::FileWatchPath = _FleWathPath;
+			VtGlobal::EnableFileWatch = _EnableFileWatch;
 			if (_FleWathPath.length() > 0) {
 				CreateFileWatch();
 			}

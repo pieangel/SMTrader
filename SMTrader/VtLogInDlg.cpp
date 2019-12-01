@@ -9,6 +9,7 @@
 #include "VtHdClient.h"
 #include "VtSaveManager.h"
 #include <string>
+#include "VtLoginManager.h"
 
 extern TApplicationFont g_Font;
 // VtLogInDlg dialog
@@ -103,7 +104,7 @@ void VtLogInDlg::OnBnClickedOk()
 
 void VtLogInDlg::OnBnClickedCheckSave()
 {
-	Save ? Save = false : Save = true;
+	Save = !Save;
 }
 
 
@@ -146,9 +147,13 @@ BOOL VtLogInDlg::OnInitDialog()
 	_StaticCert.SetGradientColor(RGB(3, 30, 82));
 
 	VtSaveManager* saveMgr = VtSaveManager::GetInstance();
-	std::string sid, spwd, scert;
-	//saveMgr->LoadLoginInfo(_T("SmTrader.cfg"), sid, spwd, scert, Save);
-	int result = saveMgr->LoadLoginInfoFromXml(sid, spwd, scert, Save);
+	std::string id, pwd, cert;
+	int result = saveMgr->LoadLoginInfoFromXml();
+	id = VtLoginManager::GetInstance()->ID;
+	pwd = VtLoginManager::GetInstance()->Password;
+	cert = VtLoginManager::GetInstance()->Cert;
+	Save = VtLoginManager::GetInstance()->Save;
+
 	if (result < 0) {
 		_EditID.SetWindowText(_T(""));
 		_EditPwd.SetWindowText(_T(""));
@@ -157,9 +162,9 @@ BOOL VtLogInDlg::OnInitDialog()
 	}
 	else {
 		if (Save) {
-			_EditID.SetWindowText(sid.c_str());
-			_EditPwd.SetWindowText(spwd.c_str());
-			_EditCert.SetWindowText(scert.c_str());
+			_EditID.SetWindowText(id.c_str());
+			_EditPwd.SetWindowText(pwd.c_str());
+			_EditCert.SetWindowText(cert.c_str());
 			((CButton*)GetDlgItem(IDC_CHECK_SAVE))->SetCheck(BST_CHECKED);
 		}
 		else {

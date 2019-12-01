@@ -10,11 +10,23 @@
 
 // forvard declaration
 // Here should be description
-template <typename... Args>
-std::string make_string (const std::string& str, Args&&... args);
+//template <typename... Args>
+//std::string make_string (const std::string& str, Args&&... args);
 
 namespace make_string_detail {
 
+	// value wrapper
+	struct value_base {
+		virtual ~value_base() {};
+		virtual void print_to(std::ostream& os) const = 0;
+	};
+
+	template <typename T>
+	struct value_holder : public value_base {
+		value_holder(const T& v) : value(v) {}
+		void print_to(std::ostream& os) const override { os << value; }
+		const T & value;
+	};
 struct value_format {
 	size_t width;		// number
 	size_t precision;	// .number
@@ -29,10 +41,15 @@ struct value_format {
 	
 	void parse(std::istream& in);
 	void set_to(std::ostream& os) const;
+	char read_last_char(const std::string& chars, std::string& format_str);
+	size_t string_to_int(const std::string& str, size_t default_value = 0);
+	std::string make_string_impl(const std::string& str, const std::unique_ptr<value_base> * const values, const size_t values_count);
+	template <typename... Args> 
+	std::string make_string(const std::string& str, Args&&... args);
 };
 
 // format helper functions	
-char read_last_char (const std::string& chars, std::string& format_str) 
+char value_format::read_last_char (const std::string& chars, std::string& format_str)
 {
 	char out = '\0';
 	if (chars.find(format_str.back()) != std::string::npos) {
@@ -42,7 +59,7 @@ char read_last_char (const std::string& chars, std::string& format_str)
 	return out;
 }
 
-size_t string_to_int (const std::string& str, size_t default_value = 0)
+size_t value_format::string_to_int (const std::string& str, size_t default_value)
 {
 	std::istringstream ist(str);
 	size_t value = default_value;
@@ -162,18 +179,7 @@ void value_format::set_to(std::ostream& os) const
 	}
 }
 
-// value wrapper
-struct value_base {
-	virtual ~value_base(){};
-	virtual void print_to(std::ostream& os) const = 0;
-};
 
-template <typename T>
-struct value_holder : public value_base {
-	value_holder(const T& v) : value(v) {}
-	void print_to(std::ostream& os) const override { os << value; }
-	const T & value;
-};
 
 template <typename T>
 inline std::unique_ptr<value_base> make_value_holder_ptr(const T& t)
@@ -183,7 +189,7 @@ inline std::unique_ptr<value_base> make_value_holder_ptr(const T& t)
 
 enum class indexing_mode { none, automatic, manual };
 
-std::string make_string_impl (const std::string& str, const std::unique_ptr<value_base> * const values , const size_t values_count)
+std::string value_format::make_string_impl (const std::string& str, const std::unique_ptr<value_base> * const values , const size_t values_count)
 {
 	indexing_mode mode;
 	size_t next_index = 0;
@@ -250,18 +256,18 @@ std::string make_string_impl (const std::string& str, const std::unique_ptr<valu
 	return out.str();
 }
 
-} // namespace make_string_detail
+
 
 // implementation of interface functionality
 template <typename... Args>
-std::string make_string (const std::string& str, Args&&... args)
+std::string value_format::make_string (const std::string& str, Args&&... args)
 {
-	using namespace make_string_detail;
+	//using namespace make_string_detail;
 
 	std::unique_ptr<value_base> values[sizeof...(args)] = {(make_value_holder_ptr(args))...,};
 	return make_string_impl(str, values, sizeof...(args));
 }
-
+} // namespace make_string_detail
 
 #endif // FORMAT_STRING_H
 

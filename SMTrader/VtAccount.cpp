@@ -170,13 +170,13 @@ void VtAccount::SaveToXml(pugi::xml_node& node_account)
 	auto enc_Password = cryptor::encrypt(Password);
 
 	pugi::xml_node account_child = node_account.append_child("parent_account_no");
-	account_child.append_child(pugi::node_pcdata).set_value(ParentAccountNo.c_str());
+	account_child.append_child(pugi::node_pcdata).set_value(enc_ParentAccountNo.c_str());
 	account_child = node_account.append_child("account_name");
-	account_child.append_child(pugi::node_pcdata).set_value(AccountName.c_str());
+	account_child.append_child(pugi::node_pcdata).set_value(enc_AccountName.c_str());
 	account_child = node_account.append_child("account_no");
-	account_child.append_child(pugi::node_pcdata).set_value(AccountNo.c_str());
+	account_child.append_child(pugi::node_pcdata).set_value(enc_AccountNo.c_str());
 	account_child = node_account.append_child("password");
-	account_child.append_child(pugi::node_pcdata).set_value(Password.c_str());
+	account_child.append_child(pugi::node_pcdata).set_value(enc_Password.c_str());
 	account_child = node_account.append_child("seungsu");
 	account_child.append_child(pugi::node_pcdata).set_value(std::to_string(SeungSu).c_str());
 	account_child = node_account.append_child("ratio");
@@ -198,10 +198,18 @@ void VtAccount::SaveToXml(pugi::xml_node& node_account)
 void VtAccount::LoadFromXml(pugi::xml_node& account_node)
 {
 	_AccountLevel = std::stoi(account_node.child_value("account_level"));
-	ParentAccountNo = account_node.child_value("parent_account_no");
-	AccountName = account_node.child_value("account_name");
-	AccountNo = account_node.child_value("account_no");
-	Password = account_node.child_value("password");
+	std::string dec_ParentAccountNo, dec_AccountName, dec_AccountNo, dec_Password;
+
+	dec_ParentAccountNo = account_node.child_value("parent_account_no");
+	dec_AccountName = account_node.child_value("account_name");
+	dec_AccountNo = account_node.child_value("account_no");
+	dec_Password = account_node.child_value("password");
+
+	ParentAccountNo = cryptor::decrypt(dec_ParentAccountNo);
+	AccountName = cryptor::decrypt(dec_AccountName);
+	AccountNo = cryptor::decrypt(dec_AccountNo);
+	Password = cryptor::decrypt(dec_Password);
+
 	SeungSu = std::stoi(account_node.child_value("seungsu"));
 	Ratio = std::stod(account_node.child_value("ratio"));
 	std::stoi(account_node.child_value("prime")) == 0 ? _Prime = false : _Prime = true;

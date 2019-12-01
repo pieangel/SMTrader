@@ -42,7 +42,7 @@
 #include "FileWatch/IoCompletionPort.h"
 #include "FileWatch/ThreadSafeQueue.h"
 
-#include "Format/format_string.h"
+//#include "Format/format_string.h"
 
 
 #ifndef OVERRIDE

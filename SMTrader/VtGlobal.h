@@ -108,6 +108,8 @@ public:
 	/// 영업 종료 시간
 	/// </summary>
 	static VtTime CloseTime;
+	static std::string FileWatchPath;
+	static bool EnableFileWatch;
 	static VtStrategyToolWnd* StrategyToolWnd;
 	static void PushLog(VtSysLog&& log);
 	static std::list<VtSysLog>& GetSysLogList() {

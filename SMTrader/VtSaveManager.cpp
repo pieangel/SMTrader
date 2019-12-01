@@ -24,8 +24,11 @@
 #include "VtGlobal.h"
 #include "cryptor.hpp"
 #include "VtLoginManager.h"
+#include "Log/loguru.hpp"
+//#include "Format/format_string.h"
 
 using namespace std;
+
 using same_endian_type = std::is_same<simple::LittleEndian, simple::LittleEndian>;
 
 VtSaveManager::VtSaveManager()
@@ -40,10 +43,17 @@ VtSaveManager::~VtSaveManager()
 void VtSaveManager::WriteSettings()
 {
 	ZmConfigManager* configMgr = ZmConfigManager::GetInstance();
+	std::string id = VtLoginManager::GetInstance()->ID;
+	// 아이디가 없으면 그냥 반환한다.
+	if (id.length() == 0)
+		return;
+
 	std::string appPath;
 	appPath = configMgr->GetAppPath();
 	appPath.append(_T("\\"));
-	appPath.append(_T("env"));
+	appPath.append(id);
+	// 사용자 디렉토리가 있나 검사하고 없으면 만들어 준다.
+
 	appPath.append(_T("\\"));
 	appPath.append(VtStringUtil::getTimeStr());
 	appPath.append(_T(".xml"));
@@ -85,9 +95,9 @@ void VtSaveManager::WriteSettings()
 	
 	pugi::xml_node application = doc.child("application");
 
-	application.remove_child("login_info");
-	pugi::xml_node login_info = application.append_child("login_info");
-	VtLoginManager::GetInstance()->SaveToXml(login_info);
+// 	application.remove_child("login_info");
+// 	pugi::xml_node login_info = application.append_child("login_info");
+// 	VtLoginManager::GetInstance()->SaveToXml(login_info);
 
 	application.remove_child("account_list");
 	pugi::xml_node account_list = application.append_child("account_list");
@@ -123,28 +133,32 @@ void VtSaveManager::WriteSettings()
 void VtSaveManager::ReadSettings()
 {
 	ZmConfigManager* configMgr = ZmConfigManager::GetInstance();
+	std::string id = VtLoginManager::GetInstance()->ID;
+	// 아이디가 없으면 그냥 반환한다.
+	if (id.length() == 0)
+		return;
+
 	std::string appPath;
 	appPath = configMgr->GetAppPath();
 	appPath.append(_T("\\"));
-	appPath.append(_T("env"));
+	appPath.append(id);
 	appPath.append(_T("\\"));
 	std::string config_path = appPath;
-	appPath.append(_T("*.xml"));
+	appPath.append(_T("*.*"));
+	std::map<std::string, std::string> file_list;
+	ListContents(file_list, config_path, "*.xml", false);
 	
-	// 가장 최근에 저장된 설정 파일을 찾는다.
-	std::string file_name = GetLastestFile(appPath);
-	// 파일을 찾지 못하면 그냥 나온다.
-	if (file_name.length() == 0) {
+	if (file_list.size() == 0)
 		return;
-	}
-	config_path.append(file_name);
+
+	std::string file_name = file_list.rbegin()->second;
 	/// [load xml file]
 	// Create empty XML document within memory
 	pugi::xml_document doc;
 	// Load XML file into memory
 	// Remark: to fully read declaration entries you have to specify
 	// "pugi::parse_declaration"
-	pugi::xml_parse_result result = doc.load_file(config_path.c_str(),
+	pugi::xml_parse_result result = doc.load_file(file_name.c_str(),
 		pugi::parse_default | pugi::parse_declaration);
 	if (!result)
 	{
@@ -153,10 +167,10 @@ void VtSaveManager::ReadSettings()
 	}
 
 	pugi::xml_node application = doc.child("application");
-	pugi::xml_node login_info = application.child("login_info");
-	if (login_info) {
-		VtLoginManager::GetInstance()->LoadFromXml(login_info);
-	}
+// 	pugi::xml_node login_info = application.child("login_info");
+// 	if (login_info) {
+// 		VtLoginManager::GetInstance()->LoadFromXml(login_info);
+// 	}
 	pugi::xml_node account_list = application.child("account_list");
 	if (account_list) {
 		VtAccountManager::GetInstance()->LoadFromXml(account_list);
@@ -185,30 +199,101 @@ void VtSaveManager::ReadSettings()
 	*/
 }
 
+bool VtSaveManager::ListContents(std::map<std::string, std::string>& dest, std::string dir, std::string filter, bool recursively)
+{
+	WIN32_FIND_DATAA ffd;
+	HANDLE hFind = INVALID_HANDLE_VALUE;
+	DWORD dwError = 0;
+
+	// Prepare string
+	//if (dir.back() != '\\') dir += "\\";
+
+	// Safety check
+	if (dir.length() >= MAX_PATH) {
+		LOG_F(INFO, "Cannot open folder %s: path too long", dir.c_str());
+		return false;
+	}
+
+	// First entry in directory
+	hFind = FindFirstFileA((dir + filter).c_str(), &ffd);
+
+	if (hFind == INVALID_HANDLE_VALUE) {
+		LOG_F(INFO, "Cannot open folder in folder %s: error accessing first entry.", dir.c_str());
+		return false;
+	}
+
+	// List files in directory
+	do {
+		// Ignore . and .. folders, they cause stack overflow
+		if (strcmp(ffd.cFileName, ".") == 0) continue;
+		if (strcmp(ffd.cFileName, "..") == 0) continue;
+
+		
+		// Is directory?
+		if (ffd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+		{
+			// Go inside recursively
+			//if (recursively)
+			//	ListContents(dest, dir + ffd.cFileName, filter, recursively, content_type);
+			continue;
+		}
+		// Add file to our list
+		else {
+			
+			SYSTEMTIME stLocal;
+			
+			// Convert the last-write time to local time.
+			FileTimeToSystemTime(&ffd.ftLastWriteTime, &stLocal);
+			std::string local_time;
+			local_time += std::to_string(stLocal.wYear);
+			local_time += std::to_string(stLocal.wMonth);
+			local_time += std::to_string(stLocal.wDay);
+			//make_string_detail::value_format format;
+			//local_time = format.make_string("{0:04}{0:02}{0:02}{0:02}{0:02}{0:02}", stLocal.wYear, stLocal.wMonth, stLocal.wDay, stLocal.wHour, stLocal.wMinute, stLocal.wSecond);
+			//local_time = make_string("{0:04}{0:02}{0:02}{0:02}{0:02}{0:02}", 0, 0, 0, 0, 0, 0);
+			dest[local_time] = dir + ffd.cFileName;
+		}
+
+	} while (FindNextFileA(hFind, &ffd));
+
+	// Get last error
+	dwError = GetLastError();
+	if (dwError != ERROR_NO_MORE_FILES) {
+		LOG_F(INFO, "Error reading file list in folder %s.", dir.c_str());
+		return false;
+	}
+
+	return true;
+}
+
 void VtSaveManager::ReadWindows()
 {
 	ZmConfigManager* configMgr = ZmConfigManager::GetInstance();
+	std::string id = VtLoginManager::GetInstance()->ID;
+	// 아이디가 없으면 그냥 반환한다.
+	if (id.length() == 0)
+		return;
 	std::string appPath;
 	appPath = configMgr->GetAppPath();
 	appPath.append(_T("\\"));
-	appPath.append(_T("env"));
+	appPath.append(id);
 	appPath.append(_T("\\"));
 	std::string config_path = appPath;
-	appPath.append(_T("*.xml"));
+	appPath.append(_T("*.*"));
+	std::map<std::string, std::string> file_list;
+	ListContents(file_list, config_path, "*.xml", false);
 
-	// 가장 최근에 저장된 설정 파일을 찾는다.
-	std::string file_name = GetLastestFile(appPath);
-	// 파일을 찾지 못하면 그냥 나온다.
-	if (file_name.length() == 0)
+	if (file_list.size() == 0)
 		return;
-	config_path.append(file_name);
+
+	std::string file_name = file_list.rbegin()->second;
 	/// [load xml file]
 	// Create empty XML document within memory
 	pugi::xml_document doc;
 	// Load XML file into memory
 	// Remark: to fully read declaration entries you have to specify
 	// "pugi::parse_declaration"
-	pugi::xml_parse_result result = doc.load_file(config_path.c_str(),
+	pugi::xml_parse_result result = doc.load_file(file_name.c_str(),
 		pugi::parse_default | pugi::parse_declaration);
 	if (!result)
 	{
@@ -261,6 +346,7 @@ std::string VtSaveManager::GetLastestFile(std::string file_name)
 		{
 			bestDate = curDate;
 			name = finder.GetFileName().GetString();
+			AfxMessageBox(name.c_str());
 		}
 	}
 	return name;
@@ -852,14 +938,19 @@ void VtSaveManager::SaveLoginInfoToXml(std::string id, std::string pwd, std::str
 	application.remove_child("login_info");
 	pugi::xml_node login_info = application.append_child("login_info");
 	login_info.append_attribute("save") = save;
+
+	auto enc_id = cryptor::encrypt(move(id));
+	auto enc_pwd = cryptor::encrypt(move(pwd));
+	auto enc_cert = cryptor::encrypt(move(cert));
+
 	pugi::xml_node login_info_child = login_info.append_child("login_id");
-	login_info_child.append_child(pugi::node_pcdata).set_value(id.c_str());
+	login_info_child.append_child(pugi::node_pcdata).set_value(enc_id.c_str());
 
 	login_info_child = login_info.append_child("login_password");
-	login_info_child.append_child(pugi::node_pcdata).set_value(pwd.c_str());
+	login_info_child.append_child(pugi::node_pcdata).set_value(enc_pwd.c_str());
 
 	login_info_child = login_info.append_child("login_cert");
-	login_info_child.append_child(pugi::node_pcdata).set_value(cert.c_str());
+	login_info_child.append_child(pugi::node_pcdata).set_value(enc_cert.c_str());
 
 	doc.save_file(appPath.c_str());
 }
@@ -895,9 +986,96 @@ int VtSaveManager::LoadLoginInfoFromXml(std::string& id, std::string& pwd, std::
 		id = login_info.child_value("login_id");
 		pwd = login_info.child_value("login_password");
 		cert = login_info.child_value("login_cert");
+		return 1;
 	}
 	else {
 		return -1;
+	}
+}
+
+int VtSaveManager::LoadLoginInfoFromXml()
+{
+	ZmConfigManager* configMgr = ZmConfigManager::GetInstance();
+	std::string appPath;
+	appPath = configMgr->GetAppPath();
+	appPath.append(_T("\\"));
+	appPath.append(_T("config.xml"));
+
+	/// [load xml file]
+	// Create empty XML document within memory
+	pugi::xml_document doc;
+	// Load XML file into memory
+	// Remark: to fully read declaration entries you have to specify
+	// "pugi::parse_declaration"
+	pugi::xml_parse_result result = doc.load_file(appPath.c_str(),
+		pugi::parse_default | pugi::parse_declaration);
+	if (!result)
+	{
+		// 설정 파일이 없을 때
+		std::cout << "Parse error: " << result.description()
+			<< ", character pos= " << result.offset;
+		return -1;
+	}
+
+	pugi::xml_node application = doc.child("application");
+	pugi::xml_node login_info = application.child("login_info");
+	if (login_info) {
+		VtLoginManager* loginMgr = VtLoginManager::GetInstance();
+		VtLoginManager::GetInstance()->Save = login_info.attribute("save").as_bool();
+		std::string id = login_info.child_value("login_id");
+		std::string pwd = login_info.child_value("login_password");
+		std::string cert = login_info.child_value("login_cert");
+
+		loginMgr->ID = cryptor::decrypt(id);
+		loginMgr->Password = cryptor::decrypt(pwd);
+		loginMgr->Cert = cryptor::decrypt(cert);
+		return 1;
+	}
+	else {
+		// 설정 파일에서 로그인 항목이 없을 때
+		return -1;
+	}
+}
+
+void VtSaveManager::LoadRunInfoFromXml()
+{
+	ZmConfigManager* configMgr = ZmConfigManager::GetInstance();
+	std::string appPath;
+	appPath = configMgr->GetAppPath();
+	appPath.append(_T("\\"));
+	appPath.append(_T("config.xml"));
+
+	/// [load xml file]
+	// Create empty XML document within memory
+	pugi::xml_document doc;
+	// Load XML file into memory
+	// Remark: to fully read declaration entries you have to specify
+	// "pugi::parse_declaration"
+	pugi::xml_parse_result result = doc.load_file(appPath.c_str(),
+		pugi::parse_default | pugi::parse_declaration);
+	if (!result)
+	{
+		// 설정 파일이 없을 때
+		std::cout << "Parse error: " << result.description()
+			<< ", character pos= " << result.offset;
+		return;
+	}
+
+	pugi::xml_node application = doc.child("application");
+	pugi::xml_node run_info = application.child("run_info");
+	if (run_info) {
+		VtGlobal::OpenTime.hour = std::stoi(run_info.child_value("start_hour"));
+		VtGlobal::OpenTime.min = std::stoi(run_info.child_value("start_min"));
+		VtGlobal::OpenTime.sec = std::stoi(run_info.child_value("start_sec"));
+		VtGlobal::CloseTime.hour = std::stoi(run_info.child_value("end_hour"));
+		VtGlobal::CloseTime.min = std::stoi(run_info.child_value("end_min"));
+		VtGlobal::CloseTime.sec = std::stoi(run_info.child_value("end_sec"));
+	}
+
+	pugi::xml_node file_watch = application.child("file_watch");
+	if (file_watch) {
+		VtGlobal::GetInstance()->EnableFileWatch = file_watch.attribute("enable").as_bool();
+		VtGlobal::GetInstance()->FileWatchPath = file_watch.child_value("file_watch_path");
 	}
 }
 
