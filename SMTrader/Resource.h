@@ -536,10 +536,11 @@
 #define IDC_STATIC_ACNT_NAME            1048
 #define IDC_STATIC_REAL_TICKQUOTE       1048
 #define IDC_COMBO_OPT_MARKET            1048
-#define IDC_CUSTOM2                     1048
 #define IDC_CUSTOM_ASSET                1048
 #define IDC_STATIC_ACCOUNT_REMAIN       1049
 #define IDC_COMBO_OPT_MONTH             1049
+#define IDC_CHECK3                      1049
+#define IDC_CHECK_ALL                   1049
 #define IDC_ONE_CLICK                   1050
 #define IDC_STATIC_SYMBOL_MASTER        1050
 #define IDC_STATIC_CANCEL               1051
@@ -690,7 +691,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        370
 #define _APS_NEXT_COMMAND_VALUE         32805
-#define _APS_NEXT_CONTROL_VALUE         1049
+#define _APS_NEXT_CONTROL_VALUE         1050
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif

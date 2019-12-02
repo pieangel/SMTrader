@@ -27,6 +27,7 @@ VtAutoSignalManagerDialog::~VtAutoSignalManagerDialog()
 void VtAutoSignalManagerDialog::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_CHECK_ALL, _CheckAll);
 }
 
 
@@ -44,6 +45,7 @@ BEGIN_MESSAGE_MAP(VtAutoSignalManagerDialog, CDialogEx)
 	ON_WM_TIMER()
 	ON_WM_CLOSE()
 	ON_BN_CLICKED(IDC_BTN_ORDER_CONFIG, &VtAutoSignalManagerDialog::OnBnClickedBtnOrderConfig)
+	ON_BN_CLICKED(IDC_CHECK_ALL, &VtAutoSignalManagerDialog::OnBnClickedCheckAll)
 END_MESSAGE_MAP()
 
 
@@ -131,5 +133,16 @@ void VtAutoSignalManagerDialog::OnBnClickedBtnOrderConfig()
 			sys->PriceType(orderCfgDlg._PriceType);
 			sys->OrderTick(orderCfgDlg._OrderTick);
 		}
+	}
+}
+
+
+void VtAutoSignalManagerDialog::OnBnClickedCheckAll()
+{
+	if (_CheckAll.GetCheck() == BST_CHECKED) {
+		_ConnectGrid.SetCheck(true);
+	}
+	else {
+		_ConnectGrid.SetCheck(false);
 	}
 }

@@ -1021,7 +1021,7 @@ int VtSaveManager::LoadLoginInfoFromXml()
 	pugi::xml_node login_info = application.child("login_info");
 	if (login_info) {
 		VtLoginManager* loginMgr = VtLoginManager::GetInstance();
-		VtLoginManager::GetInstance()->Save = login_info.attribute("save").as_bool();
+		loginMgr->Save = login_info.attribute("save").as_bool();
 		std::string id = login_info.child_value("login_id");
 		std::string pwd = login_info.child_value("login_password");
 		std::string cert = login_info.child_value("login_cert");

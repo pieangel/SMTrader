@@ -30,7 +30,7 @@ void VtTotalSignalGrid::OnSetup()
 
 	SetDoubleBufferMode(TRUE);
 	SetDefColWidth(80);
-
+	_RowCount = 100;
 	SetNumberRows(_RowCount);
 	SetNumberCols(_ColCount);
 
@@ -44,7 +44,7 @@ void VtTotalSignalGrid::OnSetup()
 
 	SetDefFont(&_defFont);
 	SetSH_Width(0);
-	SetVS_Width(0);
+	SetVS_Width(GetSystemMetrics(SM_CXVSCROLL));
 	SetHS_Height(0);
 	SetColTitle();
 	SetVScrollMode(UG_SCROLLNORMAL);
@@ -65,7 +65,7 @@ void VtTotalSignalGrid::SetColTitle()
 {
 	CUGCell cell;
 	LPCTSTR title[9] = { "계좌번호", "종목", "포지션", "평균단가", "현재가", "평가손익", "매도주문", "매수주문", "신호차트" };
-	int colWidth[9] = { 80, 110, 50, 80, 80, 80, 80, 80, 80 };
+	int colWidth[9] = { 80, 110, 50, 80, 80, 80, 80, 80, 80 - GetSystemMetrics(SM_CXVSCROLL) };
 
 
 	for (int i = 0; i < _ColCount; i++)

@@ -476,7 +476,7 @@ BOOL CGridCellBase::Draw(CDC* pDC, int nRow, int nCol, CRect rect,  BOOL bEraseB
 		CPoint pt1, pt2;
 		pt1.x = closeRect.left - 1;
 		pt1.y = closeRect.bottom;
-		pt2.x = closeRect.right;
+		pt2.x = closeRect.right + 1;
 		pt2.y = closeRect.bottom;
 
 		pDC->MoveTo(pt1);

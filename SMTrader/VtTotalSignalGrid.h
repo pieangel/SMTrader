@@ -17,15 +17,15 @@ public:
 
 	void SetColTitle();
 	int _ColCount = 9;
-	int _RowCount = 100;
+	int _RowCount = 10;
 	CFont _defFont;
 	CFont _titleFont;
 	void QuickRedrawCell(int col, long row);
 	void Refresh();
 	void RefreshOrders();
+	void ClearCells();
 private:
 	void InitGrid();
-	void ClearCells();
 	int _RowNumber = 0;
 };
 

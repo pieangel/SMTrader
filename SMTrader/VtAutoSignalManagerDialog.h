@@ -2,6 +2,7 @@
 #include "VtTotalSignalGrid.h"
 #include "VtSignalConnectionGrid.h"
 #include "VtSignalDefinitionGrid.h"
+#include "afxwin.h"
 
 // VtAutoSignalManagerDialog dialog
 const int RefTimer = 0x00000010;
@@ -39,4 +40,6 @@ public:
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	afx_msg void OnClose();
 	afx_msg void OnBnClickedBtnOrderConfig();
+	afx_msg void OnBnClickedCheckAll();
+	CButton _CheckAll;
 };

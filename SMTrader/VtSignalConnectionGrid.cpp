@@ -49,7 +49,7 @@ void VtSignalConnectionGrid::OnSetup()
 
 	SetDefFont(&_defFont);
 	SetSH_Width(0);
-	SetVS_Width(0);
+	SetVS_Width(GetSystemMetrics(SM_CXVSCROLL));
 	SetHS_Height(0);
 	SetColTitle();
 	SetVScrollMode(UG_SCROLLNORMAL);
@@ -161,7 +161,7 @@ void VtSignalConnectionGrid::SetColTitle()
 {
 	CUGCell cell;
 	LPCTSTR title[5] = { "실행", "계좌번호", "종목", "신호차트", "승수" };
-	int colWidth[5] = { 25, 98, 90, 80, 60 };
+	int colWidth[5] = { 25, 98, 90, 80, 60 - GetSystemMetrics(SM_CXVSCROLL) };
 
 
 	for (int i = 0; i < _ColCount; i++) {
@@ -405,6 +405,32 @@ void VtSignalConnectionGrid::Refresh()
 {
 	ClearCells();
 	InitGrid();
+}
+
+void VtSignalConnectionGrid::SetCheck(bool flag)
+{
+	_TotalGrid->ClearCells();
+	int row = 0;
+	CUGCell cell;
+	VtOutSystemOrderManager* outSysOrderMgr = VtOutSystemOrderManager::GetInstance();
+	for (auto it = _SystemMap.begin(); it != _SystemMap.end(); ++it) {
+		SharedSystem sys = _SystemMap[row];
+		GetCell(0, row, &cell);
+		if (flag) {
+			cell.SetNumber(1);
+			sys->Enable(true);
+			outSysOrderMgr->AddSystem(sys);
+		}
+		else {
+			cell.SetNumber(0);
+			sys->Enable(false);
+			outSysOrderMgr->RemoveSystem(sys);
+		}
+		SetCell(0, row, &cell);
+		QuickRedrawCell(0, row);
+		row++;
+	}
+	if (_TotalGrid) _TotalGrid->Refresh();
 }
 
 int VtSignalConnectionGrid::OnDropList(long ID, int col, long row, long msg, long param)

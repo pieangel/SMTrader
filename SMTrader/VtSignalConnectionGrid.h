@@ -53,6 +53,7 @@ public:
 	VtTotalSignalGrid* TotalGrid() const { return _TotalGrid; }
 	void TotalGrid(VtTotalSignalGrid* val) { _TotalGrid = val; }
 	void Refresh();
+	void SetCheck(bool flag);
 private:
 	int _SelRow = -2;
 	int _OldSelRow = -2;

@@ -1588,4 +1588,13 @@ void SmOrderPanel::LoadFromXml(pugi::xml_node& node_center_window)
 	_ShowOrderArea = _OrderGridColOption[0];
 	_ShowStopArea = _OrderGridColOption[1];
 	_ShowOrderCountArea = _OrderGridColOption[2];
+
+	// 심볼 대입
+	VtSymbolManager* symMgr = VtSymbolManager::GetInstance();
+	_DefaultSymbol = symMgr->FindHdSymbol(symbol_code);
+	// 저장된 심볼은 목록으로 만들어 심볼 마스터 요청한다.
+	VtSaveManager* saveMgr = VtSaveManager::GetInstance();
+	std::vector<VtSymbol*>& symvec = saveMgr->GetSymbolVector();
+	if (_DefaultSymbol)
+		symvec.push_back(_DefaultSymbol);
 }

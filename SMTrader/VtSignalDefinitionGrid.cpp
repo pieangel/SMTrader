@@ -32,7 +32,7 @@ void VtSignalDefinitionGrid::OnSetup()
 
 	SetDefFont(&_defFont);
 	SetSH_Width(0);
-	SetVS_Width(0);
+	SetVS_Width(GetSystemMetrics(SM_CXVSCROLL));
 	SetHS_Height(0);
 	SetColTitle();
 	SetVScrollMode(UG_SCROLLNORMAL);
@@ -127,7 +127,7 @@ void VtSignalDefinitionGrid::SetColTitle()
 {
 	CUGCell cell;
 	LPCTSTR title[4] = { "신호차트", "포지션", "발생장소", "설명" };
-	int colWidth[4] = { 100, 90, 50, 114 };
+	int colWidth[4] = { 100, 90, 50, 114 - GetSystemMetrics(SM_CXVSCROLL) };
 
 
 	for (int i = 0; i < _ColCount; i++) {
