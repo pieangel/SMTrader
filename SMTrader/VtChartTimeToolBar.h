@@ -38,7 +38,8 @@ public:
 	CButtonST _BtnWeek;
 	CComboBox _ComboTick;
 	CComboBox _ComboTime;
-
+	CButtonST _SearchSymbol;
+	CComboBox _ComboSymbol;
 	std::vector<CButtonST*> _ButtonVec;
 
 private:

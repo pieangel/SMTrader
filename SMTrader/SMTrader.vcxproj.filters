@@ -1555,6 +1555,18 @@
     <ClInclude Include="Market\SmSymbolReader.h">
       <Filter>Market</Filter>
     </ClInclude>
+    <ClInclude Include="Chart\SmChartData.h">
+      <Filter>Chart</Filter>
+    </ClInclude>
+    <ClInclude Include="Chart\SmChartDataManager.h">
+      <Filter>Chart</Filter>
+    </ClInclude>
+    <ClInclude Include="Chart\SmChartDefine.h">
+      <Filter>Chart</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\SmUtil.h">
+      <Filter>Util</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ChildFrm.cpp">
@@ -2780,6 +2792,15 @@
     </ClCompile>
     <ClCompile Include="Market\SmSymbolReader.cpp">
       <Filter>Market</Filter>
+    </ClCompile>
+    <ClCompile Include="Chart\SmChartData.cpp">
+      <Filter>Chart</Filter>
+    </ClCompile>
+    <ClCompile Include="Chart\SmChartDataManager.cpp">
+      <Filter>Chart</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\SmUtil.cpp">
+      <Filter>Util</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

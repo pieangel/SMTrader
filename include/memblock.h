@@ -37,14 +37,8 @@ class DoubleArray
 public :
 	int len;
 	const double *data;
-	DoubleArray() : len(0), data(0) 
-	{
-		//TRACE(_T("DoubleArray Constructor!\n"));
-	}
-	DoubleArray(const double *_data, int _len) : len(_len), data(_data) 
-	{
-		//TRACE(_T("DoubleArray Constructor!\n"));
-	}
+	DoubleArray() : len(0), data(0) {}
+	DoubleArray(const double *_data, int _len) : len(_len), data(_data) {}
 	double operator[](int i) const { return data[i]; }
 };
 

@@ -16,6 +16,7 @@ using Poco::BasicEvent;
 // VtChartContainer dialog
 class VtChartWindow;
 class VtSystem;
+class SmChartData;
 class VtChartContainer : public CDialogEx
 {
 	DECLARE_DYNAMIC(VtChartContainer)
@@ -39,6 +40,10 @@ public:
 	virtual BOOL OnInitDialog();
 
 public:
+	void RegisterChartCallback();
+	void UnregisterChartCallback();
+	void OnChartEvent(const SmChartData* chart_data);
+
 	void Save(simple::file_ostream<same_endian_type>& ss);
 	void Load(simple::file_istream<same_endian_type>& ss);
 	VtChartWindow* ActiveChartWnd() const { return _ActiveChartWnd; }

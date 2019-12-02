@@ -1,7 +1,9 @@
 #pragma once
 #include <string>
+#include <map>
 #include "VtQuote.h"
 #include "VtHoga.h"
+class SmChartData;
 class VtSymbol
 {
 public:
@@ -57,9 +59,24 @@ public:
 	void RequestedSymbolMaster(bool val) { _RequestedSymbolMaster = val; }
 public:
 	void GetSymbolMaster();
+
+	void addChartData(std::string dataKey, SmChartData* chart_data) {
+		_ChartDataMap[dataKey] = chart_data;
+	}
+
+	void removeChartData(std::string dataKey) {
+		auto it = _ChartDataMap.find(dataKey);
+		if (it != _ChartDataMap.end()) {
+			_ChartDataMap.erase(it);
+		}
+	}
+
 private:
 	bool _RecentMonth = false;
 	bool _RequestedSymbolMaster = false;
+
+	std::map<std::string, SmChartData*> _ChartDataMap;
+	
 };
 
 struct CompareSymbol {

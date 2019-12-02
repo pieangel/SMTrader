@@ -5,6 +5,7 @@
 
 class VtSymbol;
 struct VtOrder;
+class SmChartData;
 class SmCallbackManager : public TemplateSingleton<SmCallbackManager>
 {
 public:
@@ -36,10 +37,17 @@ public:
 	void UnsubscribeMasterCallback(long id);
 	void OnMasterEvent(VtSymbol* symbol);
 
+	void SubscribeChartCallback(long id, std::function <void(SmChartData* chart_data)> callback) {
+		_ChartMap[id] = callback;
+	}
+	void UnsubscribeChartCallback(long id);
+	void OnChartEvent(SmChartData* chart_data);
+
 private:
 	std::map<long, std::function<void( VtSymbol* symbol)>> _QuoteMap;
 	std::map<long, std::function<void( VtSymbol* symbol)>> _HogaMap;
 	std::map<int, std::function<void( VtOrder* order)>> _OrderMap;
 	std::map<int, std::function<void(VtSymbol* symbol)>> _MasterMap;
+	std::map<int, std::function<void(SmChartData* chart_data)>> _ChartMap;
 };
 

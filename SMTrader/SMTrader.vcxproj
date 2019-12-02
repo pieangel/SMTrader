@@ -199,6 +199,9 @@
     <ClInclude Include="BtnST.h" />
     <ClInclude Include="CeXDib.h" />
     <ClInclude Include="Chart\ChartViewer.h" />
+    <ClInclude Include="Chart\SmChartData.h" />
+    <ClInclude Include="Chart\SmChartDataManager.h" />
+    <ClInclude Include="Chart\SmChartDefine.h" />
     <ClInclude Include="ChildFrm.h" />
     <ClInclude Include="ClassView.h" />
     <ClInclude Include="closure.h" />
@@ -431,6 +434,7 @@
     <ClInclude Include="UGrid\ugxpthemes.h" />
     <ClInclude Include="Ultimate Toolbox\source\UTSampleAbout\HtmlCtrl.h" />
     <ClInclude Include="Util\formatstdstring.h" />
+    <ClInclude Include="Util\SmUtil.h" />
     <ClInclude Include="Util\VtTime.h" />
     <ClInclude Include="ViewTree.h" />
     <ClInclude Include="VtAcceptedOrderGrid.h" />
@@ -667,6 +671,8 @@
     <ClCompile Include="BtnST.cpp" />
     <ClCompile Include="CeXDib.cpp" />
     <ClCompile Include="Chart\ChartViewer.cpp" />
+    <ClCompile Include="Chart\SmChartData.cpp" />
+    <ClCompile Include="Chart\SmChartDataManager.cpp" />
     <ClCompile Include="ChildFrm.cpp" />
     <ClCompile Include="ClassView.cpp" />
     <ClCompile Include="CmdWaitDlg.cpp" />
@@ -889,6 +895,9 @@
     <ClCompile Include="Ultimate Toolbox\source\UTBStrOp.cpp" />
     <ClCompile Include="Ultimate Toolbox\source\UTSampleAbout\HtmlCtrl.cpp" />
     <ClCompile Include="Ultimate Toolbox\source\UTSampleAbout\UTSampleAbout.cpp" />
+    <ClCompile Include="Util\SmUtil.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="ViewTree.cpp" />
     <ClCompile Include="VtAcceptedOrderGrid.cpp" />
     <ClCompile Include="VtAccount.cpp" />

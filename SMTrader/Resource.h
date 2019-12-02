@@ -539,10 +539,10 @@
 #define IDC_CUSTOM_ASSET                1048
 #define IDC_STATIC_ACCOUNT_REMAIN       1049
 #define IDC_COMBO_OPT_MONTH             1049
-#define IDC_CHECK3                      1049
 #define IDC_CHECK_ALL                   1049
 #define IDC_ONE_CLICK                   1050
 #define IDC_STATIC_SYMBOL_MASTER        1050
+#define IDC_BUTTON_SEARCH               1050
 #define IDC_STATIC_CANCEL               1051
 #define IDC_BTN_LEFT_EXTEND             1051
 #define IDC_CHECK_ONECLICK              1052
@@ -628,6 +628,7 @@
 #define IDC_COMBO_SYSTEM                1101
 #define IDC_STATIC_TASK                 1101
 #define IDC_PROGRESS_CTRL               1102
+#define IDC_STATIC_TIME2                1102
 #define IDC_STATIC_SET                  1105
 #define IDC_BTN_ACNT_MJ                 1106
 #define IDC_BTN_FUND_MJ                 1107
@@ -691,7 +692,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        370
 #define _APS_NEXT_COMMAND_VALUE         32805
-#define _APS_NEXT_CONTROL_VALUE         1050
+#define _APS_NEXT_CONTROL_VALUE         1051
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif

@@ -39,6 +39,8 @@ void VtChartTimeToolBar::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_STATIC_TIME, _StaticTime);
 	DDX_Control(pDX, IDC_COMBO_SYSTEM, _ComboSystem);
 	DDX_Control(pDX, IDC_STATIC_SYSTEM, _StaticSystem);
+	DDX_Control(pDX, IDC_BUTTON_SEARCH, _SearchSymbol);
+	DDX_Control(pDX, IDC_COMBO_SYMBOL, _ComboSymbol);
 }
 
 
@@ -60,15 +62,15 @@ BOOL VtChartTimeToolBar::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
-	_StaticTime.SetTextColor(RGB(255, 255, 255));
-	_StaticTime.SetColor(RGB(0, 67, 178));
-	_StaticTime.SetGradientColor(RGB(0, 67, 178));
+	_StaticTime.SetTextColor(RGB(0, 0, 0));
+	_StaticTime.SetColor(GetSysColor(COLOR_BTNFACE));
+	_StaticTime.SetGradientColor(GetSysColor(COLOR_BTNFACE));
 	// Align to center
 	_StaticTime.SetTextAlign(1);
 
-	_StaticSystem.SetTextColor(RGB(255, 255, 255));
-	_StaticSystem.SetColor(RGB(0, 67, 178));
-	_StaticSystem.SetGradientColor(RGB(0, 67, 178));
+	_StaticSystem.SetTextColor(RGB(0, 0, 0));
+	_StaticSystem.SetColor(GetSysColor(COLOR_BTNFACE));
+	_StaticSystem.SetGradientColor(GetSysColor(COLOR_BTNFACE));
 	// Align to center
 	_StaticSystem.SetTextAlign(1);
 

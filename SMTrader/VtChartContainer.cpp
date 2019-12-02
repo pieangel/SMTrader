@@ -26,10 +26,30 @@
 #include "HdWindowManager.h"
 #include "System/VtSystemManager.h"
 #include "Poco/Delegate.h"
+#include "SmCallbackManager.h"
 using Poco::Delegate;
 
 
 // VtChartContainer dialog
+
+using namespace std;
+using namespace std::placeholders;
+
+void VtChartContainer::RegisterChartCallback()
+{
+	SmCallbackManager::GetInstance()->SubscribeChartCallback((long)this, std::bind(&VtChartContainer::OnChartEvent, this, _1));
+}
+
+void VtChartContainer::UnregisterChartCallback()
+{
+	SmCallbackManager::GetInstance()->UnsubscribeChartCallback((int)this);
+}
+
+void VtChartContainer::OnChartEvent(const SmChartData* chart_data)
+{
+	if (!chart_data)
+		return;
+}
 
 IMPLEMENT_DYNAMIC(VtChartContainer, CDialogEx)
 
@@ -48,9 +68,9 @@ VtChartContainer::VtChartContainer(CWnd* pParent /*=NULL*/)
 
 VtChartContainer::~VtChartContainer()
 {
+	UnregisterChartCallback();
 	// 반드시 리소스 해제할것
-	for (auto it = _ChartList.begin(); it != _ChartList.end(); ++it)
-	{
+	for (auto it = _ChartList.begin(); it != _ChartList.end(); ++it) {
 		delete *it;
 	}
 	ClearSplitters();
@@ -95,8 +115,7 @@ void VtChartContainer::OnSize(UINT nType, int cx, int cy)
 	CDialogEx::OnSize(nType, cx, cy);
 
 	// TODO: Add your message handler code here
-	if (_MainWnd)
-	{
+	if (_MainWnd) {
 		CRect rect;
 		GetClientRect(&rect);
 		CRect rcGrid;
@@ -105,8 +124,7 @@ void VtChartContainer::OnSize(UINT nType, int cx, int cy)
 		rcGrid.top = rect.top;
 		rcGrid.bottom = rect.bottom;
 
-		if (_TimeToolBar.GetSafeHwnd())
-		{
+		if (_TimeToolBar.GetSafeHwnd()) {
 			CRect rcToolBar;
 			_TimeToolBar.GetWindowRect(rcToolBar);
 			_ToolBarHeight = rcToolBar.Height();
@@ -121,8 +139,7 @@ void VtChartContainer::OnSize(UINT nType, int cx, int cy)
 		_FavGrid.ResizeColWidth(rcGrid.Width());
 	}
 
-	for (int i = 0; i < _ChartList.size(); i++)
-	{
+	for (int i = 0; i < _ChartList.size(); i++) {
 		_ChartList[i]->Invalidate(TRUE);
 	}
 }
@@ -146,8 +163,7 @@ BOOL VtChartContainer::OnInitDialog()
 
 	SendMessage(WM_SIZE);
 
-	if (_ActiveChartWnd)
-	{
+	if (_ActiveChartWnd) {
 		_FavGrid.SetChartData(_ActiveChartWnd);
 	}
 
@@ -161,6 +177,8 @@ BOOL VtChartContainer::OnInitDialog()
 	arg.wndType = HdWindowType::ChartWindow;
 	arg.eventType = HdWindowEventType::Created;
 	FireWindowEvent(std::move(arg));
+
+	RegisterChartCallback();
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // EXCEPTION: OCX Property Pages should return FALSE

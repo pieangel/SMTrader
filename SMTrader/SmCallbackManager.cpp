@@ -82,3 +82,20 @@ void SmCallbackManager::OnMasterEvent(VtSymbol* symbol)
 		it->second(symbol);
 	}
 }
+
+void SmCallbackManager::UnsubscribeChartCallback(long id)
+{
+	auto it = _ChartMap.find(id);
+	if (it != _ChartMap.end()) {
+		_ChartMap.erase(it);
+	}
+}
+
+void SmCallbackManager::OnChartEvent(SmChartData* chart_data)
+{
+	if (!chart_data)
+		return;
+	for (auto it = _ChartMap.begin(); it != _ChartMap.end(); ++it) {
+		it->second(chart_data);
+	}
+}

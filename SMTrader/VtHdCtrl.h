@@ -8,10 +8,12 @@
 #include <tuple>
 #include <vector>
 #include <mutex>
+#include <queue>
 #include "VtOrder.h"
 #include "VtChartDataRequest.h"
 #include "HdTaskArg.h"
 #include "Global/VtDefine.h"
+#include "Chart/SmChartDefine.h"
 
 using Poco::BasicEvent;
 class VtChartDataCollector;
@@ -60,6 +62,14 @@ protected:
 	afx_msg void OnGetMsgWithRqId(int nRqId, CString strCode, CString strMsg);
 
 public:
+	void OnRcvdDomesticChartData(CString& sTrCode, LONG& nRqID);
+	void OnRcvdAbroadChartData(CString& sTrCode, LONG& nRqID);
+	void OnRcvdAbroadChartData2(CString& sTrCode, LONG& nRqID);
+
+	void GetChartData(SmChartDataRequest req);
+	void GetChartDataForDomestic(SmChartDataRequest req);
+	void GetChartDataShortCycle(SmChartDataRequest req);
+	void GetChartDataLongCycle(SmChartDataRequest req);
 	int Init();
 	void LogIn();
 	void LogOut();
@@ -98,6 +108,9 @@ public:
 	}
 
 private:
+	void RequestChartDataFromQ();
+	std::queue< SmChartDataRequest> _ChartDataReqQueue;
+	std::map<int, SmChartDataRequest> _ChartDataReqMap;
 	int GetIntOrderPrice(CString symbol_code, CString strPrice, CString strOrderPrice);
 	bool CheckPassword(HdOrderRequest& request);
 	void OnReceiveChartData(CString& sTrCode, LONG& nRqID);

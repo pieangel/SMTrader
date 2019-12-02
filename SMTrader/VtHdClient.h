@@ -3,6 +3,7 @@
 #include "VtOrder.h"
 #include "VtChartDataRequest.h"
 #include "HdTaskArg.h"
+#include "Chart/SmChartDefine.h"
 class VtHdCtrl;
 class HdFutureGrid;
 class HdOptionGrid;
@@ -74,6 +75,8 @@ public:
 
 	void DownloadMasterFiles(std::string param);
 	void DownloadDomesticMasterFile(std::string file_name);
+
+	void GetChartData(SmChartDataRequest req);
 private:
 	VtHdCtrl* _HdCtrl = nullptr;
 };

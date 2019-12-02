@@ -58,6 +58,9 @@
 #include "VtStringUtil.h"
 #include "SmCallbackManager.h"
 #include "Market/SmSymbolReader.h"
+#include "Chart/SmChartData.h"
+#include "Chart/SmChartDataManager.h"
+
 using namespace std;
 
 using Poco::Delegate;
@@ -454,6 +457,14 @@ void VtHdCtrl::UnregisterAccount(CString accountNo)
 	CString strUserId = m_sUserId;
 	CString strAcctNo = accountNo;
 	int nResult = m_CommAgent.CommRemoveJumunChe(strUserId, strAcctNo);
+}
+
+void VtHdCtrl::RequestChartDataFromQ()
+{
+	if (!_ChartDataReqQueue.empty()) {
+		_ChartDataReqQueue.pop();
+		GetChartData(_ChartDataReqQueue.front());
+	}
 }
 
 int VtHdCtrl::GetIntOrderPrice(CString symbol_code, CString strPrice, CString strOrderPrice)
@@ -4514,6 +4525,235 @@ void VtHdCtrl::GetApiCustomerProfitLoss(HdTaskType taskType, std::string account
 	//TRACE(msg);
 }
 
+void VtHdCtrl::OnRcvdDomesticChartData(CString& sTrCode, LONG& nRqID)
+{
+	try {
+		int nRepeatCnt = m_CommAgent.CommGetRepeatCnt(sTrCode, -1, "OutRec2");
+	
+		CString msg;
+
+		auto it = _ChartDataReqMap.find(nRqID);
+		if (it == _ChartDataReqMap.end())
+			return;
+		SmChartDataRequest req = it->second;
+		SmChartDataManager * chartDataMgr = SmChartDataManager::GetInstance();
+		SmChartData * chart_data = chartDataMgr->AddChartData(req);
+		int total_count = nRepeatCnt;
+		int current_count = 1;
+				
+		for (int i = nRepeatCnt - 1; i >= 0; --i) {
+			CString strDate = "";
+			CString strTime = "";
+
+			CString tempDate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "날짜시간");
+
+			if (chart_data->ChartType() == SmChartType::MIN)
+				tempDate.Append(_T("00"));
+			else
+				tempDate.Append(_T("000000"));
+
+
+			strTime = tempDate.Right(6);
+			strDate = tempDate.Left(8);
+
+			CString strOpen = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "시가");
+			CString strHigh = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "고가");
+			CString strLow = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "저가");
+			CString strClose = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "종가");
+			CString strVol = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "거래량");
+
+			if (strDate.GetLength() == 0)
+				continue;
+
+			//msg.Format(_T("OnRcvdAbroadChartData ::code = %s, index = %d, date = %s, t = %s, o = %s, h = %s, l = %s, c = %s, v = %s\n"), req.symbolCode.c_str(), i, strDate, strTime, strOpen, strHigh, strLow, strClose, strVol);
+			//TRACE(msg);
+
+			SmChartDataItem data;
+			data.symbolCode = req.symbolCode;
+			data.chartType = req.chartType;
+			data.cycle = req.cycle;
+			data.date = strDate.Trim();
+			data.time = strTime.Trim();
+			data.date_time = data.date + data.time;
+			data.h = _ttoi(strHigh);
+			data.l = _ttoi(strLow);
+			data.o = _ttoi(strOpen);
+			data.c = _ttoi(strClose);
+			data.v = _ttoi(strVol);
+
+			// 차트데이터 아이템을 차트데이터에 더한다.
+			chart_data->AddData(data);
+		}
+
+		LOG_F(INFO, "OnRcvdDomesticChartData %s", req.GetDataKey().c_str());
+
+		// 아직 처리되지 못한 데이터는 큐를 통해서 처리한다.
+		RequestChartDataFromQ();
+
+		// 차트 데이터 수신 요청 목록에서 제거한다.
+		_ChartDataReqMap.erase(it);
+
+		if (nRepeatCnt == chart_data->CycleDataSize()) {
+			// 사이클 차트 데이터 수신 완료를 알릴다.
+			SmCallbackManager::GetInstance()->OnChartEvent(chart_data);
+		}
+		else {
+			// 최초 차트 데이터가 완료되었음을 알린다.
+			SmCallbackManager::GetInstance()->OnChartEvent(chart_data);
+		}
+	}
+	catch (std::exception e)
+	{
+		std::string error = e.what();
+		LOG_F(INFO, "%s", error);
+	}
+}
+
+void VtHdCtrl::OnRcvdAbroadChartData(CString& sTrCode, LONG& nRqID)
+{
+	try {
+		int nRepeatCnt = m_CommAgent.CommGetRepeatCnt(sTrCode, -1, "OutRec1");
+		//influxdb_cpp::server_info si("127.0.0.1", 8086, "abroad_future", "angelpie", "orion1");
+		//influxdb_cpp::server_info si("127.0.0.1", 8086, "test_x", "test", "test");
+		CString msg;
+
+		auto it = _ChartDataReqMap.find(nRqID);
+		if (it == _ChartDataReqMap.end())
+			return;
+		SmChartDataRequest req = it->second;
+		SmChartDataManager* chartDataMgr = SmChartDataManager::GetInstance();
+		SmChartData* chart_data = chartDataMgr->AddChartData(req);
+		int total_count = nRepeatCnt;
+		int current_count = 1;
+		// Received the chart data first.
+		for (int i = nRepeatCnt - 1; i >= 0; --i) {
+			CString strDate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "국내일자");
+			CString strTime = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "국내시간");
+			CString strOpen = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "시가");
+			CString strHigh = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "고가");
+			CString strLow = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "저가");
+			CString strClose = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "종가");
+			CString strVol = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "체결량");
+
+			if (strDate.GetLength() == 0)
+				continue;
+
+			//msg.Format(_T("OnRcvdAbroadChartData ::code = %s, index = %d, date = %s, t = %s, o = %s, h = %s, l = %s, c = %s, v = %s\n"), req.symbolCode.c_str(), i, strDate, strTime, strOpen, strHigh, strLow, strClose, strVol);
+			//TRACE(msg);
+
+			SmChartDataItem data;
+			data.symbolCode = req.symbolCode;
+			data.chartType = req.chartType;
+			data.cycle = req.cycle;
+			data.date = strDate.Trim();
+			data.time = strTime.Trim();
+			data.h = _ttoi(strHigh);
+			data.l = _ttoi(strLow);
+			data.o = _ttoi(strOpen);
+			data.c = _ttoi(strClose);
+			data.v = _ttoi(strVol);
+
+			chart_data->AddData(data);
+		}
+
+
+		LOG_F(INFO, "OnRcvdAbroadChartData %s", req.GetDataKey().c_str());
+
+		// 아직 처리되지 못한 데이터는 큐를 통해서 처리한다.
+		RequestChartDataFromQ();
+
+		// 차트 데이터 수신 요청 목록에서 제거한다.
+		_ChartDataReqMap.erase(it);
+
+		if (nRepeatCnt == chart_data->CycleDataSize()) {
+			// 사이클 차트 데이터 수신 완료를 알릴다.
+			SmCallbackManager::GetInstance()->OnChartEvent(chart_data);
+		}
+		else {
+			// 최초 차트 데이터가 완료되었음을 알린다.
+			SmCallbackManager::GetInstance()->OnChartEvent(chart_data);
+		}
+	}
+	catch (std::exception e)
+	{
+		std::string error = e.what();
+		LOG_F(INFO, "%s", error);
+	}
+}
+
+void VtHdCtrl::OnRcvdAbroadChartData2(CString& sTrCode, LONG& nRqID)
+{
+	try {
+		int nRepeatCnt = m_CommAgent.CommGetRepeatCnt(sTrCode, -1, "OutRec2");
+		//influxdb_cpp::server_info si("127.0.0.1", 8086, "abroad_future", "angelpie", "orion1");
+		//influxdb_cpp::server_info si("127.0.0.1", 8086, "test_x", "test", "test");
+		CString msg;
+
+		auto it = _ChartDataReqMap.find(nRqID);
+		if (it == _ChartDataReqMap.end())
+			return;
+		SmChartDataRequest req = it->second;
+		SmChartDataManager* chartDataMgr = SmChartDataManager::GetInstance();
+		SmChartData* chart_data = chartDataMgr->AddChartData(req);
+		int total_count = nRepeatCnt;
+		int current_count = 1;
+		// Received the chart data first.
+		for (int i = 0; i < nRepeatCnt; ++i) {
+			CString strDate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "국내일자");
+			CString strTime = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "국내시간");
+			CString strOpen = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "시가");
+			CString strHigh = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "고가");
+			CString strLow = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "저가");
+			CString strClose = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "종가");
+			CString strVol = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "체결량");
+			CString strTotalVol = m_CommAgent.CommGetData(sTrCode, -1, "OutRec2", i, "누적거래량");
+
+
+			if (strDate.GetLength() == 0)
+				continue;
+
+			msg.Format(_T("OnRcvdAbroadChartData :: index = %d, date = %s, t = %s, o = %s, h = %s, l = %s, c = %s, v = %s\n"), i, strDate, strTime, strOpen, strHigh, strLow, strClose, strVol);
+			TRACE(msg);
+
+
+			SmChartDataItem data;
+			data.symbolCode = req.symbolCode;
+			data.chartType = req.chartType;
+			data.cycle = req.cycle;
+			data.date = strDate.Trim();
+			data.time = strTime.Trim();
+			data.h = _ttoi(strHigh);
+			data.l = _ttoi(strLow);
+			data.o = _ttoi(strOpen);
+			data.c = _ttoi(strClose);
+			data.v = _ttoi(strVol);
+
+			chart_data->AddData(data);
+
+		}
+
+		LOG_F(INFO, "OnRcvdAbroadChartData2 %s", req.GetDataKey().c_str());
+
+		RequestChartDataFromQ();
+		// 차트 데이터 수신 요청 목록에서 제거한다.
+		_ChartDataReqMap.erase(it);
+
+		if (nRepeatCnt == chart_data->CycleDataSize()) {
+			// 사이클 차트 데이터 수신 완료를 알릴다.
+			SmCallbackManager::GetInstance()->OnChartEvent(chart_data);
+		}
+		else {
+			// 최초 차트 데이터가 완료되었음을 알린다.
+			SmCallbackManager::GetInstance()->OnChartEvent(chart_data);
+		}
+	}
+	catch (std::exception e)
+	{
+		std::string error = e.what();
+		LOG_F(INFO, "%s", error);
+	}
+}
+
 void VtHdCtrl::GetChartData()
 {
 	//AddRequest(nRqID, HdTaskType::HdChartData);
@@ -4577,6 +4817,218 @@ void VtHdCtrl::GetChartData(VtChartDataRequest&& chartReqeust)
 	int nRqID = m_CommAgent.CommRqData(sTrCode, sInput, sInput.GetLength(), "");
 	AddRequest(nRqID, HdTaskType::HdChartData);
 	_ChartDataRequestMap[nRqID] = chartReqeust.dataKey;
+}
+
+void VtHdCtrl::GetChartData(SmChartDataRequest req)
+{
+	LOG_F(INFO, "GetChartData symbol Code: %s", req.symbolCode.c_str());
+	LOG_F(INFO, "GetChartData : %s", req.GetDataKey().c_str());
+	if (req.GetDataKey().length() < 8)
+		return;
+	if (isdigit(req.symbolCode.at(2))) {
+		if (req.symbolCode.length() < 8)
+			return;
+		std::string prefix = req.symbolCode.substr(0, 3);
+		GetChartDataForDomestic(req);
+	}
+	else {
+
+		if (req.symbolCode.length() < 4)
+			return;
+		
+		if (req.chartType == SmChartType::TICK)
+			GetChartDataLongCycle(req);
+		else if (req.chartType == SmChartType::MIN)
+			GetChartDataShortCycle(req);
+		else if (req.chartType == SmChartType::DAY)
+			GetChartDataLongCycle(req);
+		else if (req.chartType == SmChartType::WEEK)
+			GetChartDataLongCycle(req);
+		else if (req.chartType == SmChartType::MON)
+			GetChartDataLongCycle(req);
+		else
+			GetChartDataShortCycle(req);
+	}
+}
+
+void VtHdCtrl::GetChartDataForDomestic(SmChartDataRequest req)
+{
+	std::string temp;
+	std::string reqString;
+
+	temp = VtStringUtil::PadRight(req.symbolCode, ' ', 15);
+	reqString.append(temp);
+
+	std::string str = VtStringUtil::getCurentDate();
+	reqString.append(str);
+
+	reqString.append(_T("999999"));
+
+	temp = VtStringUtil::PadLeft(req.count, '0', 4);
+	reqString.append(temp);
+
+	temp = VtStringUtil::PadLeft(req.cycle, '0', 3);
+	reqString.append(temp);
+
+	if (req.chartType == SmChartType::TICK)
+		reqString.append("0");
+	else if (req.chartType == SmChartType::MIN)
+		reqString.append("1");
+	else if (req.chartType == SmChartType::DAY)
+		reqString.append("2");
+	else if (req.chartType == SmChartType::WEEK)
+		reqString.append("3");
+	else if (req.chartType == SmChartType::MON)
+		reqString.append("4");
+	else
+		reqString.append("1");
+
+	if (req.next == 0)
+		reqString.append(_T("0"));
+	else
+		reqString.append(_T("1"));
+
+	temp = VtStringUtil::PadRight(req.reqKey, ' ', 21);
+	reqString.append(temp);
+
+	reqString.append(_T("0"));
+	reqString.append(_T("0"));
+	reqString.append(_T("00"));
+	reqString.append(_T("000000"));
+	reqString.append(_T(" "));
+
+	if (req.seq == 0)
+		reqString.append(_T("0"));
+	else
+		reqString.append(_T("1"));
+
+	CString sTrCode = "v90003";
+	CString sInput = reqString.c_str();
+	LOG_F(INFO, "GetChartDataDomestic %s", reqString.c_str());
+	CString strNextKey = _T("");
+	int nRqID = m_CommAgent.CommRqData(sTrCode, sInput, sInput.GetLength(), "");
+	_ChartDataReqMap[nRqID] = req;
+}
+
+void VtHdCtrl::GetChartDataShortCycle(SmChartDataRequest req)
+{
+	std::string temp;
+	std::string reqString;
+	// 종목 코드 32 자리
+	temp = VtStringUtil::PadRight(req.symbolCode, ' ', 32);
+	reqString.append(temp);
+
+	std::string str = VtStringUtil::getCurentDate();
+	CString msg;
+	//msg.Format("%s \n", str.c_str());
+	//TRACE(msg);
+	reqString.append(str);
+	reqString.append(str);
+	reqString.append(_T("9999999999"));
+
+	if (req.next == 0)
+		reqString.append(_T("0"));
+	else
+		reqString.append(_T("1"));
+
+	if (req.chartType == SmChartType::TICK)
+		reqString.append("1");
+	else if (req.chartType == SmChartType::MIN)
+		reqString.append("2");
+	else if (req.chartType == SmChartType::DAY)
+		reqString.append("3");
+	else if (req.chartType == SmChartType::WEEK)
+		reqString.append("4");
+	else if (req.chartType == SmChartType::MON)
+		reqString.append("5");
+	else
+		reqString.append("2");
+
+	temp = VtStringUtil::PadLeft(req.cycle, '0', 2);
+	reqString.append(temp);
+
+	temp = VtStringUtil::PadLeft(req.count, '0', 5);
+	reqString.append(temp);
+
+	CString sTrCode = "o51200";
+	CString sInput = reqString.c_str();
+	CString strNextKey = _T("");
+	//int nRqID = m_CommAgent.CommRqData(sTrCode, sInput, sInput.GetLength(), "");
+
+	CString sReqFidInput = "000001002003004005006007008009010011012013014015";
+	int nRqID = m_CommAgent.CommFIDRqData(sTrCode, sInput, sReqFidInput, sInput.GetLength(), strNextKey);
+
+	//TRACE(sInput);
+	_ChartDataReqMap[nRqID] = req;
+}
+
+void VtHdCtrl::GetChartDataLongCycle(SmChartDataRequest req)
+{
+	std::string temp;
+	std::string reqString;
+	// 최초 요청시 18자리 공백
+	reqString.append("                  ");
+
+	temp = VtStringUtil::PadRight(req.symbolCode, ' ', 32);
+	reqString.append(temp);
+
+	time_t rawtime;
+	struct tm* timeinfo;
+	char buffer[80];
+
+	time(&rawtime);
+	timeinfo = localtime(&rawtime);
+
+	strftime(buffer, sizeof(buffer), "%Y%m%d-%H:%M:%S", timeinfo);
+	std::string str(buffer);
+	CString msg;
+	msg.Format("%s \n", str.c_str());
+	//TRACE(msg);
+	//reqString.append(curDate);
+	//reqString.append(curDate);
+	//reqString.append(_T("99999999"));
+	reqString.append(_T("99999999"));
+	reqString.append(_T("9999999999"));
+
+	if (req.next == 0)
+		reqString.append(_T("0"));
+	else
+		reqString.append(_T("1"));
+
+	if (req.chartType == SmChartType::TICK)
+		reqString.append("6");
+	else if (req.chartType == SmChartType::MIN)
+		reqString.append("2");
+	else if (req.chartType == SmChartType::DAY)
+		reqString.append("3");
+	else if (req.chartType == SmChartType::WEEK)
+		reqString.append("4");
+	else if (req.chartType == SmChartType::MON)
+		reqString.append("5");
+	else
+		reqString.append("2");
+
+	temp = VtStringUtil::PadLeft(req.cycle, '0', 3);
+	reqString.append(temp);
+
+	temp = VtStringUtil::PadLeft(req.count, '0', 5);
+	reqString.append(temp);
+
+	reqString.append(_T("1"));
+	reqString.append(_T("1"));
+
+
+	CString sTrCode = "o44005";
+	CString sInput = reqString.c_str();
+	CString strNextKey = _T("");
+	//int nRqID = m_CommAgent.CommRqData(sTrCode, sInput, sInput.GetLength(), "");
+
+	CString sReqFidInput = "000001002003004005006007008009010011012013014015";
+	//CString strNextKey = m_CommAgent.CommGetNextKey(nRqID, "");
+	//int nRqID = m_CommAgent.CommFIDRqData(sTrCode, sInput, sReqFidInput, sInput.GetLength(), strNextKey);
+	int nRqID = m_CommAgent.CommRqData(sTrCode, sInput, sInput.GetLength(), strNextKey);
+	//TRACE(sInput);
+	_ChartDataReqMap[nRqID] = req;
 }
 
 void VtHdCtrl::GetAccountInfo()
@@ -4948,7 +5400,16 @@ void VtHdCtrl::OnDataRecv(CString sTrCode, LONG nRqID)
 	///////////////////////////////////////////////////////////////////////////////////////////
 	// 국내
 	///////////////////////////////////////////////////////////////////////////////////////////
-	if (sTrCode == DefSymbolCode)
+	if (sTrCode == DefAbChartData) {
+		OnRcvdAbroadChartData(sTrCode, nRqID);
+	}
+	else if (sTrCode == DefAbsChartData2) {
+		OnRcvdAbroadChartData2(sTrCode, nRqID);
+	}
+	else if (sTrCode == DefChartData) {
+		OnRcvdDomesticChartData(sTrCode, nRqID);
+	}
+	else if (sTrCode == DefSymbolCode)
 	{
 		OnSymbolCode(sTrCode, nRqID);
 	}

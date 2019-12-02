@@ -205,7 +205,13 @@ namespace Chart
 	static inline int brushedGoldColor(int texture = 2, int angle = 90)  {return brushedMetalColor(0xffee44, texture, angle); }
 
 	enum AntiAliasMode { NoAntiAlias, AntiAlias, AutoAntiAlias, ClearType, CompatAntiAlias = 6 };
-	enum PaletteMode { TryPalette, ForcePalette, NoPalette };
+	
+   	static inline int ClearTypeMono(double gamma = 0)
+	{ return CChart_ClearTypeMono(gamma); }
+	static inline int ClearTypeColor(double gamma = 0)
+	{ return CChart_ClearTypeColor(gamma); }
+    
+    enum PaletteMode { TryPalette, ForcePalette, NoPalette };
 	enum DitherMethod { Quantize, OrderedDither, ErrorDiffusion };
 
 	enum CDFilterType { BoxFilter, LinearFilter, QuadraticFilter, BSplineFilter, HermiteFilter,
@@ -489,6 +495,9 @@ namespace Chart
 	{ return CChart_cylinderEffect(orientation, ambientIntensity, diffuseIntensity, specularIntensity, shininess); }
 	static inline int flatBorder(int thickness)
 	{ return CChart_flatBorder(thickness); }
+	static inline int phongLighting(double ambientIntensity = 0.5, double diffuseIntensity = 0.5, 
+		double specularIntensity = 0.75, int shininess = 8)
+	{ return CChart_phongLighting(ambientIntensity, diffuseIntensity, specularIntensity, shininess); }
 
 	enum
 	{
@@ -511,18 +520,18 @@ namespace Chart
 		DirectionHorizontalVertical = 2
 	};
 
-	//
-	// Ver 5.1 
-	//
+	enum
+	{
+        TreeMapSliceAndDice = 1,
+        TreeMapSquarify = 2,
+        TreeMapStrip = 3,
+        TreeMapBinaryBySize = 4,
+        TreeMapBinaryByMid = 5,
+        TreeMapNoLayout = 6
+	};
+
 	static inline double bSearch(DoubleArray a, double v)
 	{ return CChart_bSearch(a.data, a.len, v); }
-	static inline int ClearTypeMono(double gamma = 0)
-	{ return CChart_ClearTypeMono(gamma); }
-	static inline int ClearTypeColor(double gamma = 0)
-	{ return CChart_ClearTypeColor(gamma); }
-	static inline int phongLighting(double ambientIntensity = 0.5, double diffuseIntensity = 0.5, 
-		double specularIntensity = 0.75, int shininess = 8)
-	{ return CChart_phongLighting(ambientIntensity, diffuseIntensity, specularIntensity, shininess); }
 
 	enum 
 	{
@@ -531,7 +540,6 @@ namespace Chart
 		ScrollWithMax = 2,
 		ScrollWithMin = 3
 	};
-
 }  //namespace Chart
 
 
@@ -687,6 +695,7 @@ public :
 	bool loadJPG(const char *filename) { return CDrawArea_loadJPG(ptr, filename); }
 	bool loadWMP(const char *filename) { return CDrawArea_loadWMP(ptr, filename); }
 	bool load(const char *filename)	{ return CDrawArea_load(ptr, filename); }
+    bool load(MemBlock img, int imgType = -1) { return CDrawArea_load2(ptr, img.data, img.len, imgType); }
 
 	void rAffineTransform(double a, double b, double c, double d, double e, double f,
 		int bgColor = 0xffffff, int filter = Chart::LinearFilter, double blur = 1)
@@ -795,15 +804,24 @@ public :
 	void setFontTable(int index, const char *font)
 	{ CDrawArea_setFontTable(ptr, index, font); }
 
-	//
-	// Ver 5.1 
-	//
 	void initDynamicLayer()
 	{ CDrawArea_initDynamicLayer(ptr); }
 	void removeDynamicLayer(bool keepOriginal = false)
 	{ CDrawArea_removeDynamicLayer(ptr, keepOriginal); }
+
+    void setResource(const char *id, MemBlock m)
+    { CDrawArea_setResource(ptr, id, m.data, m.len); }
+    void setResource(const char *id, DrawArea *d) 
+    { CDrawArea_setResource2(ptr, id, d->getInternalPtr()); }
 };
 
+namespace Chart
+{
+    static inline void setResourceLoader(bool (*loader)(const char *id, char *(*allocator)(int), char **data, int *len))
+    { CChart_setResourceLoader(loader); }
+    static inline void setResource(const char *id, MemBlock m) { CChart_setResource(id, m.data, m.len); }
+    static inline void setResource(const char *id, DrawArea *d) { CChart_setResource2(id, d->getInternalPtr()); }
+}
 
 class DrawObj : public AutoDestroy
 {
@@ -1068,6 +1086,8 @@ public :
 	//	drawing primitives
 	//////////////////////////////////////////////////////////////////////////////////////
 	DrawArea *getDrawArea() { return regDrawArea(CBaseChart_getDrawArea(ptr)); }
+    void setResource(const char *id, MemBlock m) { return CBaseChart_setResource(ptr, id, m.data, m.len); }
+    void setResource(const char *id, DrawArea *d) { return CBaseChart_setResource2(ptr, id, d->getInternalPtr()); }
 	TextBox *addText(int x, int y, const char *text, const char *font = 0, double fontSize = 8,
 		int fontColor = Chart::TextColor, int alignment = Chart::TopLeft, double angle = 0, bool vertical = false)
 	{ TextBox *ret = new TextBox(CBaseChart_addText(ptr, x, y, text, font, fontSize, fontColor, alignment, angle, vertical)); reg(ret); return ret; }
@@ -1160,10 +1180,10 @@ public :
 	{ return CBaseChart_getHTMLImageMap(ptr, url, queryFormat, extraAttr, offsetX, offsetY); }
 	const char *getChartMetrics() { return CBaseChart_getChartMetrics(ptr); }	
 
-	//
-	// Ver 5.1 
-	//
-	int getAbsOffsetX() const
+	//////////////////////////////////////////////////////////////////////////////////////
+	//	dynamic layer support
+	//////////////////////////////////////////////////////////////////////////////////////
+    int getAbsOffsetX() const
 	{ return CBaseChart_getAbsOffsetX(ptr); }
 	int getAbsOffsetY() const
 	{ return CBaseChart_getAbsOffsetY(ptr); }
@@ -2351,10 +2371,6 @@ public :
 	{ CXYChart_packPlotArea(ptr, leftX, topY, rightX, bottomY, minWidth, minHeight); }
 };
 
-
-//
-// Ver 5.1
-//
 class ThreeDChart : public BaseChart
 {
 private :
@@ -2777,6 +2793,99 @@ public :
 	PyramidLayer *getLayer(int layerNo)
 	{ PyramidLayerInternal *p = CPyramidChart_getLayer(ptr, layerNo); if (!p) return 0; 
 	  PyramidLayer *ret = new PyramidLayer(p); reg(ret); return ret; }
+};
+
+
+class TreeMapNode: public AutoDestroy, protected GarbageContainer
+{
+private :
+	//disable copying
+	TreeMapNode(const TreeMapNode &rhs);
+	TreeMapNode &operator=(const TreeMapNode &rhs);
+
+	TreeMapNodeInternal *ptr;
+
+public :
+	TreeMapNode(TreeMapNodeInternal *_ptr) : ptr(_ptr) {}
+	~TreeMapNode() {}
+
+	void setData(DoubleArray data, StringArray labels = StringArray(), IntArray colors = IntArray())
+	{ CTreeMapNode_setData(ptr, data.data, data.len, labels.data, labels.len, colors.data, colors.len); }
+	void addExtraField(StringArray texts)
+	{ CTreeMapNode_addExtraField(ptr, texts.data, texts.len); }
+	void addExtraField(DoubleArray numbers)
+	{ CTreeMapNode_addExtraField2(ptr, numbers.data, numbers.len); }
+
+	void setColors(int fillColor, int edgeColor = -1, int raisedEffect = -0x7fffffff)
+	{ CTreeMapNode_setColors(ptr, fillColor, edgeColor, raisedEffect); }
+	TextBox *setLabelFormat(const char *format = "{label}", const char *font = "normal", int fontSize = 10, 
+		int fontColor = Chart::TextColor, int alignment = Chart::TopLeft)
+	{ TextBox *ret = new TextBox(CTreeMapNode_setLabelFormat(ptr, format, font, fontSize, fontColor, alignment)); reg(ret); return ret; }
+	
+	void setLayoutMethod(int layoutMethod, int layoutDirection = Chart::TopLeft, int swapXY = 0)
+	{ CTreeMapNode_setLayoutMethod(ptr, layoutMethod, layoutDirection, swapXY); }
+    void setLayoutAspectRatio(double ratio)
+	{ CTreeMapNode_setLayoutAspectRatio(ptr, ratio); }
+	void setLayoutAspectMultiplier(double multiplier)
+	{ CTreeMapNode_setLayoutAspectMultiplier(ptr, multiplier); }
+	void setSorting(int mode)
+	{ CTreeMapNode_setSorting(ptr, mode); }
+
+	TreeMapNode *getNode(int i)
+	{ TreeMapNodeInternal *p = CTreeMapNode_getNode(ptr, i); if (!p) return 0;
+	  TreeMapNode *ret = new TreeMapNode(p); reg(ret); return ret; }
+	int getNodeCount() const
+	{  return CTreeMapNode_getNodeCount(ptr); }
+    double getValue() const
+	{  return CTreeMapNode_getValue(ptr); }
+	const char *getLabel() const
+	{  return CTreeMapNode_getLabel(ptr); }
+
+    int getLeftX() const
+	{  return CTreeMapNode_getLeftX(ptr); }
+    int getTopY() const
+	{  return CTreeMapNode_getTopY(ptr); }
+    int getWidth() const
+	{  return CTreeMapNode_getWidth(ptr); }
+    int getHeight() const
+	{  return CTreeMapNode_getHeight(ptr); }
+    int getRightX() const
+	{  return CTreeMapNode_getRightX(ptr); }
+    int getBottomY() const
+	{  return CTreeMapNode_getBottomY(ptr); }
+
+    void setPos(int x, int y, int w, int h)
+	{  CTreeMapNode_setPos(ptr, x, y, w, h); }
+};
+
+
+class TreeMapChart : public BaseChart
+{
+private :
+	//disable copying
+	TreeMapChart(const TreeMapChart &rhs);
+	TreeMapChart &operator=(const TreeMapChart &rhs);
+
+	TreeMapChartInternal *ptr;
+
+public :
+	TreeMapChart(int width, int height, int bgColor = Chart::BackgroundColor,
+		int edgeColor = Chart::Transparent, int raisedEffect = 0)
+	{ ptr = CTreeMapChart_create(width, height, bgColor, edgeColor, raisedEffect);
+	  init(TreeMapChart2BaseChart(ptr)); }
+
+	void setPlotArea(int x, int y, int width, int height)
+	{ CTreeMapChart_setPlotArea(ptr, x, y, width, height); }
+
+    TreeMapNode *getRootNode()
+	{ TreeMapNodeInternal *p = CTreeMapChart_getRootNode(ptr); if (!p) return 0;
+	  TreeMapNode *ret = new TreeMapNode(p); reg(ret); return ret; }
+	TreeMapNode *getLevelPrototype(int i)
+	{ TreeMapNodeInternal *p = CTreeMapChart_getLevelPrototype(ptr, i); if (!p) return 0;
+	  TreeMapNode *ret = new TreeMapNode(p); reg(ret); return ret; }
+
+	void setMapLevel(int level)
+	{ CTreeMapChart_setMapLevel(ptr, level); }
 };
 
 
