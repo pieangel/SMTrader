@@ -2006,6 +2006,8 @@ void VtOrderWndHd::SaveToXml(pugi::xml_node& node_order_window)
 		order_window_child.append_attribute("bottom") = rcWnd.bottom;
 		order_window_child = node_order_window.append_child("show_left_window");
 		order_window_child.append_child(pugi::node_pcdata).set_value(std::to_string(_ShowLeftWnd).c_str());
+		order_window_child = node_order_window.append_child("show_right_window");
+		order_window_child.append_child(pugi::node_pcdata).set_value(std::to_string(_ShowRightWnd).c_str());
 
 		order_window_child = node_order_window.append_child("center_window_list");
 		for (auto it = _CenterWndVector.begin(); it != _CenterWndVector.end(); ++it) {
@@ -2048,6 +2050,7 @@ void VtOrderWndHd::LoadFromXml(pugi::xml_node& node_order_window)
 	_WindowHeight = window_pos.attribute("bottom").as_int() - _YPos;
 
 	std::stoi(node_order_window.child_value("show_left_window")) == 0 ? _ShowLeftWnd = false : _ShowLeftWnd = true;
+	std::stoi(node_order_window.child_value("show_right_window")) == 0 ? _ShowRightWnd = false : _ShowRightWnd = true;
 
 	pugi::xml_node center_window_list_node = node_order_window.child("center_window_list");
 	if (center_window_list_node) {
