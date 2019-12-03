@@ -63,6 +63,7 @@
 #include "SmOrderPanel.h"
 #include "SmCallbackManager.h"
 #include "Market/SmSymbolReader.h"
+#include "Market/SmMarketManager.h"
 
 extern TApplicationFont g_Font;
 
@@ -790,6 +791,7 @@ void CMainFrame::CreateFileWatch()
 
 bool CMainFrame::ClearAllResources()
 {
+	SmMarketManager::DestroyInstance();
 	SmSymbolReader::DestroyInstance();
 	SmCallbackManager::DestroyInstance();
 	VtScheduler::DestroyInstance();
@@ -1079,8 +1081,10 @@ void CMainFrame::OnTimer(UINT_PTR nIDEvent)
 		}
 		else {
 			KillTimer(2);
-			//hdClient->DownloadMasterFiles("futures");
+			hdClient->DownloadMasterFiles("futures");
 			//GetSymbolCode();
+			SmMarketManager::GetInstance()->ReadDomesticSymbolsFromFile();
+			SmMarketManager::GetInstance()->ReadAbroadSymbolsFromFile();
 		}
 	}
 

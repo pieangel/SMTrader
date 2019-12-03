@@ -342,6 +342,7 @@
     <ClInclude Include="Skel\VtGrid.h" />
     <ClInclude Include="SmAssetGrid.h" />
     <ClInclude Include="SmCallbackManager.h" />
+    <ClInclude Include="SmChartDataSource.h" />
     <ClInclude Include="SmFutureGrid.h" />
     <ClInclude Include="SmOptionGrid.h" />
     <ClInclude Include="SmOrderGrid.h" />
@@ -800,6 +801,7 @@
     <ClCompile Include="Skel\VtGrid.cpp" />
     <ClCompile Include="SmAssetGrid.cpp" />
     <ClCompile Include="SmCallbackManager.cpp" />
+    <ClCompile Include="SmChartDataSource.cpp" />
     <ClCompile Include="SmFutureGrid.cpp" />
     <ClCompile Include="SmOptionGrid.cpp" />
     <ClCompile Include="SmOrderGrid.cpp" />

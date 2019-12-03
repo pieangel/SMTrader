@@ -10,6 +10,7 @@
 #include "Poco/BasicEvent.h"
 #include "VtChartTimeToolBar.h"
 #include "SimpleBinStream.h"
+#include "Chart/SmChartDefine.h"
 using same_endian_type = std::is_same<simple::LittleEndian, simple::LittleEndian>;
 
 using Poco::BasicEvent;
@@ -40,6 +41,7 @@ public:
 	virtual BOOL OnInitDialog();
 
 public:
+	void ChangeChartData(VtSymbol* symbol, SmChartType chart_type, int cycle);
 	void RegisterQuoteCallback();
 	void UnregisterQuoteCallback();
 	void OnQuoteEvent(const VtSymbol* symbol);

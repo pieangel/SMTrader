@@ -15,17 +15,18 @@ private:
 	SmChartType _ChartType = SmChartType::MIN;
 	int _Cycle = 0;
 	void GetChartDataFromDB();
-	void GetChartDataFromServer();
-	void GetCyclicDataFromServer();
 	size_t _DataQueueSize = SMChartDataSize;
 	size_t _CycleDataSize = 3;
 	std::multimap<std::string, SmChartDataItem> _DataMap;
 public:
+	void GetChartDataFromServer();
+	void GetCyclicDataFromServer();
 	std::vector<double> GetOpenVector();
 	std::vector<double> GetCloseVector();
 	std::vector<double> GetHighVector();
 	std::vector<double> GetLowVector();
 	std::vector<double> GetDateTimeVector();
+	std::vector<double> GetVolumeVector();
 	void UpdateLastValue(int close);
 	std::multimap<std::string, SmChartDataItem>& GetDataMap() {
 		return _DataMap;

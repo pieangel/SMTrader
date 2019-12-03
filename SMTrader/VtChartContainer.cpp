@@ -202,6 +202,15 @@ BOOL VtChartContainer::OnInitDialog()
 				  // EXCEPTION: OCX Property Pages should return FALSE
 }
 
+void VtChartContainer::ChangeChartData(VtSymbol* symbol, SmChartType chart_type, int cycle)
+{
+	if (!symbol)
+		return;
+	if (_ActiveChartWnd) {
+		_ActiveChartWnd->ChangeChartData(symbol, chart_type, cycle);
+	}
+}
+
 void VtChartContainer::Save(simple::file_ostream<same_endian_type>& ss)
 {
 

@@ -37,6 +37,7 @@ public:
 
 	void requestRecentAllSise();
 	bool IsInRunList(std::string product_code);
+	void AddDomesticItem(std::string item);
 private:
 	void SendSymbolMaster(std::string user_id, VtSymbol* sym);
 	std::vector<SmMarket*> _MarketList;

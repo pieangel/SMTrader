@@ -23,6 +23,8 @@
 #include "Sound/Pipe.h"
 #include "SimpleBinStream.h"
 #include "Xml/pugixml.hpp"
+#include "SmChartDataSource.h"
+#include "Chart/SmChartDefine.h"
 using same_endian_type = std::is_same<simple::LittleEndian, simple::LittleEndian>;
 
 #define WM_CHARTDATA_RECEIVED (WM_USER + 1000)
@@ -35,6 +37,7 @@ class CSSplitter;
 class VtSymbol;
 class HdChartFrm;
 class VtColorManager;
+class SmChartData;
 class VtChartWindow : public CDialogEx, public VtUniqueChartID
 {
 	DECLARE_DYNAMIC(VtChartWindow)
@@ -99,7 +102,29 @@ public:
 	CChartViewer m_ChartViewer;
 	CSSplitter* ParentSplit = nullptr;
 	void RecalcLayout();
+	// 시세 데이터 콜백 등록
+	void RegisterQuoteCallback();
+	// 시세 데이터 콜백 해제
+	void UnregisterQuoteCallback();
+	// 시세 데이터 콜백 함수
+	void OnQuoteEvent(const VtSymbol* symbol);
+
+	// 차트 데이터 콜백 등록
+	void RegisterChartCallback();
+	// 차트 데이터 콜백 해제
+	void UnregisterChartCallback();
+	// 차트 데이터 콜백 함수
+	// 이 함수에서는 원데이터를 차트데이터에 맞게 변경시켜준다.
+	void OnChartEvent(const SmChartData* chart_data);
+	// 차트를 바꿔 준다.
+	void ChangeChartData(VtSymbol* symbol, SmChartType chart_type, int cycle);
+	SmChartDataSource* GetChartDataDataSource(std::string data_key);
 private:
+	// 차트 종목을 선택하면 메인 차트 키가 설정이 된다.
+	// 그리고 차트 데이터 요청이 이어진다.
+	std::string _MainChartDataKey; 
+	// 차트를 그리기 위한 차트데이터 맵. 키는 심볼:차트타입:주기 이다.
+	std::map<std::string, SmChartDataSource> _DataMap;
 	void RegisterRealtimeDataRequest(VtChartData* data);
 	void RegisterCyclicDataRequest(VtChartData* data);
 	std::string _ChartDataKey;

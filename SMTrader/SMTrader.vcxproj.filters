@@ -1567,6 +1567,7 @@
     <ClInclude Include="Util\SmUtil.h">
       <Filter>Util</Filter>
     </ClInclude>
+    <ClInclude Include="SmChartDataSource.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ChildFrm.cpp">
@@ -2802,6 +2803,7 @@
     <ClCompile Include="Util\SmUtil.cpp">
       <Filter>Util</Filter>
     </ClCompile>
+    <ClCompile Include="SmChartDataSource.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="SMTrader.rc">

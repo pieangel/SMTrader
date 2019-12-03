@@ -4,10 +4,12 @@
 #include "GradientStatic.h"
 #include <vector>
 #include <map>
+#include "Chart/SmChartDefine.h"
 
 // VtChartTimeToolBar dialog
 class VtChartContainer;
 class VtSystem;
+class VtSymbol;
 class VtChartTimeToolBar : public CDialogEx
 {
 	DECLARE_DYNAMIC(VtChartTimeToolBar)
@@ -43,8 +45,13 @@ public:
 	std::vector<CButtonST*> _ButtonVec;
 
 private:
+	SmChartType _ChartType = SmChartType::MIN;
+	int _Cycle = 1;
+	VtSymbol* _Symbol = nullptr;
+	void ChangeButtonColor();
 	int _Mode;
-	VtChartContainer* _Container;
+	VtChartContainer* _Container = nullptr;
+	void ChangeChartData();
 public:
 	CGradientStatic _StaticTime;
 	afx_msg void OnBnClickedBtnMonth();
@@ -57,4 +64,6 @@ public:
 	CGradientStatic _StaticSystem;
 	void InitSystem(std::vector<VtSystem*>& sysVector);
 	afx_msg void OnCbnSelchangeComboSystem();
+	afx_msg void OnCbnSelchangeComboSymbol();
+	afx_msg void OnCbnSelchangeComboTick();
 };

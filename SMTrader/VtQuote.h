@@ -47,6 +47,7 @@ struct	VtQuote
 	double close;
 	double open;
 	std::string fullCode;
+	std::string shortCode;
 
 	long intHigh;
 	long intLow;

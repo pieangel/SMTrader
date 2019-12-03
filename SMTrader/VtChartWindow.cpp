@@ -84,12 +84,67 @@
 #include <algorithm>
 #include <iterator>
 #include "VtProductCategoryManager.h"
+#include "SmCallbackManager.h"
+#include "Chart/SmChartData.h"
+#include "Chart/SmChartDataManager.h"
 using namespace convert;
 using Poco::NumberFormatter;
 
 // VtChartWindow dialog
 
 IMPLEMENT_DYNAMIC(VtChartWindow, CDialogEx)
+
+
+
+using namespace std;
+using namespace std::placeholders;
+
+void VtChartWindow::RegisterChartCallback()
+{
+	SmCallbackManager::GetInstance()->SubscribeChartCallback((long)this, std::bind(&VtChartWindow::OnChartEvent, this, _1));
+}
+
+void VtChartWindow::UnregisterChartCallback()
+{
+	SmCallbackManager::GetInstance()->UnsubscribeChartCallback((int)this);
+}
+
+void VtChartWindow::OnChartEvent(const SmChartData* chart_data)
+{
+	if (!chart_data)
+		return;
+	SmChartData* data = (SmChartData*)chart_data;
+	std::string data_key = data->GetDataKey();
+	auto it = _DataMap.find(data_key);
+	if (it != _DataMap.end()) {
+		SmChartDataSource& data_source = it->second;
+		data_source.open = data->GetOpenVector();
+		data_source.high = data->GetHighVector();
+		data_source.low = data->GetLowVector();
+		data_source.close = data->GetCloseVector();
+		data_source.datetime = data->GetDateTimeVector();
+		data_source.volume = data->GetVolumeVector();
+		DrawChart(&m_ChartViewer, 0);
+	}
+}
+
+
+void VtChartWindow::RegisterQuoteCallback()
+{
+	SmCallbackManager::GetInstance()->SubscribeQuoteCallback((long)this, std::bind(&VtChartWindow::OnQuoteEvent, this, _1));
+}
+
+void VtChartWindow::UnregisterQuoteCallback()
+{
+	SmCallbackManager::GetInstance()->UnsubscribeQuoteCallback((long)this);
+}
+
+void VtChartWindow::OnQuoteEvent(const VtSymbol* symbol)
+{
+	if (!symbol)
+		return;
+}
+
 
 VtChartWindow::VtChartWindow(CWnd* pParent /*=NULL*/)
 	: CDialogEx(IDD_DIALOG_CHART, pParent)
@@ -582,6 +637,29 @@ void VtChartWindow::OnViewPortChanged()
 }
 
 
+void VtChartWindow::ChangeChartData(VtSymbol* symbol, SmChartType chart_type, int cycle)
+{
+	if (!symbol)
+		return;
+	SmChartData* chart_data = SmChartDataManager::GetInstance()->AddChartData(symbol->ShortCode, (int)chart_type, cycle);
+	chart_data->GetChartDataFromServer();
+	_MainChartDataKey = chart_data->GetDataKey();
+	SmChartDataSource data_source;
+	_DataMap[_MainChartDataKey] = data_source;
+}
+
+SmChartDataSource* VtChartWindow::GetChartDataDataSource(std::string data_key)
+{
+	if (_DataMap.size() == 0)
+		return nullptr;
+	auto it = _DataMap.find(data_key);
+	if (it != _DataMap.end()) {
+		return &it->second;
+	}
+
+	return nullptr;
+}
+
 void VtChartWindow::RegisterRealtimeDataRequest(VtChartData* data)
 {
 	if (!data)
@@ -811,7 +889,7 @@ BOOL VtChartWindow::OnInitDialog()
 	m_ChartViewer.ChartWindow(this);
 	SetDefaultChartData();
 	SetDefaultRefChartData();
-	
+	RegisterChartCallback();
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // EXCEPTION: OCX Property Pages should return FALSE
 }
@@ -1209,7 +1287,10 @@ void VtChartWindow::OnLButtonDblClk(UINT nFlags, CPoint point)
 
 void VtChartWindow::DrawChart(CChartViewer* a_pChartViewer, int mode)
 {
-	if (!a_pChartViewer || !_Data || !_Data->Filled() || _Data->GetDataCount() == 0)
+	if (!a_pChartViewer)
+		return;
+	SmChartDataSource* data_source = GetChartDataDataSource(_MainChartDataKey);
+	if (!data_source)
 		return;
 
 	if (_Drawing)
@@ -1236,19 +1317,19 @@ void VtChartWindow::DrawChart(CChartViewer* a_pChartViewer, int mode)
 		timeStamps = DoubleArray(_Data->DateTime.data() + startIndex, noOfPoints);
 	}
 	*/
-	std::vector<double>& datetime_vec = _Data->GetDataArray(_T("datetime"));
-	std::vector<double>& open_vec = _Data->GetDataArray(_T("open"));
-	std::vector<double>& high_vec = _Data->GetDataArray(_T("high"));
-	std::vector<double>& low_vec = _Data->GetDataArray(_T("low"));
-	std::vector<double>& close_vec = _Data->GetDataArray(_T("close"));
-	std::vector<double>& volume_vec = _Data->GetDataArray(_T("volume"));
+// 	std::vector<double>& datetime_vec = _Data->GetDataArray(_T("datetime"));
+// 	std::vector<double>& open_vec = _Data->GetDataArray(_T("open"));
+// 	std::vector<double>& high_vec = _Data->GetDataArray(_T("high"));
+// 	std::vector<double>& low_vec = _Data->GetDataArray(_T("low"));
+// 	std::vector<double>& close_vec = _Data->GetDataArray(_T("close"));
+// 	std::vector<double>& volume_vec = _Data->GetDataArray(_T("volume"));
 
-	timeStamps = DoubleArray(datetime_vec.data() + startIndex, noOfPoints);
-	DoubleArray highData = DoubleArray(high_vec.data() + startIndex, noOfPoints);
-	DoubleArray lowData = DoubleArray(low_vec.data() + startIndex, noOfPoints);
-	DoubleArray openData = DoubleArray(open_vec.data() + startIndex, noOfPoints);
-	DoubleArray closeData = DoubleArray(close_vec.data() + startIndex, noOfPoints);
-	DoubleArray volData = DoubleArray(volume_vec.data() + startIndex, noOfPoints);
+	timeStamps = DoubleArray(data_source->datetime.data() + startIndex, noOfPoints);
+	DoubleArray highData = DoubleArray(data_source->high.data() + startIndex, noOfPoints);
+	DoubleArray lowData = DoubleArray(data_source->low.data() + startIndex, noOfPoints);
+	DoubleArray openData = DoubleArray(data_source->open.data() + startIndex, noOfPoints);
+	DoubleArray closeData = DoubleArray(data_source->close.data() + startIndex, noOfPoints);
+	DoubleArray volData = DoubleArray(data_source->volume.data() + startIndex, noOfPoints);
 
 	ArrayMath minArray(lowData);
 	ArrayMath maxArray(highData);
@@ -1386,7 +1467,6 @@ void VtChartWindow::DrawChart(CChartViewer* a_pChartViewer, int mode)
 void VtChartWindow::SetDefaultChartData()
 {
 	VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();
-	// Kospi200 총호가 수량과 건수
 	VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
 	if (!sym)
 		return;
@@ -1617,15 +1697,18 @@ void VtChartWindow::GetZoomRange(CChartViewer * a_pChartViewer, int& start, int&
 {
 	start = 0;
 	end = 0;
-	if (_Data == nullptr || a_pChartViewer == nullptr)
+	SmChartDataSource* data_source = GetChartDataDataSource(_MainChartDataKey);
+	if (!data_source || !a_pChartViewer)
 		return;
 
-	start = (int)(a_pChartViewer->getViewPortLeft() * GetMaxDataCount());
-	end = (int)((a_pChartViewer->getViewPortLeft() + a_pChartViewer->getViewPortWidth()) * GetMaxDataCount());
+	int data_count = data_source->GetDataCount();
 
-	DoubleArray timeStamps = DoubleArray(_Data->DateTime.data(), GetMaxDataCount());
+	start = (int)(a_pChartViewer->getViewPortLeft() * data_count);
+	end = (int)((a_pChartViewer->getViewPortLeft() + a_pChartViewer->getViewPortWidth()) * data_count);
 
-	double viewPortStartDate = timeStamps[start];//a_pChartViewer->getValueAtViewPort("x", a_pChartViewer->getViewPortLeft());
+	DoubleArray timeStamps = DoubleArray(data_source->datetime.data(), data_count);
+
+	double viewPortStartDate = timeStamps[start];
 	double viewPortEndDate = a_pChartViewer->getValueAtViewPort("x", a_pChartViewer->getViewPortLeft() +
 		a_pChartViewer->getViewPortWidth());
 
@@ -1633,10 +1716,10 @@ void VtChartWindow::GetZoomRange(CChartViewer * a_pChartViewer, int& start, int&
 	int startIndex = (int)floor(Chart::bSearch(timeStamps, viewPortStartDate));
 	int endIndex = (int)ceil(Chart::bSearch(timeStamps, viewPortEndDate));
 
-	if (start >= GetMaxDataCount())
-		start = GetMaxDataCount() - 1;
-	if (end >= GetMaxDataCount())
-		end = GetMaxDataCount() - 1;
+	if (start >= data_count)
+		start = data_count - 1;
+	if (end >= data_count)
+		end = data_count - 1;
 }
 
 int VtChartWindow::CalcChartHeight()

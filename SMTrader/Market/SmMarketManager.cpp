@@ -10,6 +10,8 @@
 #include "SmProductYearMonth.h"
 #include "../ZmConfigManager.h"
 #include <iostream>
+#include "../VtSymbol.h"
+#include "../VtStringUtil.h"
 
 SmMarketManager::SmMarketManager()
 {
@@ -83,16 +85,18 @@ void SmMarketManager::ReadDomesticSymbolsFromFile()
 	std::string appPath;
 	appPath = configMgr->GetAppPath();
 	appPath.append(_T("\\"));
+	std::string config_path = appPath;
+	config_path.append("config.xml");
 	appPath.append(_T("mst"));
 	appPath.append(_T("\\"));
 	pugi::xml_document doc;
 
-	pugi::xml_parse_result result = doc.load_file(appPath.c_str());
-	pugi::xml_node app = doc.first_child();
-	pugi::xml_node sym_file_list = app.first_child();
-	pugi::xml_node abroad_list = sym_file_list.first_child().next_sibling();
+	pugi::xml_parse_result result = doc.load_file(config_path.c_str());
+	pugi::xml_node app = doc.child("application");
+	pugi::xml_node sym_file_list = app.child("symbol_file_list");
+	pugi::xml_node domestic_list = sym_file_list.child("domestic_symbol_file");
 	int index = 0;
-	for (auto it = abroad_list.begin(); it != abroad_list.end(); ++it) {
+	for (auto it = domestic_list.begin(); it != domestic_list.end(); ++it) {
 		std::string file_name = it->text().as_string();
 		TRACE(file_name.c_str());
 		std::string file_path = appPath + file_name;
@@ -139,6 +143,30 @@ std::vector<VtSymbol*> SmMarketManager::GetRecentMonthSymbolList()
 {
 	std::vector<VtSymbol*> symvec;
 	
+	for (auto it = _MarketList.begin(); it != _MarketList.end(); ++it) {
+		SmMarket* mrkt = *it;
+		auto cat_vec = mrkt->GetProductList();
+		for (auto itc = cat_vec.begin(); itc != cat_vec.end(); ++itc) {
+			if (!IsInRunList((*itc)->Code())) {
+				continue;
+			}
+			SmProductYearMonth* ym = (*itc)->GetRecentYearMonth();
+			if (ym) {
+				if (ym->ProductCode.compare("175") == 0) {
+					VtSymbol* recent_symbol = GetRecentSymbol(ym->ProductCode);
+					std::string current_date = VtStringUtil::getCurentDate();
+					if (current_date.compare(recent_symbol->LastDate) >= 0) {
+						ym = (*itc)->GetNextYearMonth();
+					}
+				}
+				for (auto itym = ym->SymbolList.begin(); itym != ym->SymbolList.end(); ++itym) {
+					(*itym)->Quote.shortCode = (*itym)->ShortCode;
+					symvec.push_back(*itym);
+				}
+			}
+		}
+	}
+
 	return symvec;
 }
 
@@ -228,6 +256,11 @@ bool SmMarketManager::IsInRunList(std::string product_code)
 	else {
 		return true;
 	}
+}
+
+void SmMarketManager::AddDomesticItem(std::string item)
+{
+	_DomesticList.insert(item);
 }
 
 void SmMarketManager::SendSymbolMaster(std::string user_id, VtSymbol* sym)

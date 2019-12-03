@@ -10,6 +10,8 @@
 #include "VtChartContainer.h"
 #include "System/VtSystemManager.h"
 #include "System/VtSystem.h"
+#include "Market/SmMarketManager.h"
+#include "VtSymbol.h"
 
 // VtChartTimeToolBar dialog
 
@@ -52,6 +54,8 @@ BEGIN_MESSAGE_MAP(VtChartTimeToolBar, CDialogEx)
 	ON_BN_CLICKED(IDC_BTN_TICK, &VtChartTimeToolBar::OnBnClickedBtnTick)
 	ON_CBN_SELCHANGE(IDC_COMBO_TIME, &VtChartTimeToolBar::OnCbnSelchangeComboTime)
 	ON_CBN_SELCHANGE(IDC_COMBO_SYSTEM, &VtChartTimeToolBar::OnCbnSelchangeComboSystem)
+	ON_CBN_SELCHANGE(IDC_COMBO_SYMBOL, &VtChartTimeToolBar::OnCbnSelchangeComboSymbol)
+	ON_CBN_SELCHANGE(IDC_COMBO_TICK, &VtChartTimeToolBar::OnCbnSelchangeComboTick)
 END_MESSAGE_MAP()
 
 
@@ -172,37 +176,66 @@ BOOL VtChartTimeToolBar::OnInitDialog()
 	_ButtonVec[_Mode]->SetColor(BTNST_COLOR_FG_IN, RGB(255, 255, 255), true);
 	_ButtonVec[_Mode]->SetColor(BTNST_COLOR_BK_OUT, RGB(0, 67, 178), true);
 	_ButtonVec[_Mode]->SetColor(BTNST_COLOR_FG_OUT, RGB(255, 255, 255), true);
+	_ButtonVec[_Mode]->SetColor(BTNST_COLOR_BK_FOCUS, RGB(0, 67, 178), true);
+	_ButtonVec[_Mode]->SetColor(BTNST_COLOR_FG_FOCUS, RGB(255, 255, 255), true);
 
 	_ComboTime.SetCurSel(0);
 	_ComboTick.SetCurSel(0);
+
+	std::vector<VtSymbol*> symbolVector = SmMarketManager::GetInstance()->GetRecentMonthSymbolList();
+	for (auto it = symbolVector.begin(); it != symbolVector.end(); ++it) {
+		VtSymbol* symbol = *it;
+		int index = _ComboSymbol.AddString(symbol->ShortCode.c_str());
+		_ComboSymbol.SetItemDataPtr(index, (void*)symbol);
+	}
+
+	if (symbolVector.size() > 0) {
+		_ComboSymbol.SetCurSel(0);
+	}
 	
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // EXCEPTION: OCX Property Pages should return FALSE
 }
 
 
+void VtChartTimeToolBar::ChangeButtonColor()
+{
+	for (int i = 0; i < 5; i++) {
+		if (i == _Mode){
+			_ButtonVec[i]->SetColor(BTNST_COLOR_BK_IN, RGB(255, 67, 0), true);
+			_ButtonVec[i]->SetColor(BTNST_COLOR_FG_IN, RGB(255, 255, 255), true);
+			_ButtonVec[i]->SetColor(BTNST_COLOR_BK_OUT, RGB(0, 67, 178), true);
+			_ButtonVec[i]->SetColor(BTNST_COLOR_FG_OUT, RGB(255, 255, 255), true);
+			_ButtonVec[i]->SetColor(BTNST_COLOR_BK_FOCUS, RGB(0, 67, 178), true);
+			_ButtonVec[i]->SetColor(BTNST_COLOR_FG_FOCUS, RGB(255, 255, 255), true);
+		}
+		else {
+			_ButtonVec[i]->SetColor(BTNST_COLOR_BK_IN, RGB(255, 67, 0), true);
+			_ButtonVec[i]->SetColor(BTNST_COLOR_FG_IN, RGB(255, 255, 255), true);
+			_ButtonVec[i]->SetColor(BTNST_COLOR_BK_OUT, RGB(255, 255, 255), true);
+			_ButtonVec[i]->SetColor(BTNST_COLOR_FG_OUT, RGB(0, 0, 0), true);
+			_ButtonVec[i]->SetColor(BTNST_COLOR_BK_FOCUS, RGB(255, 255, 255), true);
+			_ButtonVec[i]->SetColor(BTNST_COLOR_FG_FOCUS, RGB(0, 0, 0), true);
+		}
+	}
+
+	ChangeChartData();
+}
+
+void VtChartTimeToolBar::ChangeChartData()
+{
+	if (!_Container)
+		return;
+	_Container->ChangeChartData(_Symbol, _ChartType, _Cycle);
+}
+
 void VtChartTimeToolBar::OnBnClickedBtnMonth()
 {
 	_ComboTime.EnableWindow(TRUE);
 	_ComboTick.EnableWindow(FALSE);
 	_Mode = 0;
-	for (int i = 0; i < 5; i++)
-	{
-		if (i == _Mode)
-		{
-			_ButtonVec[i]->SetColor(BTNST_COLOR_BK_IN, RGB(255, 67, 0), true);
-			_ButtonVec[i]->SetColor(BTNST_COLOR_FG_IN, RGB(255, 255, 255), true);
-			_ButtonVec[i]->SetColor(BTNST_COLOR_BK_OUT, RGB(0, 67, 178), true);
-			_ButtonVec[i]->SetColor(BTNST_COLOR_FG_OUT, RGB(255, 255, 255), true);
-		}
-		else
-		{
-			_ButtonVec[i]->SetColor(BTNST_COLOR_BK_IN, RGB(255, 67, 0), true);
-			_ButtonVec[i]->SetColor(BTNST_COLOR_FG_IN, RGB(255, 255, 255), true);
-			_ButtonVec[i]->SetColor(BTNST_COLOR_BK_OUT, RGB(255, 255, 255), true);
-			_ButtonVec[i]->SetColor(BTNST_COLOR_FG_OUT, RGB(0, 0, 0), true);
-		}
-	}
+	_ChartType = SmChartType::MON;
+	ChangeButtonColor();
 }
 
 
@@ -211,23 +244,8 @@ void VtChartTimeToolBar::OnBnClickedBtnWeek()
 	_ComboTime.EnableWindow(TRUE);
 	_ComboTick.EnableWindow(FALSE);
 	_Mode = 1;
-	for (int i = 0; i < 5; i++)
-	{
-		if (i == _Mode)
-		{
-			_ButtonVec[i]->SetColor(BTNST_COLOR_BK_IN, RGB(255, 67, 0), true);
-			_ButtonVec[i]->SetColor(BTNST_COLOR_FG_IN, RGB(255, 255, 255), true);
-			_ButtonVec[i]->SetColor(BTNST_COLOR_BK_OUT, RGB(0, 67, 178), true);
-			_ButtonVec[i]->SetColor(BTNST_COLOR_FG_OUT, RGB(255, 255, 255), true);
-		}
-		else
-		{
-			_ButtonVec[i]->SetColor(BTNST_COLOR_BK_IN, RGB(255, 67, 0), true);
-			_ButtonVec[i]->SetColor(BTNST_COLOR_FG_IN, RGB(255, 255, 255), true);
-			_ButtonVec[i]->SetColor(BTNST_COLOR_BK_OUT, RGB(255, 255, 255), true);
-			_ButtonVec[i]->SetColor(BTNST_COLOR_FG_OUT, RGB(0, 0, 0), true);
-		}
-	}
+	_ChartType = SmChartType::WEEK;
+	ChangeButtonColor();
 }
 
 
@@ -236,23 +254,8 @@ void VtChartTimeToolBar::OnBnClickedBtnDay()
 	_ComboTime.EnableWindow(TRUE);
 	_ComboTick.EnableWindow(FALSE);
 	_Mode = 2;
-	for (int i = 0; i < 5; i++)
-	{
-		if (i == _Mode)
-		{
-			_ButtonVec[i]->SetColor(BTNST_COLOR_BK_IN, RGB(255, 67, 0), true);
-			_ButtonVec[i]->SetColor(BTNST_COLOR_FG_IN, RGB(255, 255, 255), true);
-			_ButtonVec[i]->SetColor(BTNST_COLOR_BK_OUT, RGB(0, 67, 178), true);
-			_ButtonVec[i]->SetColor(BTNST_COLOR_FG_OUT, RGB(255, 255, 255), true);
-		}
-		else
-		{
-			_ButtonVec[i]->SetColor(BTNST_COLOR_BK_IN, RGB(255, 67, 0), true);
-			_ButtonVec[i]->SetColor(BTNST_COLOR_FG_IN, RGB(255, 255, 255), true);
-			_ButtonVec[i]->SetColor(BTNST_COLOR_BK_OUT, RGB(255, 255, 255), true);
-			_ButtonVec[i]->SetColor(BTNST_COLOR_FG_OUT, RGB(0, 0, 0), true);
-		}
-	}
+	_ChartType = SmChartType::DAY;
+	ChangeButtonColor();
 }
 
 
@@ -261,23 +264,8 @@ void VtChartTimeToolBar::OnBnClickedBtnMin()
 	_ComboTime.EnableWindow(TRUE);
 	_ComboTick.EnableWindow(FALSE);
 	_Mode = 3;
-	for (int i = 0; i < 5; i++)
-	{
-		if (i == _Mode)
-		{
-			_ButtonVec[i]->SetColor(BTNST_COLOR_BK_IN, RGB(255, 67, 0), true);
-			_ButtonVec[i]->SetColor(BTNST_COLOR_FG_IN, RGB(255, 255, 255), true);
-			_ButtonVec[i]->SetColor(BTNST_COLOR_BK_OUT, RGB(0, 67, 178), true);
-			_ButtonVec[i]->SetColor(BTNST_COLOR_FG_OUT, RGB(255, 255, 255), true);
-		}
-		else
-		{
-			_ButtonVec[i]->SetColor(BTNST_COLOR_BK_IN, RGB(255, 67, 0), true);
-			_ButtonVec[i]->SetColor(BTNST_COLOR_FG_IN, RGB(255, 255, 255), true);
-			_ButtonVec[i]->SetColor(BTNST_COLOR_BK_OUT, RGB(255, 255, 255), true);
-			_ButtonVec[i]->SetColor(BTNST_COLOR_FG_OUT, RGB(0, 0, 0), true);
-		}
-	}
+	_ChartType = SmChartType::MIN;
+	ChangeButtonColor();
 }
 
 
@@ -286,31 +274,18 @@ void VtChartTimeToolBar::OnBnClickedBtnTick()
 	_ComboTime.EnableWindow(FALSE);
 	_ComboTick.EnableWindow(TRUE);
 	_Mode = 4;
-	for (int i = 0; i < 5; i++)
-	{
-		if (i == _Mode)
-		{
-			_ButtonVec[i]->SetColor(BTNST_COLOR_BK_IN, RGB(255, 67, 0), true);
-			_ButtonVec[i]->SetColor(BTNST_COLOR_FG_IN, RGB(255, 255, 255), true);
-			_ButtonVec[i]->SetColor(BTNST_COLOR_BK_OUT, RGB(0, 67, 178), true);
-			_ButtonVec[i]->SetColor(BTNST_COLOR_FG_OUT, RGB(255, 255, 255), true);
-		}
-		else
-		{
-			_ButtonVec[i]->SetColor(BTNST_COLOR_BK_IN, RGB(255, 67, 0), true);
-			_ButtonVec[i]->SetColor(BTNST_COLOR_FG_IN, RGB(255, 255, 255), true);
-			_ButtonVec[i]->SetColor(BTNST_COLOR_BK_OUT, RGB(255, 255, 255), true);
-			_ButtonVec[i]->SetColor(BTNST_COLOR_FG_OUT, RGB(0, 0, 0), true);
-		}
-	}
+	_ChartType = SmChartType::TICK;
+	ChangeButtonColor();
 }
 
 
 void VtChartTimeToolBar::OnCbnSelchangeComboTime()
 {
 	int curSel = _ComboTime.GetCurSel();
-	if (curSel != -1 && _Container)
-		_Container->ChangeChartTime(curSel + 1);
+	if (curSel < 0)
+		return;
+	_Cycle = curSel + 1;
+	ChangeChartData();
 }
 
 void VtChartTimeToolBar::InitSystem(std::vector<VtSystem*>& sysVector)
@@ -331,9 +306,27 @@ void VtChartTimeToolBar::InitSystem(std::vector<VtSystem*>& sysVector)
 void VtChartTimeToolBar::OnCbnSelchangeComboSystem()
 {
 	int curSel = _ComboSystem.GetCurSel();
-	if (_Container && curSel != -1)
-	{
+	if (_Container && curSel != -1) {
 		VtSystem* system = (VtSystem*)_ComboSystem.GetItemDataPtr(curSel);
 		_Container->ChangeSystem(system);
 	}
+}
+
+
+void VtChartTimeToolBar::OnCbnSelchangeComboSymbol()
+{
+	int curSel = _ComboSymbol.GetCurSel();
+	if (curSel < 0)
+		return;
+	_Symbol = (VtSymbol*)_ComboSymbol.GetItemDataPtr(curSel);
+	ChangeChartData();
+}
+
+
+void VtChartTimeToolBar::OnCbnSelchangeComboTick()
+{
+	int curSel = _ComboTick.GetCurSel();
+	if (curSel != -1 && _Container)
+		_Cycle = curSel + 1;
+	ChangeChartData();
 }

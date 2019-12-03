@@ -47,6 +47,7 @@ void SmSymbolReader::ReadSymbolFileList()
 	while (domestic_node) {
 		std::string code = domestic_node.text().as_string();
 		_DomesticList.insert(code);
+		SmMarketManager::GetInstance()->AddDomesticItem(code);
 		domestic_node = domestic_node.next_sibling();
 	}
 }

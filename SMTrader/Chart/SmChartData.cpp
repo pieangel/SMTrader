@@ -92,6 +92,16 @@ std::vector<double> SmChartData::GetDateTimeVector()
 	return v;
 }
 
+std::vector<double> SmChartData::GetVolumeVector()
+{
+	std::vector<double> v;
+	for (auto it = _DataMap.begin(); it != _DataMap.end(); ++it) {
+		SmChartDataItem& data = it->second;
+		v.push_back(data.v);
+	}
+	return v;
+}
+
 void SmChartData::UpdateLastValue(int c)
 {
 	if (_DataMap.size() == 0)
