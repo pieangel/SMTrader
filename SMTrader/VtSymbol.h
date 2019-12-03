@@ -71,6 +71,8 @@ public:
 		}
 	}
 
+	void UpdateChartValue();
+
 private:
 	bool _RecentMonth = false;
 	bool _RequestedSymbolMaster = false;

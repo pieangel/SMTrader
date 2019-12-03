@@ -40,6 +40,10 @@ public:
 	virtual BOOL OnInitDialog();
 
 public:
+	void RegisterQuoteCallback();
+	void UnregisterQuoteCallback();
+	void OnQuoteEvent(const VtSymbol* symbol);
+
 	void RegisterChartCallback();
 	void UnregisterChartCallback();
 	void OnChartEvent(const SmChartData* chart_data);

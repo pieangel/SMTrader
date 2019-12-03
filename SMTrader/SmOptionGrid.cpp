@@ -21,7 +21,12 @@
 #include "VtRealtimeRegisterManager.h"
 #include "VtGlobal.h"
 #include "SmOrderPanel.h"
+#include "SmCallbackManager.h"
+#include <functional>
 using Poco::NumberFormatter;
+
+using namespace std;
+using namespace std::placeholders;
 
 SmOptionGrid::SmOptionGrid()
 {
@@ -32,19 +37,65 @@ SmOptionGrid::~SmOptionGrid()
 {
 }
 
+void SmOptionGrid::RegisterMasterCallback()
+{
+	SmCallbackManager::GetInstance()->SubscribeMasterCallback((long)this, std::bind(&SmOptionGrid::OnMasterEvent, this, _1));
+}
+
 void SmOptionGrid::UnregisterAllCallback()
 {
-
+	SmCallbackManager::GetInstance()->UnsubscribeOrderCallback((long)this);
+	SmCallbackManager::GetInstance()->UnsubscribeMasterCallback((long)this);
+	SmCallbackManager::GetInstance()->UnsubscribeQuoteCallback((long)this);
 }
 
 void SmOptionGrid::RegisterQuoteCallback()
 {
-
+	SmCallbackManager::GetInstance()->SubscribeQuoteCallback((long)this, std::bind(&SmOptionGrid::OnQuoteEvent, this, _1));
 }
 
-void SmOptionGrid::OnQuoteEvent(VtSymbol* symbol)
+void SmOptionGrid::RegisterOrderCallback()
 {
+	SmCallbackManager::GetInstance()->SubscribeOrderCallback((long)this, std::bind(&SmOptionGrid::OnOrderEvent, this, _1));
+}
 
+void SmOptionGrid::OnMasterEvent(VtSymbol* sym)
+{
+	ShowCurrent(sym);
+}
+
+void SmOptionGrid::OnOrderEvent(VtOrder* order)
+{
+	if (!_OrderConfigMgr || !order)
+		return;
+
+	if (_OrderConfigMgr->Type() == 0) {
+		VtAccount* acnt = _OrderConfigMgr->Account();
+		if (!acnt)
+			return;
+
+		VtPosition* posi = acnt->FindPosition(order->shortCode);
+		if (posi)
+			SetRemain(posi);
+	}
+	else {
+		VtFund* fund = _OrderConfigMgr->Fund();
+		if (!fund)
+			return;
+		int count = 0;
+		VtPosition posi = fund->GetPosition(order->shortCode, count);
+		SetRemain(&posi);
+	}
+}
+
+void SmOptionGrid::OnQuoteEvent(VtSymbol* sym)
+{
+	if (_Mode == 0) {
+		SetRemain(sym);
+	}
+	else if (_Mode == 1) {
+		ShowCurrent(sym);
+	}
 }
 
 BEGIN_MESSAGE_MAP(SmOptionGrid, CGridCtrl)

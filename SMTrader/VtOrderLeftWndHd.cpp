@@ -153,6 +153,12 @@ void VtOrderLeftWndHd::OnExpected(VtSymbol* sym)
 	_SymbolOptionGrid.OnExpected(sym);
 }
 
+void VtOrderLeftWndHd::BlockEvent()
+{
+	_SymbolFutureGrid.UnregisterAllCallback();
+	_SymbolOptionGrid.UnregisterAllCallback();
+}
+
 void VtOrderLeftWndHd::Begin()
 {
 

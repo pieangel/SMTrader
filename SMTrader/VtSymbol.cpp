@@ -2,6 +2,7 @@
 #include "VtSymbol.h"
 #include "HdTaskArg.h"
 #include "HdScheduler.h"
+#include "Chart/SmChartData.h"
 
 VtSymbol::VtSymbol()
 {
@@ -64,4 +65,14 @@ void VtSymbol::GetSymbolMaster()
 	arg.AddArg(_T("SymbolCode"), ShortCode);
 	scheduler->Available(true);
 	scheduler->AddTask(std::move(arg));
+}
+
+void VtSymbol::UpdateChartValue()
+{
+	for (auto it = _ChartDataMap.begin(); it != _ChartDataMap.end(); ++it) {
+		SmChartData* chart_data = it->second;
+		if (chart_data->Received()) {
+			chart_data->UpdateLastValue(Quote.intClose);
+		}
+	}
 }

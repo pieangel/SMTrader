@@ -51,6 +51,24 @@ void VtChartContainer::OnChartEvent(const SmChartData* chart_data)
 		return;
 }
 
+
+void VtChartContainer::RegisterQuoteCallback()
+{
+	SmCallbackManager::GetInstance()->SubscribeQuoteCallback((long)this, std::bind(&VtChartContainer::OnQuoteEvent, this, _1));
+}
+
+void VtChartContainer::UnregisterQuoteCallback()
+{
+	SmCallbackManager::GetInstance()->UnsubscribeQuoteCallback((long)this);
+}
+
+void VtChartContainer::OnQuoteEvent(const VtSymbol* symbol)
+{
+	if (!symbol)
+		return;
+}
+
+
 IMPLEMENT_DYNAMIC(VtChartContainer, CDialogEx)
 
 VtChartContainer::VtChartContainer(CWnd* pParent /*=NULL*/)
@@ -183,7 +201,6 @@ BOOL VtChartContainer::OnInitDialog()
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // EXCEPTION: OCX Property Pages should return FALSE
 }
-
 
 void VtChartContainer::Save(simple::file_ostream<same_endian_type>& ss)
 {

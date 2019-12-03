@@ -5,6 +5,7 @@
 #include "../Util/SmUtil.h"
 #include "../VtStringUtil.h"
 #include "../VtHdClient.h"
+#include "chartdir.h"
 
 void SmChartData::GetChartDataFromDB()
 {
@@ -38,6 +39,58 @@ void SmChartData::GetCyclicDataFromServer()
 }
 
 
+
+std::vector<double> SmChartData::GetOpenVector()
+{
+	std::vector<double> v;
+	for (auto it = _DataMap.begin(); it != _DataMap.end(); ++it) {
+		SmChartDataItem& data = it->second;
+		v.push_back(data.o);
+	}
+	return v;
+}
+
+std::vector<double> SmChartData::GetCloseVector()
+{
+	std::vector<double> v;
+	for (auto it = _DataMap.begin(); it != _DataMap.end(); ++it) {
+		SmChartDataItem& data = it->second;
+		v.push_back(data.c);
+	}
+	return v;
+}
+
+std::vector<double> SmChartData::GetHighVector()
+{
+	std::vector<double> v;
+	for (auto it = _DataMap.begin(); it != _DataMap.end(); ++it) {
+		SmChartDataItem& data = it->second;
+		v.push_back(data.h);
+	}
+	return v;
+}
+
+std::vector<double> SmChartData::GetLowVector()
+{
+	std::vector<double> v;
+	for (auto it = _DataMap.begin(); it != _DataMap.end(); ++it) {
+		SmChartDataItem& data = it->second;
+		v.push_back(data.l);
+	}
+	return v;
+}
+
+std::vector<double> SmChartData::GetDateTimeVector()
+{
+	std::vector<double> v;
+	for (auto it = _DataMap.begin(); it != _DataMap.end(); ++it) {
+		SmChartDataItem& data = it->second;
+		std::vector<int> dt = SmUtil::GetTime(data.date_time);
+		double date_time = Chart::chartTime(dt[0], dt[1], dt[2], dt[3], dt[4], dt[5]);
+		v.push_back(date_time);
+	}
+	return v;
+}
 
 void SmChartData::UpdateLastValue(int c)
 {

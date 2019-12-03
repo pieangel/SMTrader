@@ -153,7 +153,7 @@ void SmOrderGrid::UnregisterQuoteCallback()
 	SmCallbackManager::GetInstance()->UnsubscribeQuoteCallback((long)this);
 }
 
-void SmOrderGrid::OnQuoteEvent(const VtSymbol* symbol)
+void SmOrderGrid::OnQuoteEvent(VtSymbol* symbol)
 {
 	if (!_Init || !symbol)
 		return;
@@ -198,7 +198,7 @@ void SmOrderGrid::UnregisterHogaCallback()
 	SmCallbackManager::GetInstance()->UnsubscribeHogaCallback((long)this);
 }
 
-void SmOrderGrid::OnHogaEvent(const VtSymbol* symbol)
+void SmOrderGrid::OnHogaEvent(VtSymbol* symbol)
 {
 	if (!_Init || !symbol)
 		return;
@@ -227,7 +227,7 @@ void SmOrderGrid::UnregisterOrderCallback()
 	SmCallbackManager::GetInstance()->UnsubscribeOrderCallback((long)this);
 }
 
-void SmOrderGrid::OnOrderEvent(const VtOrder* order)
+void SmOrderGrid::OnOrderEvent(VtOrder* order)
 {
 	if (!_Init || !order || !_OrderConfigMgr)
 		return;
@@ -270,7 +270,7 @@ void SmOrderGrid::OnOrderEvent(const VtOrder* order)
 
 	if (order->state == VtOrderState::Filled) {
 		refreshSet.clear();
-		_CutMgr->AddStopOrderForFilled(_CenterWnd->Symbol(), (VtOrder*)order);
+		_CutMgr->AddStopOrderForFilled(_CenterWnd->Symbol(), order);
 		ClearOldStopOrders(refreshSet);
 		SetStopOrderInfo(refreshSet);
 		CalcPosStopOrders(refreshSet);

@@ -21,6 +21,11 @@ private:
 	size_t _CycleDataSize = 3;
 	std::multimap<std::string, SmChartDataItem> _DataMap;
 public:
+	std::vector<double> GetOpenVector();
+	std::vector<double> GetCloseVector();
+	std::vector<double> GetHighVector();
+	std::vector<double> GetLowVector();
+	std::vector<double> GetDateTimeVector();
 	void UpdateLastValue(int close);
 	std::multimap<std::string, SmChartDataItem>& GetDataMap() {
 		return _DataMap;

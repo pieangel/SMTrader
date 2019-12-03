@@ -24,12 +24,17 @@ class SmOptionGrid : public CGridCtrl
 public:
 	SmOptionGrid();
 	~SmOptionGrid();
-
-	void UnregisterAllCallback();
-
+	void RegisterMasterCallback();
 	void RegisterQuoteCallback();
-	void OnQuoteEvent(VtSymbol* symbol);
+	void RegisterOrderCallback();
 
+	void OnMasterEvent(VtSymbol* sym);
+	void OnOrderEvent(VtOrder* order);
+	void OnQuoteEvent(VtSymbol* sym);
+
+	// 콜백 함수 취소
+	void UnregisterAllCallback();
+	
 	// 그리드 초기화
 	void Init();
 

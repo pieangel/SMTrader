@@ -45,6 +45,7 @@ public:
 	void OnReceiveQuote(VtSymbol* sym);
 	void OnOutstanding();
 	void OnExpected(VtSymbol* sym);
+	void BlockEvent();
 private:
 	//HdSymbolFutureGrid _SymbolFutureGrid;
 	SmFutureGrid _SymbolFutureGrid;

@@ -25,6 +25,11 @@
 #include "XFormatNumber.h"
 #include "VtChartDataCollector.h"
 #include "SmOrderPanel.h"
+#include <functional>
+#include "SmCallbackManager.h"
+
+using namespace std;
+using namespace std::placeholders;
 
 SmFutureGrid::SmFutureGrid()
 {
@@ -33,6 +38,86 @@ SmFutureGrid::SmFutureGrid()
 
 SmFutureGrid::~SmFutureGrid()
 {
+}
+
+
+void SmFutureGrid::RegisterMasterCallback()
+{
+	SmCallbackManager::GetInstance()->SubscribeMasterCallback((long)this, std::bind(&SmFutureGrid::OnMasterEvent, this, _1));
+}
+
+void SmFutureGrid::RegisterQuoteCallback()
+{
+	SmCallbackManager::GetInstance()->SubscribeQuoteCallback((long)this, std::bind(&SmFutureGrid::OnQuoteEvent, this, _1));
+}
+
+void SmFutureGrid::RegisterOrderCallback()
+{
+	SmCallbackManager::GetInstance()->SubscribeOrderCallback((long)this, std::bind(&SmFutureGrid::OnOrderEvent, this, _1));
+}
+
+void SmFutureGrid::OnMasterEvent(VtSymbol* sym)
+{
+	if (!sym)
+		return;
+	if (_Mode != 1)
+		return;
+
+	CUGCell cell;
+	auto it = _FutureCurrentValueRowMap.find(sym->ShortCode);
+	if (it != _FutureCurrentValueRowMap.end()) {
+		auto pos = _FutureCurrentValueRowMap[sym->ShortCode];
+		ShowCurrent(sym, std::get<0>(pos));
+	}
+}
+
+void SmFutureGrid::OnOrderEvent(VtOrder* order)
+{
+	if (!_OrderConfigMgr || !order)
+		return;
+
+	if (_OrderConfigMgr->Type() == 0) {
+		VtAccount* acnt = _OrderConfigMgr->Account();
+		if (!acnt)
+			return;
+
+		VtPosition* posi = acnt->FindPosition(order->shortCode);
+		if (posi)
+			SetRemain(posi);
+	}
+	else {
+		VtFund* fund = _OrderConfigMgr->Fund();
+		if (!fund)
+			return;
+		int count = 0;
+		VtPosition posi = fund->GetPosition(order->shortCode, count);
+		SetRemain(&posi);
+	}
+}
+
+void SmFutureGrid::OnQuoteEvent(VtSymbol* sym)
+{
+	if (!sym)
+		return;
+
+	if (_Mode == 0) {
+		ShowRemain(sym);
+	}
+	else if (_Mode == 1) {
+		CUGCell cell;
+		auto it = _FutureCurrentValueRowMap.find(sym->ShortCode);
+		if (it != _FutureCurrentValueRowMap.end()) {
+			auto pos = _FutureCurrentValueRowMap[sym->ShortCode];
+			ShowCurrent(sym, std::get<0>(pos));
+		}
+	}
+}
+
+void SmFutureGrid::UnregisterAllCallback()
+{
+	SmCallbackManager::GetInstance()->UnsubscribeOrderCallback((long)this);
+	SmCallbackManager::GetInstance()->UnsubscribeMasterCallback((long)this);
+	SmCallbackManager::GetInstance()->UnsubscribeQuoteCallback((long)this);
 }
 
 BEGIN_MESSAGE_MAP(SmFutureGrid, CGridCtrl)

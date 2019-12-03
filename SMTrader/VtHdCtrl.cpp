@@ -3743,6 +3743,9 @@ void VtHdCtrl::OnRealFutureQuote(CString& strKey, LONG& nRealType)
 	sym->Quote.high = sym->Quote.intHigh / std::pow(10, sym->Decimal);
 	sym->Quote.low = sym->Quote.intLow / std::pow(10, sym->Decimal);
 
+	// 차트 종가를 업데이트 한다.
+	sym->UpdateChartValue();
+
 	OnReceiveSise(_ttoi(strTime), sym);
 
 	VtQuoteItem quoteItem;
@@ -3837,6 +3840,9 @@ void VtHdCtrl::OnRealOptionQuote(CString& strKey, LONG& nRealType)
 	sym->Quote.high = sym->Quote.intHigh / std::pow(10, sym->Decimal);
 	sym->Quote.low = sym->Quote.intLow / std::pow(10, sym->Decimal);
 
+	// 차트 종가를 업데이트 한다.
+	sym->UpdateChartValue();
+
 	OnReceiveSise(_ttoi(strTime), sym);
 
 	VtQuoteItem quoteItem;
@@ -3926,6 +3932,9 @@ void VtHdCtrl::OnRealProductQuote(CString& strKey, LONG& nRealType)
 	sym->Quote.open = sym->Quote.intOpen / std::pow(10, sym->Decimal);
 	sym->Quote.high = sym->Quote.intHigh / std::pow(10, sym->Decimal);
 	sym->Quote.low = sym->Quote.intLow / std::pow(10, sym->Decimal);
+
+	// 차트 종가를 업데이트 한다.
+	sym->UpdateChartValue();
 
 	OnReceiveSise(_ttoi(strTime), sym);
 
@@ -4600,6 +4609,10 @@ void VtHdCtrl::OnRcvdDomesticChartData(CString& sTrCode, LONG& nRqID)
 		else {
 			// 최초 차트 데이터가 완료되었음을 알린다.
 			SmCallbackManager::GetInstance()->OnChartEvent(chart_data);
+			chart_data->Received(true);
+			// 주기 데이터를 등록해 준다.
+			SmChartDataManager* chartDataMgr = SmChartDataManager::GetInstance();
+			chartDataMgr->RegisterTimer(chart_data);
 		}
 	}
 	catch (std::exception e)
@@ -4672,6 +4685,10 @@ void VtHdCtrl::OnRcvdAbroadChartData(CString& sTrCode, LONG& nRqID)
 		else {
 			// 최초 차트 데이터가 완료되었음을 알린다.
 			SmCallbackManager::GetInstance()->OnChartEvent(chart_data);
+			chart_data->Received(true);
+			// 주기 데이터를 등록해 준다.
+			SmChartDataManager* chartDataMgr = SmChartDataManager::GetInstance();
+			chartDataMgr->RegisterTimer(chart_data);
 		}
 	}
 	catch (std::exception e)
@@ -4745,6 +4762,10 @@ void VtHdCtrl::OnRcvdAbroadChartData2(CString& sTrCode, LONG& nRqID)
 		else {
 			// 최초 차트 데이터가 완료되었음을 알린다.
 			SmCallbackManager::GetInstance()->OnChartEvent(chart_data);
+			chart_data->Received(true);
+			// 주기 데이터를 등록해 준다.
+			SmChartDataManager* chartDataMgr = SmChartDataManager::GetInstance();
+			chartDataMgr->RegisterTimer(chart_data);
 		}
 	}
 	catch (std::exception e)

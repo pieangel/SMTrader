@@ -880,7 +880,7 @@ void VtOrderWndHd::OnClose()
 		SmOrderPanel* curWnd = *it;
 		curWnd->BlockEvent();
 	}
-	
+	_LeftWnd.BlockEvent();
 	CDialog::OnClose();
 	VtOrderWndEventArgs arg;
 	arg.pOrderWnd = this;

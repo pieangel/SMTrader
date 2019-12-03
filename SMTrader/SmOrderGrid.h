@@ -51,15 +51,15 @@ public:
 
 	void RegisterQuoteCallback();
 	void UnregisterQuoteCallback();
-	void OnQuoteEvent(const VtSymbol* symbol);
+	void OnQuoteEvent(VtSymbol* symbol);
 
 	void RegisterHogaCallback();
 	void UnregisterHogaCallback();
-	void OnHogaEvent(const VtSymbol* symbol);
+	void OnHogaEvent(VtSymbol* symbol);
 
 	void RegisterOrderallback();
 	void UnregisterOrderCallback();
-	void OnOrderEvent(const VtOrder* order);
+	void OnOrderEvent(VtOrder* order);
 
 	VtOrderConfigManager* OrderConfigMgr() const { return _OrderConfigMgr; }
 	void OrderConfigMgr(VtOrderConfigManager* val) { _OrderConfigMgr = val; }

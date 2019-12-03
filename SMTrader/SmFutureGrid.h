@@ -25,6 +25,18 @@ public:
 	SmFutureGrid();
 	~SmFutureGrid();
 
+	
+	void RegisterMasterCallback();
+	void RegisterQuoteCallback();
+	void RegisterOrderCallback();
+
+	void OnMasterEvent(VtSymbol* sym);
+	void OnOrderEvent(VtOrder* order);
+	void OnQuoteEvent(VtSymbol* sym);
+
+	// 콜백 함수 취소
+	void UnregisterAllCallback();
+	
 	void Init();
 
 	DECLARE_MESSAGE_MAP()
