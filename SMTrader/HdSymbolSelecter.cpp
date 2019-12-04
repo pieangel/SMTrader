@@ -136,3 +136,9 @@ void HdSymbolSelecter::SetSigConGrid(VtSignalConnectionGrid* sigConGrid)
 	_FutPage.SetSigConGrid(sigConGrid);
 	_OptPage.SetSigConGrid(sigConGrid);
 }
+
+void HdSymbolSelecter::SetChartTimeToolBar(VtChartTimeToolBar* timeToolBar)
+{
+	_FutPage.SetChartTimeToolBar(timeToolBar);
+	_OptPage.SetChartTimeToolBar(timeToolBar);
+}

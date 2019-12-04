@@ -64,6 +64,7 @@
 #include "SmCallbackManager.h"
 #include "Market/SmSymbolReader.h"
 #include "Market/SmMarketManager.h"
+#include "Chart/SmChartDataManager.h"
 
 extern TApplicationFont g_Font;
 
@@ -791,6 +792,7 @@ void CMainFrame::CreateFileWatch()
 
 bool CMainFrame::ClearAllResources()
 {
+	SmChartDataManager::DestroyInstance();
 	SmMarketManager::DestroyInstance();
 	SmSymbolReader::DestroyInstance();
 	SmCallbackManager::DestroyInstance();
@@ -827,7 +829,7 @@ bool CMainFrame::ClearAllResources()
 	VtLogManager::DestroyInstance();
 	VtLoginManager::DestroyInstance();
 	VtChartDataManager::DestroyInstance();
-	VtChartContainerManager::DestroyInstance();
+	//VtChartContainerManager::DestroyInstance();
 
 	//VtColorManager::DestroyInstance();
 	VtFundOrderManagerSelecter::DestroyInstance();

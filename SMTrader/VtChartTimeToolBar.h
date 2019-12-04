@@ -53,6 +53,7 @@ private:
 	VtChartContainer* _Container = nullptr;
 	void ChangeChartData();
 public:
+	void ChangeChartData(VtSymbol* symbol);
 	CGradientStatic _StaticTime;
 	afx_msg void OnBnClickedBtnMonth();
 	afx_msg void OnBnClickedBtnWeek();
@@ -68,4 +69,5 @@ public:
 	afx_msg void OnCbnSelchangeComboTick();
 	CComboBox _CombolStyle;
 	afx_msg void OnCbnSelchangeComboStyle();
+	afx_msg void OnBnClickedButtonSearch();
 };

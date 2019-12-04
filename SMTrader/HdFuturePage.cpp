@@ -81,3 +81,8 @@ void HdFuturePage::SetSigConGrid(VtSignalConnectionGrid* sigConGrid)
 {
 	_FutureGrid.SetSigConGrid(sigConGrid);
 }
+
+void HdFuturePage::SetChartTimeToolBar(VtChartTimeToolBar* timeToolBar)
+{
+	_FutureGrid.SetChartTimeToolBar(timeToolBar);
+}

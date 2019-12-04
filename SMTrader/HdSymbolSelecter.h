@@ -8,6 +8,7 @@ class VtOrderConfigManager;
 class VtUsdStrategyConfigDlg;
 class VtAddConnectSignalDlg;
 class VtSignalConnectionGrid;
+class VtChartTimeToolBar;
 class HdSymbolSelecter : public CDialogEx
 {
 	DECLARE_DYNAMIC(HdSymbolSelecter)
@@ -46,6 +47,7 @@ public:
 	void SetConfigDlg(VtUsdStrategyConfigDlg* ConfigDlg);
 	void SetAddConSigDlg(VtAddConnectSignalDlg* conSigDlg);
 	void SetSigConGrid(VtSignalConnectionGrid* sigConGrid);
+	void SetChartTimeToolBar(VtChartTimeToolBar* timeToolBar);
 private:
 	VtOrderConfigManager* _OrderConfigMgr = nullptr;
 };

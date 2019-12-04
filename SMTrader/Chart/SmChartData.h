@@ -71,6 +71,6 @@ public:
 	size_t CycleDataSize() const { return _CycleDataSize; }
 	void CycleDataSize(size_t val) { _CycleDataSize = val; }
 	bool Received() const { return _Received; }
-	void Received(bool val) { _Received = val; }
+	void Received(bool val);
 };
 

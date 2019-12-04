@@ -12,6 +12,7 @@
 #include "System/VtSystem.h"
 #include "Market/SmMarketManager.h"
 #include "VtSymbol.h"
+#include "HdSymbolSelecter.h"
 
 // VtChartTimeToolBar dialog
 
@@ -58,6 +59,7 @@ BEGIN_MESSAGE_MAP(VtChartTimeToolBar, CDialogEx)
 	ON_CBN_SELCHANGE(IDC_COMBO_SYMBOL, &VtChartTimeToolBar::OnCbnSelchangeComboSymbol)
 	ON_CBN_SELCHANGE(IDC_COMBO_TICK, &VtChartTimeToolBar::OnCbnSelchangeComboTick)
 	ON_CBN_SELCHANGE(IDC_COMBO_STYLE, &VtChartTimeToolBar::OnCbnSelchangeComboStyle)
+	ON_BN_CLICKED(IDC_BUTTON_SEARCH, &VtChartTimeToolBar::OnBnClickedButtonSearch)
 END_MESSAGE_MAP()
 
 
@@ -244,6 +246,14 @@ void VtChartTimeToolBar::ChangeChartData()
 	_Container->ChangeChartData(_Symbol, _ChartType, _Cycle);
 }
 
+void VtChartTimeToolBar::ChangeChartData(VtSymbol* symbol)
+{
+	if (!symbol)
+		return;
+	_Symbol = symbol;
+	ChangeChartData();
+}
+
 void VtChartTimeToolBar::OnBnClickedBtnMonth()
 {
 	_ComboTime.EnableWindow(TRUE);
@@ -380,4 +390,12 @@ void VtChartTimeToolBar::OnCbnSelchangeComboStyle()
 		break;
 	}
 	_Container->ChangeChartStyle(style);
+}
+
+
+void VtChartTimeToolBar::OnBnClickedButtonSearch()
+{
+	HdSymbolSelecter symSelecter;
+	symSelecter.SetChartTimeToolBar(this);
+	symSelecter.DoModal();
 }

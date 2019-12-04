@@ -8,6 +8,7 @@ class VtOrderConfigManager;
 class VtUsdStrategyConfigDlg;
 class VtAddConnectSignalDlg;
 class VtSignalConnectionGrid;
+class VtChartTimeToolBar;
 class HdFuturePage : public CDialogEx
 {
 	DECLARE_DYNAMIC(HdFuturePage)
@@ -47,4 +48,5 @@ public:
 	void SetConfigDlg(VtUsdStrategyConfigDlg* ConfigDlg);
 	void SetAddConSigDlg(VtAddConnectSignalDlg* conSigDlg);
 	void SetSigConGrid(VtSignalConnectionGrid* sigConGrid);
+	void SetChartTimeToolBar(VtChartTimeToolBar* timeToolBar);
 };

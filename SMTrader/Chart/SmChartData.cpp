@@ -164,3 +164,13 @@ void SmChartData::OnTimer()
 {
 	GetCyclicDataFromServer();
 }
+
+void SmChartData::Received(bool val)
+{
+	_Received = val;
+	VtSymbol* symbol = VtSymbolManager::GetInstance()->FindHdSymbol(_SymbolCode);
+	auto it = _DataMap.rbegin();
+	SmChartDataItem& data = it->second;
+	symbol->Quote.intClose = data.c;
+	symbol->Quote.close = data.c / std::pow(10, symbol->Decimal);
+}

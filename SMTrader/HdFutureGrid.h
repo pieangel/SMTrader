@@ -9,6 +9,7 @@ class VtUsdStrategyConfigDlg;
 class HdSymbolSelecter;
 class VtAddConnectSignalDlg;
 class VtSignalConnectionGrid;
+class VtChartTimeToolBar;
 class HdFutureGrid :
 	public VtGrid
 {
@@ -49,6 +50,7 @@ public:
 	{
 		_SigConGrid = sigConGrid;
 	}
+	void SetChartTimeToolBar(VtChartTimeToolBar* timeToolBar);
 private:
 	HdSymbolSelecter* _SymSelecter;
 	int _OldSelRow = -2;
@@ -63,5 +65,6 @@ private:
 	VtUsdStrategyConfigDlg* _UsdConfigDlg;
 	VtAddConnectSignalDlg* _AddConSigDlg = nullptr;
 	VtSignalConnectionGrid* _SigConGrid = nullptr;
+	VtChartTimeToolBar* _TimeToolbar = nullptr;
 };
 

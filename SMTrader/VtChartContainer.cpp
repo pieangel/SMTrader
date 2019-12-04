@@ -215,6 +215,7 @@ void VtChartContainer::ChangeChartData(VtSymbol* symbol, SmChartType chart_type,
 		return;
 	if (_ActiveChartWnd) {
 		_ActiveChartWnd->ChangeChartData(symbol, chart_type, cycle);
+		_FavGrid.SetChartData(_ActiveChartWnd);
 	}
 }
 

@@ -19,6 +19,7 @@
 #include "VtSignalConnectionGrid.h"
 #include "VtUsdStrategyConfigDlg.h"
 #include "SmOrderPanel.h"
+#include "VtChartTimeToolBar.h"
 using Poco::NumberFormatter;
 
 HdOptionGrid::HdOptionGrid()
@@ -97,6 +98,13 @@ void HdOptionGrid::OnDClicked(int col, long row, RECT *rect, POINT *point, BOOL 
 
 		if (_SigConGrid) {
 			_SigConGrid->SetSymbol(sym);
+			if (_SymSelecter)
+				_SymSelecter->SendMessage(WM_CLOSE, 0, 0);
+			return;
+		}
+
+		if (_TimeToolbar) {
+			_TimeToolbar->ChangeChartData(sym);
 			if (_SymSelecter)
 				_SymSelecter->SendMessage(WM_CLOSE, 0, 0);
 			return;
@@ -451,6 +459,11 @@ void HdOptionGrid::OnSymbolMaster(VtSymbol* sym)
 void HdOptionGrid::SetConfigDlg(VtUsdStrategyConfigDlg* ConfigDlg)
 {
 	_UsdConfigDlg = ConfigDlg;
+}
+
+void HdOptionGrid::SetChartTimeToolBar(VtChartTimeToolBar* timeToolBar)
+{
+	_TimeToolbar = timeToolBar;
 }
 
 void HdOptionGrid::ClearInfo()

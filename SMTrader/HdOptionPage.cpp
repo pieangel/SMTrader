@@ -94,3 +94,8 @@ void HdOptionPage::SetSigConGrid(VtSignalConnectionGrid* sigConGrid)
 {
 	_OptionGrid.SetSigConGrid(sigConGrid);
 }
+
+void HdOptionPage::SetChartTimeToolBar(VtChartTimeToolBar* timeToolBar)
+{
+	_OptionGrid.SetChartTimeToolBar(timeToolBar);
+}
