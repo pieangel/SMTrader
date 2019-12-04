@@ -250,6 +250,9 @@ void VtChartTimeToolBar::ChangeChartData(VtSymbol* symbol)
 {
 	if (!symbol)
 		return;
+	int index = _ComboSymbol.AddString(symbol->ShortCode.c_str());
+	_ComboSymbol.SetItemDataPtr(index, (void*)symbol);
+	_ComboSymbol.SetCurSel(index);
 	_Symbol = symbol;
 	ChangeChartData();
 }

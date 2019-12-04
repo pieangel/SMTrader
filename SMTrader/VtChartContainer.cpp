@@ -179,6 +179,15 @@ BOOL VtChartContainer::OnInitDialog()
 	_FavGrid.ChartContainer(this);
 	AddChartOneByOne();
 
+	if (_ShowGrid) {
+		_GridWidth = 200;
+		_FavGrid.ShowWindow(SW_SHOW);
+	}
+	else {
+		_GridWidth = 0;
+		_FavGrid.ShowWindow(SW_HIDE);
+	}
+
 	SendMessage(WM_SIZE);
 
 	if (_ActiveChartWnd) {

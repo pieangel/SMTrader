@@ -121,6 +121,7 @@ private:
 	VtChartWindow*  _ActiveChartWnd = nullptr;
 	VtChartWindow* CreateChartWindow();
 	void CreateChartByMode(int mode);
+	bool _ShowGrid = false;
 public:
 	afx_msg void OnMouseHWheel(UINT nFlags, short zDelta, CPoint pt);
 	void OnReceiveQuoteHd(VtSymbol* sym);
