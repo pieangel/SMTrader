@@ -6,6 +6,8 @@
 #include "../VtStringUtil.h"
 #include "../VtHdClient.h"
 #include "chartdir.h"
+#include "../VtSymbolManager.h"
+#include "../VtSymbol.h"
 
 void SmChartData::GetChartDataFromDB()
 {
@@ -42,40 +44,52 @@ void SmChartData::GetCyclicDataFromServer()
 
 std::vector<double> SmChartData::GetOpenVector()
 {
+	VtSymbol* symbol = VtSymbolManager::GetInstance()->FindHdSymbol(_SymbolCode);
 	std::vector<double> v;
+	if (!symbol)
+		return v;
 	for (auto it = _DataMap.begin(); it != _DataMap.end(); ++it) {
 		SmChartDataItem& data = it->second;
-		v.push_back(data.o);
+		v.push_back(data.o / std::pow(10, symbol->Decimal));
 	}
 	return v;
 }
 
 std::vector<double> SmChartData::GetCloseVector()
 {
+	VtSymbol* symbol = VtSymbolManager::GetInstance()->FindHdSymbol(_SymbolCode);
 	std::vector<double> v;
+	if (!symbol)
+		return v;
 	for (auto it = _DataMap.begin(); it != _DataMap.end(); ++it) {
 		SmChartDataItem& data = it->second;
-		v.push_back(data.c);
+		v.push_back(data.c / std::pow(10, symbol->Decimal));
 	}
 	return v;
 }
 
 std::vector<double> SmChartData::GetHighVector()
 {
+	VtSymbol* symbol = VtSymbolManager::GetInstance()->FindHdSymbol(_SymbolCode);
 	std::vector<double> v;
+	if (!symbol)
+		return v;
 	for (auto it = _DataMap.begin(); it != _DataMap.end(); ++it) {
 		SmChartDataItem& data = it->second;
-		v.push_back(data.h);
+		v.push_back(data.h / std::pow(10, symbol->Decimal));
 	}
 	return v;
 }
 
 std::vector<double> SmChartData::GetLowVector()
 {
+	VtSymbol* symbol = VtSymbolManager::GetInstance()->FindHdSymbol(_SymbolCode);
 	std::vector<double> v;
+	if (!symbol)
+		return v;
 	for (auto it = _DataMap.begin(); it != _DataMap.end(); ++it) {
 		SmChartDataItem& data = it->second;
-		v.push_back(data.l);
+		v.push_back(data.l / std::pow(10, symbol->Decimal));
 	}
 	return v;
 }

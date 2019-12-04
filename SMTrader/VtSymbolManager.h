@@ -34,8 +34,9 @@ public:
 	std::map<std::string, VtSymbol*> SymbolMap;
 	std::map<std::string, VtSymbolMaster*> SymbolMasterMap;
 	std::map<std::string, VtRealtimeSymbolMaster*> RealtimeSymbolMasterMap;
-	void AddSymbol(VtSymbol* symbol);
-	void AddHdSymbol(VtSymbol* symbol);
+	//void AddSymbol(VtSymbol* symbol);
+	
+	VtSymbol* FindAddSymbol(std::string symbol_code);
 	VtSymbol* FindSymbol(std::string shortCode);
 	VtSymbol* FindHdSymbol(std::string shortCode);
 	VtSymbol* FindSymbolByFullCode(std::string code);
@@ -76,6 +77,7 @@ public:
 private:
 	std::map<std::string, HdProductInfo*> ProductInfoMap;
 	VtSymbol* _ActiveSymbol = nullptr;
+	void AddHdSymbol(VtSymbol* symbol);
 public:
 	void OnReceivedSymbolList();
 

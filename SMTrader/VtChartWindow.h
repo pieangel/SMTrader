@@ -100,6 +100,8 @@ public:
 	CChartViewer m_ChartViewer;
 	CSSplitter* ParentSplit = nullptr;
 	void RecalcLayout();
+	void UnregisterAllCallback();
+
 	// 시세 데이터 콜백 등록
 	void RegisterQuoteCallback();
 	// 시세 데이터 콜백 해제
@@ -117,11 +119,12 @@ public:
 	// 차트를 바꿔 준다.
 	void ChangeChartData(VtSymbol* symbol, SmChartType chart_type, int cycle);
 	SmChartDataSource* GetChartDataDataSource(std::string data_key);
+	void ChangeChartStyle(SmChartStyle style);
 private:
 	void AddChartDataSource(VtSymbol* symbol, SmChartData* chart_data);
 	// 차트 종목을 선택하면 메인 차트 키가 설정이 된다.
 	// 그리고 차트 데이터 요청이 이어진다.
-	std::string _MainChartDataKey; 
+	std::string _MainChartDataKey = ""; 
 	// 차트를 그리기 위한 차트데이터 맵. 키는 심볼:차트타입:주기 이다.
 	std::map<std::string, SmChartDataSource> _DataMap;
 	void RegisterRealtimeDataRequest(VtChartData* data);

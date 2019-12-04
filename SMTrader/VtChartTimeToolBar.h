@@ -66,4 +66,6 @@ public:
 	afx_msg void OnCbnSelchangeComboSystem();
 	afx_msg void OnCbnSelchangeComboSymbol();
 	afx_msg void OnCbnSelchangeComboTick();
+	CComboBox _CombolStyle;
+	afx_msg void OnCbnSelchangeComboStyle();
 };

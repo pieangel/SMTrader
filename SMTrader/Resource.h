@@ -629,6 +629,8 @@
 #define IDC_STATIC_TASK                 1101
 #define IDC_PROGRESS_CTRL               1102
 #define IDC_STATIC_TIME2                1102
+#define IDC_STATIC_SYSTEM2              1103
+#define IDC_COMBO_STYLE                 1104
 #define IDC_STATIC_SET                  1105
 #define IDC_BTN_ACNT_MJ                 1106
 #define IDC_BTN_FUND_MJ                 1107

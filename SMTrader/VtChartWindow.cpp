@@ -87,6 +87,9 @@
 #include "SmCallbackManager.h"
 #include "Chart/SmChartData.h"
 #include "Chart/SmChartDataManager.h"
+#include "Market/SmMarket.h"
+#include "Market/SmMarketManager.h"
+#include "Market/SmProduct.h"
 using namespace convert;
 using Poco::NumberFormatter;
 
@@ -124,6 +127,7 @@ void VtChartWindow::OnChartEvent(const SmChartData* chart_data)
 		data_source.close = data->GetCloseVector();
 		data_source.datetime = data->GetDateTimeVector();
 		data_source.volume = data->GetVolumeVector();
+		initChartViewer(&m_ChartViewer);
 		DrawChart(&m_ChartViewer, 0);
 	}
 }
@@ -141,8 +145,27 @@ void VtChartWindow::UnregisterQuoteCallback()
 
 void VtChartWindow::OnQuoteEvent(const VtSymbol* symbol)
 {
-	if (!symbol)
+	if (!symbol || _MainChartDataKey.length() == 0)
 		return;
+
+	SmChartDataSource* data_source = GetChartDataDataSource(_MainChartDataKey);
+	if (!data_source || data_source->datetime.size() == 0)
+		return;
+	if (data_source->symbol->ShortCode.compare(symbol->ShortCode) != 0)
+		return;
+	double last_close = symbol->Quote.close;
+	// 여기서 봉의 종가를 갱신한다.
+	data_source->close[data_source->close.size() - 1] = last_close;
+
+	if (last_close > data_source->close[data_source->high.size() - 1]) {
+		data_source->high[data_source->high.size() - 1] = last_close;
+	}
+	if (last_close < data_source->low[data_source->low.size() - 1]) {
+		data_source->low[data_source->low.size() - 1] = last_close;
+	}
+	
+
+	DrawChart(&m_ChartViewer, 0);
 }
 
 
@@ -429,6 +452,12 @@ void VtChartWindow::RecalcLayout()
 
 }
 
+void VtChartWindow::UnregisterAllCallback()
+{
+	UnregisterChartCallback();
+	UnregisterQuoteCallback();
+}
+
 void VtChartWindow::SaveToXml(pugi::xml_node& node)
 {
 // 	if (_ChartFrm)
@@ -657,6 +686,15 @@ SmChartDataSource* VtChartWindow::GetChartDataDataSource(std::string data_key)
 	}
 
 	return nullptr;
+}
+
+void VtChartWindow::ChangeChartStyle(SmChartStyle style)
+{
+	SmChartDataSource* data_source = GetChartDataDataSource(_MainChartDataKey);
+	if (!data_source || data_source->datetime.size() == 0)
+		return;
+	data_source->chartStyle = style;
+	DrawChart(&m_ChartViewer, 0);
 }
 
 void VtChartWindow::AddChartDataSource(VtSymbol* symbol, SmChartData* chart_data)
@@ -899,6 +937,7 @@ BOOL VtChartWindow::OnInitDialog()
 	SetDefaultChartData();
 	SetDefaultRefChartData();
 	RegisterChartCallback();
+	RegisterQuoteCallback();
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // EXCEPTION: OCX Property Pages should return FALSE
 }
@@ -1473,8 +1512,13 @@ void VtChartWindow::DrawChart(CChartViewer* a_pChartViewer, int mode)
 
 void VtChartWindow::SetDefaultChartData()
 {
-	VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();
-	VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
+	SmProduct* product = SmMarketManager::GetInstance()->FindProduct("101");
+	if (!product)
+		return;
+
+// 	VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();
+// 	VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
+	VtSymbol* sym = product->GetRecentMonthSymbol();
 	if (!sym)
 		return;
 	VtRealtimeRegisterManager* realMgr = VtRealtimeRegisterManager::GetInstance();
@@ -1529,11 +1573,11 @@ void VtChartWindow::SetDefaultRefChartData()
 		sym = symMgr->FindSymbol(symList[i]);
 		if (!sym)
 		{
-			sym = new VtSymbol();
+			sym = symMgr->FindAddSymbol(symList[i]);
 			sym->ShortCode = symList[i];
 			sym->Name = nameList[i];
 			sym->Decimal = 2;
-			symMgr->AddHdSymbol(sym);
+			//symMgr->AddHdSymbol(sym);
 		}
 
 		req.chartType = VtChartType::MIN;

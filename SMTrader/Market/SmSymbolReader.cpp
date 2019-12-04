@@ -492,7 +492,7 @@ void SmSymbolReader::ReadJmFile(std::string fullPath)
 			sym->NearMonth = std::stoi(IndexCode);
 			sym->Name = SeriesNmKor;
 			sym->EngName = SeriesNm;
-			symMgr->AddSymbol(sym);
+			//symMgr->AddHdSymbol(sym);
 			sym->ProductCode = cat->Code();
 			sym->MarketName = cat->MarketName();
 			sym->Decimal = std::stoi(Pdesz);
@@ -570,7 +570,7 @@ void SmSymbolReader::ReadKospiFutureFile(std::string fullPath)
 
 		VtSymbol* sym = product->AddSymbol(shcode);
 		sym->Name = hname;
-		symMgr->AddSymbol(sym);
+		//symMgr->AddHdSymbol(sym);
 		sym->ProductCode = product->Code();
 		sym->MarketName = product->MarketName();
 		sym->Decimal = std::stoi(deli);
@@ -651,7 +651,7 @@ void SmSymbolReader::ReadKospiOptionFile(std::string fullPath)
 		product->NameKr("Kospi200O");
 		VtSymbol* sym = product->AddSymbol(shcode);
 		sym->Name = hname;
-		symMgr->AddSymbol(sym);
+		//symMgr->AddHdSymbol(sym);
 		sym->ProductCode = product->Code();
 		sym->MarketName = product->MarketName();
 		sym->Decimal = std::stoi(deli);
@@ -732,7 +732,7 @@ void SmSymbolReader::ReadKospiWeeklyOptionFile(std::string fullPath)
 		product->NameKr("Kospi200WeeklyF");
 		VtSymbol* sym = product->AddSymbol(shcode);
 		sym->Name = hname;
-		symMgr->AddSymbol(sym);
+		//symMgr->AddHdSymbol(sym);
 		sym->ProductCode = product->Code();
 		sym->MarketName = product->MarketName();
 		sym->Decimal = std::stoi(deli);
@@ -811,7 +811,7 @@ void SmSymbolReader::ReadKosdaqFutureFile(std::string fullPath)
 
 		VtSymbol* sym = product->AddSymbol(shcode);
 		sym->Name = hname;
-		symMgr->AddSymbol(sym);
+		//symMgr->AddHdSymbol(sym);
 		sym->ProductCode = product->Code();
 		sym->MarketName = product->MarketName();
 		sym->Decimal = std::stoi(deli);
@@ -890,7 +890,7 @@ void SmSymbolReader::ReadMiniKospiFutureFile(std::string fullPath)
 
 		VtSymbol* sym = product->AddSymbol(shcode);
 		sym->Name = hname;
-		symMgr->AddSymbol(sym);
+		//symMgr->AddHdSymbol(sym);
 		sym->ProductCode = product->Code();
 		sym->MarketName = product->MarketName();
 		sym->Decimal = std::stoi(deli);
@@ -969,7 +969,7 @@ void SmSymbolReader::ReadCommodityFutureFile(std::string fullPath)
 
 		VtSymbol* sym = product->AddSymbol(shcode);
 		sym->Name = hname;
-		symMgr->AddSymbol(sym);
+		//symMgr->AddHdSymbol(sym);
 		sym->ProductCode = product->Code();
 		sym->MarketName = product->MarketName();
 		sym->Decimal = std::stoi(deli);

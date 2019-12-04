@@ -3125,14 +3125,14 @@ void VtHdCtrl::OnSymbolCode(CString& sTrCode, LONG& nRqID)
 			//TRACE(sData);
 			//TRACE(_T("\n"));
 			//WriteLog(sData);
-			sym = new VtSymbol();
+			sym = symMgr->FindAddSymbol((LPCTSTR)sData.Trim());
 			sym->ShortCode = sData.Trim();
 
 			auto ym = VtSymbolManager::GetExpireYearMonth(sym->ShortCode);
 			sym->ExpireYear = std::get<0>(ym);
 			sym->ExpireMonth = std::get<1>(ym);
 
-			symMgr->AddHdSymbol(sym);
+			//symMgr->AddHdSymbol(sym);
 
 			std::string symCode = sym->ShortCode;
 			std::string subSecCode = symCode.substr(0, 3);

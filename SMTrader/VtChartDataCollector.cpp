@@ -158,9 +158,9 @@ void VtChartDataCollector::OnTimerEvent(VtChartData* chartData)
 void VtChartDataCollector::AddSymbol(std::string code)
 {
 	VtSymbolManager* symMgr = VtSymbolManager::GetInstance();
-	VtSymbol* sym = new VtSymbol();
+	VtSymbol* sym = symMgr->FindAddSymbol(code);
 	sym->ShortCode = code;
-	symMgr->AddHdSymbol(sym);
+	//symMgr->AddHdSymbol(sym);
 }
 
 void VtChartDataCollector::SetChartData(VtChartData* chartData, int time, double value)

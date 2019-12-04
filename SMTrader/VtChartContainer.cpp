@@ -86,9 +86,9 @@ VtChartContainer::VtChartContainer(CWnd* pParent /*=NULL*/)
 
 VtChartContainer::~VtChartContainer()
 {
-	UnregisterChartCallback();
 	// 반드시 리소스 해제할것
 	for (auto it = _ChartList.begin(); it != _ChartList.end(); ++it) {
+		(*it)->UnregisterAllCallback();
 		delete *it;
 	}
 	ClearSplitters();
@@ -200,6 +200,13 @@ BOOL VtChartContainer::OnInitDialog()
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // EXCEPTION: OCX Property Pages should return FALSE
+}
+
+void VtChartContainer::ChangeChartStyle(SmChartStyle style)
+{
+	if (_ActiveChartWnd) {
+		_ActiveChartWnd->ChangeChartStyle(style);
+	}
 }
 
 void VtChartContainer::ChangeChartData(VtSymbol* symbol, SmChartType chart_type, int cycle)

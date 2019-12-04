@@ -76,19 +76,33 @@ void VtSymbolManager::RequestSymbolTickQuote(std::string fullCode)
 	VtKrClient* client = VtKrClient::GetInstance();
 	client->RequestSymbolTickQuote(fullCode);
 }
+// 
+// void VtSymbolManager::AddSymbol(VtSymbol* symbol)
+// {
+// 	if (symbol == nullptr)
+// 		return;
+// 	FullCodeMap[symbol->ShortCode] = symbol->FullCode;
+// 	ShortCodeMap[symbol->FullCode] = symbol->ShortCode;
+// 	SymbolMap[symbol->ShortCode] = symbol;
+// }
 
-void VtSymbolManager::AddSymbol(VtSymbol* symbol)
+void VtSymbolManager::AddHdSymbol(VtSymbol* symbol)
 {
-	if (symbol == nullptr)
-		return;
 	FullCodeMap[symbol->ShortCode] = symbol->FullCode;
 	ShortCodeMap[symbol->FullCode] = symbol->ShortCode;
 	SymbolMap[symbol->ShortCode] = symbol;
 }
 
-void VtSymbolManager::AddHdSymbol(VtSymbol* symbol)
+VtSymbol* VtSymbolManager::FindAddSymbol(std::string symbol_code)
 {
-	SymbolMap[symbol->ShortCode] = symbol;
+	VtSymbol* symbol = FindHdSymbol(symbol_code);
+	if (!symbol) {
+		symbol = new VtSymbol();
+		symbol->ShortCode = symbol_code;
+		AddHdSymbol(symbol);
+	}
+
+	return symbol;
 }
 
 VtSymbol* VtSymbolManager::FindSymbol(std::string shortCode)

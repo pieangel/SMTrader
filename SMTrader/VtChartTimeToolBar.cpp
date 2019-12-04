@@ -43,6 +43,7 @@ void VtChartTimeToolBar::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_STATIC_SYSTEM, _StaticSystem);
 	DDX_Control(pDX, IDC_BUTTON_SEARCH, _SearchSymbol);
 	DDX_Control(pDX, IDC_COMBO_SYMBOL, _ComboSymbol);
+	DDX_Control(pDX, IDC_COMBO_STYLE, _CombolStyle);
 }
 
 
@@ -56,6 +57,7 @@ BEGIN_MESSAGE_MAP(VtChartTimeToolBar, CDialogEx)
 	ON_CBN_SELCHANGE(IDC_COMBO_SYSTEM, &VtChartTimeToolBar::OnCbnSelchangeComboSystem)
 	ON_CBN_SELCHANGE(IDC_COMBO_SYMBOL, &VtChartTimeToolBar::OnCbnSelchangeComboSymbol)
 	ON_CBN_SELCHANGE(IDC_COMBO_TICK, &VtChartTimeToolBar::OnCbnSelchangeComboTick)
+	ON_CBN_SELCHANGE(IDC_COMBO_STYLE, &VtChartTimeToolBar::OnCbnSelchangeComboStyle)
 END_MESSAGE_MAP()
 
 
@@ -192,6 +194,19 @@ BOOL VtChartTimeToolBar::OnInitDialog()
 	if (symbolVector.size() > 0) {
 		_ComboSymbol.SetCurSel(0);
 	}
+
+	std::vector<std::string> style_vec;
+	style_vec.push_back("CandleStick");
+	style_vec.push_back("OHLC");
+	style_vec.push_back("ClosePrice");
+	style_vec.push_back("TypicalPrice");
+	style_vec.push_back("WeightedClose");
+	style_vec.push_back("MedianPrice");
+
+	for (size_t i = 0; i < style_vec.size(); ++i) {
+		_CombolStyle.AddString(style_vec[i].c_str());
+	}
+	_CombolStyle.SetCurSel(0);
 	
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // EXCEPTION: OCX Property Pages should return FALSE
@@ -329,4 +344,40 @@ void VtChartTimeToolBar::OnCbnSelchangeComboTick()
 	if (curSel != -1 && _Container)
 		_Cycle = curSel + 1;
 	ChangeChartData();
+}
+
+
+void VtChartTimeToolBar::OnCbnSelchangeComboStyle()
+{
+	int curSel = _CombolStyle.GetCurSel();
+	if (curSel < 0)
+		return;
+
+	if (!_Container)
+		return;
+	SmChartStyle style = SmChartStyle::CandleStick;
+	switch (curSel)
+	{
+	case 0:
+		style = SmChartStyle::CandleStick;
+		break;
+	case 1:
+		style = SmChartStyle::OHLC;
+		break;
+	case 2:
+		style = SmChartStyle::ClosePrice;
+		break;
+	case 3:
+		style = SmChartStyle::TypicalPrice;
+		break;
+	case 4:
+		style = SmChartStyle::WeightedClose;
+		break;
+	case 5:
+		style = SmChartStyle::MedianPrice;
+		break;
+	default:
+		break;
+	}
+	_Container->ChangeChartStyle(style);
 }

@@ -19,10 +19,10 @@ SmProduct::~SmProduct()
 VtSymbol* SmProduct::AddSymbol(std::string symCode)
 {
 	VtSymbolManager* symMgr = VtSymbolManager::GetInstance();
-	VtSymbol* sym = new VtSymbol();
+	VtSymbol* sym = symMgr->FindAddSymbol(symCode);
 	sym->ShortCode = symCode;
 	_SymbolList.push_back(sym);
-	symMgr->AddSymbol(sym);
+	//symMgr->AddHdSymbol(sym);
 	AddToYearMonth(symCode, sym);
 	return sym;
 }

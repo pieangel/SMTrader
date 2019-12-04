@@ -41,6 +41,7 @@ public:
 	virtual BOOL OnInitDialog();
 
 public:
+	void ChangeChartStyle(SmChartStyle style);
 	void ChangeChartData(VtSymbol* symbol, SmChartType chart_type, int cycle);
 	void RegisterQuoteCallback();
 	void UnregisterQuoteCallback();
@@ -80,12 +81,9 @@ public:
 	void SetActiveChartWindow(VtChartWindow* chart);
 	void ClearEvent();
 	void ShowChartCtrl();
-	void SetDocTitle(std::string title);
-
 	void SetEditOption(EditOption a_EditOption);
 	void DeleteSelectedObject();
 	void DeleteAllObjects();
-	afx_msg void OnDestroy();
 	void SaveToXml(pugi::xml_node& node);
 	void LoadFromXml(pugi::xml_node& node);
 	void SetChartData(std::vector<VtChartDataRequest> reqList);
