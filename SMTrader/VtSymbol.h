@@ -12,6 +12,8 @@ public:
 
 	int Index;
 	int NearMonth;
+	std::string Currency = "KRW";
+	std::string Exchange = "CME";
 	std::string ProductCode;
 	std::string MarketName;
 	double CtrUnit;

@@ -4865,7 +4865,7 @@ void VtHdCtrl::GetChartData(SmChartDataRequest req)
 			GetChartDataLongCycle(req);
 		else if (req.chartType == SmChartType::WEEK)
 			GetChartDataLongCycle(req);
-		else if (req.chartType == SmChartType::MON)
+		else if (req.chartType == SmChartType::MONTH)
 			GetChartDataLongCycle(req);
 		else
 			GetChartDataShortCycle(req);
@@ -4899,7 +4899,7 @@ void VtHdCtrl::GetChartDataForDomestic(SmChartDataRequest req)
 		reqString.append("2");
 	else if (req.chartType == SmChartType::WEEK)
 		reqString.append("3");
-	else if (req.chartType == SmChartType::MON)
+	else if (req.chartType == SmChartType::MONTH)
 		reqString.append("4");
 	else
 		reqString.append("1");
@@ -4960,7 +4960,7 @@ void VtHdCtrl::GetChartDataShortCycle(SmChartDataRequest req)
 		reqString.append("3");
 	else if (req.chartType == SmChartType::WEEK)
 		reqString.append("4");
-	else if (req.chartType == SmChartType::MON)
+	else if (req.chartType == SmChartType::MONTH)
 		reqString.append("5");
 	else
 		reqString.append("2");
@@ -5024,7 +5024,7 @@ void VtHdCtrl::GetChartDataLongCycle(SmChartDataRequest req)
 		reqString.append("3");
 	else if (req.chartType == SmChartType::WEEK)
 		reqString.append("4");
-	else if (req.chartType == SmChartType::MON)
+	else if (req.chartType == SmChartType::MONTH)
 		reqString.append("5");
 	else
 		reqString.append("2");

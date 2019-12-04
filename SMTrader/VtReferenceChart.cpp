@@ -65,8 +65,8 @@ void VtReferenceChart::SaveToXml(pugi::xml_node& node)
 	pugi::xml_node refchart_color = node.append_child("refchart_color");
 	refchart_color.append_child(pugi::node_pcdata).set_value(value.c_str());
 
-	if (data)
-		data->SaveToXml(node);
+	//if (data)
+	//	data->SaveToXml(node);
 }
 
 void VtReferenceChart::LoadFromXml(pugi::xml_node& node)

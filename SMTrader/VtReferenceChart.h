@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 #include "Xml/pugixml.hpp"
-class VtChartData;
+class SmChartDataSource;
 class VtReferenceChart
 {
 public:
@@ -16,7 +16,7 @@ public:
 	int color;
 	//int colorIndex;
 	std::string name;
-	VtChartData* data;
+	SmChartDataSource* data;
 
 	virtual void SaveToXml(pugi::xml_node& node);
 	virtual void LoadFromXml(pugi::xml_node& node);

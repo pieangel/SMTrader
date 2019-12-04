@@ -55,8 +55,6 @@ public:
 	void ParentView(VtChartContainer* val) { _ParentView = val; }
 	int CtrlHeight();
 	void CtrlHeight(int val) { _CtrlHeight = val; }
-	//HdChartFrm* ChartFrm() const { return _ChartFrm; }
-	//void ChartFrm(HdChartFrm* val) { _ChartFrm = val; }
 	std::string ChartDataKey() const { return _ChartDataKey; }
 	void ChartDataKey(std::string val) { _ChartDataKey = val; }
 	std::string RealtimeDataKey() const { return _RealtimeDataKey; }
@@ -120,6 +118,7 @@ public:
 	void ChangeChartData(VtSymbol* symbol, SmChartType chart_type, int cycle);
 	SmChartDataSource* GetChartDataDataSource(std::string data_key);
 private:
+	void AddChartDataSource(VtSymbol* symbol, SmChartData* chart_data);
 	// 차트 종목을 선택하면 메인 차트 키가 설정이 된다.
 	// 그리고 차트 데이터 요청이 이어진다.
 	std::string _MainChartDataKey; 
@@ -182,8 +181,8 @@ public:
 	void OnChartPattern(UINT id);
 	void OnChartIndex(UINT id);
 	//void OnChartCompare(UINT id);
-	void AddCompareData(int startAfter, VtChartData* data);
-	void AddCompareData(VtChartData* data);
+	void AddCompareData(int startAfter, SmChartDataSource* data);
+	void AddCompareData(SmChartDataSource* data);
 	void AddCompareData(VtChartDataRequest req);
 	afx_msg void OnCompacting(UINT nCpuTime);
 	afx_msg void OnClose();
@@ -206,7 +205,7 @@ public:
 	{
 		return RefChartVector;
 	}
-	std::vector<VtChartData*> GetChartDataList();
+	std::vector<SmChartDataSource*> GetChartDataList();
 	void ShowChart(std::string symCode, bool show);
 	void StopChartDataEvent();
 	void SetSelectedChartData(std::string selectedCode);
@@ -214,9 +213,7 @@ public:
 	void ChangeSystem(VtSystem* newSystem);
 private:
 	VtReferenceChart* FindRefChart(std::string symCode);
-	//VtMainChartType _MainChartType = VtMainChartType::CandleStick;
 	int _Index = 0;
-	//CChartViewer* _ChartViewer = nullptr;
 	FinanceChart* _SourceChart = nullptr;
 	XYChart*      _MainChart = nullptr;
 	int _NoOfPoints = 0;
@@ -228,7 +225,7 @@ private:
 	int _Width = 600;
 	int _OriginalHeight = 0;
 	int _YAxisGap = 30;
-	VtChartData* _Data = nullptr;
+	//VtChartData* _Data = nullptr;
 	bool _Init = false;
 
 	int startIndex = 0;
@@ -244,7 +241,7 @@ private:
 
 	void initChartViewer(CChartViewer *viewer);
 
-	std::vector<VtLayerInfo> _LayerList;
+	std::vector<SmLayerInfo> _LayerList;
 	LineLayer *_MainLayer = nullptr;
 
 	VtColorManager* _ColorMgr;
@@ -253,7 +250,7 @@ private:
 
 	void DrawTitleValue(DrawArea* drawArea);
 
-	VtChartData* _SelectedData = nullptr;
+	SmChartDataSource* _SelectedData = nullptr;
 
 	void TrackFinance(MultiChart *m, int mouseX);
 
@@ -262,7 +259,6 @@ private:
 
 	std::string _SelectedDataSetName;
 	bool _UseMainAxis = false;
-	//std::map<std::string, VtChartData*> _CompareDataMap;
 	int  _ZoomStartIndex = 0;
 	int  _StartID = 0;
 	bool _RedimStarted = false;
@@ -290,7 +286,7 @@ private:
 	std::vector<VtPoint> _penPoints;
 	VtPoint _fiboPoints[6];
 	void DrawRealtimeValues(DrawArea* d);
-	void DrawCurrentValue(VtLayerInfo&& layerInfo, DrawArea* drawArea);
+	void DrawCurrentValue(SmLayerInfo&& layerInfo, DrawArea* drawArea);
 	std::vector<VtReferenceChart*> RefChartVector;
 
 	void ValueToPixel();
@@ -298,10 +294,9 @@ private:
 
 	void SetDataCount();
 
-	//void DrawRefChart();
-	void DrawRefChart(std::vector<VtLayerInfo>& layerList);
-	void DrawRealtimeValues(DrawArea* d, std::vector<VtLayerInfo>& layerList);
-	Axis* FindAxis(std::string dataName, std::vector<VtLayerInfo>& layerList);
+	void DrawRefChart(std::vector<SmLayerInfo>& layerList);
+	void DrawRealtimeValues(DrawArea* d, std::vector<SmLayerInfo>& layerList);
+	Axis* FindAxis(std::string dataName, std::vector<SmLayerInfo>& layerList);
 
 	bool _Drawing = false;
 

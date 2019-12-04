@@ -6,10 +6,21 @@ enum class SmChartType
 	NONE = 0,
 	TICK,
 	MIN,
+	HOUR,
 	DAY,
 	WEEK,
-	MON,
+	MONTH,
 	YEAR
+};
+
+enum class SmChartStyle
+{
+	CandleStick,
+	ClosePrice,
+	TypicalPrice,
+	MedianPrice,
+	WeightedClose,
+	OHLC
 };
 
 enum class SmChartDataReqestType {
@@ -87,5 +98,22 @@ struct SmSimpleChartDataItem {
 	int l = 0;
 	int c = 0;
 	int v = 0;
+};
+
+class Layer;
+class Axis;
+class XYChart;
+class SmChartDataSource;
+struct SmLayerInfo
+{
+	bool embed = false;
+	bool shareAxis = false;
+	bool selected = false;
+	Layer* layer = nullptr;
+	Axis* axis = nullptr;
+	XYChart* chart = nullptr;
+	SmChartDataSource* data = nullptr;
+	COLORREF color;
+	int colorIndex;
 };
 

@@ -8,6 +8,7 @@
 #include "VtChartContainer.h"
 #include "Format/format.h"
 #include "conversion.hpp"
+#include "Chart/SmChartDefine.h"
 
 VtChartFavoriteGrid::VtChartFavoriteGrid()
 {
@@ -76,21 +77,17 @@ void VtChartFavoriteGrid::OnSetup()
 
 void VtChartFavoriteGrid::OnLClicked(int col, long row, int updn, RECT *rect, POINT *point, int processed)
 {
-	if (updn == TRUE && col != 0)
-	{
+	if (updn == TRUE && col != 0) {
 		CUGCell cell;
 		GetCell(0, row, &cell);
-		VtChartData* data = (VtChartData*)cell.Tag();
-		if (_ChartContainer && data)
-		{
+		SmChartDataSource* data = (SmChartDataSource*)cell.Tag();
+		if (_ChartContainer && data) {
 			std::string selectedCode;
-			if (row == 1)
-			{
-				selectedCode =data->SymbolCode();
+			if (row == 1) {
+				selectedCode =data->symbol->ShortCode;
 			}
-			else
-			{
-				selectedCode = data->SymbolCode();
+			else {
+				selectedCode = data->symbol->ShortCode;
 			}
 			_ChartContainer->SetSelectedChartData(selectedCode);
 		}
@@ -99,21 +96,18 @@ void VtChartFavoriteGrid::OnLClicked(int col, long row, int updn, RECT *rect, PO
 
 int VtChartFavoriteGrid::OnCellTypeNotify(long ID, int col, long row, long msg, long param)
 {
-	if (ID == UGCT_CHECKBOX) 
-	{
+	if (ID == UGCT_CHECKBOX) {
 		CUGCell cell;
 		GetCell(col, row, &cell);
-		VtChartData* data = (VtChartData*)cell.Tag();
+		SmChartDataSource* data = (SmChartDataSource*)cell.Tag();
 		double num = cell.GetNumber();
-		if (num == 0)
-		{
+		if (num == 0) {
 			if (_ChartContainer && data)
-				_ChartContainer->ShowRefChart(data->SymbolCode(), false);
+				_ChartContainer->ShowRefChart(data->symbol->ShortCode, false);
 		}
-		else
-		{
+		else {
 			if (_ChartContainer && data)
-				_ChartContainer->ShowRefChart(data->SymbolCode(), true);
+				_ChartContainer->ShowRefChart(data->symbol->ShortCode, true);
 		}
 	}
 	return 0;
@@ -168,18 +162,17 @@ void VtChartFavoriteGrid::SetChartData(VtChartWindow* activeWnd)
 	if (!activeWnd)
 		return;
 
-	std::vector<VtChartData*> dataList = activeWnd->GetChartDataList();
+	std::vector<SmChartDataSource*> dataList = activeWnd->GetChartDataList();
 	int i = 1;
-	for (auto it = dataList.begin(); it != dataList.end(); ++it)
-	{
-		VtChartData* data = *it;
-		QuickSetBackColor(0, i, _ColorMgr->GetColor(data->ColorIndex(), true));
-		QuickSetBackColor(1, i, _ColorMgr->GetColor(data->ColorIndex(), true));
-		QuickSetBackColor(2, i, _ColorMgr->GetColor(data->ColorIndex(), true));
+	for (auto it = dataList.begin(); it != dataList.end(); ++it) {
+		SmChartDataSource* data = *it;
+		QuickSetBackColor(0, i, _ColorMgr->GetColor(data->colorIndex, true));
+		QuickSetBackColor(1, i, _ColorMgr->GetColor(data->colorIndex, true));
+		QuickSetBackColor(2, i, _ColorMgr->GetColor(data->colorIndex, true));
 		QuickSetTextColor(0, i, RGB(255, 255, 255));
 		QuickSetTextColor(1, i, RGB(255, 255, 255));
 		QuickSetTextColor(2, i, RGB(255, 255, 255));
-		QuickSetText(1, i, data->SymbolCode().c_str());
+		QuickSetText(1, i, data->symbol->ShortCode.c_str());
 		QuickSetText(2, i, _T("0"));
 		QuickSetCellType(0, i, UGCT_CHECKBOX);
 		CUGCell cell;
@@ -191,7 +184,7 @@ void VtChartFavoriteGrid::SetChartData(VtChartWindow* activeWnd)
 		QuickRedrawCell(0, i);
 		QuickRedrawCell(1, i);
 		QuickRedrawCell(2, i);
-		_DataMap[data->SymbolCode()] = std::make_pair(i, data);
+		_DataMap[data->symbol->ShortCode] = std::make_pair(i, data);
 		i++;
 	}
 }
@@ -199,11 +192,9 @@ void VtChartFavoriteGrid::SetChartData(VtChartWindow* activeWnd)
 void VtChartFavoriteGrid::OnReceiveChartData(std::string symCode)
 {
 	auto it = _DataMap.find(symCode);
-	if (it != _DataMap.end())
-	{
-		std::pair<int, VtChartData*> item = it->second;
-		//std::string val = fmt::format("{:.{}f}", std::get<1>(item)->RealTimeClose(), std::get<1>(item)->Decimal());
-		std::string strValue = convert::string_cast<double>(std::get<1>(item)->RealTimeClose(), std::get<1>(item)->Decimal(), convert::thou_sep);
+	if (it != _DataMap.end()) {
+		std::pair<int, SmChartDataSource*> item = it->second;
+		std::string strValue = convert::string_cast<double>(std::get<1>(item)->symbol->Quote.close, std::get<1>(item)->symbol->Decimal, convert::thou_sep);
 		QuickSetText(2, std::get<0>(item), strValue.c_str());
 		QuickRedrawCell(2, std::get<0>(item));
 	}

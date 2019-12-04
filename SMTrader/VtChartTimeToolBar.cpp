@@ -234,7 +234,7 @@ void VtChartTimeToolBar::OnBnClickedBtnMonth()
 	_ComboTime.EnableWindow(TRUE);
 	_ComboTick.EnableWindow(FALSE);
 	_Mode = 0;
-	_ChartType = SmChartType::MON;
+	_ChartType = SmChartType::MONTH;
 	ChangeButtonColor();
 }
 

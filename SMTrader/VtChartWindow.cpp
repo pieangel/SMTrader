@@ -482,18 +482,18 @@ void VtChartWindow::OnSize(UINT nType, int cx, int cy)
 
 void VtChartWindow::SetChartData(VtChartData* chartData)
 {
-	if (chartData == nullptr) return;
-
-	_Data = chartData;
-	_NoOfPoints = _Data->GetDataCount();
-	_Data->AddChartWindow(this);
-	VtChartDataManager* chartDataMgr = VtChartDataManager::GetInstance();
-	chartDataMgr->AddChartDataRequest(10, _Data);
+// 	if (chartData == nullptr) return;
+// 
+// 	_Data = chartData;
+// 	_NoOfPoints = _Data->GetDataCount();
+// 	_Data->AddChartWindow(this);
+// 	VtChartDataManager* chartDataMgr = VtChartDataManager::GetInstance();
+// 	chartDataMgr->AddChartDataRequest(10, _Data);
 }
 
 VtChartData* VtChartWindow::GetChartData()
 {
-	return _Data;
+	return nullptr;
 }
 
 void VtChartWindow::SetEditOption(EditOption a_EditOption)
@@ -644,8 +644,7 @@ void VtChartWindow::ChangeChartData(VtSymbol* symbol, SmChartType chart_type, in
 	SmChartData* chart_data = SmChartDataManager::GetInstance()->AddChartData(symbol->ShortCode, (int)chart_type, cycle);
 	chart_data->GetChartDataFromServer();
 	_MainChartDataKey = chart_data->GetDataKey();
-	SmChartDataSource data_source;
-	_DataMap[_MainChartDataKey] = data_source;
+	AddChartDataSource(symbol, chart_data);
 }
 
 SmChartDataSource* VtChartWindow::GetChartDataDataSource(std::string data_key)
@@ -658,6 +657,16 @@ SmChartDataSource* VtChartWindow::GetChartDataDataSource(std::string data_key)
 	}
 
 	return nullptr;
+}
+
+void VtChartWindow::AddChartDataSource(VtSymbol* symbol, SmChartData* chart_data)
+{
+	if (!symbol || !chart_data)
+		return;
+	SmChartDataSource data_source;
+	data_source.symbol = symbol;
+	data_source.source = chart_data;
+	_DataMap[chart_data->GetDataKey()] = data_source;
 }
 
 void VtChartWindow::RegisterRealtimeDataRequest(VtChartData* data)
@@ -856,23 +865,23 @@ void VtChartWindow::AdjustChartSize()
 
 void VtChartWindow::AdjustChartToCount(int count)
 {
-	if (count < 5)
-		return;
-
-	int dataCount = _Data->GetDataCount();
-	double width = 1.0;
-	width =((double)count / (double)dataCount);
-	if (width < m_ChartViewer.getZoomInWidthLimit())
-		return;
-
-	double left = 1 - width;
-
-	if ((width != m_ChartViewer.getViewPortWidth()))
-	{
-		m_ChartViewer.setViewPortWidth(width);
-		m_ChartViewer.setViewPortLeft(left);
-		m_ChartViewer.updateViewPort(true, false);
-	}
+// 	if (count < 5)
+// 		return;
+// 
+// 	int dataCount = _Data->GetDataCount();
+// 	double width = 1.0;
+// 	width =((double)count / (double)dataCount);
+// 	if (width < m_ChartViewer.getZoomInWidthLimit())
+// 		return;
+// 
+// 	double left = 1 - width;
+// 
+// 	if ((width != m_ChartViewer.getViewPortWidth()))
+// 	{
+// 		m_ChartViewer.setViewPortWidth(width);
+// 		m_ChartViewer.setViewPortLeft(left);
+// 		m_ChartViewer.updateViewPort(true, false);
+// 	}
 }
 
 BOOL VtChartWindow::OnInitDialog()
@@ -1082,29 +1091,29 @@ void VtChartWindow::OnChartIndex(UINT id)
 	m_ChartViewer.OnChartIndex(id);
 }
 
-void VtChartWindow::AddCompareData(VtChartData* data)
+void VtChartWindow::AddCompareData(SmChartDataSource* data)
 {
-	if (!data || !_Data)
+	if (!data)
 		return;
 
 	// 메인 차트와 같으면 반환
-	if (data->Key().compare(_Data->Key()) == 0)
-		return;
+	//if (data->Key().compare(_Data->Key()) == 0)
+	//	return;
 	VtReferenceChart* refChart = new VtReferenceChart();
 	refChart->show = true;
-	refChart->name = data->Key();
+	refChart->name = data->source->GetDataKey();
 	refChart->data = data;
 	refChart->embedded = true;
 	refChart->shareAxisWithMain = false;
 	refChart->height = 150;
 	refChart->type = 0;
-	refChart->color = _ColorMgr->GetColor(refChart->data->ColorIndex());
+	refChart->color = _ColorMgr->GetColor(refChart->data->colorIndex);
 
 	RefChartVector.push_back(refChart);
 
 	VtChartDataManager* chartDataMgr = VtChartDataManager::GetInstance();
-	data->AddChartWindow(this);
-	chartDataMgr->AddChartDataRequest(10, data);
+	//data->AddChartWindow(this);
+	//chartDataMgr->AddChartDataRequest(10, data);
 
 }
 
@@ -1114,32 +1123,32 @@ void VtChartWindow::AddCompareData(VtChartDataRequest req)
 {
 	VtChartDataManager* chartDataMgr = VtChartDataManager::GetInstance();
 	VtChartData* chartData = chartDataMgr->Add(req);
-	AddCompareData(chartData);
+	//AddCompareData(chartData);
 }
 
-void VtChartWindow::AddCompareData(int startAfter, VtChartData* data)
+void VtChartWindow::AddCompareData(int startAfter, SmChartDataSource* data)
 {
-	if (!data || !_Data)
+	if (!data)
 		return;
 
 	// 메인 차트와 같으면 반환
-	if (data->Key().compare(_Data->Key()) == 0)
-		return;
+	//if (data->Key().compare(_Data->Key()) == 0)
+	//	return;
 	VtReferenceChart* refChart = new VtReferenceChart();
 	refChart->show = true;
-	refChart->name = data->Key();
+	refChart->name = data->source->GetDataKey();
 	refChart->data = data;
 	refChart->embedded = true;
 	refChart->shareAxisWithMain = false;
 	refChart->height = 150;
 	refChart->type = 0;
-	refChart->color = _ColorMgr->GetColor(refChart->data->ColorIndex());
+	refChart->color = _ColorMgr->GetColor(refChart->data->colorIndex);
 
 	RefChartVector.push_back(refChart);
 
 	VtChartDataManager* chartDataMgr = VtChartDataManager::GetInstance();
-	data->AddChartWindow(this);
-	chartDataMgr->AddChartDataRequest(startAfter, 10, data);
+	//data->AddChartWindow(this);
+	//chartDataMgr->AddChartDataRequest(startAfter, 10, data);
 }
 
 /*
@@ -1290,7 +1299,7 @@ void VtChartWindow::DrawChart(CChartViewer* a_pChartViewer, int mode)
 	if (!a_pChartViewer)
 		return;
 	SmChartDataSource* data_source = GetChartDataDataSource(_MainChartDataKey);
-	if (!data_source)
+	if (!data_source || data_source->datetime.size() == 0)
 		return;
 
 	if (_Drawing)
@@ -1368,7 +1377,7 @@ void VtChartWindow::DrawChart(CChartViewer* a_pChartViewer, int mode)
 	//_MainChart->setNumberFormat(',');
 	std::string yAxisFormat;
 	yAxisFormat = _T("{value|");
-	yAxisFormat.append(std::to_string(_Data->Decimal()));
+	yAxisFormat.append(std::to_string(data_source->symbol->Decimal));
 	yAxisFormat.append(_T(",.}"));
 	_MainChart->yAxis()->setLabelFormat(yAxisFormat.c_str());
 	//_MainChart->yAxis()->setLabelFormat(_T("{value|2,.}"));
@@ -1379,39 +1388,37 @@ void VtChartWindow::DrawChart(CChartViewer* a_pChartViewer, int mode)
 
 	_LayerList.clear();
 
-	VtSymbolManager* symMgr = VtSymbolManager::GetInstance();
-	VtSymbol* sym = symMgr->FindSymbol(_Data->SymbolCode());
-	VtLayerInfo layerInfo;
+	SmLayerInfo layerInfo;
 	std::string text = _T("MainChart;");
-	text.append(sym ? sym->Name : _Data->SymbolCode());
+	text.append(data_source->symbol->Name);
 	TCHARtoUTF8 convert(text.c_str());
 	if (_ShowMainChart)
 	{
-		if (_Data->MainChartType() == VtMainChartType::ClosePrice)
+		if (data_source->chartStyle == SmChartStyle::ClosePrice)
 		{
-			_MainLayer = _SourceChart->addCloseLine(_ColorMgr->GetColor(_Data->ColorIndex()), convert);
+			_MainLayer = _SourceChart->addCloseLine(_ColorMgr->GetColor(data_source->colorIndex), convert);
 			_MainLayer->setLineWidth(3);
 			layerInfo.layer = _MainLayer;
 		}
-		else if (_Data->MainChartType() == VtMainChartType::TypicalPrice)
+		else if (data_source->chartStyle == SmChartStyle::TypicalPrice)
 		{
-			_MainLayer = _SourceChart->addTypicalPrice(_ColorMgr->GetColor(_Data->ColorIndex()), convert);
+			_MainLayer = _SourceChart->addTypicalPrice(_ColorMgr->GetColor(data_source->colorIndex), convert);
 			_MainLayer->setLineWidth(3);
 			layerInfo.layer = _MainLayer;
 		}
-		else if (_Data->MainChartType() == VtMainChartType::WeightedClose)
+		else if (data_source->chartStyle == SmChartStyle::WeightedClose)
 		{
-			_MainLayer = _SourceChart->addWeightedClose(_ColorMgr->GetColor(_Data->ColorIndex()), convert);
+			_MainLayer = _SourceChart->addWeightedClose(_ColorMgr->GetColor(data_source->colorIndex), convert);
 			_MainLayer->setLineWidth(3);
 			layerInfo.layer = _MainLayer;
 		}
-		else if (_Data->MainChartType() == VtMainChartType::MedianPrice)
+		else if (data_source->chartStyle == SmChartStyle::MedianPrice)
 		{
-			_MainLayer = _SourceChart->addMedianPrice(_ColorMgr->GetColor(_Data->ColorIndex()), convert);
+			_MainLayer = _SourceChart->addMedianPrice(_ColorMgr->GetColor(data_source->colorIndex), convert);
 			_MainLayer->setLineWidth(3);
 			layerInfo.layer = _MainLayer;
 		}
-		else if (_Data->MainChartType() == VtMainChartType::OHLC)
+		else if (data_source->chartStyle == SmChartStyle::OHLC)
 		{
 			layerInfo.layer = _SourceChart->addHLOC(0x8000, 0x800000, convert);
 		}
@@ -1426,13 +1433,13 @@ void VtChartWindow::DrawChart(CChartViewer* a_pChartViewer, int mode)
 		layerInfo.selected = false;
 		layerInfo.chart = _MainChart;
 		layerInfo.axis = _MainChart->yAxis();
-		layerInfo.data = _Data;
-		layerInfo.color = _ColorMgr->GetColor(_Data->ColorIndex());
-		layerInfo.colorIndex = _Data->ColorIndex();
+		layerInfo.data = data_source;
+		layerInfo.color = _ColorMgr->GetColor(data_source->colorIndex);
+		layerInfo.colorIndex = data_source->colorIndex;
 		_LayerList.push_back(layerInfo);
 	}
 
-	DrawRefChart(_LayerList);
+	//DrawRefChart(_LayerList);
 
 	DrawArea* d = _MainChart->makeChart();
 
@@ -1471,29 +1478,11 @@ void VtChartWindow::SetDefaultChartData()
 	if (!sym)
 		return;
 	VtRealtimeRegisterManager* realMgr = VtRealtimeRegisterManager::GetInstance();
-	VtChartDataRequest req;
-	req.chartType = VtChartType::MIN;
-	req.productCode = sym->ShortCode;
-	req.mainChartType = VtMainChartType::ClosePrice;
-	req.count = 9999;
-	req.cycle = 1;
-	req.next = 0;
-	req.reqKey = 0;
-	req.seq = 0;
-	//req.domestic = false;
-	req.domestic = true;
-	req.keyvalue = _T("");
-	req.initial = _T("KP");
-	req.decimal = sym->Decimal;
-	req.colorIndex = _ColorMgr->GetNextColorIndex();
-	_ChartDataReqVector.push_back(req);
-
-	VtChartDataManager* chartDataMgr = VtChartDataManager::GetInstance();
-	VtChartData* chartData = chartDataMgr->Add(req);
-	SetChartData(chartData);
-	_ChartDataVec.push_back(chartData);
-
-	realMgr->RegisterProduct(req.productCode);
+	SmChartData* chart_data = SmChartDataManager::GetInstance()->AddChartData(sym->ShortCode, (int)SmChartType::MIN, 1);
+	chart_data->GetChartDataFromServer();
+	_MainChartDataKey = chart_data->GetDataKey();
+	AddChartDataSource(sym, chart_data);
+	realMgr->RegisterProduct(sym->ShortCode);
 }
 
 void VtChartWindow::SetDefaultRefChartData()
@@ -1563,37 +1552,31 @@ void VtChartWindow::SetDefaultRefChartData()
 		req.colorIndex = _ColorMgr->GetNextColorIndex();
 		_ChartDataReqVector.push_back(req);
 		chartData = chartDataMgr->Add(req);
-		AddCompareData(interval * (i + 1), chartData);
-		_ChartDataVec.push_back(chartData);
+		//AddCompareData(interval * (i + 1), chartData);
+		//_ChartDataVec.push_back(chartData);
 	}
 }
 
-std::vector<VtChartData*> VtChartWindow::GetChartDataList()
+std::vector<SmChartDataSource*> VtChartWindow::GetChartDataList()
 {
-	std::vector<VtChartData*> dataList;
-	if (_Data)
-		dataList.push_back(_Data);
-	for (auto it = RefChartVector.begin(); it != RefChartVector.end(); ++it)
-	{
-		VtReferenceChart* ref = *it;
-		dataList.push_back(ref->data);
+	std::vector<SmChartDataSource*> dataList;
+	for (auto it = _DataMap.begin(); it != _DataMap.end(); ++it) {
+		dataList.push_back(&it->second);
 	}
-
 	return dataList;
 }
 
 void VtChartWindow::ShowChart(std::string symCode, bool show)
 {
-	if (_Data && _Data->SymbolCode().compare(symCode) == 0)
-	{
+	SmChartDataSource* data_source = GetChartDataDataSource(_MainChartDataKey);
+	if (data_source->symbol->ShortCode.compare(symCode) == 0) {
 		_ShowMainChart = show;
 		_SelectedDataSetName = _T("");
 		DrawChart(&m_ChartViewer, 0);
 		return;
 	}
 	VtReferenceChart* refChart = FindRefChart(symCode);
-	if (refChart)
-	{
+	if (refChart) {
 		_SelectedDataSetName = _T("");
 		refChart->show = show;
 		DrawChart(&m_ChartViewer, 0);
@@ -1603,22 +1586,22 @@ void VtChartWindow::ShowChart(std::string symCode, bool show)
 void VtChartWindow::StopChartDataEvent()
 {
 	// TODO: Add your message handler code here and/or call default
-	if (_Data)
-	{
-		// Return the used color
-		_ColorMgr->ReturnColorIndex(_Data->ColorIndex());
-		// Remove the chart window used from the map.
-		_Data->RemoveChartWindow(this);
-	}
+// 	if (_Data)
+// 	{
+// 		// Return the used color
+// 		_ColorMgr->ReturnColorIndex(_Data->ColorIndex());
+// 		// Remove the chart window used from the map.
+// 		_Data->RemoveChartWindow(this);
+// 	}
 
 
 	for (auto it = RefChartVector.begin(); it != RefChartVector.end(); ++it)
 	{
 		VtReferenceChart* chart = *it;
 		// Return the used color
-		_ColorMgr->ReturnColorIndex(chart->data->ColorIndex());
+		//_ColorMgr->ReturnColorIndex(chart->data->ColorIndex());
 		// Remove the chart window used from the map.
-		chart->data->RemoveChartWindow(this);
+		//chart->data->RemoveChartWindow(this);
 		delete *it;
 	}
 
@@ -1627,24 +1610,21 @@ void VtChartWindow::StopChartDataEvent()
 
 void VtChartWindow::SetSelectedChartData(std::string selectedCode)
 {
-	if (_Data && _Data->SymbolCode().compare(selectedCode) == 0)
-	{
+	SmChartDataSource* data = GetChartDataDataSource(_MainChartDataKey);
+	if (data && data->symbol->ShortCode.compare(selectedCode) == 0) {
 		_SelectedDataSetName = _T("MainChart");
-		_SelectedData = _Data;
+		_SelectedData = data;
 	}
-	else
-	{
+	else {
 		std::pair<int, VtReferenceChart*> index = RefChartIndex(selectedCode);
-		if (std::get<0>(index) > -1)
-		{
+		if (std::get<0>(index) > -1) {
 			_SelectedDataSetName = _T("Reference>");
 			_SelectedDataSetName.append(std::to_string(std::get<0>(index)));
 			_SelectedData = std::get<1>(index)->data;
 		}
-		else
-		{
+		else {
 			_SelectedDataSetName = _T("");
-			_SelectedData = _Data;
+			_SelectedData = data;
 		}
 	}
 	DrawChart(&m_ChartViewer, 0);
@@ -1666,8 +1646,8 @@ void VtChartWindow::ChangeChartTime(int newTime)
 		chartData->FilledCount(0);
 		if (req.domestic)
 			SetChartData(chartData);
-		else
-			AddCompareData(interval * i++, chartData);
+		//else
+		//	AddCompareData(interval * i++, chartData);
 	}
 }
 
@@ -1677,8 +1657,8 @@ void VtChartWindow::ChangeSystem(VtSystem* newSystem)
 		return;
 	if (_System)
 		_System->ResetSignal();
-	if (_Data)
-		newSystem->SetDataMap(_Data);
+// 	if (_Data)
+// 		newSystem->SetDataMap(_Data);
 }
 
 VtReferenceChart* VtChartWindow::FindRefChart(std::string symCode)
@@ -1686,7 +1666,7 @@ VtReferenceChart* VtChartWindow::FindRefChart(std::string symCode)
 	for (auto it = RefChartVector.begin(); it != RefChartVector.end(); ++it)
 	{
 		VtReferenceChart* chart = *it;
-		if (chart->data && (chart->data->SymbolCode().compare(symCode) == 0))
+		if (chart->data && (chart->data->symbol->ShortCode.compare(symCode) == 0))
 			return chart;
 	}
 
@@ -1698,7 +1678,7 @@ void VtChartWindow::GetZoomRange(CChartViewer * a_pChartViewer, int& start, int&
 	start = 0;
 	end = 0;
 	SmChartDataSource* data_source = GetChartDataDataSource(_MainChartDataKey);
-	if (!data_source || !a_pChartViewer)
+	if (!data_source || !a_pChartViewer || data_source->datetime.size() == 0)
 		return;
 
 	int data_count = data_source->GetDataCount();
@@ -1754,9 +1734,8 @@ int VtChartWindow::CalcChartHeight()
 
 int VtChartWindow::GetMaxDataCount()
 {
-	if (!_Data)
-		return 0;
-	int maxCount = _Data->GetDataCount();
+	SmChartDataSource* data = GetChartDataDataSource(_MainChartDataKey);
+	int maxCount = data->GetDataCount();
 
 	CString cnt;
 	cnt.Format(_T("chartdataCount = %d"), maxCount);
@@ -1778,10 +1757,11 @@ int VtChartWindow::GetMaxDataCount()
 
 void VtChartWindow::initChartViewer(CChartViewer *viewer)
 {
-	if (!_Data || _Init) return;
+	if (_Init) return;
 
-	auto time = _Data->DateTime;
-	int dataSize = _Data->GetDataCount();
+	SmChartDataSource* data = GetChartDataDataSource(_MainChartDataKey);
+	int dataSize = data->GetDataCount();
+	auto time = data->datetime;
 	// Set the full x range to be the duration of the data
 	viewer->setFullRange("x", time[0], time[dataSize - 1]);
 
@@ -1808,56 +1788,54 @@ void VtChartWindow::DrawTitleValue(DrawArea* drawArea)
 	int plotAreaTopY = plotArea->getTopY() + _MainChart->getAbsOffsetY();
 	int height = plotArea->getHeight();
 	int width = plotArea->getWidth();
-	VtChartData* selData = _Data;
+	SmChartDataSource* selData = GetChartDataDataSource(_MainChartDataKey);
 	if (_SelectedData) {
 		selData = _SelectedData;
 	}
 
-	std::string colorText = _ColorMgr->RGBToString(selData->ColorIndex());
+	std::string colorText = _ColorMgr->RGBToString(selData->colorIndex);
 	std::string strValue = _T("<*font = times.ttf, size = 18, color = ");// FF0000* > ");
 	strValue.append(colorText);
 	strValue.append(_T("*>"));
 	std::string text = strValue;
-	if (selData->Currency().compare(_T("KRW")) == 0)
-		strValue = string_cast<double>(selData->RealTimeClose(), selData->Decimal(), convert::thou_sep);
-	else
-		strValue = string_cast<double>(selData->RealTimeClose(), selData->Decimal(), convert::thou_sep);
+	strValue = string_cast<double>(selData->symbol->Quote.close, selData->symbol->Decimal, convert::thou_sep);
 
 	text.append(strValue);
 	text.append(_T("<*font = gulim.ttc, size = 10, color = ff0000*>"));
-	text.append(selData->Currency());
+	text.append(selData->symbol->Currency);
 	text.append(_T("<*font = gulim.ttc, size = 10, color = 000000*>"));
 	text.append(TCHARtoUTF8(_T(" 거래소:")));
-	text.append(selData->Exchange());
+	text.append(selData->symbol->Exchange);
 	text.append(TCHARtoUTF8(_T(",종목이름:")));
+
 	
 	VtSymbolManager* symMgr = VtSymbolManager::GetInstance();
-	VtSymbol* sym = symMgr->FindSymbol(selData->SymbolCode());
+	VtSymbol* sym = symMgr->FindSymbol(selData->symbol->ShortCode);
 	if (sym)
 		text.append(TCHARtoUTF8(sym->Name.c_str()));
-	int cycle = selData->Cycle();
+	int cycle = selData->source->Cycle();
 	CString strCycle;
 	strCycle.Format(_T("(%d"), cycle);
 	std::string temp;
 	temp = strCycle;
 	text.append(temp);
-	switch (selData->ChartType()) {
-	case VtChartType::DAY:
+	switch (selData->source->ChartType()) {
+	case SmChartType::DAY:
 		text.append(TCHARtoUTF8(_T("일")));
 		break;
-	case VtChartType::MONTH:
+	case SmChartType::MONTH:
 		text.append(TCHARtoUTF8(_T("월")));
 		break;
-	case VtChartType::WEEK:
+	case SmChartType::WEEK:
 		text.append(TCHARtoUTF8(_T("주")));
 		break;
-	case VtChartType::HOUR:
+	case SmChartType::HOUR:
 		text.append(TCHARtoUTF8(_T("시")));
 		break;
-	case VtChartType::MIN:
+	case SmChartType::MIN:
 		text.append(TCHARtoUTF8(_T("분")));
 		break;
-	case VtChartType::TICK:
+	case SmChartType::TICK:
 		text.append(TCHARtoUTF8(_T("틱")));
 		break;
 	default:
@@ -1869,12 +1847,11 @@ void VtChartWindow::DrawTitleValue(DrawArea* drawArea)
 	t->destroy();
 
 	
-	sym = symMgr->FindSymbol(selData->SymbolCode());
+	sym = symMgr->FindSymbol(selData->symbol->ShortCode);
 	if (sym) {
-		
 		std::string title;
 		// 한글을 위해서는 반드시 gulim.ttc 폰트를 설정해야 한다.
-		strValue = _T("<* font = H2HDRM.TTF, size = 14, color = ");
+		strValue = _T("<* font = gulim.ttc, size = 14, color = ");
 		strValue.append(colorText);
 		strValue.append(_T(" *>"));
 		title.append(strValue);
@@ -1882,7 +1859,7 @@ void VtChartWindow::DrawTitleValue(DrawArea* drawArea)
 		title.append(_T(" : "));
 		title.append(sym->ShortCode);
 		title.append(_T(" 거래소:("));
-		title.append(selData->Exchange());
+		title.append(selData->symbol->Exchange);
 		title.append(_T(")"));
 		_ChartTile = title;
 	}
@@ -1893,10 +1870,9 @@ void VtChartWindow::TrackFinance(MultiChart *m, int mouseX)
 	CString pos;
 	pos.Format(_T("tracFinance :: x = %d, y = %d \n"), mouseX, m_ChartViewer.getPlotAreaMouseY());
 	//TRACE(pos);
-
-	if (!_Data)
+	SmChartDataSource* main_data = GetChartDataDataSource(_MainChartDataKey);
+	if (!main_data->source->Received())
 		return;
-
 
 	// Clear the current dynamic layer and get the DrawArea object to draw on it.
 	DrawArea *d = m->initDynamicLayer();
@@ -1974,32 +1950,32 @@ void VtChartWindow::TrackFinance(MultiChart *m, int mouseX)
 						if (idx >= 0 || idx < RefChartVector.size())
 						{
 							VtReferenceChart* refChart = RefChartVector[idx];
-							VtSymbol* sym = symMgr->FindSymbol(refChart->data->SymbolCode());
+							VtSymbol* sym = symMgr->FindSymbol(refChart->data->symbol->ShortCode);
 
-							int cycle = refChart->data->Cycle();
+							int cycle = refChart->data->source->Cycle();
 							CString strCycle;
 							strCycle.Format(_T("(%d"), cycle);
 							std::string temp;
 							temp = strCycle;
 							std::string text = temp;
-							switch (refChart->data->ChartType())
+							switch (refChart->data->source->ChartType())
 							{
-							case VtChartType::DAY:
+							case SmChartType::DAY:
 								text.append(_T("일"));
 								break;
-							case VtChartType::MONTH:
+							case SmChartType::MONTH:
 								text.append(_T("월"));
 								break;
-							case VtChartType::WEEK:
+							case SmChartType::WEEK:
 								text.append(_T("주"));
 								break;
-							case VtChartType::HOUR:
+							case SmChartType::HOUR:
 								text.append(_T("시"));
 								break;
-							case VtChartType::MIN:
+							case SmChartType::MIN:
 								text.append(_T("분"));
 								break;
-							case VtChartType::TICK:
+							case SmChartType::TICK:
 								text.append(_T("틱"));
 								break;
 							default:
@@ -2009,7 +1985,7 @@ void VtChartWindow::TrackFinance(MultiChart *m, int mouseX)
 
 							std::string label;
 							label = _T("[거래소:");
-							label.append(refChart->data->Exchange());
+							label.append(refChart->data->symbol->Exchange);
 							label.append(_T(",종목이름:"));
 							label.append(sym->Name);
 							label.append(text);
@@ -2083,32 +2059,32 @@ void VtChartWindow::TrackFinance(MultiChart *m, int mouseX)
 							if (idx >= 0 || idx < RefChartVector.size())
 							{
 								VtReferenceChart* refChart = RefChartVector[idx];
-								VtSymbol* sym = symMgr->FindSymbol(refChart->data->SymbolCode());
+								VtSymbol* sym = symMgr->FindSymbol(refChart->data->symbol->ShortCode);
 
-								int cycle = refChart->data->Cycle();
+								int cycle = refChart->data->source->Cycle();
 								CString strCycle;
 								strCycle.Format(_T("(%d"), cycle);
 								std::string temp;
 								temp = strCycle;
 								std::string text = temp;
-								switch (refChart->data->ChartType())
+								switch (refChart->data->source->ChartType())
 								{
-								case VtChartType::DAY:
+								case SmChartType::DAY:
 									text.append(_T("일"));
 									break;
-								case VtChartType::MONTH:
+								case SmChartType::MONTH:
 									text.append(_T("월"));
 									break;
-								case VtChartType::WEEK:
+								case SmChartType::WEEK:
 									text.append(_T("주"));
 									break;
-								case VtChartType::HOUR:
+								case SmChartType::HOUR:
 									text.append(_T("시"));
 									break;
-								case VtChartType::MIN:
+								case SmChartType::MIN:
 									text.append(_T("분"));
 									break;
-								case VtChartType::TICK:
+								case SmChartType::TICK:
 									text.append(_T("틱"));
 									break;
 								default:
@@ -2118,7 +2094,7 @@ void VtChartWindow::TrackFinance(MultiChart *m, int mouseX)
 
 								std::string label;
 								label = _T("[거래소:");
-								label.append(refChart->data->Exchange());
+								label.append(refChart->data->symbol->Exchange);
 								label.append(_T(",종목이름:"));
 								label.append(sym->Name);
 								label.append(text);
@@ -2249,8 +2225,8 @@ void VtChartWindow::TrackFinance(MultiChart *m, int mouseX)
 			legendText << "      " << legendEntries[i];
 		}
 		legendText << "<*/*>";
-
-		DoubleArray datetime = DoubleArray(_Data->DateTime.data() + startIndex, _NoOfPoints);
+		
+		DoubleArray datetime = DoubleArray(main_data->datetime.data() + startIndex, _NoOfPoints);
 		double first = datetime[0];
 		int oldx = 0, oldy = 0;
 		oldx = _MainChart->getXCoor(0);
@@ -2297,7 +2273,7 @@ void VtChartWindow::TrackFinance(MultiChart *m, int mouseX)
 Axis* VtChartWindow::FindAxis(std::string dataName)
 {
 	for (auto it = _LayerList.begin(); it != _LayerList.end(); ++it) {
-		VtLayerInfo layerInfo = *it;
+		SmLayerInfo layerInfo = *it;
 		Layer* layer = layerInfo.layer;
 		int datasetCount = layer->getDataSetCount();
 		if (datasetCount > 0) {
@@ -2313,10 +2289,10 @@ Axis* VtChartWindow::FindAxis(std::string dataName)
 	return nullptr;
 }
 
-Axis* VtChartWindow::FindAxis(std::string dataName, std::vector<VtLayerInfo>& layerList)
+Axis* VtChartWindow::FindAxis(std::string dataName, std::vector<SmLayerInfo>& layerList)
 {
 	for (auto it = layerList.begin(); it != layerList.end(); ++it) {
-		VtLayerInfo layerInfo = *it;
+		SmLayerInfo layerInfo = *it;
 		Layer* layer = layerInfo.layer;
 		int datasetCount = layer->getDataSetCount();
 		if (datasetCount > 0) {
@@ -2563,7 +2539,7 @@ std::pair<int, VtReferenceChart*> VtChartWindow::RefChartIndex(std::string symCo
 		VtReferenceChart* chart = *it;
 		if (chart->show)
 		{
-			if (chart->data->SymbolCode().compare(symCode) == 0)
+			if (chart->data->symbol->ShortCode.compare(symCode) == 0)
 			{
 				result = i;
 				return std::make_pair(result, chart);
@@ -2602,9 +2578,10 @@ int VtChartWindow::RefChartIndexBySel(std::string selString)
 
 void VtChartWindow::SetSelectedData(std::string selString)
 {
+	SmChartDataSource* data = GetChartDataDataSource(_MainChartDataKey);
 	if (selString.find(_T("MainChart")) != std::string::npos)
 	{
-		_SelectedData = _Data;
+		_SelectedData = data;
 	}
 	else
 	{
@@ -2616,14 +2593,14 @@ void VtChartWindow::SetSelectedData(std::string selString)
 		}
 		else
 		{
-			_SelectedData = _Data;
+			_SelectedData = data;
 		}
 	}
 }
 
 void VtChartWindow::DrawSignal(DoubleArray& timeStamp, DoubleArray& highArray, DoubleArray& lowArray, DrawArea* drawArea)
 {
-	if (!_System || !_Data || !_System->Running())
+	if (!_System || !_System->Running())
 		return;
 
 	POINT old, cur;
@@ -2647,7 +2624,8 @@ void VtChartWindow::DrawSignal(DoubleArray& timeStamp, DoubleArray& highArray, D
 				close = lowArray[index];
 			}
 
-			DoubleArray closeData = DoubleArray(_Data->Close.data() + startIndex, _NoOfPoints);
+			SmChartDataSource* main_data = GetChartDataDataSource(_MainChartDataKey);
+			DoubleArray closeData = DoubleArray(main_data->close.data() + startIndex, _NoOfPoints);
 
 			double curValue = closeData[index];
 
@@ -2893,9 +2871,10 @@ bool VtChartWindow::HitTestSystem(CPoint point)
 		return false;
 
 	_SelectedSystem = false;
-	DoubleArray timeStamp = DoubleArray(_Data->DateTime.data() + startIndex, _NoOfPoints);
-	DoubleArray highArray = DoubleArray(_Data->High.data() + startIndex, _NoOfPoints);
-	DoubleArray lowArray = DoubleArray(_Data->Low.data() + startIndex, _NoOfPoints);
+	SmChartDataSource* main_data = GetChartDataDataSource(_MainChartDataKey);
+	DoubleArray timeStamp = DoubleArray(main_data->datetime.data() + startIndex, _NoOfPoints);
+	DoubleArray highArray = DoubleArray(main_data->high.data() + startIndex, _NoOfPoints);
+	DoubleArray lowArray = DoubleArray(main_data->low.data() + startIndex, _NoOfPoints);
 	CRect rcTest;
 	for (auto it = _System->SignalVector.begin(); it != _System->SignalVector.end(); ++it)
 	{
@@ -3008,24 +2987,23 @@ void VtChartWindow::DrawRealtimeValues(DrawArea* d)
 
 	for (auto it = _LayerList.rbegin(); it != _LayerList.rend(); ++it)
 	{
-		VtLayerInfo layerInfo = *it;
+		SmLayerInfo layerInfo = *it;
 		DrawCurrentValue(std::move(layerInfo), d);
 	}
 }
 
-void VtChartWindow::DrawRealtimeValues(DrawArea* d, std::vector<VtLayerInfo>& layerList)
+void VtChartWindow::DrawRealtimeValues(DrawArea* d, std::vector<SmLayerInfo>& layerList)
 {
 	if (!d)
 		return;
 
-	for (auto it = layerList.rbegin(); it != layerList.rend(); ++it)
-	{
-		VtLayerInfo layerInfo = *it;
+	for (auto it = layerList.rbegin(); it != layerList.rend(); ++it) {
+		SmLayerInfo layerInfo = *it;
 		DrawCurrentValue(std::move(layerInfo), d);
 	}
 }
 
-void VtChartWindow::DrawCurrentValue(VtLayerInfo&& layerInfo, DrawArea* drawArea)
+void VtChartWindow::DrawCurrentValue(SmLayerInfo&& layerInfo, DrawArea* drawArea)
 {
 	PlotArea* plotArea = layerInfo.chart->getPlotArea();
 	int plotAreaLeftX = plotArea->getLeftX() + layerInfo.chart->getAbsOffsetX();
@@ -3033,7 +3011,7 @@ void VtChartWindow::DrawCurrentValue(VtLayerInfo&& layerInfo, DrawArea* drawArea
 	int height = plotArea->getHeight();
 	int width = plotArea->getWidth();
 
-	int valuePos = plotAreaTopY - 35 + layerInfo.chart->getYCoor(layerInfo.data->RealTimeClose(), layerInfo.axis);
+	int valuePos = plotAreaTopY - 35 + layerInfo.chart->getYCoor(layerInfo.data->symbol->Quote.close, layerInfo.axis);
 	int rectTop = valuePos - 8;
 	int rectLeft = plotAreaLeftX + width + _YAxisGap - 5;
 	int rectBottom = rectTop + 16;
@@ -3050,12 +3028,9 @@ void VtChartWindow::DrawCurrentValue(VtLayerInfo&& layerInfo, DrawArea* drawArea
 	drawArea->polygon(IntArray(xarr, 3), IntArray(yarr, 3), layerInfo.color, layerInfo.color);
 	drawArea->rect(rectLeft, rectTop, rectLeft + 85, rectBottom, layerInfo.color, layerInfo.color);
 	std::string strValue;
-	if (layerInfo.data->Currency().compare(_T("KRW")) == 0)
-		strValue = string_cast<double>(layerInfo.data->RealTimeClose(), layerInfo.data->Decimal(), convert::thou_sep);
-	else
-		strValue = string_cast<double>(layerInfo.data->RealTimeClose(), layerInfo.data->Decimal(), convert::thou_sep);
+	strValue = string_cast<double>(layerInfo.data->symbol->Quote.close, layerInfo.data->symbol->Decimal, convert::thou_sep);
 	strValue.append(_T(":"));
-	strValue.append(layerInfo.data->Initial());
+	strValue.append(layerInfo.data->symbol->Initial);
 	TTFText* t = drawArea->text(strValue.c_str(), _T("굴림"), 10);
 	if (layerInfo.color != 0x00ffff00)
 		t->draw(rectLeft, valuePos - 7, 0xffffff);
@@ -3200,43 +3175,43 @@ void VtChartWindow::DrawRefChart()
 		i++;
 	}
 }*/
-void VtChartWindow::DrawRefChart(std::vector<VtLayerInfo>& layerList)
+void VtChartWindow::DrawRefChart(std::vector<SmLayerInfo>& layerList)
 {
 	int i = 0;
-	VtLayerInfo layerInfo;
+	SmLayerInfo layerInfo;
 	for (auto it = RefChartVector.begin(); it != RefChartVector.end(); ++it)
 	{
 		VtReferenceChart* chart = *it;
 		if (!chart->show)
 			continue;
 
-		VtChartData* chartData = chart->data;
+		SmChartDataSource* chartData = chart->data;
 
-		if (!chartData->Filled())
+		if (!chartData->source->Received())
 			continue;
 
 		Axis* leftAxis = nullptr;
 
-		std::vector<double>& open_vec = chartData->GetDataArray(_T("open"));
-		std::vector<double>& high_vec = chartData->GetDataArray(_T("high"));
-		std::vector<double>& low_vec = chartData->GetDataArray(_T("low"));
-		std::vector<double>& close_vec = chartData->GetDataArray(_T("close"));
+// 		std::vector<double>& open_vec = chartData->GetDataArray(_T("open"));
+// 		std::vector<double>& high_vec = chartData->GetDataArray(_T("high"));
+// 		std::vector<double>& low_vec = chartData->GetDataArray(_T("low"));
+// 		std::vector<double>& close_vec = chartData->GetDataArray(_T("close"));
 
-		DoubleArray highData = DoubleArray(high_vec.data() + startIndex, _NoOfPoints);
-		DoubleArray lowData = DoubleArray(low_vec.data() + startIndex, _NoOfPoints);
-		DoubleArray openData = DoubleArray(open_vec.data() + startIndex, _NoOfPoints);
-		DoubleArray closeData = DoubleArray(close_vec.data() + startIndex, _NoOfPoints);
+		DoubleArray highData = DoubleArray(chartData->high.data() + startIndex, _NoOfPoints);
+		DoubleArray lowData = DoubleArray(chartData->low.data() + startIndex, _NoOfPoints);
+		DoubleArray openData = DoubleArray(chartData->open.data() + startIndex, _NoOfPoints);
+		DoubleArray closeData = DoubleArray(chartData->close.data() + startIndex, _NoOfPoints);
 
 		// Add a line layer to for the third data set using blue (0000cc) color, with a line width of 2
 		// pixels. Bind the layer to the third y-axis.
-		std::string exName = chartData->SymbolCode();
-		exName.append(chartData->Exchange());
+		std::string exName = chartData->symbol->ShortCode;
+		exName.append(chartData->symbol->Exchange);
 		CString refName;
 		refName.Format(_T("Reference>%d;"), i);
 		std::string dataName = refName;
 		dataName.append(exName);
 
-		chartData->LineColor(_ColorMgr->GetColor(chart->data->ColorIndex()));
+		//chartData->LineColor(_ColorMgr->GetColor(chart->data->colorIndex));
 
 		Layer *layer2 = nullptr;
 
@@ -3257,7 +3232,7 @@ void VtChartWindow::DrawRefChart(std::vector<VtLayerInfo>& layerList)
 				if (_SelectedDataSetName.length() > 0 && _SelectedDataSetName.compare(name) == 0)
 				{
 					leftAxis->setColors(0x00dddddd, 0x00000000, 0x00000000);
-					leftAxis->setTitle(chartData->SymbolCode().c_str())->setAlignment(Chart::TopRight);
+					leftAxis->setTitle(chartData->symbol->ShortCode.c_str())->setAlignment(Chart::TopRight);
 				}
 				else
 				{
@@ -3265,13 +3240,13 @@ void VtChartWindow::DrawRefChart(std::vector<VtLayerInfo>& layerList)
 				}
 				std::string yAxisFormat;
 				yAxisFormat = _T("{value|");
-				yAxisFormat.append(std::to_string(chart->data->Decimal()));
+				yAxisFormat.append(std::to_string(chart->data->symbol->Decimal));
 				yAxisFormat.append(_T(",.}"));
 				leftAxis->setLabelFormat(yAxisFormat.c_str());
 			}
 
 
-			if (chart->data->MainChartType() == VtMainChartType::CandleStick)
+			if (chart->data->chartStyle == SmChartStyle::CandleStick)
 			{
 				layer2 = _MainChart->addCandleStickLayer(highData, lowData, openData,
 					closeData, 0xff0000, 0x0000ff);
@@ -3303,7 +3278,7 @@ void VtChartWindow::DrawRefChart(std::vector<VtLayerInfo>& layerList)
 			//c->setNumberFormat(',');
 			std::string yAxisFormat;
 			yAxisFormat = _T("{value|");
-			yAxisFormat.append(std::to_string(chart->data->Decimal()));
+			yAxisFormat.append(std::to_string(chart->data->symbol->Decimal));
 			yAxisFormat.append(_T(",.}"));
 			c->yAxis()->setLabelFormat(yAxisFormat.c_str());
 
@@ -3317,7 +3292,7 @@ void VtChartWindow::DrawRefChart(std::vector<VtLayerInfo>& layerList)
 
 		layerInfo.selected = false;
 		layerInfo.data = chartData;
-		layerInfo.color = chartData->LineColor();
+		layerInfo.color = _ColorMgr->GetColor(chart->data->colorIndex); 
 		layerList.push_back(layerInfo);
 		i++;
 	}

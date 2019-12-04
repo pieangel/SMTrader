@@ -6,8 +6,8 @@
 class VtChartWindow;
 class VtColorManager;
 class VtSymbol;
-class VtChartData;
 class VtChartContainer;
+class SmChartDataSource;
 class VtChartFavoriteGrid : public VtGrid
 {
 public:
@@ -33,7 +33,7 @@ public:
 private:
 	std::vector<int> _ColWidthVector;
 	VtColorManager* _ColorMgr;
-	std::map<std::string, std::pair<int,VtChartData*>> _DataMap;
+	std::map<std::string, std::pair<int, SmChartDataSource*>> _DataMap;
 	VtChartContainer* _ChartContainer = nullptr;
 };
 
