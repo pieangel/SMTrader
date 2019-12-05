@@ -61,7 +61,12 @@ void SmOptionGrid::RegisterOrderCallback()
 
 void SmOptionGrid::OnMasterEvent(VtSymbol* sym)
 {
-	ShowCurrent(sym);
+	if (_Mode == 0) {
+		SetRemain(sym);
+	}
+	else if (_Mode == 1) {
+		ShowCurrent(sym);
+	}
 }
 
 void SmOptionGrid::OnOrderEvent(VtOrder* order)
@@ -148,6 +153,8 @@ void SmOptionGrid::Init()
 
 	SetFont(&_defFont);
 	RegisterQuoteCallback();
+	RegisterMasterCallback();
+	RegisterOrderCallback();
 
 	SetColTitle();
 
@@ -231,6 +238,7 @@ void SmOptionGrid::SetColTitle()
 void SmOptionGrid::InitGrid()
 {
 	CRect rcGrid;
+	GetClientRect(rcGrid);
 	InitGrid(rcGrid.Height());
 }
 
@@ -258,6 +266,8 @@ void SmOptionGrid::InitGrid(int height)
 
 	// 기존맵을 삭제한다.
 	_SymbolRowMap.clear();
+	// 모든 텍스트를 지운다.
+	ClearAllText();
 	// 새로운 맵을 만든다.
 	MakeSymbolRowMap(start_max.first, start_max.second);
 
@@ -463,6 +473,17 @@ std::pair<int, int> SmOptionGrid::FindValueStartRow(int height)
 	}
 
 	return std::make_pair(startRow, max_row);
+}
+
+void SmOptionGrid::ClearAllText()
+{
+	for (int i = 1; i < _RowCount; ++i) {
+		for (int j = 0; j < _ColCount; ++j) {
+			CGridCellBase* pCell = GetCell(i, j);
+			pCell->SetText("");
+			InvalidateCellRect(i, j);
+		}
+	}
 }
 
 void SmOptionGrid::ResetRemainCells()

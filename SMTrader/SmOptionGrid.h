@@ -90,6 +90,7 @@ public:
 	void OnExpected(VtSymbol* sym);
 	std::pair<int, int> FindValueStartRow(int height);
 private:
+	void ClearAllText();
 	int _ValueStartRow = 0;
 	int _ValueMaxRow = 0;
 	int _EqualIndex = 0;

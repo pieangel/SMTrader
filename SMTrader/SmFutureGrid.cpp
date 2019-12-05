@@ -169,6 +169,10 @@ void SmFutureGrid::Init()
 	SetFont(&_defFont);
 
 	SetColTitle();
+
+	RegisterOrderCallback();
+	RegisterMasterCallback();
+	RegisterQuoteCallback();
 }
 
 void SmFutureGrid::OnLButtonDown(UINT nFlags, CPoint point)
