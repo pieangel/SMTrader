@@ -65,6 +65,7 @@
 #include "Market/SmSymbolReader.h"
 #include "Market/SmMarketManager.h"
 #include "Chart/SmChartDataManager.h"
+#include "SmPortfolioDlg.h"
 
 extern TApplicationFont g_Font;
 
@@ -120,6 +121,9 @@ BEGIN_MESSAGE_MAP(CMainFrame, CMDIFrameWndEx)
 	ON_COMMAND(ID_SET_SYSMONTH, &CMainFrame::OnSetSysmonth)
 	ON_COMMAND(ID_SET_ORDER, &CMainFrame::OnSetOrder)
 	ON_COMMAND(ID_ORDER_TEST, &CMainFrame::OnOrderTest)
+	ON_COMMAND(ID_AI, &CMainFrame::OnAi)
+	ON_COMMAND(ID_COR_BTWN_PORT, &CMainFrame::OnCorBtwnPort)
+	ON_COMMAND(ID_COR_BTWN_SIG, &CMainFrame::OnCorBtwnSig)
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -591,6 +595,7 @@ void CMainFrame::OnShowWindow(BOOL bShow, UINT nStatus)
 		// 증권사 클라이언트 초기회
 		VtHdClient* client = VtHdClient::GetInstance();
 		client->Init();
+		// 파일에서 심볼을 로드한다.
 		SmSymbolReader::GetInstance()->ReadSymbolFileList();
 		// 로그인 대화상자를 띄운다.
 		VtLogInDlg loginDlg;
@@ -1277,4 +1282,36 @@ void CMainFrame::OnOrderTest()
 	_OrderPanel = new SmOrderPanel();
 	_OrderPanel->Create(IDD_ORDER_PANEL, this);
 	_OrderPanel->ShowWindow(SW_SHOW);
+}
+
+
+void CMainFrame::OnAi()
+{
+	if (VtGlobal::StrategyToolWnd)
+		return;
+
+	VtStrategyToolWnd* dlg = new VtStrategyToolWnd(this);
+	dlg->Create(IDD_STRATEGE_TOOLS, this);
+	dlg->ShowWindow(SW_SHOW);
+	VtGlobal::StrategyToolWnd = dlg;
+}
+
+
+void CMainFrame::OnCorBtwnPort()
+{
+	SmPortfolioDlg* dlg;
+	dlg = new SmPortfolioDlg(this);
+	dlg->Mode(0);
+	dlg->Create(IDD_PORT_COR, this);
+	dlg->ShowWindow(SW_SHOW);
+}
+
+
+void CMainFrame::OnCorBtwnSig()
+{
+	SmPortfolioDlg* dlg;
+	dlg = new SmPortfolioDlg(this);
+	dlg->Mode(1);
+	dlg->Create(IDD_PORT_COR, this);
+	dlg->ShowWindow(SW_SHOW);
 }

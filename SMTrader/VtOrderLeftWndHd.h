@@ -64,7 +64,7 @@ private:
 	int _Mode = 1;
 public:
 	CComboBox _ComboProduct;
-	CComboBox _ComboOption;
+	CComboBox _ComboOptionMonth;
 	afx_msg void OnCbnSelchangeComboProduct();
 	afx_msg void OnCbnSelchangeComboOption();
 	afx_msg void OnBnClickedButton2();

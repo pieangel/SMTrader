@@ -147,10 +147,12 @@ public:
 			if (fs.peek() == '\n') {
 				//Start searching for \n occurrences
 				fs.seekg(-1, std::ios_base::cur);
+				// Returns the position of the current character in the input stream
 				int i = (int)fs.tellg();
 				for (i; i > 0; i--) {
 					if (fs.peek() == '\n') {
 						//Found
+						// Extracts characters from the stream, as unformatted input :
 						fs.get();
 						break;
 					}

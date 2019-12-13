@@ -669,7 +669,7 @@ void SmOrderGrid::SetCenterValueForOption(const VtSymbol* sym, std::set<std::pai
 		}
 
 		if (zeroRow < endRow) {
-			_IndexRow = endRow - (zeroRow - _IndexRow);
+			_IndexRow = endRow - (zeroRow - _IndexRow) + 1;
 		}
 	}
 
@@ -751,6 +751,7 @@ void SmOrderGrid::SetCenterValueByFixedForOption(const VtSymbol* sym, std::set<s
 	_IndexRow = FindIndexRow();
 	_IndexRow = -1 * _IndexRow;
 
+	// 호가가 바뀌는 행 - 옵션은 10.0부터 호가가 0.05로 그 이하는 0.01로 계산이 된다.
 	int Row10 = 0;
 	if (1000 <= sym->Quote.intClose) {
 		int delta = sym->Quote.intClose - 1000;

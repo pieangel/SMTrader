@@ -44,7 +44,7 @@ public:
 	
 	void SetColTitle();
 	int _ColCount = 3;
-	int _RowCount = 5;
+	int _RowCount = 50;
 	int _CellHeight = 21;
 	CFont _defFont;
 public:

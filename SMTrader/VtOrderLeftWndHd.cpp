@@ -65,7 +65,7 @@ void VtOrderLeftWndHd::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_COMBO_PRODUCT, _ComboProduct);
-	DDX_Control(pDX, IDC_COMBO_OPTION, _ComboOption);
+	DDX_Control(pDX, IDC_COMBO_OPTION, _ComboOptionMonth);
 	DDX_Control(pDX, IDC_CUSTOM_OPTION, _SymbolOptionGrid);
 	DDX_Control(pDX, IDC_CUSTOM_FUTURE, _SymbolFutureGrid);
 	DDX_Control(pDX, IDC_CUSTOM_PL, _ProfitLossGrid);

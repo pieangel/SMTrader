@@ -134,6 +134,9 @@ public:
 	afx_msg void OnSetSysmonth();
 	afx_msg void OnSetOrder();
 	afx_msg void OnOrderTest();
+	afx_msg void OnAi();
+	afx_msg void OnCorBtwnPort();
+	afx_msg void OnCorBtwnSig();
 };
 
 

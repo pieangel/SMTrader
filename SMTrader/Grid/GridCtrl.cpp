@@ -720,6 +720,16 @@ void CGridCtrl::OnSize(UINT nType, int cx, int cy)
 
     // End re-entry blocking
     bAlreadyInsideThisProcedure = FALSE;
+
+	DWORD style = GetWindowLong(m_hWnd, GWL_STYLE);
+	DWORD check = style & WS_VSCROLL;
+
+	if (check)
+	{
+		// If the vertical scroll bar is on shut it off
+		DWORD newstyle = style & (~check);
+		//SetWindowLong(m_hWnd, GWL_STYLE, newstyle);
+	}
 }
 
 UINT CGridCtrl::OnGetDlgCode()
@@ -7885,7 +7895,7 @@ void CGridCtrl::Reorder(int From, int To)
 
 BOOL CGridCtrl::PreCreateWindow(CREATESTRUCT& cs)
 {
-	cs.dwExStyle &= ~WS_VSCROLL;
+	//cs.dwExStyle &= ~WS_VSCROLL;
 
 	return CWnd::PreCreateWindow(cs);
 }

@@ -95,6 +95,7 @@ private:
 	int _ValueMaxRow = 0;
 	int _EqualIndex = 0;
 	int _MaxIndex = 0;
+	int _MaxRow = 0;
 	int _Mode = 1;
 	std::set<std::pair<int, int>> _RemainPos;
 	void ResetRemainCells();

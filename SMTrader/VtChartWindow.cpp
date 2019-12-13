@@ -1478,6 +1478,27 @@ void VtChartWindow::DrawChart(CChartViewer* a_pChartViewer, int mode)
 		_LayerList.push_back(layerInfo);
 	}
 
+
+	// Add a 10 period simple moving average to the main chart, using brown color
+	_SourceChart->addSimpleMovingAvg(10, 0x663300);
+
+	// Add a 20 period simple moving average to the main chart, using purple color
+	_SourceChart->addSimpleMovingAvg(20, 0x9900ff);
+
+	// Add a 20 period simple moving average to the main chart, using purple color
+	_SourceChart->addSimpleMovingAvg(60, 0x990000);
+
+	// Add a 20 period simple moving average to the main chart, using purple color
+	_SourceChart->addSimpleMovingAvg(120, 0x9900cc);
+
+	// Add 20 days bollinger band to the main chart, using light blue (9999ff) as the border and
+	// semi-transparent blue (c06666ff) as the fill color
+	_SourceChart->addBollingerBand(20, 2, 0x9999ff, 0xc06666ff);
+
+	// Add a 75 pixels volume bars sub-chart to the bottom of the main chart, using green/red/grey for
+	// up/down/flat days
+	_SourceChart->addVolBars(75, 0x99ff99, 0xff9999, 0x808080);
+
 	//DrawRefChart(_LayerList);
 
 	DrawArea* d = _MainChart->makeChart();

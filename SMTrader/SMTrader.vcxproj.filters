@@ -149,6 +149,9 @@
     <Filter Include="Market">
       <UniqueIdentifier>{3f102f6b-2307-4ea3-ade4-208e3f2b3d1e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="AI">
+      <UniqueIdentifier>{a1a35cff-6023-4649-96e9-222762c06b89}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -1570,6 +1573,12 @@
     <ClInclude Include="SmChartDataSource.h">
       <Filter>Chart</Filter>
     </ClInclude>
+    <ClInclude Include="SmCorrelationGrid.h">
+      <Filter>AI</Filter>
+    </ClInclude>
+    <ClInclude Include="SmPortfolioDlg.h">
+      <Filter>AI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ChildFrm.cpp">
@@ -2808,6 +2817,12 @@
     <ClCompile Include="SmChartDataSource.cpp">
       <Filter>Chart</Filter>
     </ClCompile>
+    <ClCompile Include="SmCorrelationGrid.cpp">
+      <Filter>AI</Filter>
+    </ClCompile>
+    <ClCompile Include="SmPortfolioDlg.cpp">
+      <Filter>AI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="SMTrader.rc">
@@ -2984,6 +2999,15 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="res\bitmap2.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\bmp00006.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\..\..\Users\shiwan sung\Pictures\search.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\..\..\Users\shiwan sung\Pictures\s2.bmp">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

@@ -206,6 +206,8 @@ void SmFutureGrid::SetColTitle()
 		QuickSetBackColor(j, 0, VtGlobal::GridTitleBackColor);
 		QuickSetText(j, 0, title[j]);
 		InvalidateCellRect(j, 0);
+		if (j + 1 == 5)
+			break;
 	}
 }
 

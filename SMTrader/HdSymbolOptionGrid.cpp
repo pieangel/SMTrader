@@ -175,7 +175,7 @@ void HdSymbolOptionGrid::InitGrid()
 
 	QuickSetBackColor(_EqualCol, _EqualRow, RGB(255, 255, 255));
 
-	int selMon = _LeftWnd->_ComboOption.GetCurSel();
+	int selMon = _LeftWnd->_ComboOptionMonth.GetCurSel();
 	if (selMon == -1 || _CurPrdtSec->SubSectionVector.size() == 0)
 		return;
 
@@ -186,7 +186,7 @@ void HdSymbolOptionGrid::InitGrid()
 	VtSymbolManager* symMgr = VtSymbolManager::GetInstance();
 	CString curYearMon;
 	CUGCell cell, centerCell;
-	_LeftWnd->_ComboOption.GetLBText(selMon, curYearMon);
+	_LeftWnd->_ComboOptionMonth.GetLBText(selMon, curYearMon);
 	VtProductSubSection* callSec = _CurPrdtSec->SubSectionVector[0];
 	VtOptionMonthSection* opSec = callSec->FindOptionMap((LPCTSTR)curYearMon);
 	if (opSec) {
@@ -290,7 +290,7 @@ void HdSymbolOptionGrid::InitYearMonth()
 		}
 	}
 
-	_LeftWnd->_ComboOption.SetCurSel(0);
+	_LeftWnd->_ComboOptionMonth.SetCurSel(0);
 }
 
 void HdSymbolOptionGrid::SetYearMonth()
@@ -298,17 +298,17 @@ void HdSymbolOptionGrid::SetYearMonth()
 	if (!_CurPrdtSec)
 		return;
 
-	_LeftWnd->_ComboOption.ResetContent();
+	_LeftWnd->_ComboOptionMonth.ResetContent();
 	VtProductSubSection* subSection = _CurPrdtSec->SubSectionVector.front();
 	for (auto it = subSection->_OptionMap.begin(); it != subSection->_OptionMap.end(); ++it)
 	{
 		std::string code = it->first;
 
 		CString yearMon(code.c_str());
-		int index = _LeftWnd->_ComboOption.AddString(yearMon);
+		int index = _LeftWnd->_ComboOptionMonth.AddString(yearMon);
 		//_LeftWnd->_ComboOption.SetItemDataPtr(index, code.c_str());
 	}
-	_LeftWnd->_ComboOption.SetCurSel(0);
+	_LeftWnd->_ComboOptionMonth.SetCurSel(0);
 }
 
 void HdSymbolOptionGrid::SetProductSection()
@@ -330,11 +330,11 @@ void HdSymbolOptionGrid::GetSymbolMaster()
 	if (!_CurPrdtSec)
 		return;
 
-	int selMon = _LeftWnd->_ComboOption.GetCurSel();
+	int selMon = _LeftWnd->_ComboOptionMonth.GetCurSel();
 	if (selMon == -1 || _CurPrdtSec->SubSectionVector.size() == 0)
 		return;
 	CString curYearMon;
-	_LeftWnd->_ComboOption.GetLBText(selMon, curYearMon);
+	_LeftWnd->_ComboOptionMonth.GetLBText(selMon, curYearMon);
 	VtProductSubSection* callSec = _CurPrdtSec->SubSectionVector[0];
 	VtOptionMonthSection* opSec = callSec->FindOptionMap((LPCTSTR)curYearMon);
 	if (opSec)
@@ -366,11 +366,11 @@ void HdSymbolOptionGrid::GetSymbolMasterByCenter()
 	if (!_CurPrdtSec)
 		return;
 
-	int selMon = _LeftWnd->_ComboOption.GetCurSel();
+	int selMon = _LeftWnd->_ComboOptionMonth.GetCurSel();
 	if (selMon == -1 || _CurPrdtSec->SubSectionVector.size() == 0)
 		return;
 	CString curYearMon;
-	_LeftWnd->_ComboOption.GetLBText(selMon, curYearMon);
+	_LeftWnd->_ComboOptionMonth.GetLBText(selMon, curYearMon);
 	VtProductSubSection* callSec = _CurPrdtSec->SubSectionVector[0];
 	VtOptionMonthSection* opSec = callSec->FindOptionMap((LPCTSTR)curYearMon);
 	if (opSec->RecentMonth() && opSec->SymbolMasterRequested())
@@ -645,7 +645,7 @@ void HdSymbolOptionGrid::SetRemain(VtSymbol* sym)
 
 int HdSymbolOptionGrid::FindValueStartRow(int height)
 {
-	int selMon = _LeftWnd->_ComboOption.GetCurSel();
+	int selMon = _LeftWnd->_ComboOptionMonth.GetCurSel();
 	if (selMon == -1 || _CurPrdtSec->SubSectionVector.size() == 0)
 		return 0;
 
@@ -657,7 +657,7 @@ int HdSymbolOptionGrid::FindValueStartRow(int height)
 
 	VtSymbolManager* symMgr = VtSymbolManager::GetInstance();
 	CString curYearMon;
-	_LeftWnd->_ComboOption.GetLBText(selMon, curYearMon);
+	_LeftWnd->_ComboOptionMonth.GetLBText(selMon, curYearMon);
 	VtProductSubSection* callSec = _CurPrdtSec->SubSectionVector[0];
 	VtOptionMonthSection* opSec = callSec->FindOptionMap((LPCTSTR)curYearMon);
 	if (opSec) {

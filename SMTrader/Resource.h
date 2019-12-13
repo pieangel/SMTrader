@@ -155,8 +155,13 @@
 #define IDD_ORDER_PANEL                 366
 #define IDD_SUBACNT                     367
 #define IDD_FUND_EDITOR                 368
+#define IDD_PORT_COR                    370
 #define IDD_FUND_DESIGNER               371
+#define IDB_BITMAP_PORT                 373
+#define IDB_BITMAP_GLASS                374
 #define IDD_FUND_NAME                   375
+#define IDB_BITMAP1                     375
+#define IDB_BITMAP_S2                   375
 #define IDD_ORDER_CENTER_FUND           376
 #define IDD_MINI_JANGO_FUND             377
 #define IDD_ACCOUNT_PWD                 378
@@ -545,6 +550,7 @@
 #define IDC_BUTTON_SEARCH               1050
 #define IDC_STATIC_CANCEL               1051
 #define IDC_BTN_LEFT_EXTEND             1051
+#define IDC_STATIC_COR                  1051
 #define IDC_CHECK_ONECLICK              1052
 #define IDC_STATIC_MINI_SUB             1052
 #define IDC_CHECK_FIX_HOGA              1053
@@ -687,14 +693,20 @@
 #define ID_ORDER_PANEL                  32802
 #define ID_32803                        32803
 #define ID_ORDER_TEST                   32804
+#define ID_32805                        32805
+#define ID_AI                           32806
+#define ID_32807                        32807
+#define ID_32808                        32808
+#define ID_COR_BTWN_PORT                32809
+#define ID_COR_BTWN_SIG                 32810
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        370
-#define _APS_NEXT_COMMAND_VALUE         32805
-#define _APS_NEXT_CONTROL_VALUE         1051
+#define _APS_NEXT_RESOURCE_VALUE        376
+#define _APS_NEXT_COMMAND_VALUE         32811
+#define _APS_NEXT_CONTROL_VALUE         1052
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif

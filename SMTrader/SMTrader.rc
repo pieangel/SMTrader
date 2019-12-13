@@ -188,6 +188,12 @@ IDB_BITMAP_DOWN         BITMAP                  "res\\bitmap_down.bmp"
 
 IDB_BITMAP_CANCEL       BITMAP                  "res\\bitmap2.bmp"
 
+IDB_BITMAP_PORT         BITMAP                  "res\\bmp00006.bmp"
+
+IDB_BITMAP_GLASS        BITMAP                  "C:\\Users\\shiwan sung\\Pictures\\search.bmp"
+
+IDB_BITMAP_S2           BITMAP                  "C:\\Users\\shiwan sung\\Pictures\\s2.bmp"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -303,6 +309,12 @@ BEGIN
         MENUITEM "시스템자동연결",                     ID_AUTO_SIGNAL_CONNECT
         MENUITEM "시스템 월물설정",                    ID_SET_SYSMONTH
         MENUITEM "시스템 주문설정",                    ID_SET_ORDER
+    END
+    POPUP "인공지능"
+    BEGIN
+        MENUITEM "인공지능툴바",                      ID_AI
+        MENUITEM "포트폴리오상관관계",                   ID_COR_BTWN_PORT
+        MENUITEM "신호별상관관계",                     ID_COR_BTWN_SIG
     END
 END
 
@@ -1500,6 +1512,14 @@ BEGIN
     CONTROL         "Custom1",IDC_STATIC_REAL_TICK,"MFCGridCtrl",WS_TABSTOP,321,69,106,376
 END
 
+IDD_PORT_COR DIALOGEX 0, 0, 633, 141
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "포트폴리오간 상관관계표"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "",IDC_STATIC_COR,6,5,622,133,WS_BORDER
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -1921,6 +1941,11 @@ BEGIN
     BEGIN
         RIGHTMARGIN, 427
     END
+
+    IDD_PORT_COR, DIALOG
+    BEGIN
+        RIGHTMARGIN, 631
+    END
 END
 #endif    // APSTUDIO_INVOKED
 
@@ -2186,6 +2211,11 @@ BEGIN
 END
 
 IDD_ORDER_PANEL AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_PORT_COR AFX_DIALOG_LAYOUT
 BEGIN
     0
 END

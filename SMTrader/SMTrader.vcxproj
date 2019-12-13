@@ -343,11 +343,13 @@
     <ClInclude Include="SmAssetGrid.h" />
     <ClInclude Include="SmCallbackManager.h" />
     <ClInclude Include="SmChartDataSource.h" />
+    <ClInclude Include="SmCorrelationGrid.h" />
     <ClInclude Include="SmFutureGrid.h" />
     <ClInclude Include="SmOptionGrid.h" />
     <ClInclude Include="SmOrderGrid.h" />
     <ClInclude Include="SmOrderPanel.h" />
     <ClInclude Include="SmPLGrid.h" />
+    <ClInclude Include="SmPortfolioDlg.h" />
     <ClInclude Include="SmTickGrid.h" />
     <ClInclude Include="SMTrader.h" />
     <ClInclude Include="SMTraderDoc.h" />
@@ -802,11 +804,13 @@
     <ClCompile Include="SmAssetGrid.cpp" />
     <ClCompile Include="SmCallbackManager.cpp" />
     <ClCompile Include="SmChartDataSource.cpp" />
+    <ClCompile Include="SmCorrelationGrid.cpp" />
     <ClCompile Include="SmFutureGrid.cpp" />
     <ClCompile Include="SmOptionGrid.cpp" />
     <ClCompile Include="SmOrderGrid.cpp" />
     <ClCompile Include="SmOrderPanel.cpp" />
     <ClCompile Include="SmPLGrid.cpp" />
+    <ClCompile Include="SmPortfolioDlg.cpp" />
     <ClCompile Include="SmTickGrid.cpp" />
     <ClCompile Include="SMTrader.cpp" />
     <ClCompile Include="SMTraderDoc.cpp" />
@@ -1120,6 +1124,8 @@
     <ResourceCompile Include="SMTrader.rc" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="..\..\..\Users\shiwan sung\Pictures\s2.bmp" />
+    <Image Include="..\..\..\Users\shiwan sung\Pictures\search.bmp" />
     <Image Include="res\Arrow2 - Down.ico" />
     <Image Include="res\Arrow2 - Left.ico" />
     <Image Include="res\Arrow2 - Right.ico" />
@@ -1136,6 +1142,7 @@
     <Image Include="res\bmp00003.bmp" />
     <Image Include="res\bmp00004.bmp" />
     <Image Include="res\bmp00005.bmp" />
+    <Image Include="res\bmp00006.bmp" />
     <Image Include="res\calc2.bmp" />
     <Image Include="res\classview.bmp" />
     <Image Include="res\classview_hc.bmp" />
