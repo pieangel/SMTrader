@@ -444,7 +444,8 @@ std::pair<int, int> SmOptionGrid::FindValueStartRow(int height)
 	int minVal = 1000000;
 	int intCenter = 0;
 	int eCenter = 0;
-	int startRow = 0;
+	// 값을 표시하는 시작 인덱스
+	int start_index = 0;
 	int max_row = height / DefaultCellHeight;
 	_MaxRow = max_row;
 	VtSymbolManager* symMgr = VtSymbolManager::GetInstance();
@@ -470,15 +471,33 @@ std::pair<int, int> SmOptionGrid::FindValueStartRow(int height)
 		}
 		int center_index = (int)(opSec->_SymbolVector.size() / 2);
 		_MaxIndex = opSec->_SymbolVector.size() - 1;
+		// 등가 인덱스를 저장한다.
 		_EqualIndex = eIndex;
+		// 등가 심볼을 저장한다.
 		_EqualSymbol = opSec->_SymbolVector[eIndex];
 		int half = (int)(max_row / 2);
-		startRow = center_index - half;
-		if (startRow < 0)
-			startRow = 0;
+		// 등가 인덱스가 값의 중앙보다 클때 
+		if (eIndex > center_index) {
+			if (eIndex + half > _MaxIndex) {
+				// 맨위 한줄은 제목이므로 1을 더해 준다.
+				// 인덱스는 원래 0에서 시작하는데 우리는 1에서 시작하므로 1을 다시한번 더해준다.
+				start_index = _MaxIndex - max_row + 1 + 1;
+			}
+			else {
+				start_index = eIndex - half;
+			}
+		}
+		else { // 등가 인덱스가 값의 중앙보다 작을 때
+			if (eIndex - half < 0) {
+				start_index = 0;
+			}
+			else {
+				start_index = eIndex - half;
+			}
+		}
 	}
 
-	return std::make_pair(startRow, max_row);
+	return std::make_pair(start_index, max_row);
 }
 
 void SmOptionGrid::ClearAllText()
@@ -888,6 +907,7 @@ void SmOptionGrid::MakeSymbolRowMap(int start_index, int max_row)
 	VtOptionMonthSection* callMonthSec = callSec->FindOptionMap((LPCTSTR)curYearMon);
 	VtOptionMonthSection* putMonthSec = putSec->FindOptionMap((LPCTSTR)curYearMon);
 	if (callMonthSec && putMonthSec) {
+		// 콜과 풋의 심볼을 순회한다.
 		for (int i = start_index, j = 1; i < callMonthSec->_SymbolVector.size(); ++i, ++j) {
 			// 행의 끝에 도달하면 탈출한다.
 			if (i < 0 || j >= _MaxRow)
