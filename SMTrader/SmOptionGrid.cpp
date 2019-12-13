@@ -843,8 +843,6 @@ void SmOptionGrid::SetEqualRow(int equalRow)
 	int maxRow = GetMaxRow();
 
 	int centerRow = maxRow / 2;
-
-	//SetTopRow(equalRow - centerRow);
 }
 
 int SmOptionGrid::GetMaxRow()
