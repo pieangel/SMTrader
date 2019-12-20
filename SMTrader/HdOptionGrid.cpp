@@ -20,6 +20,11 @@
 #include "VtUsdStrategyConfigDlg.h"
 #include "SmOrderPanel.h"
 #include "VtChartTimeToolBar.h"
+#include "Market/SmMarket.h"
+#include "Market/SmMarketManager.h"
+#include "Market/SmProduct.h"
+#include "Market/SmProductYearMonth.h"
+#include "VtRealtimeRegisterManager.h"
 using Poco::NumberFormatter;
 
 HdOptionGrid::HdOptionGrid()
@@ -168,63 +173,61 @@ void HdOptionGrid::InitGrid()
 {
 	if (!_OptionPage)
 		return;
-	if (!_CurPrdtSec)
-		return;
-
-	int selMon = _OptionPage->_ComboOptionMonth.GetCurSel();
-	if (selMon == -1 || _CurPrdtSec->SubSectionVector.size() == 0)
-		return;
 
 	QuickSetBackColor(_EqualCol, _EqualRow, RGB(255, 255, 255));
 
+	int selMon = _OptionPage->_ComboOptionMonth.GetCurSel();
 	int eIndex = 0;
 	int delta = 0;
 	int minVal = 1000000;
+	int intCenter = 0;
+	int eCenter = 0;
+	
 	VtSymbolManager* symMgr = VtSymbolManager::GetInstance();
 	CString curYearMon;
-	CUGCell cell, centerCell;
 	_OptionPage->_ComboOptionMonth.GetLBText(selMon, curYearMon);
-	VtProductSubSection* callSec = _CurPrdtSec->SubSectionVector[0];
-	VtOptionMonthSection* opSec = callSec->FindOptionMap((LPCTSTR)curYearMon);
-	if (opSec)
-	{
-		ClearInfo();
-		int i = 0;
-		for (auto it = opSec->_SymbolVector.begin(); it != opSec->_SymbolVector.end(); ++it)
-		{
-			VtSymbol* sym = *it;
-			GetCell(0, i, &cell);
-			//cell.SetText(sym->ShortCode.c_str());
-			int curValue = sym->Quote.intClose;
-			std::string strVal = NumberFormatter::format(curValue / std::pow(10, sym->Decimal), sym->Decimal);
-			cell.SetText(strVal.c_str());
-			cell.Tag(sym);
-			SetCell(0, i, &cell);
-			RedrawCell(0, i);
-			
-			_CallSymbolRowMap[sym] = std::make_pair(0, i);
 
-			GetCell(1, i, &centerCell);
-			std::string centerVal = sym->ShortCode.substr(5, 3);
-			char centerTip = sym->ShortCode.at(7);
-			int intCenter = static_cast<int>(std::stoi(centerVal) * std::pow(10, sym->Decimal));
-			if (centerTip == '2' || centerTip == '7')
-				intCenter += 50;
+	SmProduct* product = SmMarketManager::GetInstance()->FindProductFromMap(_RunInfo[_SelectedProduct].CallCode);
+	if (!product)
+		return ;
 
-			delta = std::abs(symMgr->Kospi200Current - intCenter);
-			if (delta < minVal)
-			{
-				minVal = delta;
-				eIndex = i;
+	std::map<std::string, SmProductYearMonth*>& year_month_map = product->GetYearMonthMap();
+
+	SmProductYearMonth* year_month = product->GetYearMonth((LPCTSTR)curYearMon);
+	// 등가를 찾아 낸다.
+	if (year_month) {
+		std::vector<VtSymbol*> symbol_list = year_month->SymbolList();
+		SetNumberRows(symbol_list.size());
+		for (int i = 0; i < symbol_list.size(); ++i) {
+			VtSymbol* sym = symbol_list[i];
+			if (product->Code().compare("206") == 0) {
+				std::string centerVal = sym->Name.substr(18, 6);
+				centerVal.erase(std::remove(centerVal.begin(), centerVal.end(), ','), centerVal.end());
+				intCenter = std::stoi(centerVal) * (int)(std::pow(10, 2));
+				delta = std::abs(symMgr->Kosdaq150Current - intCenter);
+				if (delta < minVal) {
+					minVal = delta;
+					eCenter = intCenter;
+					eIndex = i;
+				}
 			}
-
-			centerCell.SetNumberDecimals(sym->Decimal);
-			centerCell.SetNumber(intCenter / std::pow(10, sym->Decimal));
-			SetCell(1, i, &centerCell);
-
-			RedrawCell(1, i);
-			i++;
+			else {
+				std::string centerVal = sym->ShortCode.substr(5, 3);
+				char centerTip = sym->ShortCode.at(7);
+				intCenter = std::stoi(centerVal) * static_cast<int>(std::pow(10, sym->Decimal));
+				// 행사가가 2나 7로 끝나면 .5가 붙는다. 그래서 자릿수를 감안하여 정수로 환산해서 50을 더해 준다.
+				if (centerTip == '2' || centerTip == '7')
+					intCenter += 50;
+				delta = std::abs(symMgr->Kospi200Current - intCenter);
+				if (delta < minVal) {
+					minVal = delta;
+					eCenter = intCenter;
+					eIndex = i;
+				}
+			}
 		}
+		// 등가 심볼을 저장한다.
+		_EqualSymbol = symbol_list[eIndex];
 	}
 
 	SetEqualRow(eIndex);
@@ -234,47 +237,22 @@ void HdOptionGrid::InitGrid()
 	_EqualCol = 1;
 	_EqualRow = eIndex;
 
-	VtProductSubSection* putSec = _CurPrdtSec->SubSectionVector[1];
-	opSec = putSec->FindOptionMap((LPCTSTR)curYearMon);
-	if (opSec)
-	{
-		int i = 0;
-		for (auto it = opSec->_SymbolVector.begin(); it != opSec->_SymbolVector.end(); ++it)
-		{
-			VtSymbol* sym = *it;
-			GetCell(2, i, &cell);
-			//cell.SetText(sym->ShortCode.c_str());
-			int curValue = sym->Quote.intClose;
-			std::string strVal = NumberFormatter::format(curValue / std::pow(10, sym->Decimal), sym->Decimal);
-			cell.SetText(strVal.c_str());
-			cell.Tag(sym);
-			SetCell(2, i, &cell);
-			RedrawCell(2, i);
-			_PutSymbolRowMap[sym] = std::make_pair(2, i);
-			i++;
-		}
-	}
+	SetCellInfo();
 }
 
 void HdOptionGrid::InitSymbol()
 {
 	if (!_OptionPage)
 		return;
-
-	VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();
-	for (auto it = prdtCatMgr->MainOptionVector.begin(); it != prdtCatMgr->MainOptionVector.end(); ++it)
-	{
-		std::string secName = *it;
-		VtProductSection* section = prdtCatMgr->FindProductSection(secName);
-		if (section)
-		{
-			int index = _OptionPage->_ComboOptionMarket.AddString(section->Name.c_str());
-			_OptionPage->_ComboOptionMarket.SetItemDataPtr(index, section);
-		}
+	SmMarketManager* mrktMgr = SmMarketManager::GetInstance();
+	_RunInfo = mrktMgr->GetOptionRunVector();
+	for (auto it = _RunInfo.begin(); it != _RunInfo.end(); ++it) {
+		SmRunInfo& run_info = *it;
+		int index = _OptionPage->_ComboOptionMarket.AddString(run_info.Name.c_str());
 	}
 
 	_OptionPage->_ComboOptionMarket.SetCurSel(0);
-	_CurPrdtSec = (VtProductSection*)_OptionPage->_ComboOptionMarket.GetItemDataPtr(0);
+	_SelectedProduct = 0;
 }
 
 void HdOptionGrid::InitYearMonth()
@@ -282,37 +260,32 @@ void HdOptionGrid::InitYearMonth()
 	if (!_OptionPage)
 		return;
 
-	VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();
-	for (auto it = prdtCatMgr->MainOptionVector.begin(); it != prdtCatMgr->MainOptionVector.end(); ++it)
-	{
-		std::string secName = *it;
-		VtProductSection* section = prdtCatMgr->FindProductSection(secName);
-		if (section)
-		{
-			_CurPrdtSec = section;
-			SetYearMonth();
-			break;
-		}
-	}
+	SetYearMonth();
 
 	_OptionPage->_ComboOptionMonth.SetCurSel(0);
 }
 
 void HdOptionGrid::SetYearMonth()
 {
-	if (!_CurPrdtSec)
+	int cur_sel = _OptionPage->_ComboOptionMarket.GetCurSel();
+	if (cur_sel < 0)
 		return;
 
+	SmProduct* product = SmMarketManager::GetInstance()->FindProductFromMap(_RunInfo[cur_sel].CallCode);
+	if (!product)
+		return;
 	_OptionPage->_ComboOptionMonth.ResetContent();
-	VtProductSubSection* subSection = _CurPrdtSec->SubSectionVector.front();
-	for (auto it = subSection->_OptionMap.begin(); it != subSection->_OptionMap.end(); ++it)
-	{
+
+	std::map<std::string, SmProductYearMonth*>& year_month_map = product->GetYearMonthMap();
+	for (auto it = year_month_map.begin(); it != year_month_map.end(); ++it) {
+		SmProductYearMonth* year_month = it->second;
+
 		std::string code = it->first;
 
 		CString yearMon(code.c_str());
 		int index = _OptionPage->_ComboOptionMonth.AddString(yearMon);
-		//_LeftWnd->_ComboOption.SetItemDataPtr(index, code.c_str());
 	}
+
 	_OptionPage->_ComboOptionMonth.SetCurSel(0);
 }
 
@@ -320,10 +293,7 @@ void HdOptionGrid::SetProductSection()
 {
 	if (!_OptionPage)
 		return;
-	int selPrdt = _OptionPage->_ComboOptionMarket.GetCurSel();
-	if (selPrdt == -1)
-		return;
-	_CurPrdtSec = (VtProductSection*)_OptionPage->_ComboOptionMarket.GetItemDataPtr(selPrdt);
+	_SelectedProduct = _OptionPage->_ComboOptionMarket.GetCurSel();
 }
 
 void HdOptionGrid::GetSymbolMaster()
@@ -331,72 +301,31 @@ void HdOptionGrid::GetSymbolMaster()
 	VtHdClient* client = VtHdClient::GetInstance();
 	client->SetOptionGrid(this);
 
-	if (!_CurPrdtSec)
+	if (_EqualRow == -1)
 		return;
 
 	int selMon = _OptionPage->_ComboOptionMonth.GetCurSel();
-	if (selMon == -1 || _CurPrdtSec->SubSectionVector.size() == 0)
-		return;
-	CString curYearMon;
-	_OptionPage->_ComboOptionMonth.GetLBText(selMon, curYearMon);
-	VtProductSubSection* callSec = _CurPrdtSec->SubSectionVector[0];
-	VtOptionMonthSection* opSec = callSec->FindOptionMap((LPCTSTR)curYearMon);
-	if (opSec)
-	{
-		for (auto it = opSec->_SymbolVector.begin(); it != opSec->_SymbolVector.end(); ++it)
-		{
-			VtSymbol* sym = *it;
-			if (sym->Quote.intClose == 0)
-				sym->GetSymbolMaster();
-		}
-	}
-	VtProductSubSection* putSec = _CurPrdtSec->SubSectionVector[1];
-	opSec = putSec->FindOptionMap((LPCTSTR)curYearMon);
-	if (opSec)
-	{
-		for (auto it = opSec->_SymbolVector.begin(); it != opSec->_SymbolVector.end(); ++it)
-		{
-			VtSymbol* sym = *it;
-			if (sym->Quote.intClose == 0)
-				sym->GetSymbolMaster();
-		}
-	}
-}
 
-void HdOptionGrid::GetSymbolMasterLately()
-{
-	if (_EqualRow < 0)
-		GetSymbolMaster();
-
-	int centerRow = _EqualRow;
-
-	VtHdClient* client = VtHdClient::GetInstance();
-	client->SetOptionGrid(this);
-
-	if (!_CurPrdtSec)
-		return;
-
-	int selMon = _OptionPage->_ComboOptionMonth.GetCurSel();
-	if (selMon == -1 || _CurPrdtSec->SubSectionVector.size() == 0)
+	std::pair<SmProduct*, SmProduct*> product_pair = SmMarketManager::GetInstance()->GetProductPair(_RunInfo[_SelectedProduct]);
+	if (!product_pair.first || !product_pair.second)
 		return;
 
 	CString curYearMon;
 	_OptionPage->_ComboOptionMonth.GetLBText(selMon, curYearMon);
-	VtProductSubSection* callSec = _CurPrdtSec->SubSectionVector[0];
-	VtOptionMonthSection* opSec = callSec->FindOptionMap((LPCTSTR)curYearMon);
+	SmProductYearMonth* call_year_month = product_pair.first->GetYearMonth((LPCTSTR)curYearMon);
+	SmProductYearMonth* put_year_month = product_pair.second->GetYearMonth((LPCTSTR)curYearMon);
+	if (!call_year_month || !put_year_month)
+		return;
 
-	VtProductSubSection* putSec = _CurPrdtSec->SubSectionVector[1];
-	VtOptionMonthSection* opSec2 = putSec->FindOptionMap((LPCTSTR)curYearMon);
-
-	if (opSec && opSec2)
-	{
+	if (call_year_month && put_year_month) {
+		std::vector<VtSymbol*> call_symbol_list = call_year_month->SymbolList();
+		std::vector<VtSymbol*> put_symbol_list = put_year_month->SymbolList();
 		int startIndex = 0;
-		int endIndex = opSec->_SymbolVector.size() - 1;
+		int endIndex = call_symbol_list.size() - 1;
 		int addNum = 0;
 		int curIndex = _EqualRow;
 		bool upRange = false, downRange = false;
-		while (1)
-		{
+		while (1) {
 			if (addNum % 2 == 0)
 				curIndex = curIndex + addNum;
 			else
@@ -407,14 +336,87 @@ void HdOptionGrid::GetSymbolMasterLately()
 			if (curIndex > endIndex)
 				downRange = true;
 
-			if (curIndex >= startIndex && curIndex <= endIndex)
-			{
-				VtSymbol* sym = opSec->_SymbolVector[curIndex];
-				if (sym->Quote.intClose == 0)
-					sym->GetSymbolMaster();
-				sym = opSec2->_SymbolVector[curIndex];
-				if (sym->Quote.intClose == 0)
-					sym->GetSymbolMaster();
+			if (curIndex >= startIndex && curIndex <= endIndex) {
+				VtSymbol* sym = nullptr;
+				if (curIndex < call_symbol_list.size()) {
+					sym = call_symbol_list[curIndex];
+					if (sym->Quote.intClose == 0) {
+						sym->GetSymbolMaster();
+						VtRealtimeRegisterManager::GetInstance()->RegisterProduct(sym->ShortCode);
+					}
+				}
+
+				if (curIndex < put_symbol_list.size()) {
+					sym = put_symbol_list[curIndex];
+					if (sym->Quote.intClose == 0) {
+						sym->GetSymbolMaster();
+						VtRealtimeRegisterManager::GetInstance()->RegisterProduct(sym->ShortCode);
+					}
+				}
+			}
+
+			if (upRange && downRange)
+				break;
+
+			addNum++;
+		}
+	}
+}
+
+void HdOptionGrid::GetSymbolMasterLately()
+{
+	if (_EqualRow == -1)
+		return;
+
+	int selMon = _OptionPage->_ComboOptionMonth.GetCurSel();
+
+	std::pair<SmProduct*, SmProduct*> product_pair = SmMarketManager::GetInstance()->GetProductPair(_RunInfo[_SelectedProduct]);
+	if (!product_pair.first || !product_pair.second)
+		return;
+
+	CString curYearMon;
+	_OptionPage->_ComboOptionMonth.GetLBText(selMon, curYearMon);
+	SmProductYearMonth* call_year_month = product_pair.first->GetYearMonth((LPCTSTR)curYearMon);
+	SmProductYearMonth* put_year_month = product_pair.second->GetYearMonth((LPCTSTR)curYearMon);
+	if (!call_year_month || !put_year_month)
+		return;
+
+	if (call_year_month && put_year_month) {
+		std::vector<VtSymbol*> call_symbol_list = call_year_month->SymbolList();
+		std::vector<VtSymbol*> put_symbol_list = put_year_month->SymbolList();
+		int startIndex = 0;
+		int endIndex = call_symbol_list.size() - 1;
+		int addNum = 0;
+		int curIndex = _EqualRow;
+		bool upRange = false, downRange = false;
+		while (1) {
+			if (addNum % 2 == 0)
+				curIndex = curIndex + addNum;
+			else
+				curIndex = curIndex - addNum;
+
+			if (curIndex < startIndex)
+				upRange = true;
+			if (curIndex > endIndex)
+				downRange = true;
+
+			if (curIndex >= startIndex && curIndex <= endIndex) {
+				VtSymbol* sym = nullptr;
+				if (curIndex < call_symbol_list.size()) {
+					sym = call_symbol_list[curIndex];
+					if (sym->Quote.intClose == 0) {
+						sym->GetSymbolMaster();
+						VtRealtimeRegisterManager::GetInstance()->RegisterProduct(sym->ShortCode);
+					}
+				}
+
+				if (curIndex < put_symbol_list.size()) {
+					sym = put_symbol_list[curIndex];
+					if (sym->Quote.intClose == 0) {
+						sym->GetSymbolMaster();
+						VtRealtimeRegisterManager::GetInstance()->RegisterProduct(sym->ShortCode);
+					}
+				}
 			}
 
 			if (upRange && downRange)
@@ -502,6 +504,92 @@ int HdOptionGrid::GetMaxRow()
 	return count - 2;
 }
 
+
+void HdOptionGrid::SetCellInfo()
+{
+	int selMon = _OptionPage->_ComboOptionMonth.GetCurSel();
+	if (selMon == -1)
+		return;
+
+	std::pair<SmProduct*, SmProduct*> product_pair = SmMarketManager::GetInstance()->GetProductPair(_RunInfo[_SelectedProduct]);
+	if (!product_pair.first || !product_pair.second)
+		return;
+
+	CString curYearMon;
+	_OptionPage->_ComboOptionMonth.GetLBText(selMon, curYearMon);
+	SmProductYearMonth* call_year_month = product_pair.first->GetYearMonth((LPCTSTR)curYearMon);
+	SmProductYearMonth* put_year_month = product_pair.second->GetYearMonth((LPCTSTR)curYearMon);
+	if (!call_year_month || !put_year_month)
+		return;
+
+	int eIndex = 0;
+	int delta = 0;
+	int minVal = 1000000;
+	if (call_year_month) {
+		std::vector<VtSymbol*> call_symbol_list = call_year_month->SymbolList();
+		// 콜과 풋의 심볼을 순회한다.
+		for (int i = 0, j = 0; i < call_symbol_list.size(); ++i, ++j) {			
+			VtSymbol* call_sym = call_symbol_list[i];
+			std::string strVal = "";
+			// 코스닥일때 
+			if (product_pair.first->Code().compare("206") == 0) {
+				std::string centerVal = call_sym->Name.substr(18, 6);
+				centerVal.erase(std::remove(centerVal.begin(), centerVal.end(), ' '), centerVal.end());
+				// 중앙값을 설정한다.
+				strVal = centerVal;
+			}
+			else { // 코스피 일때
+				std::string centerVal = call_sym->ShortCode.substr(5, 3);
+				char centerTip = call_sym->ShortCode.at(7);
+				int intCenter = std::stoi(centerVal) * static_cast<int>(std::pow(10, call_sym->Decimal));
+				// 행사가가 2나 7로 끝나면 .5가 붙기 때문에 50을 더해준다.
+				// 나머지 행사가는 0으로 끝나기 때문에 더해 주지 않아도 된다.
+				if (centerTip == '2' || centerTip == '7')
+					intCenter += 50;
+
+				// 중앙값을 설정한다.
+				strVal = NumberFormatter::format(intCenter / std::pow(10, call_sym->Decimal), call_sym->Decimal);
+			}
+
+			CUGCell cell;
+			GetCell(1, j, &cell);
+			// 새로운 등가를 설정한다.
+			if (call_sym == _EqualSymbol) {
+				cell.SetBackColor(RGB(255, 255, 0));
+			}
+			cell.SetText(strVal.c_str());
+			SetCell(1, j, &cell);
+			QuickRedrawCell(1, j);
+
+			GetCell(0, j, &cell);
+			strVal = NumberFormatter::format(call_sym->Quote.intClose / std::pow(10, call_sym->Decimal), call_sym->Decimal);
+			cell.SetText(strVal.c_str());
+			cell.Tag(call_sym);
+			cell.SetBackColor(RGB(252, 226, 228));
+			SetCell(0, j, &cell);
+			QuickRedrawCell(0, j);
+
+			_CallSymbolRowMap[call_sym] = std::make_pair(0, j);
+		}
+	}
+
+	if (put_year_month) {
+		std::vector<VtSymbol*> put_symbol_list = put_year_month->SymbolList();
+		// 콜과 풋의 심볼을 순회한다.
+		for (int i = 0, j = 0; i < put_symbol_list.size(); ++i, ++j) {
+			VtSymbol* put_sym = put_symbol_list[i];
+			CUGCell cell;
+			GetCell(2, j, &cell);
+			std::string strVal = NumberFormatter::format(put_sym->Quote.intClose / std::pow(10, put_sym->Decimal), put_sym->Decimal);
+			cell.SetText(strVal.c_str());
+			cell.Tag(put_sym);
+			cell.SetBackColor(RGB(218, 226, 245));
+			SetCell(2, j, &cell);
+			QuickRedrawCell(2, j);
+			_PutSymbolRowMap[put_sym] = std::make_pair(2, j);
+		}
+	}
+}
 
 void HdOptionGrid::OnLClicked(int col, long row, int updn, RECT *rect, POINT *point, int processed)
 {

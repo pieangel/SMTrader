@@ -17,6 +17,10 @@
 #include "VtAddConnectSignalDlg.h"
 #include "SmOrderPanel.h"
 #include "VtChartTimeToolBar.h"
+#include "Market/SmMarket.h"
+#include "Market/SmMarketManager.h"
+#include "Market/SmProduct.h"
+#include "Market/SmProductYearMonth.h"
 using Poco::NumberFormatter;
 
 HdFutureGrid::HdFutureGrid()
@@ -176,45 +180,46 @@ void HdFutureGrid::InitMarket()
 		return;
 	_FuturePage->_ComboFutureMarket.ResetContent();
 
-	VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();
-	for (auto it = prdtCatMgr->MainFutureVector.begin(); it != prdtCatMgr->MainFutureVector.end(); ++it)
-	{
-		std::string secName = *it;
-		VtProductSection* section = prdtCatMgr->FindProductSection(secName);
-		if (section)
-		{
-			int index = _FuturePage->_ComboFutureMarket.AddString(section->Name.c_str());
-			_FuturePage->_ComboFutureMarket.SetItemDataPtr(index, section);
-		}
+	std::vector<SmRunInfo> run_info = SmMarketManager::GetInstance()->GetFutureRunVector();
+	int i = 0;
+	for (auto it = run_info.begin(); it != run_info.end(); ++it) {
+		SmRunInfo item = *it;
+		int index = _FuturePage->_ComboFutureMarket.AddString(item.Name.c_str());
 	}
+
 	_FuturePage->_ComboFutureMarket.SetCurSel(0);
+
+	_ProductIndex = 0;
 }
 
 void HdFutureGrid::SetProductSection()
 {
 	if (!_FuturePage)
 		return;
-	int curSel = _FuturePage->_ComboFutureMarket.GetCurSel();
-	if (curSel == -1)
-		return;
-
-	_PrdtSec = (VtProductSection*)_FuturePage->_ComboFutureMarket.GetItemDataPtr(curSel);
+	_ProductIndex = _FuturePage->_ComboFutureMarket.GetCurSel();
 }
 
 void HdFutureGrid::InitGrid()
 {
-	if (_PrdtSec && _PrdtSec->SubSectionVector.size() > 0) {
-		ClearSymbolInfo();
-		VtProductSubSection* subSection = _PrdtSec->SubSectionVector.front();
-		int i = 0;
+	std::vector<SmRunInfo> run_info = SmMarketManager::GetInstance()->GetFutureRunVector();
+	if (run_info.size() == 0)
+		return;
+	SmRunInfo item = run_info[_ProductIndex];
+	SmProduct* product = SmMarketManager::GetInstance()->FindProductFromMap(item.Code.substr(0, 3));
+	if (!product)
+		return;
+
+	ClearSymbolInfo();
+	std::vector<VtSymbol*>& symbol_list = product->GetSymbolList();
+	for (size_t i = 0; i < symbol_list.size(); ++i) {
 		CUGCell cell, centerCell;
-		for (auto it = subSection->_SymbolVector.begin(); it != subSection->_SymbolVector.end(); ++it) {
-			VtSymbol* sym = *it;
+		VtSymbol* sym = symbol_list[i];
+		if (sym) {
 			GetCell(0, i, &cell);
 			cell.SetText(sym->ShortCode.c_str());
 			cell.Tag(sym);
 			SetCell(0, i, &cell);
-
+			QuickRedrawCell(0, i);
 			GetCell(1, i, &cell);
 			cell.Tag(sym);
 			SetCell(1, i, &cell);
@@ -222,6 +227,7 @@ void HdFutureGrid::InitGrid()
 			SymbolRowMap[sym] = i;
 
 			QuickSetText(1, i, sym->Name.c_str());
+			QuickRedrawCell(1, i);
 
 			GetCell(2, i, &centerCell);
 			int intCenter = sym->Quote.intClose;
@@ -229,14 +235,6 @@ void HdFutureGrid::InitGrid()
 			centerCell.SetNumber(intCenter / std::pow(10, sym->Decimal));
 			centerCell.Tag(sym);
 			SetCell(2, i, &centerCell);
-
-			i++;
-		}
-
-		for (int i = 0; i < _RowCount; i++)
-		{
-			QuickRedrawCell(0, i);
-			QuickRedrawCell(1, i);
 			QuickRedrawCell(2, i);
 		}
 	}
@@ -247,13 +245,19 @@ void HdFutureGrid::GetSymbolMaster()
 	VtHdClient* client = VtHdClient::GetInstance();
 	client->SetFutureGrid(this);
 
-	if (_PrdtSec && _PrdtSec->SubSectionVector.size() > 0) {
-		VtProductSubSection* subSection = _PrdtSec->SubSectionVector.front();
-		for (auto it = subSection->_SymbolVector.begin(); it != subSection->_SymbolVector.end(); ++it) {
-			VtSymbol* sym = *it;
-			if (sym->Quote.intClose == 0)
-				sym->GetSymbolMaster();
-		}
+	std::vector<SmRunInfo> run_info = SmMarketManager::GetInstance()->GetFutureRunVector();
+	if (run_info.size() == 0)
+		return;
+	SmRunInfo item = run_info[_ProductIndex];
+	SmProduct* product = SmMarketManager::GetInstance()->FindProductFromMap(item.Code.substr(0, 3));
+	if (!product)
+		return;
+
+	std::vector<VtSymbol*>& symbol_list = product->GetSymbolList();
+	for (size_t i = 0; i < symbol_list.size(); ++i) {
+		VtSymbol* sym = symbol_list[i];
+		if (sym->Quote.intClose == 0)
+			sym->GetSymbolMaster();
 	}
 }
 
@@ -279,15 +283,14 @@ void HdFutureGrid::SetChartTimeToolBar(VtChartTimeToolBar* timeToolBar)
 
 void HdFutureGrid::ClearSymbolInfo()
 {
-	for (int i = 0; i < _RowCount; i++)
-	{
+	for (int i = 0; i < _RowCount; i++) {
 		QuickSetText(0, i, _T(""));
 		QuickSetText(1, i, _T(""));
 		QuickSetText(2, i, _T(""));
 
-		//QuickRedrawCell(0, i);
-		//QuickRedrawCell(1, i);
-		//QuickRedrawCell(2, i);
+		QuickRedrawCell(0, i);
+		QuickRedrawCell(1, i);
+		QuickRedrawCell(2, i);
 	}
 }
 

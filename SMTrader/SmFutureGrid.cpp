@@ -27,6 +27,10 @@
 #include "SmOrderPanel.h"
 #include <functional>
 #include "SmCallbackManager.h"
+#include "Market/SmMarketManager.h"
+#include "Market/SmProduct.h"
+#include "Market/SmProductYearMonth.h"
+#include "SmRunInfo.h"
 
 using namespace std;
 using namespace std::placeholders;
@@ -202,7 +206,7 @@ void SmFutureGrid::SetColTitle()
 		SetColumnWidth(i, colWidth[i]);
 	}
 
-	LPCTSTR title[5] = { "지수선물", "미니선물", "코닥선물", "국체선물", "달러선물" };
+	LPCTSTR title[5] = { "지수선물", "미니선물", "코닥선물", "국채선물", "달러선물" };
 	for (int j = 0; j < _RowCount; ++j) {
 		QuickSetBackColor(j, 0, VtGlobal::GridTitleBackColor);
 		QuickSetText(j, 0, title[j]);
@@ -218,49 +222,47 @@ void SmFutureGrid::InitGrid()
 	if (!_OrderConfigMgr)
 		return;
 
-	VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();
+	std::vector<SmRunInfo> run_info = SmMarketManager::GetInstance()->GetFutureRunVector();
 	int i = 0;
-	CUGCell cell;
-	for (auto it = prdtCatMgr->MainFutureVector.begin(); it != prdtCatMgr->MainFutureVector.end(); ++it) {
-		std::string secName = *it;
-		VtProductSection* section = prdtCatMgr->FindProductSection(secName);
-		if (section) {
-			QuickSetText(i, 1,section->Code.c_str());
-			if (section->SubSectionVector.size() > 0) {
-				VtProductSubSection* subSection = section->SubSectionVector.front();
-				if (subSection->_SymbolVector.size() > 0) {
-					VtSymbol* sym = subSection->_SymbolVector.front();
-					GetSymbolMaster(sym);
-					sym->RecentMonth(true);
-					sym->RequestedSymbolMaster(true);
-					if (_Mode == 0) {
-						ShowRemain(sym);
-					}
-					else if (_Mode == 1) {
-						ShowCurrent(sym, i);
-					}
-					else {
-						QuickSetText(i, 2, _T("0"));
-						QuickSetBackColor(i, 2, RGB(255, 255, 255));
-					}
+	for (auto it = run_info.begin(); it != run_info.end(); ++it) {
+		SmRunInfo item = *it;
+		SmProduct* product = SmMarketManager::GetInstance()->FindProductFromMap(item.Code.substr(0, 3));
+		if (!product) continue;
+		SmProductYearMonth* year_month = product->GetRecentYearMonth();
+		if (!year_month) continue;
 
-					CGridCellBase* pCell = GetCell(i, 0);
-					pCell->SetBackClr(VtGlobal::GridTitleBackColor);
-					pCell->SetTextClr(VtGlobal::GridTitleTextColor);
-					pCell->SetText(section->UserDefinedName.c_str());
-					// Set the symbol object for the current cell.
-					pCell->SetData((LPARAM)sym);
-					InvalidateCellRect(i, 0);
-
-					pCell = GetCell(i, 1);
-					pCell->SetData((LPARAM)sym);
-
-					pCell = GetCell(i, 2);
-					pCell->SetData((LPARAM)sym);
-
-					_FutureCurrentValueRowMap[sym->ShortCode] = std::make_tuple(i, 2, sym);
-				}
+		VtSymbol* sym = year_month->GetFirstSymbol();
+		if (sym) {
+			GetSymbolMaster(sym);
+			sym->RecentMonth(true);
+			sym->RequestedSymbolMaster(true);
+			if (_Mode == 0) {
+				ShowRemain(sym);
 			}
+			else if (_Mode == 1) {
+				ShowCurrent(sym, i);
+			}
+			else {
+				QuickSetText(i, 2, _T("0"));
+				QuickSetBackColor(i, 2, RGB(255, 255, 255));
+			}
+
+			CGridCellBase* pCell = GetCell(i, 0);
+			pCell->SetBackClr(VtGlobal::GridTitleBackColor);
+			pCell->SetTextClr(VtGlobal::GridTitleTextColor);
+			pCell->SetText(item.Name.c_str());
+			// Set the symbol object for the current cell.
+			pCell->SetData((LPARAM)sym);
+			InvalidateCellRect(i, 0);
+
+			QuickSetText(i, 1, item.Code.c_str());
+			pCell = GetCell(i, 1);
+			pCell->SetData((LPARAM)sym);
+
+			pCell = GetCell(i, 2);
+			pCell->SetData((LPARAM)sym);
+
+			_FutureCurrentValueRowMap[sym->ShortCode] = std::make_tuple(i, 2, sym);
 			i++;
 		}
 	}

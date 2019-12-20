@@ -333,10 +333,11 @@ void SmMarketManager::LoadRunInfo()
 			for (pugi::xml_node future_node = future_list.first_child(); future_node; future_node = future_node.next_sibling()) {
 				std::string code = future_node.attribute("code").as_string();
 				std::string name = future_node.attribute("name").as_string();
+				std::string custom_name = future_node.attribute("custom_name").as_string();
 				SmRunInfo run_info;
 				run_info.Code = code;
 				run_info.Name = name;
-				run_info.UserDefinedName = name;
+				run_info.UserDefinedName = custom_name;
 				AddFutureRunInfo(run_info);
 			}
 		}

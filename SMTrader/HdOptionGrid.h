@@ -1,6 +1,9 @@
 #pragma once
 #include "Skel\VtGrid.h"
 #include <map>
+#include "SmRunInfo.h"
+#include <vector>
+#include <string>
 class VtProductSection;
 class HdOptionPage;
 class VtSymbol;
@@ -59,6 +62,7 @@ public:
 	}
 	void SetChartTimeToolBar(VtChartTimeToolBar* timeToolBar);
 private:
+	int _SelectedProduct = 0;
 	HdSymbolSelecter* _SymSelecter;
 	VtProductSection* _CurPrdtSec = nullptr;
 	HdOptionPage* _OptionPage = nullptr;
@@ -80,5 +84,8 @@ private:
 	VtAddConnectSignalDlg* _AddConSigDlg = nullptr;
 	VtSignalConnectionGrid* _SigConGrid = nullptr;
 	VtChartTimeToolBar* _TimeToolbar = nullptr;
+	std::vector<SmRunInfo> _RunInfo;
+	VtSymbol* _EqualSymbol = nullptr;
+	void SetCellInfo();
 };
 

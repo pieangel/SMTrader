@@ -12,6 +12,7 @@ public:
 	std::string YearMonthCode;
 	std::vector<VtSymbol*> SymbolList();
 	void AddSymbol(VtSymbol* symbol);
+	VtSymbol* GetFirstSymbol();
 private:
 	std::map<std::string, VtSymbol*> _SymbolMap;
 };

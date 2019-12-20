@@ -52,6 +52,7 @@ public:
 	}
 	void SetChartTimeToolBar(VtChartTimeToolBar* timeToolBar);
 private:
+	int _ProductIndex = 0;
 	HdSymbolSelecter* _SymSelecter;
 	int _OldSelRow = -2;
 	int _ClickedRow = -2;

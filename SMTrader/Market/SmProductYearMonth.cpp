@@ -28,3 +28,10 @@ void SmProductYearMonth::AddSymbol(VtSymbol* symbol)
 		return;
 	_SymbolMap[symbol->ShortCode] = symbol;
 }
+
+VtSymbol* SmProductYearMonth::GetFirstSymbol()
+{
+	if (_SymbolMap.size() == 0)
+		return nullptr;
+	return _SymbolMap.begin()->second;
+}
