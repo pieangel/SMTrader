@@ -27,18 +27,24 @@ void SmSymbolReader::ReadSymbolFileList()
 	ZmConfigManager* configMgr = ZmConfigManager::GetInstance();
 	std::string appPath = configMgr->GetAppPath();
 	std::string configPath = appPath;
-	configPath.append(_T("\\env\\config.xml"));
+	configPath.append(_T("\\config.xml"));
 	pugi::xml_document doc;
 	pugi::xml_parse_result result = doc.load_file(configPath.c_str());
 
 	pugi::xml_node sym_file_list = doc.child("application").child("symbol_file_list");
 	pugi::xml_node domestic_list = sym_file_list.first_child().next_sibling();
-	int index = 0;
 	for (auto it = domestic_list.begin(); it != domestic_list.end(); ++it) {
 		std::string file_name = it->text().as_string();
 		TRACE(file_name.c_str());
 		DomesticSymbolMasterFileSet.insert(file_name);
 	}
+
+// 	pugi::xml_node abroad_list = sym_file_list.first_child();
+// 	for (auto it = abroad_list.begin(); it != abroad_list.end(); ++it) {
+// 		std::string file_name = it->text().as_string();
+// 		TRACE(file_name.c_str());
+// 		DomesticSymbolMasterFileSet.insert(file_name);
+// 	}
 
 	
 	pugi::xml_node app = doc.first_child();
@@ -91,12 +97,18 @@ void SmSymbolReader::ReadSymbolFromFile(int index, std::string fullPath)
 		ReadUsDollarFutureInfo(fullPath);
 		break;
 	case 9:
-		ReadMarketFile(fullPath);
+		ReadKosdaqOptionFile(fullPath);
 		break;
 	case 10:
-		ReadPmFile(fullPath);
+		ReadMiniKospiOptionFile(fullPath);
 		break;
 	case 11:
+		ReadMarketFile(fullPath);
+		break;
+	case 12:
+		ReadPmFile(fullPath);
+		break;
+	case 13:
 		ReadJmFile(fullPath);
 		break;
 	default:
@@ -145,6 +157,7 @@ void SmSymbolReader::ReadMarketFile(std::string fullPath)
 		
 		SmMarket* market = marketMgr->AddMarket(market_type);
 		SmProduct* cat = market->AddProduct(pmCode);
+		marketMgr->AddProduct(cat);
 		cat->MarketName(market_type);
 		cat->Exchange(exchange);
 		cat->Name(enName);
@@ -510,8 +523,9 @@ void SmSymbolReader::ReadJmFile(std::string fullPath)
 void SmSymbolReader::ReadKospiFutureFile(std::string fullPath)
 {
 	SmMarketManager* marketMgr = SmMarketManager::GetInstance();
-	std::string market_name = "국내시장";
+	std::string market_name = "코스피선물";
 	SmMarket *market = marketMgr->AddMarket(market_name);
+	market->Code("101");
 	CString msg;
 	std::ifstream infile(fullPath);
 	std::string line;
@@ -563,6 +577,7 @@ void SmSymbolReader::ReadKospiFutureFile(std::string fullPath)
 
 		VtSymbolManager* symMgr = VtSymbolManager::GetInstance();
 		SmProduct* product = market->FindAddProduct(product_code);
+		marketMgr->AddProduct(product);
 		marketMgr->AddCategoryMarket(product_code, market_name);
 		product->MarketName(market_name);
 		product->NameKr("코스피200선물");
@@ -589,8 +604,9 @@ void SmSymbolReader::ReadKospiFutureFile(std::string fullPath)
 void SmSymbolReader::ReadKospiOptionFile(std::string fullPath)
 {
 	SmMarketManager* marketMgr = SmMarketManager::GetInstance();
-	std::string market_name = "국내시장";
+	std::string market_name = "코스피옵션";
 	SmMarket* market = marketMgr->AddMarket(market_name);
+	market->Code("201");
 	CString msg;
 	std::ifstream infile(fullPath);
 	std::string line;
@@ -645,6 +661,7 @@ void SmSymbolReader::ReadKospiOptionFile(std::string fullPath)
 
 		VtSymbolManager* symMgr = VtSymbolManager::GetInstance();
 		SmProduct* product = market->FindAddProduct(product_code);
+		marketMgr->AddProduct(product);
 		marketMgr->AddCategoryMarket(product_code, market_name);
 		product->MarketName(market_name);
 		product->NameKr("코스피200옵션");
@@ -670,8 +687,9 @@ void SmSymbolReader::ReadKospiOptionFile(std::string fullPath)
 void SmSymbolReader::ReadKospiWeeklyOptionFile(std::string fullPath)
 {
 	SmMarketManager* marketMgr = SmMarketManager::GetInstance();
-	std::string market_name = "국내시장";
+	std::string market_name = "코스피위클리옵션";
 	SmMarket* market = marketMgr->AddMarket(market_name);
+	market->Code("209");
 	CString msg;
 	std::ifstream infile(fullPath);
 	std::string line;
@@ -726,13 +744,13 @@ void SmSymbolReader::ReadKospiWeeklyOptionFile(std::string fullPath)
 
 		VtSymbolManager* symMgr = VtSymbolManager::GetInstance();
 		SmProduct* product = market->FindAddProduct(product_code);
+		marketMgr->AddProduct(product);
 		marketMgr->AddCategoryMarket(product_code, market_name);
 		product->MarketName(market_name);
-		product->NameKr("코스피200위클리선물");
-		product->NameKr("Kospi200WeeklyF");
-		VtSymbol* sym = product->AddSymbol(shcode);
+		product->NameKr("코스피200위클리옵션");
+		product->NameKr("Kospi200WeeklyO");
+		VtSymbol* sym = product->AddSymbol(shcode, hname);
 		sym->Name = hname;
-		//symMgr->AddHdSymbol(sym);
 		sym->ProductCode = product->Code();
 		sym->MarketName = product->MarketName();
 		sym->Decimal = std::stoi(deli);
@@ -751,8 +769,9 @@ void SmSymbolReader::ReadKospiWeeklyOptionFile(std::string fullPath)
 void SmSymbolReader::ReadKosdaqFutureFile(std::string fullPath)
 {
 	SmMarketManager* marketMgr = SmMarketManager::GetInstance();
-	std::string market_name = "국내시장";
+	std::string market_name = "코스닥선물";
 	SmMarket* market = marketMgr->AddMarket(market_name);
+	market->Code("106");
 	CString msg;
 	std::ifstream infile(fullPath);
 	std::string line;
@@ -804,6 +823,7 @@ void SmSymbolReader::ReadKosdaqFutureFile(std::string fullPath)
 
 		VtSymbolManager* symMgr = VtSymbolManager::GetInstance();
 		SmProduct* product = market->FindAddProduct(product_code);
+		marketMgr->AddProduct(product);
 		marketMgr->AddCategoryMarket(product_code, market_name);
 		product->MarketName(market_name);
 		product->NameKr("코스닥150선물");
@@ -830,8 +850,9 @@ void SmSymbolReader::ReadKosdaqFutureFile(std::string fullPath)
 void SmSymbolReader::ReadMiniKospiFutureFile(std::string fullPath)
 {
 	SmMarketManager* marketMgr = SmMarketManager::GetInstance();
-	std::string market_name = "국내시장";
+	std::string market_name = "미니코스피선물";
 	SmMarket* market = marketMgr->AddMarket(market_name);
+	market->Code("105");
 	CString msg;
 	std::ifstream infile(fullPath);
 	std::string line;
@@ -883,6 +904,7 @@ void SmSymbolReader::ReadMiniKospiFutureFile(std::string fullPath)
 
 		VtSymbolManager* symMgr = VtSymbolManager::GetInstance();
 		SmProduct* product = market->FindAddProduct(product_code);
+		marketMgr->AddProduct(product);
 		marketMgr->AddCategoryMarket(product_code, market_name);
 		product->MarketName(market_name);
 		product->NameKr("코스피200미니선물");
@@ -909,8 +931,9 @@ void SmSymbolReader::ReadMiniKospiFutureFile(std::string fullPath)
 void SmSymbolReader::ReadCommodityFutureFile(std::string fullPath)
 {
 	SmMarketManager* marketMgr = SmMarketManager::GetInstance();
-	std::string market_name = "국내시장";
+	std::string market_name = "코스피상품선물";
 	SmMarket* market = marketMgr->AddMarket(market_name);
+	market->Code("107");
 	CString msg;
 	std::ifstream infile(fullPath);
 	std::string line;
@@ -962,6 +985,7 @@ void SmSymbolReader::ReadCommodityFutureFile(std::string fullPath)
 
 		VtSymbolManager* symMgr = VtSymbolManager::GetInstance();
 		SmProduct* product = market->FindAddProduct(product_code);
+		marketMgr->AddProduct(product);
 		marketMgr->AddCategoryMarket(product_code, market_name);
 		product->MarketName(market_name);
 		product->NameKr("코스피상품선물");
@@ -1132,6 +1156,172 @@ void SmSymbolReader::ReadUsDollarFutureInfo(std::string fullPath)
 			sym->NearMonth = std::stoi(near_month);
 			sym->LastDate = last_date;
 		}
+	}
+}
+
+void SmSymbolReader::ReadMiniKospiOptionFile(std::string fullPath)
+{
+	SmMarketManager* marketMgr = SmMarketManager::GetInstance();
+	std::string market_name = "코스피미니옵션";
+	SmMarket* market = marketMgr->AddMarket(market_name);
+	market->Code("205");
+	CString msg;
+	std::ifstream infile(fullPath);
+	std::string line;
+	while (std::getline(infile, line))
+	{
+		std::istringstream iss(line);
+
+		std::string shcode = line.substr(0, 8);
+		/* 종목코드                             */
+
+		std::string expcode = line.substr(8, 12);
+		/* 표준코드                               */
+
+		std::string hname = line.substr(20, 30);
+		/* 한글 종목명                      */
+
+		std::string atm = line.substr(50, 1);
+		/* ATM 구분                      */
+
+		std::string item = line.substr(51, 6);
+		/* 기초자산코드                             */
+
+		std::string deli = line.substr(57, 2);
+		/* 소수점                          */
+
+		std::string hounit = line.substr(59, 5);
+		/*호가단위                          */
+
+		// 0이 8개 더 붙어 있어 일부러 13자리만 읽는다.
+		std::string tradewin = line.substr(64, 13);
+		/* 거래승수                         */
+
+		std::string spjmgubun = line.substr(85, 1);
+		/* 스프레드기준종목구분코드*/
+
+		std::string gshcode = line.substr(86, 8);
+		/* 근월물코드                            */
+
+		std::string wshcode = line.substr(94, 8);
+		/* 원월물코드                           */
+
+		std::string product_code = shcode.substr(0, 3);
+
+
+
+		rtrim(shcode);
+		rtrim(hname);
+		trim(item);
+		trim(deli);
+		msg.Format(_T("code = %s, name = %s, name_kr = %s\n"), shcode.c_str(), hname.c_str(), item.c_str());
+		//TRACE(msg);
+
+		VtSymbolManager* symMgr = VtSymbolManager::GetInstance();
+		SmProduct* product = market->FindAddProduct(product_code);
+		marketMgr->AddProduct(product);
+		marketMgr->AddCategoryMarket(product_code, market_name);
+		product->MarketName(market_name);
+		//product->NameKr("미니코스피200옵션");
+		product->NameKr("MiniKospi200O");
+		VtSymbol* sym = product->AddSymbol(shcode);
+		sym->Name = hname;
+		//symMgr->AddHdSymbol(sym);
+		sym->ProductCode = product->Code();
+		sym->MarketName = product->MarketName();
+		sym->Decimal = std::stoi(deli);
+		sym->Seungsu = std::stoi(tradewin);
+		int hoga_unit = std::stoi(hounit);
+		int deci = std::stoi(deli);
+		sym->intTickSize = hoga_unit;
+		double tick_size = hoga_unit / std::pow(10, deci);
+		sym->TickSize = tick_size;
+		sym->CtrUnit = tick_size;
+		double tick_value = std::stoi(tradewin) * tick_size;
+		sym->TickValue = tick_value;
+	}
+}
+
+void SmSymbolReader::ReadKosdaqOptionFile(std::string fullPath)
+{
+	SmMarketManager* marketMgr = SmMarketManager::GetInstance();
+	std::string market_name = "코스닥옵션";
+	SmMarket* market = marketMgr->AddMarket(market_name);
+	market->Code("206");
+	CString msg;
+	std::ifstream infile(fullPath);
+	std::string line;
+	while (std::getline(infile, line))
+	{
+		std::istringstream iss(line);
+
+		std::string shcode = line.substr(0, 8);
+		/* 종목코드                             */
+
+		std::string expcode = line.substr(8, 12);
+		/* 표준코드                               */
+
+		std::string hname = line.substr(20, 30);
+		/* 한글 종목명                      */
+
+		std::string atm = line.substr(50, 1);
+		/* ATM 구분                      */
+
+		std::string item = line.substr(51, 6);
+		/* 기초자산코드                             */
+
+		std::string deli = line.substr(57, 2);
+		/* 소수점                          */
+
+		std::string hounit = line.substr(59, 5);
+		/*호가단위                          */
+
+		// 0이 8개 더 붙어 있어 일부러 13자리만 읽는다.
+		std::string tradewin = line.substr(64, 13);
+		/* 거래승수                         */
+
+		std::string spjmgubun = line.substr(85, 1);
+		/* 스프레드기준종목구분코드*/
+
+		std::string gshcode = line.substr(86, 8);
+		/* 근월물코드                            */
+
+		std::string wshcode = line.substr(94, 8);
+		/* 원월물코드                           */
+
+		std::string product_code = shcode.substr(0, 3);
+
+
+
+		rtrim(shcode);
+		rtrim(hname);
+		trim(item);
+		trim(deli);
+		msg.Format(_T("code = %s, name = %s, name_kr = %s\n"), shcode.c_str(), hname.c_str(), item.c_str());
+		//TRACE(msg);
+
+		VtSymbolManager* symMgr = VtSymbolManager::GetInstance();
+		SmProduct* product = market->FindAddProduct(product_code);
+		marketMgr->AddProduct(product);
+		marketMgr->AddCategoryMarket(product_code, market_name);
+		product->MarketName(market_name);
+		//product->NameKr("코스피200옵션");
+		product->NameKr("Kosqaq150O");
+		VtSymbol* sym = product->AddSymbol(shcode);
+		sym->Name = hname;
+		//symMgr->AddHdSymbol(sym);
+		sym->ProductCode = product->Code();
+		sym->MarketName = product->MarketName();
+		sym->Decimal = std::stoi(deli);
+		sym->Seungsu = std::stoi(tradewin);
+		int hoga_unit = std::stoi(hounit);
+		int deci = std::stoi(deli);
+		sym->intTickSize = hoga_unit;
+		double tick_size = hoga_unit / std::pow(10, deci);
+		sym->TickSize = tick_size;
+		sym->CtrUnit = tick_size;
+		double tick_value = std::stoi(tradewin) * tick_size;
+		sym->TickValue = tick_value;
 	}
 }
 

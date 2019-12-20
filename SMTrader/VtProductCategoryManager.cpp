@@ -463,7 +463,6 @@ void VtProductCategoryManager::InitHdCategoryNSection()
 
 	section->ProductCategoryManager(this);
 	section->AddSubSection(_T("101"), _T("코스피 선물"));
-	//section->AddSubSection(_T("401"), _T("코스피 복합선물"));
 	SectionMap[section->Code] = section;
 
 	section = new VtProductSection();
@@ -510,7 +509,6 @@ void VtProductCategoryManager::InitHdCategoryNSection()
 
 	section->ProductCategoryManager(this);
 	section->AddSubSection(_T("106"), _T("코스닥 선물"));
-	//section->AddSubSection(_T("406"), _T("코스닥 복합선물"));
 	SectionMap[section->Code] = section;
 
 	section = new VtProductSection();
@@ -549,21 +547,6 @@ void VtProductCategoryManager::InitHdCategoryNSection()
 	//section->AddSubSection(_T("408"), _T("KRX300 복합선물"));
 	SectionMap[section->Code] = section;
 
-	/*
-	section = new VtProductSection();
-	section->Code = _T("165F");
-	section->Name = _T("BM3 선물");
-	section->ExPos = _T("SEOUL");
-	cat->AddSection(section);
-	SectionMap[section->Code] = section;
-
-	section = new VtProductSection();
-	section->Code = _T("166F");
-	section->Name = _T("BM5 선물");
-	section->ExPos = _T("SEOUL");
-	cat->AddSection(section);
-	SectionMap[section->Code] = section;
-	*/
 	section = new VtProductSection();
 	section->Code = _T("167F");
 	section->Name = _T("BMA 선물");

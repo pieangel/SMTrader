@@ -1422,6 +1422,7 @@ void VtOrderDialogManager::ReleaseMainOrderWnd()
 	for (auto it = _OrderWndMap.begin(); it != _OrderWndMap.end(); ++it)
 	{
 		VtOrderWndHd* wnd = it->second;
+		wnd->BlockEvent();
 		wnd->DestroyWindow();
 		delete wnd;
 	}

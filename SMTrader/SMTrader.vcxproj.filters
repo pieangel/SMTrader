@@ -1291,9 +1291,6 @@
     <ClInclude Include="VtLayoutManager.h">
       <Filter>UIWindow</Filter>
     </ClInclude>
-    <ClInclude Include="VtStringUtil.h">
-      <Filter>UIWindow</Filter>
-    </ClInclude>
     <ClInclude Include="VtWindowManager.h">
       <Filter>UIWindow</Filter>
     </ClInclude>
@@ -1578,6 +1575,12 @@
     </ClInclude>
     <ClInclude Include="SmPortfolioDlg.h">
       <Filter>AI</Filter>
+    </ClInclude>
+    <ClInclude Include="VtStringUtil.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="SmRunInfo.h">
+      <Filter>Market</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2592,9 +2595,6 @@
     <ClCompile Include="VtLayoutManager.cpp">
       <Filter>UIWindow</Filter>
     </ClCompile>
-    <ClCompile Include="VtStringUtil.cpp">
-      <Filter>UIWindow</Filter>
-    </ClCompile>
     <ClCompile Include="VtWindowManager.cpp">
       <Filter>UIWindow</Filter>
     </ClCompile>
@@ -2822,6 +2822,9 @@
     </ClCompile>
     <ClCompile Include="SmPortfolioDlg.cpp">
       <Filter>AI</Filter>
+    </ClCompile>
+    <ClCompile Include="VtStringUtil.cpp">
+      <Filter>Util</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

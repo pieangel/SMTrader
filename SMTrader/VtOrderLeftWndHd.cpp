@@ -176,9 +176,16 @@ void VtOrderLeftWndHd::OnCbnSelchangeComboProduct()
 	_SymbolOptionGrid.Mode(_Mode);
 	_SymbolOptionGrid.SetProductSection();
 	_SymbolOptionGrid.SetYearMonth();
-	_SymbolOptionGrid.InitGrid();
-	if (_Mode == 1)
-		_SymbolOptionGrid.GetSymbolMaster();
+	if (GetSafeHwnd()) {
+		CRect rcWnd;
+		_OrderConfigMgr->_HdOrderWnd->GetWindowRect(&rcWnd);
+		CRect rcGrid;
+		_SymbolOptionGrid.GetWindowRect(rcGrid);
+		_SymbolOptionGrid.SetWindowPos(nullptr, 0, 0, rcGrid.Width(), rcWnd.Height() - FixedHeight, SWP_NOMOVE);
+		_SymbolOptionGrid.InitGrid(rcWnd.Height() - FixedHeight);
+		if (_Mode == 1)
+			_SymbolOptionGrid.GetSymbolMaster();
+	}
 }
 
 
@@ -186,9 +193,16 @@ void VtOrderLeftWndHd::OnCbnSelchangeComboOption()
 {
 	// TODO: Add your control notification handler code here
 	_SymbolOptionGrid.Mode(_Mode);
-	_SymbolOptionGrid.InitGrid();
-	if (_Mode == 1)
-		_SymbolOptionGrid.GetSymbolMaster();
+	if (GetSafeHwnd()) {
+		CRect rcWnd;
+		_OrderConfigMgr->_HdOrderWnd->GetWindowRect(&rcWnd);
+		CRect rcGrid;
+		_SymbolOptionGrid.GetWindowRect(rcGrid);
+		_SymbolOptionGrid.SetWindowPos(nullptr, 0, 0, rcGrid.Width(), rcWnd.Height() - FixedHeight, SWP_NOMOVE);
+		_SymbolOptionGrid.InitGrid(rcWnd.Height() - FixedHeight);
+		if (_Mode == 1)
+			_SymbolOptionGrid.GetSymbolMaster();
+	}
 }
 
 
@@ -293,8 +307,8 @@ void VtOrderLeftWndHd::OnResizeWnd()
 		_OrderConfigMgr->_HdOrderWnd->GetWindowRect(&rcWnd);
 		CRect rcGrid;
 		_SymbolOptionGrid.GetWindowRect(rcGrid);
-		_SymbolOptionGrid.SetWindowPos(nullptr, 0, 0, rcGrid.Width(), rcWnd.Height() - 313, SWP_NOMOVE);
-		_SymbolOptionGrid.InitGrid(rcWnd.Height() - 313);
+		_SymbolOptionGrid.SetWindowPos(nullptr, 0, 0, rcGrid.Width(), rcWnd.Height() - FixedHeight, SWP_NOMOVE);
+		_SymbolOptionGrid.InitGrid(rcWnd.Height() - FixedHeight);
 		_SymbolOptionGrid.GetSymbolMaster();
 		_SymbolFutureGrid.InitGrid();
 		_ProfitLossGrid.InitGrid();
@@ -313,8 +327,8 @@ void VtOrderLeftWndHd::OnAccountChanged()
 		_OrderConfigMgr->_HdOrderWnd->GetWindowRect(&rcWnd);
 		CRect rcGrid;
 		_SymbolOptionGrid.GetWindowRect(rcGrid);
-		_SymbolOptionGrid.SetWindowPos(nullptr, 0, 0, rcGrid.Width(), rcWnd.Height() - 313, SWP_NOMOVE);
-		_SymbolOptionGrid.InitGrid(rcWnd.Height() - 313);
+		_SymbolOptionGrid.SetWindowPos(nullptr, 0, 0, rcGrid.Width(), rcWnd.Height() - FixedHeight, SWP_NOMOVE);
+		_SymbolOptionGrid.InitGrid(rcWnd.Height() - FixedHeight);
 		_SymbolOptionGrid.GetSymbolMaster();
 		_SymbolFutureGrid.InitGrid();
 		_ProfitLossGrid.InitGrid();

@@ -26,12 +26,18 @@ public:
 	std::string MarketCode() const { return _MarketCode; }
 	void MarketCode(std::string val) { _MarketCode = val; }
 	VtSymbol* AddSymbol(std::string symCode);
+	VtSymbol* AddSymbol(std::string symCode, std::string name);
 	std::vector<VtSymbol*>& GetSymbolList() {
 		return _SymbolList;
 	}
 	VtSymbol* GetRecentMonthSymbol();
 	SmProductYearMonth* GetRecentYearMonth();
 	SmProductYearMonth* GetNextYearMonth();
+	std::map<std::string, SmProductYearMonth*>& GetYearMonthMap() {
+		return _YearMonthMap;
+	}
+
+	SmProductYearMonth* GetYearMonth(std::string year_month);
 private:
 	// 품목코드
 	std::string _Code;
@@ -64,5 +70,9 @@ private:
 	std::vector<VtSymbol*> _SymbolList;
 	std::map<std::string, SmProductYearMonth*> _YearMonthMap;
 	void AddToYearMonth(std::string symbol_code, VtSymbol* symbol);
+	void AddToYearMonth(std::string symbol_code, std::string name, VtSymbol* symbol);
+	std::map<std::string, std::string> _DomesticYearTable;
+	std::map<std::string, std::string> _DomesticMonthTable;
+	std::map<std::string, std::string> _AbroadMonthTable;
 };
 

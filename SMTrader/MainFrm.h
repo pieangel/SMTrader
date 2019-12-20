@@ -93,6 +93,8 @@ private:
 	void CreateFileWatch();
 	bool ClearAllResources();
 public:
+	void ReadConfig();
+	void StartPreProcess();
 	void ResetSysLogDlg();
 	void GetSymbolCode();
 	void SaveSettings();

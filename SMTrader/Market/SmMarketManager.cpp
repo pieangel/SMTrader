@@ -12,6 +12,7 @@
 #include <iostream>
 #include "../VtSymbol.h"
 #include "../VtStringUtil.h"
+#include "../VtGlobal.h"
 
 SmMarketManager::SmMarketManager()
 {
@@ -62,16 +63,18 @@ void SmMarketManager::ReadAbroadSymbolsFromFile()
 	std::string appPath;
 	appPath = configMgr->GetAppPath();
 	appPath.append(_T("\\"));
+	std::string config_path = appPath;
+	config_path.append("config.xml");
 	appPath.append(_T("mst"));
 	appPath.append(_T("\\"));
 	pugi::xml_document doc;
 
-	pugi::xml_parse_result result = doc.load_file(appPath.c_str());
-	pugi::xml_node app = doc.first_child();
-	pugi::xml_node sym_file_list = app.first_child();
-	pugi::xml_node abroad_list = sym_file_list.first_child();
-	int index = 9;
-	for (auto it = abroad_list.begin(); it != abroad_list.end(); ++it) {
+	pugi::xml_parse_result result = doc.load_file(config_path.c_str());
+	pugi::xml_node app = doc.child("application");
+	pugi::xml_node sym_file_list = app.child("symbol_file_list");
+	pugi::xml_node domestic_list = sym_file_list.child("abroad_symbol_file");
+	int index = 11;
+	for (auto it = domestic_list.begin(); it != domestic_list.end(); ++it) {
 		std::string file_name = it->text().as_string();
 		TRACE(file_name.c_str());
 		std::string file_path = appPath + file_name;
@@ -159,7 +162,8 @@ std::vector<VtSymbol*> SmMarketManager::GetRecentMonthSymbolList()
 						ym = (*itc)->GetNextYearMonth();
 					}
 				}
-				for (auto itym = ym->SymbolList.begin(); itym != ym->SymbolList.end(); ++itym) {
+				std::vector<VtSymbol*> symbol_list = ym->SymbolList();
+				for (auto itym = symbol_list.begin(); itym != symbol_list.end(); ++itym) {
 					(*itym)->Quote.shortCode = (*itym)->ShortCode;
 					symvec.push_back(*itym);
 				}
@@ -179,9 +183,10 @@ VtSymbol* SmMarketManager::GetRecentSymbol(std::string market_name, std::string 
 	if (!product)
 		return nullptr;
 	SmProductYearMonth* ym = product->GetRecentYearMonth();
-	if (ym->SymbolList.size() == 0)
+	std::vector<VtSymbol*> symbol_list = ym->SymbolList();
+	if (symbol_list.size() == 0)
 		return nullptr;
-	return *ym->SymbolList.begin();
+	return *symbol_list.begin();
 }
 
 VtSymbol* SmMarketManager::GetRecentSymbol(std::string product_name)
@@ -261,6 +266,102 @@ bool SmMarketManager::IsInRunList(std::string product_code)
 void SmMarketManager::AddDomesticItem(std::string item)
 {
 	_DomesticList.insert(item);
+}
+
+void SmMarketManager::AddProduct(SmProduct* product)
+{
+	if (!product)
+		return;
+	_ProductMap[product->Code()] = product;
+}
+
+SmProduct* SmMarketManager::FindProductFromMap(std::string product_code)
+{
+	auto it = _ProductMap.find(product_code);
+	if (it != _ProductMap.end()) {
+		return it->second;
+	}
+	return nullptr;
+}
+
+std::pair<SmProduct*, SmProduct*> SmMarketManager::GetProductPair(SmRunInfo run_info)
+{
+	SmProduct* call_product = FindProduct(run_info.CallCode);
+	SmProduct* put_product = FindProduct(run_info.PutCode);
+	return std::make_pair(call_product, put_product);
+}
+
+void SmMarketManager::AddFutureRunInfo(SmRunInfo run_info)
+{
+	_FutureRunVector.push_back(run_info);
+}
+
+void SmMarketManager::AddOptionRunInfo(SmRunInfo run_info)
+{
+	_OptionRunVector.push_back(run_info);
+}
+
+void SmMarketManager::LoadRunInfo()
+{
+	ZmConfigManager* configMgr = ZmConfigManager::GetInstance();
+	std::string appPath;
+	appPath = configMgr->GetAppPath();
+	appPath.append(_T("\\"));
+	appPath.append(_T("config.xml"));
+
+	/// [load xml file]
+	// Create empty XML document within memory
+	pugi::xml_document doc;
+	// Load XML file into memory
+	// Remark: to fully read declaration entries you have to specify
+	// "pugi::parse_declaration"
+	pugi::xml_parse_result result = doc.load_file(appPath.c_str(),
+		pugi::parse_default | pugi::parse_declaration);
+	if (!result)
+	{
+		// 설정 파일이 없을 때
+		std::cout << "Parse error: " << result.description()
+			<< ", character pos= " << result.offset;
+		return;
+	}
+
+	pugi::xml_node application = doc.child("application");
+	pugi::xml_node running_list = application.child("runnig_list");
+	if (running_list) {
+		pugi::xml_node future_list = running_list.child("future_list");
+		if (future_list) {
+			for (pugi::xml_node future_node = future_list.first_child(); future_node; future_node = future_node.next_sibling()) {
+				std::string code = future_node.attribute("code").as_string();
+				std::string name = future_node.attribute("name").as_string();
+				SmRunInfo run_info;
+				run_info.Code = code;
+				run_info.Name = name;
+				run_info.UserDefinedName = name;
+				AddFutureRunInfo(run_info);
+			}
+		}
+
+		pugi::xml_node option_list = running_list.child("option_list");
+		if (option_list) {
+			for (pugi::xml_node option_node = option_list.first_child(); option_node; option_node = option_node.next_sibling()) {
+				std::string call_code = option_node.attribute("call").as_string();
+				std::string put_code = option_node.attribute("put").as_string();
+				std::string name = option_node.attribute("name").as_string();
+				SmRunInfo run_info;
+				run_info.CallCode = call_code;
+				run_info.PutCode = put_code;
+				run_info.Name = name;
+				run_info.UserDefinedName = name;
+				AddOptionRunInfo(run_info);
+			}
+		}
+	}
+
+	pugi::xml_node file_watch = application.child("file_watch");
+	if (file_watch) {
+		VtGlobal::GetInstance()->EnableFileWatch = file_watch.attribute("enable").as_bool();
+		VtGlobal::GetInstance()->FileWatchPath = file_watch.child_value("file_watch_path");
+	}
 }
 
 void SmMarketManager::SendSymbolMaster(std::string user_id, VtSymbol* sym)

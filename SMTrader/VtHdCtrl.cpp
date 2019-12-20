@@ -4107,6 +4107,9 @@ void VtHdCtrl::RegisterCurrent()
 
 	strKey = "101";
 	nResult = m_CommAgent.CommSetBroad(strKey, nRealType);
+
+	strKey = "106";
+	nResult = m_CommAgent.CommSetBroad(strKey, nRealType);
 }
 
 void VtHdCtrl::UnregisterCurrent()
@@ -6543,14 +6546,16 @@ void VtHdCtrl::OnGetBroadData(CString strKey, LONG nRealType)
 		strErrMsg.TrimRight();
 
 		CString strMsg;
-		strMsg.Format("지수[%s]전일비[%s]등락율[%s]\n", strOrdNo, strErrcd, strErrMsg);
+		strMsg.Format("code=%s,지수[%s]전일비[%s]등락율[%s]\n", strCode,strOrdNo, strErrcd, strErrMsg);
 		//WriteLog(strMsg);
-		//TRACE(strMsg);
+		TRACE(strMsg);
 		VtSymbolManager* symMgr = VtSymbolManager::GetInstance();
 		if (strCode.CompareNoCase(_T("001")) == 0)
 			symMgr->KospiCurrent = _ttoi(strOrdNo);
 		if (strCode.CompareNoCase(_T("101")) == 0)
 			symMgr->Kospi200Current = _ttoi(strOrdNo);
+		if (strCode.CompareNoCase("106") == 0)
+			symMgr->Kosdaq150Current = _ttoi(strOrdNo);
 
 	}
 	break;
@@ -6635,10 +6640,14 @@ void VtHdCtrl::OnGetMsgWithRqId(int nRqId, CString strCode, CString strMsg)
 	//TRACE(msg);
 
 	CString strLog;
-	//strLog.Format("[요청번호 = %d, 코드번호 = %s][메시지 = %s]\n", nRqId, strCode, strMsg);
-	//TRACE(strLog);
+	strLog.Format("[요청번호 = %d, 코드번호 = %s][메시지 = %s]\n", nRqId, strCode, strMsg);
+	TRACE(strLog);
+	if (strCode.Compare("0332") == 0) {
+		CMainFrame* mainFrm = (CMainFrame*)AfxGetMainWnd();
+		mainFrm->StartPreProcess();
+	}
 	// 49007 49003
-	if (strCode.Compare(_T("99997")) == 0) {
+	else if (strCode.Compare(_T("99997")) == 0) {
 		LOG_F(INFO, _T("[요청번호 = %d, 코드번호 = %s][메시지 = 입력갑오류!!]\n"), nRqId, strCode);
 	}
 	else {

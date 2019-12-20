@@ -306,6 +306,15 @@ void VtOrderWndHd::RemoveRealTickWnd(VtRealTickWnd* realWnd)
 	}
 }
 
+void VtOrderWndHd::BlockEvent()
+{
+	for (auto it = _CenterWndVector.begin(); it != _CenterWndVector.end(); ++it) {
+		SmOrderPanel* curWnd = *it;
+		curWnd->BlockEvent();
+	}
+	_LeftWnd.BlockEvent();
+}
+
 void VtOrderWndHd::SetDefaultCenterWnd()
 {
 	// 중앙창 갯수가 2개이상일때 첫번째를 선택해줌
@@ -876,11 +885,7 @@ void VtOrderWndHd::RemoveLastWindow()
 
 void VtOrderWndHd::OnClose()
 {
-	for (auto it = _CenterWndVector.begin(); it != _CenterWndVector.end(); ++it) {
-		SmOrderPanel* curWnd = *it;
-		curWnd->BlockEvent();
-	}
-	_LeftWnd.BlockEvent();
+	BlockEvent();
 	CDialog::OnClose();
 	VtOrderWndEventArgs arg;
 	arg.pOrderWnd = this;

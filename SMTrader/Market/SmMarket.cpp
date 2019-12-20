@@ -9,7 +9,7 @@ SmMarket::SmMarket()
 
 SmMarket::~SmMarket()
 {
-	for (auto it = _CategoryList.begin(); it != _CategoryList.end(); ++it) {
+	for (auto it = _ProductList.begin(); it != _ProductList.end(); ++it) {
 		delete* it;
 	}
 }
@@ -18,13 +18,13 @@ SmProduct* SmMarket::AddProduct(std::string code)
 {
 	SmProduct* cat = new SmProduct();
 	cat->Code(code);
-	_CategoryList.emplace_back(cat);
+	_ProductList.emplace_back(cat);
 	return cat;
 }
 
 SmProduct* SmMarket::FindProduct(std::string code)
 {
-	for (auto it = _CategoryList.begin(); it != _CategoryList.end(); ++it) {
+	for (auto it = _ProductList.begin(); it != _ProductList.end(); ++it) {
 		SmProduct* cat = *it;
 		if (cat->Code().compare(code) == 0) {
 			return cat;

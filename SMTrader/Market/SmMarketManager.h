@@ -4,6 +4,8 @@
 #include <map>
 #include <vector>
 #include <set>
+#include "../SmRunInfo.h"
+#include "../Xml/pugixml.hpp"
 class SmMarket;
 class SmProduct;
 class VtSymbol;
@@ -38,9 +40,23 @@ public:
 	void requestRecentAllSise();
 	bool IsInRunList(std::string product_code);
 	void AddDomesticItem(std::string item);
+	void AddProduct(SmProduct* product);
+	SmProduct* FindProductFromMap(std::string product_code);
+	std::pair<SmProduct*, SmProduct*> GetProductPair(SmRunInfo run_info);
+	void AddFutureRunInfo(SmRunInfo run_info);
+	void AddOptionRunInfo(SmRunInfo run_info);
+	void LoadRunInfo();
+	std::vector<SmRunInfo> GetFutureRunVector() {
+		return _FutureRunVector;
+	}
+
+	std::vector<SmRunInfo> GetOptionRunVector() {
+		return _OptionRunVector;
+	}
 private:
 	void SendSymbolMaster(std::string user_id, VtSymbol* sym);
 	std::vector<SmMarket*> _MarketList;
+	std::map<std::string, SmProduct*> _ProductMap;
 	/// 품목이 속한 시장 이름 대응 표
 	/// <summary>
 	/// 각 품목에 대하여 시장이름을 매칭시켜 준다.
@@ -49,5 +65,7 @@ private:
 	/// </summary>
 	std::map<std::string, std::string> _CategoryToMarketMap;
 	std::set<std::string> _DomesticList;
+	std::vector<SmRunInfo> _FutureRunVector;
+	std::vector<SmRunInfo> _OptionRunVector;
 };
 

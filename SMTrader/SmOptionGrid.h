@@ -11,6 +11,7 @@
 #include "Global/VtDefine.h"
 #include <set>
 #include <string>
+#include "SmRunInfo.h"
 class VtOrderLeftWndHd;
 class VtProductSection;
 class VtOrderConfigManager;
@@ -74,6 +75,8 @@ public:
 	void SetCurrent2();
 	void SetExpected2();
 private:
+	int _SelectedProduct = 0;
+	std::vector<SmRunInfo> _RunInfo;
 	CCellID _EqualCell;
 	VtOrderLeftWndHd* _LeftWnd = nullptr;
 	VtOrderConfigManager* _OrderConfigMgr = nullptr;

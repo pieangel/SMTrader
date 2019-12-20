@@ -52,6 +52,8 @@ private:
 	void ReadKospiFutureInfo(std::string fullPath);
 	void ReadKospiOptionInfo(std::string fullPath);
 	void ReadUsDollarFutureInfo(std::string fullPath);
+	void ReadMiniKospiOptionFile(std::string fullPath);
+	void ReadKosdaqOptionFile(std::string fullPath);
 	std::set<std::string> _DomesticList;
 };
 

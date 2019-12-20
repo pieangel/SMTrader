@@ -177,6 +177,7 @@ void SmFutureGrid::Init()
 
 void SmFutureGrid::OnLButtonDown(UINT nFlags, CPoint point)
 {
+	SetFocus();
 	CCellID cell = GetCellFromPt(point);
 	CGridCellBase* pCell = GetCell(cell.row, cell.col);
 	VtSymbol* sym = (VtSymbol*)pCell->GetData();

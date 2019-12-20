@@ -248,10 +248,9 @@ bool VtSaveManager::ListContents(std::map<std::string, std::string>& dest, std::
 			local_time += std::to_string(stLocal.wYear);
 			local_time += std::to_string(stLocal.wMonth);
 			local_time += std::to_string(stLocal.wDay);
-			//make_string_detail::value_format format;
-			//local_time = format.make_string("{0:04}{0:02}{0:02}{0:02}{0:02}{0:02}", stLocal.wYear, stLocal.wMonth, stLocal.wDay, stLocal.wHour, stLocal.wMinute, stLocal.wSecond);
-			//local_time = make_string("{0:04}{0:02}{0:02}{0:02}{0:02}{0:02}", 0, 0, 0, 0, 0, 0);
-			dest[local_time] = dir + ffd.cFileName;
+			CString local_file_time;
+			local_file_time.Format("%04d%02d%02d", stLocal.wYear, stLocal.wMonth, stLocal.wDay);
+			dest[(LPCTSTR)local_file_time] = dir + ffd.cFileName;
 		}
 
 	} while (FindNextFileA(hFind, &ffd));

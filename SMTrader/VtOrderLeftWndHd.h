@@ -14,6 +14,7 @@ class VtOrderConfigManager;
 class VtSymbol;
 struct VtPosition;
 struct VtOrder;
+const int FixedHeight = 313;
 class VtOrderLeftWndHd : public CRHGenericChildDialog
 {
 	DECLARE_DYNAMIC(VtOrderLeftWndHd)

@@ -18,10 +18,13 @@ public:
 	SmProduct* FindProduct(std::string code);
 	SmProduct* FindAddProduct(std::string code);
 	std::vector<SmProduct*>& GetProductList() {
-		return _CategoryList;
+		return _ProductList;
 	}
+	std::string Code() const { return _Code; }
+	void Code(std::string val) { _Code = val; }
 private:
 	std::string _Name;
-	std::vector<SmProduct*> _CategoryList;
+	std::string _Code;
+	std::vector<SmProduct*> _ProductList;
 };
 

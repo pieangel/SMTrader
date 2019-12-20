@@ -590,40 +590,48 @@ void CMainFrame::OnShowWindow(BOOL bShow, UINT nStatus)
 {
 	CMDIFrameWndEx::OnShowWindow(bShow, nStatus);
 	
+	ReadConfig();
+
 	if (!_Init) {
 		_Init = true;
 		// 증권사 클라이언트 초기회
 		VtHdClient* client = VtHdClient::GetInstance();
 		client->Init();
-		// 파일에서 심볼을 로드한다.
-		SmSymbolReader::GetInstance()->ReadSymbolFileList();
 		// 로그인 대화상자를 띄운다.
 		VtLogInDlg loginDlg;
 		VtSaveManager* saveMgr = VtSaveManager::GetInstance();
 		int Res = loginDlg.DoModal();
 		if (Res == IDOK) {
 
+			// 로그인 사용자를 위한 디렉토리를 만든다.
 			VtGlobal::LoginUserID = loginDlg.id;
 			saveMgr->CreateUserDirectory();
-			LoadSettings();
-			//saveMgr->SaveLoginInfo(_T("SmTrader.cfg"), (LPCTSTR)loginDlg.id, (LPCTSTR)loginDlg.pwd, (LPCTSTR)loginDlg.cert, loginDlg.Save);
+			
+			// 로그인 정보를 저장한다.
 			saveMgr->SaveLoginInfoToXml((LPCTSTR)loginDlg.id, (LPCTSTR)loginDlg.pwd, (LPCTSTR)loginDlg.cert, loginDlg.Save);
 
+			VtSaveManager* saveMgr = VtSaveManager::GetInstance();
+			// 계좌와 펀드를 읽어 온다.
+			saveMgr->ReadSettings();
+
+			// 로그인 관리자에 로그인 정보 대입
 			VtLoginManager::GetInstance()->ID = (LPCTSTR)loginDlg.id;
 			VtLoginManager::GetInstance()->Password = (LPCTSTR)loginDlg.pwd;
 			VtLoginManager::GetInstance()->Cert = (LPCTSTR)loginDlg.cert;
 
-			saveMgr->LoadRunInfoFromXml();
-
+			// 실행 설정을 ini파일에서 읽어 온다.
+			// 계좌번호 비번 저장 여부 불러온다.
 			ZmConfigManager* configMgr = ZmConfigManager::GetInstance();
 			std::string section = _T("ACCOUNT_INFO");
 			std::string name, value;
 			name = _T("savepwd");
 			value = configMgr->getString(section, name);
 
+			// 계좌 관리자로 계좌를 필터링한다.
 			VtAccountManager* acntMgr = VtAccountManager::GetInstance();
 			acntMgr->FileterAccount();
 
+			// 계좌 비밀번호 설정 창을 띄운다.
 			VtAccountPasswordDlg dlg;
 			if (value.length() > 0 && (!saveMgr->IsAccountFileExist() || value.compare(_T("false")) == 0))
 				dlg.FromServer(true);
@@ -631,70 +639,16 @@ void CMainFrame::OnShowWindow(BOOL bShow, UINT nStatus)
 				dlg.FromServer(false);
 			dlg.DoModal();
 
-			section = _T("RUN_INFO");
-			VtGlobal* global = VtGlobal::GetInstance();
-			name = _T("open_hour");
-			std::string hour = configMgr->getString(section, name);
-			name = _T("open_min");
-			std::string min = configMgr->getString(section, name);
-			name = _T("open_sec");
-			std::string sec = configMgr->getString(section, name);
-			if (hour.length() > 0 && min.length() > 0 && sec.length() > 0) {
-				VtGlobal::OpenTime.hour = std::stoi(hour);
-				VtGlobal::OpenTime.min = std::stoi(min);
-				VtGlobal::OpenTime.sec = std::stoi(sec);
-			}
-			else {
-				VtGlobal::OpenTime.hour = 9;
-				VtGlobal::OpenTime.min = 0;
-				VtGlobal::OpenTime.sec = 0;
-			}
-
-			name = _T("close_hour");
-			hour = configMgr->getString(section, name);
-			name = _T("close_min");
-			min = configMgr->getString(section, name);
-			name = _T("close_sec");
-			sec = configMgr->getString(section, name);
-			if (hour.length() > 0 && min.length() > 0 && sec.length() > 0) {
-				VtGlobal::CloseTime.hour = std::stoi(hour);
-				VtGlobal::CloseTime.min = std::stoi(min);
-				VtGlobal::CloseTime.sec = std::stoi(sec);
-			}
-			else {
-				VtGlobal::CloseTime.hour = 15;
-				VtGlobal::CloseTime.min = 45;
-				VtGlobal::CloseTime.sec = 0;
-			}
-
-			section = _T("FILE_WATCH");
-			std::string file_watch_flag;
-			name = _T("enable");
-			file_watch_flag = configMgr->getString(section, name);
-			std::string file_watch_path;
-			name = _T("path");
-			file_watch_path = configMgr->getString(section, name);
-			if (file_watch_flag.length() > 0 && stoi(file_watch_flag) == 1) {
-				_EnableFileWatch = true;
-			}
-			else {
-				_EnableFileWatch = false;
-			}
-
-			_FleWathPath = file_watch_path;
-			VtGlobal::FileWatchPath = _FleWathPath;
-			VtGlobal::EnableFileWatch = _EnableFileWatch;
-			if (_FleWathPath.length() > 0) {
-				CreateFileWatch();
-			}
-
+			// 현재가 등록
 			VtRealtimeRegisterManager* regMgr = VtRealtimeRegisterManager::GetInstance();
 			regMgr->RegisterCurrent();
-			VtHdClient* client = VtHdClient::GetInstance();
-			std::string fileName = _T("product.cod");
-			client->GetMasterFile(fileName);
+			// 			VtHdClient* client = VtHdClient::GetInstance();
+			// 			std::string fileName = _T("product.cod");
+			// 			client->GetMasterFile(fileName);
+			// 타이머를 가동하여 심볼 파일 다운로드 시작
 			SetTimer(2, 500, 0);
-			GetSymbolCode();
+			// 심볼코드를 가져오기 시작한다.
+			//GetSymbolCode();
 		}
 		else {
 			ClearAllResources();
@@ -916,6 +870,48 @@ void CMainFrame::UpdateSysLog()
 	}
 }
 
+void CMainFrame::ReadConfig()
+{
+	SmMarketManager::GetInstance()->LoadRunInfo();
+	// 파일에서 심볼 목록을 로드한다.
+	SmSymbolReader::GetInstance()->ReadSymbolFileList();
+
+	VtSaveManager* saveMgr = VtSaveManager::GetInstance();
+	// 실행 설정을 xml파일에서 읽어 온다.
+	saveMgr->LoadRunInfoFromXml();
+	// 실행 설정을 ini파일에서 읽어 온다.
+	ZmConfigManager* configMgr = ZmConfigManager::GetInstance();
+	std::string section = _T("FILE_WATCH");
+	std::string file_watch_flag;
+	std::string name = _T("enable");
+	file_watch_flag = configMgr->getString(section, name);
+	std::string file_watch_path;
+	name = _T("path");
+	file_watch_path = configMgr->getString(section, name);
+	if (file_watch_flag.length() > 0 && stoi(file_watch_flag) == 1) {
+		_EnableFileWatch = true;
+	}
+	else {
+		_EnableFileWatch = false;
+	}
+
+	_FleWathPath = file_watch_path;
+	VtGlobal::FileWatchPath = _FleWathPath;
+	VtGlobal::EnableFileWatch = _EnableFileWatch;
+	if (_FleWathPath.length() > 0) {
+		CreateFileWatch();
+	}
+
+	
+}
+
+void CMainFrame::StartPreProcess()
+{
+	SmMarketManager::GetInstance()->ReadDomesticSymbolsFromFile();
+	SmMarketManager::GetInstance()->ReadAbroadSymbolsFromFile();
+	GetSymbolCode();
+}
+
 void CMainFrame::ResetSysLogDlg()
 {
 // 	if (_SysLogDlg) {
@@ -1089,9 +1085,6 @@ void CMainFrame::OnTimer(UINT_PTR nIDEvent)
 		else {
 			KillTimer(2);
 			hdClient->DownloadMasterFiles("futures");
-			//GetSymbolCode();
-			SmMarketManager::GetInstance()->ReadDomesticSymbolsFromFile();
-			SmMarketManager::GetInstance()->ReadAbroadSymbolsFromFile();
 		}
 	}
 

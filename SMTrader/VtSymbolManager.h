@@ -92,5 +92,6 @@ public:
 
 	int KospiCurrent;
 	int Kospi200Current;
+	int Kosdaq150Current;
 };
 

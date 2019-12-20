@@ -350,6 +350,7 @@
     <ClInclude Include="SmOrderPanel.h" />
     <ClInclude Include="SmPLGrid.h" />
     <ClInclude Include="SmPortfolioDlg.h" />
+    <ClInclude Include="SmRunInfo.h" />
     <ClInclude Include="SmTickGrid.h" />
     <ClInclude Include="SMTrader.h" />
     <ClInclude Include="SMTraderDoc.h" />
