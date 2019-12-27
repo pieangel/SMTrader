@@ -1582,6 +1582,12 @@
     <ClInclude Include="SmRunInfo.h">
       <Filter>Market</Filter>
     </ClInclude>
+    <ClInclude Include="SmTaskManager.h">
+      <Filter>Task</Filter>
+    </ClInclude>
+    <ClInclude Include="VtMarketManager.h">
+      <Filter>Market</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ChildFrm.cpp">
@@ -2825,6 +2831,12 @@
     </ClCompile>
     <ClCompile Include="VtStringUtil.cpp">
       <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="SmTaskManager.cpp">
+      <Filter>Task</Filter>
+    </ClCompile>
+    <ClCompile Include="VtMarketManager.cpp">
+      <Filter>Market</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

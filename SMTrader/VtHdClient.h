@@ -77,6 +77,7 @@ public:
 	void DownloadDomesticMasterFile(std::string file_name);
 
 	void GetChartData(SmChartDataRequest req);
+	void ExecuteRequest(std::shared_ptr<HdTaskArg> arg);
 private:
 	VtHdCtrl* _HdCtrl = nullptr;
 };

@@ -4,6 +4,7 @@
 #include <sstream>
 #include <string>
 #include <fstream>
+#include <ctime>
 #include "SmMarket.h"
 #include "SmMarketManager.h"
 #include "SmProduct.h"
@@ -37,14 +38,16 @@ void SmSymbolReader::ReadSymbolFileList()
 		std::string file_name = it->text().as_string();
 		TRACE(file_name.c_str());
 		DomesticSymbolMasterFileSet.insert(file_name);
+		SymbolMasterFileSet.insert(file_name);
 	}
 
-// 	pugi::xml_node abroad_list = sym_file_list.first_child();
-// 	for (auto it = abroad_list.begin(); it != abroad_list.end(); ++it) {
-// 		std::string file_name = it->text().as_string();
-// 		TRACE(file_name.c_str());
-// 		DomesticSymbolMasterFileSet.insert(file_name);
-// 	}
+	pugi::xml_node abroad_list = sym_file_list.first_child();
+	for (auto it = abroad_list.begin(); it != abroad_list.end(); ++it) {
+		std::string file_name = it->text().as_string();
+		TRACE(file_name.c_str());
+		AbroadSymbolMasterFileSet.insert(file_name);
+		//SymbolMasterFileSet.insert(file_name);
+	}
 
 	
 	pugi::xml_node app = doc.first_child();
@@ -374,6 +377,10 @@ void SmSymbolReader::ReadJmFile(std::string fullPath)
 	while (std::getline(infile, line))
 	{
 		std::istringstream iss(line);
+
+		// 잘못된 정보가 들어있는 행을 거른다.
+		if (line.length() < 300)
+			continue;
 
 		std::string Series = line.substr(0, 32);
 		/* 종목코드                             */

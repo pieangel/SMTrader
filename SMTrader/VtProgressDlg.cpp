@@ -8,6 +8,8 @@
 #include "VtProductCategoryManager.h"
 #include "HdScheduler.h"
 #include "MainFrm.h"
+#include "Market/SmSymbolReader.h"
+#include "SmTaskManager.h"
 // VtProgressDlg dialog
 
 
@@ -45,6 +47,7 @@ void VtProgressDlg::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(VtProgressDlg, CDialogEx)
 	ON_WM_CTLCOLOR()
+	ON_WM_TIMER()
 END_MESSAGE_MAP()
 
 
@@ -69,7 +72,11 @@ BOOL VtProgressDlg::OnInitDialog()
 
 	HdScheduler* taskMgr = HdScheduler::GetInstance();
 	taskMgr->ProgressDlg(this);
-	taskMgr->GetSymbolCode();
+	//taskMgr->GetSymbolCode();
+	taskMgr->GetSymbolFile();
+
+	//SmTaskManager::GetInstance()->ProgressDlg(this);
+	//SmTaskManager::GetInstance()->StartTask();
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // EXCEPTION: OCX Property Pages should return FALSE
 }
@@ -104,10 +111,28 @@ void VtProgressDlg::SetTaskInfo(HdTaskInfo& taskInfo)
 }
 
 
+void VtProgressDlg::SetTaskInfo(std::string msg)
+{
+	_StaticState.SetWindowText(msg.c_str());
+}
+
+void VtProgressDlg::SetTaskInfo2(HdTaskInfo& taskInfo)
+{
+	_StaticTask.SetWindowText(taskInfo.TaskName.c_str());
+	if (taskInfo.argMap.size() > 0) {
+		std::shared_ptr<HdTaskArg> arg = taskInfo.argMap.begin()->second;
+		_StaticState.SetWindowText(arg->info_text.c_str());
+	}
+	double top = (double)taskInfo.TotalTaskCount - (double)taskInfo.RemainTaskCount;
+	double entire = top / taskInfo.TotalTaskCount;
+	int percent = static_cast<int>(entire * 100);
+	SetPrgressPos(percent);
+}
+
 void VtProgressDlg::PostNcDestroy()
 {
 	// TODO: Add your specialized code here and/or call the base class
-	delete this;
+	//delete this;
 	CDialogEx::PostNcDestroy();
 }
 
@@ -134,4 +159,10 @@ HBRUSH VtProgressDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	_StaticTask.SetTextAlign(1);
 	hBrush = (HBRUSH)_BrushBackNor;
 	return hBrush;
+}
+
+void VtProgressDlg::OnTimer(UINT_PTR nIDEvent)
+{
+	//SmTaskManager::GetInstance()->ExecuteTask();
+	CDialogEx::OnTimer(nIDEvent);
 }

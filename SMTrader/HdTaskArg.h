@@ -3,6 +3,7 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <memory>
 #include "Global/VtDefine.h"
 																											  /// <summary>
 enum class HdTaskType
@@ -40,7 +41,25 @@ enum class HdTaskType
 	HdOrderChange, // 정정 주문
 	HdOrderCancel, // 취소 주문
 	HdAccountFeeInfoStep1, // 계좌 정보
-	HdAccountFeeInfoStep2 // 계좌 정보
+	HdAccountFeeInfoStep2, // 계좌 정보
+	HdSymbolFileDownload // 심볼파일 다운로드
+};
+
+enum class HdTaskState {
+	HdTaskInit,
+	HdSymbolFileDownloading,
+	HdSymbolFileDownloaded,
+	HdSymbolMasterDownloading,
+	HdSymbolMasterDownloaded,
+	HdDepositDownloading,
+	HdDepositDownloaded,
+	HdApiCustomerProfitLossDownloading,
+	HdApiCustomerProfitLossDownloaded,
+	HdOutstandingDownloading,
+	HdOutstandingDownloaded,
+	HdAcceptedHistoryDownloading,
+	HdAcceptedHistoryDownloaded,
+	HdDownloadComplete
 };
 
 class HdTaskArg
@@ -56,6 +75,8 @@ public:
 	virtual ~HdTaskArg()
 	{}
 public:
+	std::string info_text;
+	int RequestID = 0;
 	HdTaskType Type;
 	void AddArg(std::string name, std::string value);
 	std::string GetArg(std::string name);
@@ -68,4 +89,5 @@ struct HdTaskInfo{
 	int TotalTaskCount;
 	int RemainTaskCount;
 	std::vector<std::pair<std::string, HdTaskArg>> argVec;
+	std::map<int, std::shared_ptr<HdTaskArg>> argMap;
 };

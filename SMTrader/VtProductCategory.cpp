@@ -131,7 +131,6 @@ void VtProductCategory::GetRecentMonthSymbolMaster(std::vector<std::pair<std::st
 				arg.Type = HdTaskType::HdSymbolMaster;
 				arg.AddArg(_T("SymbolCode"), sym->ShortCode);
 				argList.push_back(std::make_pair(subSection->Name, arg));
-				Sleep(400);
 
 				LOG_F(INFO, _T("section = %s, req count = %d"), subSection->Name.c_str(), r++);
 			}

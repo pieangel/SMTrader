@@ -13,6 +13,7 @@
 #include "../VtSymbol.h"
 #include "../VtStringUtil.h"
 #include "../VtGlobal.h"
+#include "../Log/loguru.hpp"
 
 SmMarketManager::SmMarketManager()
 {
@@ -33,6 +34,7 @@ SmMarketManager::SmMarketManager()
 	{
 		std::cout << "Parse error: " << result.description()
 			<< ", character pos= " << result.offset;
+		return;
 	}
 
 	pugi::xml_node application = doc.child("application");
@@ -115,7 +117,7 @@ SmMarket* SmMarketManager::AddMarket(std::string name)
 
 	SmMarket* market = new SmMarket();
 	market->Name(name);
-	_MarketList.emplace_back(market);
+	_MarketList.push_back(market);
 	return market;
 }
 
@@ -358,11 +360,11 @@ void SmMarketManager::LoadRunInfo()
 		}
 	}
 
-	pugi::xml_node file_watch = application.child("file_watch");
-	if (file_watch) {
-		VtGlobal::GetInstance()->EnableFileWatch = file_watch.attribute("enable").as_bool();
-		VtGlobal::GetInstance()->FileWatchPath = file_watch.child_value("file_watch_path");
-	}
+// 	pugi::xml_node file_watch = application.child("file_watch");
+// 	if (file_watch) {
+// 		VtGlobal::GetInstance()->EnableFileWatch = file_watch.attribute("enable").as_bool();
+// 		VtGlobal::GetInstance()->FileWatchPath = file_watch.child_value("file_watch_path");
+// 	}
 }
 
 void SmMarketManager::SendSymbolMaster(std::string user_id, VtSymbol* sym)

@@ -4,6 +4,8 @@
 #include "HdTaskArg.h"
 #include "GradientStatic.h"
 #include "XStatic/XColorStatic.h"
+#include <map>
+#include <memory>
 
 // VtProgressDlg dialog
 UINT threadfunc(LPVOID pp);
@@ -34,8 +36,12 @@ public:
 	CProgressCtrl _PrgCtrl;
 	void SetPrgressPos(int pos);
 	void SetTaskInfo(HdTaskInfo& taskInfo);
+	void SetTaskInfo2(HdTaskInfo& taskInfo);
 	CMainFrame* MainFrm = nullptr;
 	virtual void PostNcDestroy();
 	virtual void OnCancel();
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
+	void SetTaskInfo(std::string msg);
+public:
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
 };

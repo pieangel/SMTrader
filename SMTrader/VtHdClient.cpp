@@ -306,6 +306,11 @@ void VtHdClient::GetChartData(SmChartDataRequest req)
 	_HdCtrl->GetChartData(req);
 }
 
+void VtHdClient::ExecuteRequest(std::shared_ptr<HdTaskArg> arg)
+{
+	_HdCtrl->ExecuteRequest(arg);
+}
+
 void VtHdClient::GetMasterFile(std::string fileName)
 {
 	if (_HdCtrl)

@@ -16,6 +16,9 @@ public:
 	std::string GetWorkingDir();
 	void ReadSymbolFromFile(int index, std::string fullPath);
 	std::set<std::string> DomesticSymbolMasterFileSet;
+	std::set<std::string> AbroadSymbolMasterFileSet;
+
+	std::set<std::string> SymbolMasterFileSet;
 
 	inline std::string& rtrim(std::string& s)
 	{

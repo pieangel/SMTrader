@@ -66,6 +66,9 @@
 #include "Market/SmMarketManager.h"
 #include "Chart/SmChartDataManager.h"
 #include "SmPortfolioDlg.h"
+#include "SmTaskManager.h"
+#include <crtdbg.h>
+#include "VtMarketManager.h"
 
 extern TApplicationFont g_Font;
 
@@ -138,6 +141,7 @@ static UINT indicators[] =
 
 CMainFrame::CMainFrame()
 {
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	// TODO: 여기에 멤버 초기화 코드를 추가합니다.
 	theApp.m_nAppLook = theApp.GetInt(_T("ApplicationLook"), ID_VIEW_APPLOOK_VS_2008);
 
@@ -148,9 +152,6 @@ CMainFrame::CMainFrame()
 	HdScheduler* taskMgr = HdScheduler::GetInstance();
 	auto d = dlgt::make_delegate(&CMainFrame::OnReceiveComplete, *this);
 
-	VtSymbolManager* symMgr = VtSymbolManager::GetInstance();
-	symMgr->LoadAbroadSymbols();
-
 	VtLogManager* logMgr = VtLogManager::GetInstance();
 	logMgr->InitLog();
 
@@ -159,10 +160,10 @@ CMainFrame::CMainFrame()
 
 CMainFrame::~CMainFrame()
 {
-	if (_FildMonitor) {
-		delete _FildMonitor;
-		_FildMonitor = nullptr;
-	}
+// 	if (_FildMonitor) {
+// 		delete _FildMonitor;
+// 		_FildMonitor = nullptr;
+// 	}
 
 	ResetSysLogDlg();
 }
@@ -568,6 +569,13 @@ void CMainFrame::OnLoginTest()
 
 void CMainFrame::OnClose()
 {
+	VtDate date = VtGlobal::GetLocalDate();
+	VtTime time = VtGlobal::GetLocalTime();
+	CString msg;
+	msg.Format(_T("%d년 %d월 %d일 %d시 %d분 %d초에 종료합니다."), date.year, date.month, date.day, time.hour, time.min, time.sec);
+	AfxMessageBox(msg, MB_ICONEXCLAMATION);
+
+
 	if (_OrderPanel) {
 		delete _OrderPanel;
 		_OrderPanel = nullptr;
@@ -577,11 +585,7 @@ void CMainFrame::OnClose()
 	if (!ClearAllResources())
 		return;
 
-	VtDate date = VtGlobal::GetLocalDate();
-	VtTime time = VtGlobal::GetLocalTime();
-	CString msg;
-	msg.Format(_T("%d년 %d월 %d일 %d시 %d분 %d초에 종료합니다."), date.year, date.month, date.day, time.hour, time.min, time.sec);
-	AfxMessageBox(msg, MB_ICONEXCLAMATION);
+	
 	CMDIFrameWndEx::OnClose();
 }
 
@@ -591,6 +595,7 @@ void CMainFrame::OnShowWindow(BOOL bShow, UINT nStatus)
 	CMDIFrameWndEx::OnShowWindow(bShow, nStatus);
 	
 	ReadConfig();
+	VtMarketManager::GetInstance();
 
 	if (!_Init) {
 		_Init = true;
@@ -602,7 +607,6 @@ void CMainFrame::OnShowWindow(BOOL bShow, UINT nStatus)
 		VtSaveManager* saveMgr = VtSaveManager::GetInstance();
 		int Res = loginDlg.DoModal();
 		if (Res == IDOK) {
-
 			// 로그인 사용자를 위한 디렉토리를 만든다.
 			VtGlobal::LoginUserID = loginDlg.id;
 			saveMgr->CreateUserDirectory();
@@ -646,9 +650,18 @@ void CMainFrame::OnShowWindow(BOOL bShow, UINT nStatus)
 			// 			std::string fileName = _T("product.cod");
 			// 			client->GetMasterFile(fileName);
 			// 타이머를 가동하여 심볼 파일 다운로드 시작
-			SetTimer(2, 500, 0);
+			//SetTimer(2, 500, 0);
 			// 심볼코드를 가져오기 시작한다.
-			//GetSymbolCode();
+			//GetSymbolFile();
+
+			//ProgressDlg = new VtProgressDlg();
+			//ProgressDlg->Create(IDD_PROGRESS, this);
+			//ProgressDlg->MainFrm = this;
+			//ProgressDlg->ShowWindow(SW_SHOW);
+			//ProgressDlg->SetForegroundWindow();
+			//ProgressDlg->BringWindowToTop();
+
+			VtHdClient::GetInstance()->DownloadMasterFiles("futures");
 		}
 		else {
 			ClearAllResources();
@@ -679,6 +692,8 @@ void CMainFrame::OnReceiveComplete()
 		saveMgr->ReadWindows();
 
 		//SetTimer(SysLiqTimer, 5000, NULL);
+
+		//VtHdClient::GetInstance()->DownloadMasterFiles("futures");
 
 		_LoadComplete = true;
 	}
@@ -742,7 +757,7 @@ void CMainFrame::CreateFileWatch()
 	name = _T("path");
 	value = configMgr->getString(section, name);
 
-	_FildMonitor = new VtFileEventMonitor();
+	_FildMonitor = std::make_shared<VtFileEventMonitor>();
 	_FildMonitor->AddMonDir(value.c_str(), true);
 	//_FildMonitor->AddMonDir(_T("C:\\WRFutures\\YesGlobalPro\\YesLang"), true);
 	//_FildMonitor->AddMonDir(_T("C:\\WRFutures\\YesGlobalPro\\Spot\\Export"), true);
@@ -751,10 +766,8 @@ void CMainFrame::CreateFileWatch()
 
 bool CMainFrame::ClearAllResources()
 {
-	SmChartDataManager::DestroyInstance();
+	VtMarketManager::DestroyInstance();
 	SmMarketManager::DestroyInstance();
-	SmSymbolReader::DestroyInstance();
-	SmCallbackManager::DestroyInstance();
 	VtScheduler::DestroyInstance();
 	HdScheduler* sch = HdScheduler::GetInstance();
 	sch->ClearTasks();
@@ -827,6 +840,12 @@ bool CMainFrame::ClearAllResources()
 	VtOutSignalDefManager::DestroyInstance();
 	VtOutSystemManager::DestroyInstance();
 	VtOutSystemOrderManager::DestroyInstance();
+
+	SmSymbolReader::DestroyInstance();
+	SmTaskManager::DestroyInstance();
+	SmChartDataManager::DestroyInstance();
+	
+	SmCallbackManager::DestroyInstance();
 	return true;
 }
 
@@ -872,13 +891,18 @@ void CMainFrame::UpdateSysLog()
 
 void CMainFrame::ReadConfig()
 {
+	// 선물과 옵션의 운영 목록을 로드한다.
 	SmMarketManager::GetInstance()->LoadRunInfo();
+	
 	// 파일에서 심볼 목록을 로드한다.
 	SmSymbolReader::GetInstance()->ReadSymbolFileList();
 
 	VtSaveManager* saveMgr = VtSaveManager::GetInstance();
 	// 실행 설정을 xml파일에서 읽어 온다.
 	saveMgr->LoadRunInfoFromXml();
+
+	
+
 	// 실행 설정을 ini파일에서 읽어 온다.
 	ZmConfigManager* configMgr = ZmConfigManager::GetInstance();
 	std::string section = _T("FILE_WATCH");
@@ -901,15 +925,14 @@ void CMainFrame::ReadConfig()
 	if (_FleWathPath.length() > 0) {
 		CreateFileWatch();
 	}
-
+	
 	
 }
-
+// 해외 종목 파일을 다운 받은 후에 모든 과정을 시작한다.
 void CMainFrame::StartPreProcess()
 {
-	SmMarketManager::GetInstance()->ReadDomesticSymbolsFromFile();
 	SmMarketManager::GetInstance()->ReadAbroadSymbolsFromFile();
-	GetSymbolCode();
+	GetSymbolFile();
 }
 
 void CMainFrame::ResetSysLogDlg()
@@ -921,10 +944,10 @@ void CMainFrame::ResetSysLogDlg()
 // 	}
 }
 
-void CMainFrame::GetSymbolCode()
+void CMainFrame::GetSymbolFile()
 {
-	LOG_F(INFO, _T("GetSymbolCode was called!"));
-	ProgressDlg = new VtProgressDlg();
+	LOG_F(INFO, _T("GetSymbolFile was called!"));
+	ProgressDlg = std::make_shared<VtProgressDlg>();
 	ProgressDlg->Create(IDD_PROGRESS, this);
 	ProgressDlg->MainFrm = this;
 	ProgressDlg->ShowWindow(SW_SHOW);

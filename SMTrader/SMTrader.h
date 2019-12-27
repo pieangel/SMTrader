@@ -9,6 +9,7 @@
 
 #include "resource.h"       // 주 기호입니다.
 
+
 BOOL __stdcall SetChildFont(HWND hwnd, LPARAM lparam);
 
 class TApplicationFont : public CObject {

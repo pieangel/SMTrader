@@ -31,6 +31,7 @@ public:
 		return _SymbolList;
 	}
 	VtSymbol* GetRecentMonthSymbol();
+	VtSymbol* GetNextMonthSymbol();
 	SmProductYearMonth* GetRecentYearMonth();
 	SmProductYearMonth* GetNextYearMonth();
 	std::map<std::string, SmProductYearMonth*>& GetYearMonthMap() {
@@ -74,5 +75,6 @@ private:
 	std::map<std::string, std::string> _DomesticYearTable;
 	std::map<std::string, std::string> _DomesticMonthTable;
 	std::map<std::string, std::string> _AbroadMonthTable;
+	int dow(int y, int m, int d);
 };
 

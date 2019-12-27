@@ -7948,7 +7948,7 @@ void CGridCtrl::DrawOrderLine(CDC* pdc)
 
 	GetCellRect(OrderCellStart, StartRect);
 	GetCellRect(OrderCellEnd, EndRect);
-	pt1.x = StartRect.left + (StartRect.right - StartRect.left) / 2;
+	pt1.x = StartRect.left + (StartRect.right - StartRect.left) / 2; 
 	pt1.y = StartRect.top + (StartRect.bottom - StartRect.top) / 2;
 	pt2.x = EndRect.left + (EndRect.right - EndRect.left) / 2;
 	pt2.y = EndRect.top + (EndRect.bottom - EndRect.top) / 2;

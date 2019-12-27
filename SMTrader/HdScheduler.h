@@ -59,6 +59,8 @@ private:
 	int _SectionCount;
 	int _SubSectionCount;
 	std::map<HdTaskType, RequestQueue> RequestMap;
+	// 초기에 프로그램 구동을 위한 정보를 서버에서 가져올 때 사용하는 플래그
+	// 이 플래그가 참이 되면 서버에서 모든 정보를 받은 것임
 	bool _ReceivedBatchInfo;
 public:
 	int AddRequest(HdTaskType reqType, int reqId);
@@ -70,7 +72,9 @@ public:
 		(*_RecvComp)();
 	}
 	void GetSymbolCode();
+	void GetSymbolFile();
 	void GetSymbolMaster();
+	void GetSymbolMaster2();
 	int GetDeposit();
 	int GetCustomProfitLoss();
 	int GetOutstanding();

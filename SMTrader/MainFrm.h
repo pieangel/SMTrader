@@ -9,6 +9,7 @@
 #include "PropertiesWnd.h"
 #include "VtProgressDlg.h"
 #include "VtMainToolbar.h"
+#include <memory>
 
 const int SysLiqTimer = 0x00000009;
 class VtSymbol;
@@ -84,10 +85,10 @@ private:
 	bool _OrderWndCreated = false;
 	bool _LoadComplete = false;
 	bool _AccountsInfoReceived = false;
-	VtProgressDlg* ProgressDlg = nullptr;
+	std::shared_ptr<VtProgressDlg> ProgressDlg = nullptr;
 	VtMainToolbar _MainToolbar;
 	VtChartContainer* _ChartContainer = nullptr;
-	VtFileEventMonitor* _FildMonitor = nullptr;
+	std::shared_ptr<VtFileEventMonitor> _FildMonitor = nullptr;
 	std::string _FleWathPath;
 	bool _EnableFileWatch = false;
 	void CreateFileWatch();
@@ -96,7 +97,7 @@ public:
 	void ReadConfig();
 	void StartPreProcess();
 	void ResetSysLogDlg();
-	void GetSymbolCode();
+	void GetSymbolFile();
 	void SaveSettings();
 	void LoadSettings();
 	// 파일 관련 함수
@@ -139,6 +140,8 @@ public:
 	afx_msg void OnAi();
 	afx_msg void OnCorBtwnPort();
 	afx_msg void OnCorBtwnSig();
+
+	std::shared_ptr<CWnd> _MainWnd;
 };
 
 

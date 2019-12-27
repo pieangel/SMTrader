@@ -392,7 +392,7 @@ void SmOptionGrid::GetSymbolMaster()
 					sym = call_symbol_list[curIndex];
 					if (sym->Quote.intClose == 0) {
 						sym->GetSymbolMaster();
-						VtRealtimeRegisterManager::GetInstance()->RegisterProduct(sym->ShortCode);
+						//VtRealtimeRegisterManager::GetInstance()->RegisterProduct(sym->ShortCode);
 					}
 				}
 		
@@ -400,7 +400,7 @@ void SmOptionGrid::GetSymbolMaster()
 					sym = put_symbol_list[curIndex];
 					if (sym->Quote.intClose == 0) {
 						sym->GetSymbolMaster();
-						VtRealtimeRegisterManager::GetInstance()->RegisterProduct(sym->ShortCode);
+						//VtRealtimeRegisterManager::GetInstance()->RegisterProduct(sym->ShortCode);
 					}
 				}
 			}

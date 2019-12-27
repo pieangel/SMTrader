@@ -265,10 +265,15 @@ void HdFutureGrid::OnSymbolMaster(VtSymbol* sym)
 {
 	if (!sym)
 		return;
-	//int row = SymbolRowMap[sym];
-	//QuickSetText(1, row, sym->Name.c_str());
-	//QuickRedrawCell(1, row);
-	InitGrid();
+	int row = SymbolRowMap[sym];
+	CUGCell cell;
+	GetCell(2, row, &cell);
+	int intCenter = sym->Quote.intClose;
+	cell.SetNumberDecimals(sym->Decimal);
+	cell.SetNumber(intCenter / std::pow(10, sym->Decimal));
+	cell.Tag(sym);
+	SetCell(2, row, &cell);
+	QuickRedrawCell(2, row);
 }
 
 void HdFutureGrid::SetConfigDlg(VtUsdStrategyConfigDlg* ConfigDlg)

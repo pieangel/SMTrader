@@ -9,6 +9,12 @@
 #include "resource.h"
 #include "MainFrm.h"
 #include "VtProgressDlg.h"
+#include "Market/SmMarketManager.h"
+#include "Market/SmProduct.h"
+#include "Market/SmProductYearMonth.h"
+#include "Market/SmSymbolReader.h"
+#include "VtSaveManager.h"
+#include "VtSymbol.h"
 
 
 HdScheduler::HdScheduler()
@@ -28,13 +34,25 @@ void HdScheduler::OnTaskCompleted(HdTaskEventArgs& arg)
 		_Available = true;
 
 	switch (arg.TaskType) { // 작업 타입에 따라 분기
+	case HdTaskType::HdSymbolFileDownload: { // 각 섹셕편 심볼파일을 가져온다. 
+		int remCnt = RemoveRequest(HdTaskType::HdSymbolFileDownload, arg.RequestId);
+		if (_ProgressDlg) {
+			SetTaskInfo(_T("GetSymbolFile"), remCnt);
+		}
+		if (!_ReceivedBatchInfo && remCnt == 0) { // 심볼 파일 가져오기가 끝났다면 심볼 코드 요청
+			// 파일을 다 내려 받았다면 심볼 파일을 로드한다.
+			SmMarketManager::GetInstance()->ReadDomesticSymbolsFromFile();
+			GetSymbolCode();
+		}
+	}
+	break;
 	case HdTaskType::HdSymbolCode: { // 각 섹셕편 심볼코드를 가져온다. - 오직 심볼 코드만 가져온다.
 		int remCnt = RemoveRequest(HdTaskType::HdSymbolCode, arg.RequestId);
 		if (_ProgressDlg) {
 			SetTaskInfo(_T("GetSymbolCode"), remCnt);
 		}
 		if (!_ReceivedBatchInfo && remCnt == 0) { // 심볼 코드 가져오기가 끝났다면 심볼 마스터 요청
-			GetSymbolMaster();
+			GetSymbolMaster2();
 		}
 	}
 	break;
@@ -292,11 +310,18 @@ void HdScheduler::ExecTask(HdTaskArg&& taskArg)
 		client->GetFilledHistoryTable(HdTaskType::HdAccountFeeInfoStep2, accountNo, password);
 	}
 		break;
+	case HdTaskType::HdSymbolFileDownload:
+	{
+		std::string file_name = taskArg.GetArg(_T("file_name"));
+		client->DownloadDomesticMasterFile(file_name);
+	}
+	break;
 	default:
 		break;
 	}
 }
-
+// 작업 타입 별로 큐에 넣어 놓는다. reqId는 단순히 작업 갯수를 의미할 뿐 다른 의미는 없다.
+// 특정 타입의 작업이 하나 완료되면 이 작업 타입의 큐에서 단순히 하나를 제거해서 남은 작업이 하나 줄었음을 표시해 준다.
 int HdScheduler::AddRequest(HdTaskType reqType, int reqId)
 {
 	auto it = RequestMap.find(reqType);
@@ -348,6 +373,37 @@ void HdScheduler::GetSymbolCode()
 	if (_ProgressDlg) {
 		_ProgressDlg->SetTaskInfo(taskInfo);
 	}
+	// 작업 큐에 작업 목록을 추가한다.
+	AddTaskList(taskInfo.argVec);
+}
+
+void HdScheduler::GetSymbolFile()
+{
+	SmSymbolReader* symReader = SmSymbolReader::GetInstance();
+	HdTaskInfo taskInfo;
+	// 작업 내용을 채운다.
+	if (symReader->SymbolMasterFileSet.size() > 0) {
+		int i = 0;
+		for (auto it = symReader->SymbolMasterFileSet.begin(); it != symReader->SymbolMasterFileSet.end(); ++it) {
+			std::string file_name = *it;
+			HdTaskArg arg;
+			arg.Type = HdTaskType::HdSymbolFileDownload;
+			arg.AddArg("file_name", file_name);
+			taskInfo.argVec.push_back(std::make_pair(file_name, arg));
+			// 요청 큐에 요청 갯수를 추가한다.
+			AddRequest(HdTaskType::HdSymbolFileDownload, i++);
+		}
+	}
+
+	taskInfo.TaskName = _T("종목파일을 가져오는 중입니다.");
+	taskInfo.TotalTaskCount = taskInfo.argVec.size();
+	taskInfo.RemainTaskCount = taskInfo.TotalTaskCount;
+	_TaskInfoMap[_T("GetSymbolFile")] = taskInfo;
+	if (_ProgressDlg) {
+		_ProgressDlg->SetTaskInfo(taskInfo);
+	}
+
+	// 작업 큐에 작업 목록을 추가한다.
 	AddTaskList(taskInfo.argVec);
 }
 
@@ -356,6 +412,48 @@ void HdScheduler::GetSymbolMaster()
 	VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();
 	HdTaskInfo taskInfo;
 	prdtCatMgr->GetRecentMonthSymbolMasterByCategory(taskInfo.argVec, _T("일반"));
+	taskInfo.TaskName = _T("현재가를 가져오는 중입니다.");
+	taskInfo.TotalTaskCount = taskInfo.argVec.size();
+	taskInfo.RemainTaskCount = taskInfo.TotalTaskCount;
+	_TaskInfoMap[_T("GetSymbolMaster")] = taskInfo;
+	if (_ProgressDlg) {
+		_ProgressDlg->SetTaskInfo(taskInfo);
+	}
+	AddTaskList(taskInfo.argVec);
+}
+
+void HdScheduler::GetSymbolMaster2()
+{
+	std::set<std::string> master_vector;
+	// 선물 목록에서 근월물과 차월물의 코드를 읽어 온다.
+	std::vector<SmRunInfo> future_list = SmMarketManager::GetInstance()->GetFutureRunVector();
+	for (auto it = future_list.begin(); it != future_list.end(); ++it) {
+		SmRunInfo run_info = *it;
+		SmProduct* product = SmMarketManager::GetInstance()->FindProductFromMap(run_info.Code.substr(0, 3));
+		if (product) {
+			VtSymbol* symbol = product->GetRecentMonthSymbol();
+			if (symbol)
+				master_vector.insert(symbol->ShortCode);
+			symbol = product->GetNextMonthSymbol();
+			if (symbol)
+				master_vector.insert(symbol->ShortCode);
+		}
+	}
+
+	VtSaveManager::GetInstance()->GetWindowSymbolList(master_vector);
+	HdTaskInfo taskInfo;
+	int i = 0;
+	// 요청 내용을 채운다.
+	for (auto it = master_vector.begin(); it != master_vector.end(); ++it) {
+		std::string symbol_code = *it;
+		HdTaskArg arg;
+		arg.info_text = symbol_code;
+		arg.Type = HdTaskType::HdSymbolMaster;
+		arg.AddArg("SymbolCode", symbol_code);
+		taskInfo.argVec.push_back(std::make_pair(symbol_code, arg));
+		// 요청 큐에 요청 갯수를 추가한다.
+		AddRequest(HdTaskType::HdSymbolMaster, i++);
+	}
 	taskInfo.TaskName = _T("현재가를 가져오는 중입니다.");
 	taskInfo.TotalTaskCount = taskInfo.argVec.size();
 	taskInfo.RemainTaskCount = taskInfo.TotalTaskCount;

@@ -10,6 +10,8 @@ public:
 	VtSymbol();
 	~VtSymbol();
 
+	static int count;
+
 	int Index;
 	int NearMonth;
 	std::string Currency = "KRW";

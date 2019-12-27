@@ -756,8 +756,11 @@ void VtProductCategoryManager::GetSymbolCode(std::vector<std::pair<std::string, 
 		if (prdtCat->Name.compare(catName) == 0) {
 			// 스케줄러에 심볼 갯수를 등록해 주고 다 되면 다음 작업을 진행하게 만든다.
 			for (int i = 0; i < prdtCat->SectionList.size(); ++i) {
+				// 작업 타입과 작업 아이드를 등록해 준다.
+				// 여기서는 작업 갯수만 등록해 준다. 나중에 처리해야 할 작업 목록이 얼마나 남아 있는지 조사하기 위한 것이다.
 				scheduler->AddRequest(HdTaskType::HdSymbolCode, i);
 			}
+			// 구체적인 작업 내용을 가져온다. 여기서는 선물의 이름과 코드 목록을 가져온다.
 			prdtCat->GetSymbolCode(argVec);
 			break;
 		}

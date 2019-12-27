@@ -126,7 +126,7 @@ BOOL VtOrderLeftWndHd::OnInitDialog()
 	}
 
 	CRect rcRect;
-	_ComboProduct.GetClientRect(rcRect);
+	_ComboProduct.SetDroppedWidth(150);
 
 	_ComboProduct.GetWindowRect(&rcRect);
 	ScreenToClient(&rcRect);

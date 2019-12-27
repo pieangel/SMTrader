@@ -17,6 +17,8 @@
 // MFC의 공통 부분과 무시 가능한 경고 메시지에 대한 숨기기를 해제합니다.
 #define _AFX_ALL_WARNINGS
 
+//#include <vld.h>
+
 #include <afxwin.h>         // MFC 핵심 및 표준 구성 요소입니다.
 #include <afxext.h>         // MFC 확장입니다.
 
@@ -41,6 +43,8 @@
 #include "FileWatch/auto_release.h"
 #include "FileWatch/IoCompletionPort.h"
 #include "FileWatch/ThreadSafeQueue.h"
+
+
 
 //#include "Format/format_string.h"
 

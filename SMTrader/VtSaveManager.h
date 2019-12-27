@@ -5,6 +5,7 @@
 #include <fstream>
 #include <windows.h>
 #include <map>
+#include <set>
 class CMainFrame;
 class VtSymbol;
 class VtSaveManager : public TemplateSingleton<VtSaveManager>
@@ -52,6 +53,7 @@ public:
 	int LoadLoginInfoFromXml(std::string& id, std::string& pwd, std::string& cert, bool& save);
 	int LoadLoginInfoFromXml();
 	void LoadRunInfoFromXml();
+	void GetWindowSymbolList(std::set<std::string>& symbol_list);
 private:
 	bool ListContents(std::map<std::string, std::string>& dest, std::string dir, std::string filter, bool recursively);
 	std::vector<VtSymbol*> _SymbolVector;

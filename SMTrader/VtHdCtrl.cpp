@@ -60,6 +60,8 @@
 #include "Market/SmSymbolReader.h"
 #include "Chart/SmChartData.h"
 #include "Chart/SmChartDataManager.h"
+#include "SmTaskManager.h"
+#include "Market/SmMarketManager.h"
 
 using namespace std;
 
@@ -318,10 +320,10 @@ void VtHdCtrl::GetFutureCodeList(CString categoryName)
 	GetSymbolCode(categoryName);
 }
 
-void VtHdCtrl::GetSymbolCode(CString categoryName)
+int VtHdCtrl::GetSymbolCode(CString categoryName)
 {
 	if (_Blocked)
-		return;
+		return -1;
 
 	Sleep(700);
 	CString sTrCode = DefSymbolCode;
@@ -332,7 +334,11 @@ void VtHdCtrl::GetSymbolCode(CString categoryName)
 	{
 		int nRqID = m_CommAgent.CommRqData(sTrCode, sInput, sInput.GetLength(), strNextKey);
 		AddRequest(nRqID, HdTaskType::HdSymbolCode);
+
+		return nRqID;
 	}
+
+	return -1;
 }
 
 void VtHdCtrl::GetOptionCodeList(CString categoryName)
@@ -360,12 +366,10 @@ void VtHdCtrl::GetTradableCodeTable()
 	}
 }
 
-void VtHdCtrl::GetSymbolMaster(CString symCode)
+int VtHdCtrl::GetSymbolMaster(CString symCode)
 {
 	if (_Blocked)
-		return;
-
-	Sleep(100);
+		return -1;
 
 	//CString sInput = "101N600040020";
 	CString sInput = symCode.TrimRight();
@@ -376,6 +380,8 @@ void VtHdCtrl::GetSymbolMaster(CString symCode)
 	CString strNextKey = _T("");
 	int nRqID = m_CommAgent.CommFIDRqData(DefSymbolMaster, sInput, sReqFidInput, sInput.GetLength(), strNextKey);
 	AddRequest(nRqID, HdTaskType::HdSymbolMaster);
+
+	return nRqID;
 }
 
 void VtHdCtrl::RegisterProduct(CString symCode)
@@ -2506,15 +2512,156 @@ void VtHdCtrl::DownloadMasterFiles(std::string param)
 	m_CommAgent.CommReqMakeCod(param.c_str(), 0);
 }
 
-void VtHdCtrl::DownloadDomesticMasterFile(std::string file_name)
+int VtHdCtrl::DownloadDomesticMasterFile(std::string file_name)
 {
-	if (_FileDownloading)
-		return;
-	_FileDownloading = true;
 	CString sTrCode = "v90001";
 	CString sInput = file_name.c_str();
 	CString strNextKey = "";
 	int nRqID = m_CommAgent.CommRqData(sTrCode, sInput, sInput.GetLength(), strNextKey);
+	return nRqID;
+}
+
+void VtHdCtrl::ExecuteRequest(std::shared_ptr<HdTaskArg> taskArg)
+{
+	if (!taskArg)
+		return;
+
+	switch (taskArg->Type)
+	{
+	case HdTaskType::HdSymbolFileDownload:
+	{
+		std::string file_name = taskArg->GetArg(_T("file_name"));
+		int nRqID = DownloadDomesticMasterFile(file_name);
+		_TaskReqMap[nRqID] = taskArg;
+	}
+	break;
+	case HdTaskType::HdAcceptedHistory:
+	{
+		std::string accountNo = taskArg->GetArg(_T("AccountNo"));
+		std::string password = taskArg->GetArg(_T("Password"));
+		GetAcceptedHistory(accountNo, password);
+	}
+	break;
+	case HdTaskType::HdFilledHistory:
+		break;
+	case HdTaskType::HdOutstandingHistory:
+	{
+		std::string accountNo = taskArg->GetArg(_T("AccountNo"));
+		std::string password = taskArg->GetArg(_T("Password"));
+		GetOutstandingHistory(accountNo, password);
+	}
+	break;
+	case HdTaskType::HdOutstanding:
+	{
+		std::string accountNo = taskArg->GetArg(_T("AccountNo"));
+		std::string password = taskArg->GetArg(_T("Password"));
+		GetOutstanding(accountNo, password);
+	}
+	break;
+	case HdTaskType::HdCmeAcceptedHistory:
+		break;
+	case HdTaskType::HdCmeFilledHistory:
+		break;
+	case HdTaskType::HdCmeOutstandingHistory:
+		break;
+	case HdTaskType::HdCmeOutstanding:
+		break;
+	case HdTaskType::HdCmeAsset:
+		break;
+	case HdTaskType::HdCmePureAsset:
+		break;
+	case HdTaskType::HdAsset:
+	{
+		std::string accountNo = taskArg->GetArg(_T("AccountNo"));
+		std::string password = taskArg->GetArg(_T("Password"));
+		GetAsset(accountNo, password);
+	}
+	break;
+	case HdTaskType::HdDeposit:
+	{
+		std::string accountNo = taskArg->GetArg(_T("AccountNo"));
+		std::string password = taskArg->GetArg(_T("Password"));
+		GetDeposit(accountNo, password);
+	}
+	break;
+	case HdTaskType::HdDailyProfitLoss:
+	{
+		std::string accountNo = taskArg->GetArg(_T("AccountNo"));
+		std::string password = taskArg->GetArg(_T("Password"));
+		GetDailyProfitLoss(accountNo, password);
+	}
+	break;
+	case HdTaskType::HdFilledHistoryTable:
+	{
+		std::string accountNo = taskArg->GetArg(_T("AccountNo"));
+		std::string password = taskArg->GetArg(_T("Password"));
+		GetFilledHistoryTable(accountNo, password);
+	}
+	break;
+	case HdTaskType::HdAccountProfitLoss:
+	{
+		std::string accountNo = taskArg->GetArg(_T("AccountNo"));
+		std::string password = taskArg->GetArg(_T("Password"));
+		GetAccountProfitLoss(accountNo, password);
+	}
+	break;
+	case HdTaskType::HdSymbolCode:
+	{
+		std::string symCode = taskArg->GetArg(_T("Category"));
+		//TRACE(symCode.c_str());
+		//TRACE(_T("\n"));
+		GetSymbolCode(CString(symCode.c_str()));
+	}
+	break;
+	case HdTaskType::HdTradableCodeTable:
+		break;
+	case HdTaskType::HdApiCustomerProfitLoss:
+	{
+		std::string accountNo = taskArg->GetArg(_T("AccountNo"));
+		std::string password = taskArg->GetArg(_T("Password"));
+		GetApiCustomerProfitLoss(accountNo, password);
+	}
+	break;
+	case HdTaskType::HdChartData:
+		break;
+	case HdTaskType::HdCurrentQuote:
+		break;
+	case HdTaskType::HdDailyQuote:
+		break;
+	case HdTaskType::HdTickQuote:
+		break;
+	case HdTaskType::HdSecondQutoe:
+		break;
+	case HdTaskType::HdSymbolMaster:
+	{
+		std::string symCode = taskArg->GetArg(_T("symbol_code"));
+		//TRACE(symCode.c_str());
+		//TRACE(_T("\n"));
+		int nRqID = GetSymbolMaster(CString(symCode.c_str()));
+		_TaskReqMap[nRqID] = taskArg;
+	}
+	break;
+	case HdTaskType::HdStockFutureSymbolMaster:
+		break;
+	case HdTaskType::HdIndustryMaster:
+		break;
+	case HdTaskType::HdAccountFeeInfoStep1:
+	{
+		std::string accountNo = taskArg->GetArg(_T("AccountNo"));
+		std::string password = taskArg->GetArg(_T("Password"));
+		GetApiCustomerProfitLoss(HdTaskType::HdAccountFeeInfoStep1, accountNo, password);
+	}
+	break;
+	case HdTaskType::HdAccountFeeInfoStep2:
+	{
+		std::string accountNo = taskArg->GetArg(_T("AccountNo"));
+		std::string password = taskArg->GetArg(_T("Password"));
+		GetFilledHistoryTable(HdTaskType::HdAccountFeeInfoStep2, accountNo, password);
+	}
+	break;
+	default:
+		break;
+	}
 }
 
 void VtHdCtrl::OnAcceptedHistory(CString& sTrCode, LONG& nRqID)
@@ -3317,6 +3464,9 @@ void VtHdCtrl::OnSymbolMaster(CString& sTrCode, LONG& nRqID)
 
 
 	SmCallbackManager::GetInstance()->OnMasterEvent(sym);
+
+	// 심볼 마스터 정보를 받자마자 실시간 등록을 해준다.
+	VtRealtimeRegisterManager::GetInstance()->RegisterProduct(sym->ShortCode);
 
 	char firstCode = sym->ShortCode.at(0);
 
@@ -4122,7 +4272,7 @@ void VtHdCtrl::UnregisterCurrent()
 	nResult = m_CommAgent.CommRemoveBroad(strKey, nRealType);
 }
 
-void VtHdCtrl::GetAcceptedHistory(std::string accountNo, std::string pwd)
+int VtHdCtrl::GetAcceptedHistory(std::string accountNo, std::string pwd)
 {
 	Sleep(700);
 
@@ -4140,6 +4290,8 @@ void VtHdCtrl::GetAcceptedHistory(std::string accountNo, std::string pwd)
 	CString strNextKey = _T("");
 	int nRqID = m_CommAgent.CommRqData(sTrCode, sInput, sInput.GetLength(), strNextKey);
 	AddRequest(nRqID, HdTaskType::HdAcceptedHistory);
+
+	return nRqID;
 }
 
 void VtHdCtrl::GetFilledHistory(std::string accountNo, std::string pwd)
@@ -4160,7 +4312,7 @@ void VtHdCtrl::GetFilledHistory(std::string accountNo, std::string pwd)
 	AddRequest(nRqID, HdTaskType::HdFilledHistory);
 }
 
-void VtHdCtrl::GetOutstandingHistory(std::string accountNo, std::string pwd)
+int VtHdCtrl::GetOutstandingHistory(std::string accountNo, std::string pwd)
 {
 	std::string reqString;
 	std::string temp;
@@ -4176,9 +4328,11 @@ void VtHdCtrl::GetOutstandingHistory(std::string accountNo, std::string pwd)
 	CString strNextKey = _T("");
 	int nRqID = m_CommAgent.CommRqData(sTrCode, sInput, sInput.GetLength(), strNextKey);
 	AddRequest(nRqID, HdTaskType::HdOutstandingHistory);
+
+	return nRqID;
 }
 
-void VtHdCtrl::GetOutstanding(std::string accountNo, std::string pwd)
+int VtHdCtrl::GetOutstanding(std::string accountNo, std::string pwd)
 {
 	Sleep(700);
 	std::string reqString;
@@ -4195,6 +4349,8 @@ void VtHdCtrl::GetOutstanding(std::string accountNo, std::string pwd)
 	CString strNextKey = _T("");
 	int nRqID = m_CommAgent.CommRqData(sTrCode, sInput, sInput.GetLength(), strNextKey);
 	AddRequest(nRqID, HdTaskType::HdOutstanding);
+
+	return nRqID;
 }
 
 void VtHdCtrl::GetCmeAcceptedHistory(std::string accountNo, std::string pwd)
@@ -4269,10 +4425,10 @@ void VtHdCtrl::GetCmeOutstanding(std::string accountNo, std::string pwd)
 	AddRequest(nRqID, HdTaskType::HdCmeOutstanding);
 }
 
-void VtHdCtrl::GetAsset(std::string accountNo, std::string pwd)
+int VtHdCtrl::GetAsset(std::string accountNo, std::string pwd)
 {
 	if (_Blocked)
-		return;
+		return -1;
 
 	std::string reqString;
 	std::string temp;
@@ -4287,9 +4443,11 @@ void VtHdCtrl::GetAsset(std::string accountNo, std::string pwd)
 	CString strNextKey = _T("");
 	int nRqID = m_CommAgent.CommRqData(sTrCode, sInput, sInput.GetLength(), strNextKey);
 	AddRequest(nRqID, HdTaskType::HdAsset);
+
+	return nRqID;
 }
 
-void VtHdCtrl::GetDeposit(std::string accountNo, std::string pwd)
+int VtHdCtrl::GetDeposit(std::string accountNo, std::string pwd)
 {
 	Sleep(700);
 	std::string reqString;
@@ -4305,6 +4463,8 @@ void VtHdCtrl::GetDeposit(std::string accountNo, std::string pwd)
 	CString strNextKey = _T("");
 	int nRqID = m_CommAgent.CommRqData(sTrCode, sInput, sInput.GetLength(), strNextKey);
 	AddRequest(nRqID, HdTaskType::HdDeposit);
+
+	return nRqID;
 }
 
 void VtHdCtrl::GetCmeAsset(std::string accountNo, std::string pwd)
@@ -4341,7 +4501,7 @@ void VtHdCtrl::GetCmePureAsset(std::string accountNo, std::string pwd)
 	AddRequest(nRqID, HdTaskType::HdCmePureAsset);
 }
 
-void VtHdCtrl::GetDailyProfitLoss(std::string accountNo, std::string pwd)
+int VtHdCtrl::GetDailyProfitLoss(std::string accountNo, std::string pwd)
 {
 	std::string reqString;
 	std::string temp;
@@ -4357,9 +4517,11 @@ void VtHdCtrl::GetDailyProfitLoss(std::string accountNo, std::string pwd)
 	CString strNextKey = _T("");
 	int nRqID = m_CommAgent.CommRqData(sTrCode, sInput, sInput.GetLength(), strNextKey);
 	AddRequest(nRqID, HdTaskType::HdDailyProfitLoss);
+
+	return nRqID;
 }
 
-void VtHdCtrl::GetFilledHistoryTable(std::string accountNo, std::string pwd)
+int VtHdCtrl::GetFilledHistoryTable(std::string accountNo, std::string pwd)
 {
 	std::string reqString;
 
@@ -4381,9 +4543,11 @@ void VtHdCtrl::GetFilledHistoryTable(std::string accountNo, std::string pwd)
 	CString strNextKey = _T("");
 	int nRqID = m_CommAgent.CommRqData(sTrCode, sInput, sInput.GetLength(), strNextKey);
 	AddRequest(nRqID, HdTaskType::HdFilledHistoryTable);
+
+	return nRqID;
 }
 
-void VtHdCtrl::GetFilledHistoryTable(HdTaskType taskType, std::string accountNo, std::string pwd)
+int VtHdCtrl::GetFilledHistoryTable(HdTaskType taskType, std::string accountNo, std::string pwd)
 {
 	std::string reqString;
 
@@ -4405,6 +4569,8 @@ void VtHdCtrl::GetFilledHistoryTable(HdTaskType taskType, std::string accountNo,
 	CString strNextKey = _T("");
 	int nRqID = m_CommAgent.CommRqData(sTrCode, sInput, sInput.GetLength(), strNextKey);
 	AddRequest(nRqID, taskType);
+
+	return nRqID;
 }
 
 void VtHdCtrl::AbGetChartData(VtChartDataRequest&& chartReqeust)
@@ -4473,7 +4639,7 @@ void VtHdCtrl::UnregisterExpected(CString symCode)
 	nResult = m_CommAgent.CommRemoveBroad(strKey, nRealType);
 }
 
-void VtHdCtrl::GetAccountProfitLoss(std::string accountNo, std::string pwd)
+int VtHdCtrl::GetAccountProfitLoss(std::string accountNo, std::string pwd)
 {
 	std::string reqString;
 	std::string temp;
@@ -4489,9 +4655,11 @@ void VtHdCtrl::GetAccountProfitLoss(std::string accountNo, std::string pwd)
 	CString strNextKey = _T("");
 	int nRqID = m_CommAgent.CommRqData(sTrCode, sInput, sInput.GetLength(), strNextKey);
 	AddRequest(nRqID, HdTaskType::HdAccountProfitLoss);
+
+	return nRqID;
 }
 
-void VtHdCtrl::GetApiCustomerProfitLoss(std::string accountNo, std::string pwd)
+int VtHdCtrl::GetApiCustomerProfitLoss(std::string accountNo, std::string pwd)
 {
 	Sleep(700);
 	std::string reqString;
@@ -4511,12 +4679,14 @@ void VtHdCtrl::GetApiCustomerProfitLoss(std::string accountNo, std::string pwd)
 	CString msg;
 	msg.Format(_T("acnt = %s, rqId = %d \n"), accountNo.c_str(), nRqID);
 	//TRACE(msg);
+
+	return nRqID;
 }
 
-void VtHdCtrl::GetApiCustomerProfitLoss(HdTaskType taskType, std::string accountNo, std::string pwd)
+int VtHdCtrl::GetApiCustomerProfitLoss(HdTaskType taskType, std::string accountNo, std::string pwd)
 {
 	if (_Blocked)
-		return;
+		return -1;
 
 	std::string reqString;
 	std::string temp;
@@ -4535,6 +4705,8 @@ void VtHdCtrl::GetApiCustomerProfitLoss(HdTaskType taskType, std::string account
 	CString msg;
 	msg.Format(_T("acnt = %s, rqId = %d \n"), accountNo.c_str(), nRqID);
 	//TRACE(msg);
+
+	return nRqID;
 }
 
 void VtHdCtrl::OnRcvdDomesticChartData(CString& sTrCode, LONG& nRqID)
@@ -6027,7 +6199,15 @@ void VtHdCtrl::OnDataRecv(CString sTrCode, LONG nRqID)
 				SmSymbolReader::GetInstance()->DomesticSymbolMasterFileSet.erase(it);
 			}
 
-			_FileDownloading = false;
+			Sleep(500);
+			HdTaskEventArgs eventArg;
+			eventArg.TaskType = HdTaskType::HdSymbolFileDownload;
+			FireTaskCompleted(std::move(eventArg));
+
+			CString strNextKey = m_CommAgent.CommGetNextKey(nRqID, "");
+
+			RemoveRequest(nRqID);
+
 		}
 
 		//WriteLog("처리완료");
@@ -6064,6 +6244,16 @@ void VtHdCtrl::OnDataRecv(CString sTrCode, LONG nRqID)
 
 		strMsg.Format("계좌번호[%s]예탁금액현금[%s]평가예탁총액[%s]", sTemp1, sTemp2, sTemp3);
 		//WriteLog(strMsg);
+	}
+
+	auto it = _TaskReqMap.find(nRqID);
+	if (it != _TaskReqMap.end()) {
+		std::shared_ptr<HdTaskArg> arg = it->second;
+		SmTaskManager::GetInstance()->OnRequestComplete(arg);
+
+		CString msg;
+		msg.Format(_T("OnDataRcvd :: nRqId = %d, strCode = %s\n"), nRqID, sTrCode);
+		TRACE(msg);
 	}
 }
 
@@ -6642,6 +6832,13 @@ void VtHdCtrl::OnGetMsgWithRqId(int nRqId, CString strCode, CString strMsg)
 	CString strLog;
 	strLog.Format("[요청번호 = %d, 코드번호 = %s][메시지 = %s]\n", nRqId, strCode, strMsg);
 	TRACE(strLog);
+// 	if (strCode.Compare("0330") == 0 || 
+// 		strCode.Compare("0331") == 0 ||
+// 		strCode.Compare("0332") == 0 ) {
+// 		//SmTaskManager::GetInstance()->SetTaskInfo(_ttoi(strCode), (LPCTSTR)strMsg);
+// 		SmMarketManager::GetInstance()->ReadAbroadSymbolsFromFile();
+// 	}
+	
 	if (strCode.Compare("0332") == 0) {
 		CMainFrame* mainFrm = (CMainFrame*)AfxGetMainWnd();
 		mainFrm->StartPreProcess();
@@ -6665,10 +6862,17 @@ void VtHdCtrl::OnGetMsgWithRqId(int nRqId, CString strCode, CString strMsg)
 	}
 
 	if (_ttoi(strCode) != 0) {
-		if (strCode.Compare(_T("91012")) == 0 || 
+		if (strCode.Compare(_T("91012")) == 0 ||
 			strCode.Compare(_T("99992")) == 0) {
 			AfxMessageBox(strMsg);
 		}
+
+		if (strCode.Compare("0330") == 0 || 
+			strCode.Compare("0331") == 0 ||
+			strCode.Compare("0332") == 0 ) {
+			return;
+		}
+
 		HdTaskEventArgs eventArg;
 		HdTaskArg arg = FindRequest(nRqId);
 		eventArg.TaskType = arg.Type;

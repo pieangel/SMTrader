@@ -324,8 +324,8 @@ void SmFutureGrid::GetSymbolMaster(VtSymbol* sym)
 	if (sym->RecentMonth() && sym->RequestedSymbolMaster())
 		return;
 	sym->GetSymbolMaster();
-	VtRealtimeRegisterManager* realTimeRegiMgr = VtRealtimeRegisterManager::GetInstance();
-	realTimeRegiMgr->RegisterProduct(sym->ShortCode);
+	//VtRealtimeRegisterManager* realTimeRegiMgr = VtRealtimeRegisterManager::GetInstance();
+	//realTimeRegiMgr->RegisterProduct(sym->ShortCode);
 }
 
 void SmFutureGrid::QuickSetBackColor(int row, int col, COLORREF color)

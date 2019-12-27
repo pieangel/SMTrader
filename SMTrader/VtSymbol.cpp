@@ -3,17 +3,23 @@
 #include "HdTaskArg.h"
 #include "HdScheduler.h"
 #include "Chart/SmChartData.h"
+#include "Log/loguru.hpp"
+
+int VtSymbol::count = 0;
 
 VtSymbol::VtSymbol()
 {
 	_RecentMonth = false;
 	_RequestedSymbolMaster = false;
 	Begin();
+	count++;
+	LOG_F(INFO, "constructor :: symbol = count = %d", count);
 }
 
 
 VtSymbol::~VtSymbol()
 {
+	LOG_F(INFO, "destructor :: symbol = count = %d", count);
 }
 
 void VtSymbol::Begin()

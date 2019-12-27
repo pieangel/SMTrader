@@ -83,11 +83,11 @@ public:
 	virtual BOOL OnInitDialog();
 
 	void GetFutureCodeList();
-	void GetSymbolCode(CString categoryName);
+	int GetSymbolCode(CString categoryName);
 	void GetFutureCodeList(CString categoryName);
 	void GetOptionCodeList(CString categoryName);
 	void GetTradableCodeTable();
-	void GetSymbolMaster(CString symCode);
+	int GetSymbolMaster(CString symCode);
 
 	void RegisterProduct(CString symCode);
 	void UnregisterProduct(CString symCode);
@@ -172,25 +172,25 @@ public:
 	void RegisterCurrent();
 	void UnregisterCurrent();
 
-	void GetAcceptedHistory(std::string accountNo, std::string pwd);
+	int GetAcceptedHistory(std::string accountNo, std::string pwd);
 	void GetFilledHistory(std::string accountNo, std::string pwd);
-	void GetOutstandingHistory(std::string accountNo, std::string pwd);
-	void GetOutstanding(std::string accountNo, std::string pwd);
+	int GetOutstandingHistory(std::string accountNo, std::string pwd);
+	int GetOutstanding(std::string accountNo, std::string pwd);
 
 	void GetCmeAcceptedHistory(std::string accountNo, std::string pwd);
 	void GetCmeFilledHistory(std::string accountNo, std::string pwd);
 	void GetCmeOutstandingHistory(std::string accountNo, std::string pwd);
 	void GetCmeOutstanding(std::string accountNo, std::string pwd);
 
-	void GetAsset(std::string accountNo, std::string pwd);
-	void GetDeposit(std::string accountNo, std::string pwd);
+	int GetAsset(std::string accountNo, std::string pwd);
+	int GetDeposit(std::string accountNo, std::string pwd);
 
 	void GetCmeAsset(std::string accountNo, std::string pwd);
 	void GetCmePureAsset(std::string accountNo, std::string pwd);
-	void GetDailyProfitLoss(std::string accountNo, std::string pwd);
-	void GetFilledHistoryTable(std::string accountNo, std::string pwd);
-	void GetAccountProfitLoss(std::string accountNo, std::string pwd);
-	void GetApiCustomerProfitLoss(std::string accountNo, std::string pwd);
+	int GetDailyProfitLoss(std::string accountNo, std::string pwd);
+	int GetFilledHistoryTable(std::string accountNo, std::string pwd);
+	int GetAccountProfitLoss(std::string accountNo, std::string pwd);
+	int GetApiCustomerProfitLoss(std::string accountNo, std::string pwd);
 
 	void GetChartData();
 	void GetChartData(VtChartDataRequest&& chartReqeust);
@@ -206,8 +206,8 @@ public:
 	static std::string PadLeft(std::string input, char padding, int len);
 	static std::string PadRight(std::string input, char padding, int len);
 
-	void GetApiCustomerProfitLoss(HdTaskType taskType, std::string accountNo, std::string pwd);
-	void GetFilledHistoryTable(HdTaskType taskType, std::string accountNo, std::string pwd);
+	int GetApiCustomerProfitLoss(HdTaskType taskType, std::string accountNo, std::string pwd);
+	int GetFilledHistoryTable(HdTaskType taskType, std::string accountNo, std::string pwd);
 
 	void AbGetChartData(VtChartDataRequest&& chartReqeust);
 
@@ -218,8 +218,10 @@ public:
 	void RegisterRealtimeDataKey(std::string symCode, std::string dataKey);
 
 	void DownloadMasterFiles(std::string param);
-	void DownloadDomesticMasterFile(std::string file_name);
+	int DownloadDomesticMasterFile(std::string file_name);
+	void ExecuteRequest(std::shared_ptr<HdTaskArg> arg);
 private:
+	std::map<int, std::shared_ptr<HdTaskArg>> _TaskReqMap;
 	bool _FileDownloading = false;
 	std::map<std::string, std::set<std::string>> _DataKeyMap;
 	void OnReceiveRealTimeValue(std::string symCode);
