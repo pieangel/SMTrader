@@ -20,6 +20,21 @@ VtAccount* VtSubAccountManager::FindAccount(std::string acntNo)
 		return nullptr;
 }
 
+VtAccount* VtSubAccountManager::FindAddAccount(VtAccount* acnt)
+{
+	if (!acnt)
+		return nullptr;
+
+	auto it = AccountMap.find(acnt->AccountNo);
+	if (it != AccountMap.end())
+		return it->second;
+	else {
+		AccountMap[acnt->AccountNo] = acnt;
+	}
+
+	return acnt;
+}
+
 void VtSubAccountManager::AddAccount(VtAccount* acnt)
 {
 	AccountMap[acnt->AccountNo] = acnt;

@@ -152,7 +152,10 @@ CMainFrame::CMainFrame()
 	HdScheduler* taskMgr = HdScheduler::GetInstance();
 	auto d = dlgt::make_delegate(&CMainFrame::OnReceiveComplete, *this);
 
+
+	// 로그 매니저를 작동 시킨다.
 	VtLogManager* logMgr = VtLogManager::GetInstance();
+	// 로그 매니저 초기화를 진행한다.
 	logMgr->InitLog();
 
 	//LoadSettings();
@@ -594,6 +597,7 @@ void CMainFrame::OnShowWindow(BOOL bShow, UINT nStatus)
 {
 	CMDIFrameWndEx::OnShowWindow(bShow, nStatus);
 	
+	// 운영에 관한 설정을 읽어 온다.
 	ReadConfig();
 	VtMarketManager::GetInstance();
 
@@ -643,24 +647,6 @@ void CMainFrame::OnShowWindow(BOOL bShow, UINT nStatus)
 				dlg.FromServer(false);
 			dlg.DoModal();
 
-			// 현재가 등록
-			VtRealtimeRegisterManager* regMgr = VtRealtimeRegisterManager::GetInstance();
-			regMgr->RegisterCurrent();
-			// 			VtHdClient* client = VtHdClient::GetInstance();
-			// 			std::string fileName = _T("product.cod");
-			// 			client->GetMasterFile(fileName);
-			// 타이머를 가동하여 심볼 파일 다운로드 시작
-			//SetTimer(2, 500, 0);
-			// 심볼코드를 가져오기 시작한다.
-			//GetSymbolFile();
-
-			//ProgressDlg = new VtProgressDlg();
-			//ProgressDlg->Create(IDD_PROGRESS, this);
-			//ProgressDlg->MainFrm = this;
-			//ProgressDlg->ShowWindow(SW_SHOW);
-			//ProgressDlg->SetForegroundWindow();
-			//ProgressDlg->BringWindowToTop();
-
 			VtHdClient::GetInstance()->DownloadMasterFiles("futures");
 		}
 		else {
@@ -685,16 +671,7 @@ void CMainFrame::OnReceiveComplete()
 		sysMgr->InitDataSources();
 
 		VtSaveManager* saveMgr = VtSaveManager::GetInstance();
-		//saveMgr->LoadOutSignal(_T("outsignal.dat"));
-		//saveMgr->LoadSystems(_T("systemlist.dat"));
-		//saveMgr->LoadOutSystems(_T("outsystemlist.dat"));
-		//saveMgr->LoadOrderWndList(_T("orderwndlist.dat"), this);
 		saveMgr->ReadWindows();
-
-		//SetTimer(SysLiqTimer, 5000, NULL);
-
-		//VtHdClient::GetInstance()->DownloadMasterFiles("futures");
-
 		_LoadComplete = true;
 	}
 }
@@ -766,8 +743,6 @@ void CMainFrame::CreateFileWatch()
 
 bool CMainFrame::ClearAllResources()
 {
-	VtMarketManager::DestroyInstance();
-	SmMarketManager::DestroyInstance();
 	VtScheduler::DestroyInstance();
 	HdScheduler* sch = HdScheduler::GetInstance();
 	sch->ClearTasks();
@@ -831,8 +806,14 @@ bool CMainFrame::ClearAllResources()
 	VtRealtimeRegisterManager::DestroyInstance();
 	VtOrderDialogManager::DestroyInstance();
 	VtHdClient::DestroyInstance();
-	VtProductCategoryManager::DestroyInstance();
+	
 	VtSymbolManager::DestroyInstance();
+
+	VtProductCategoryManager::DestroyInstance();
+
+	VtMarketManager::DestroyInstance();
+	SmMarketManager::DestroyInstance();
+
 	HdScheduler::DestroyInstance();
 	VtWindowManager::DestroyInstance();
 	VtSaveManager::DestroyInstance();
@@ -919,6 +900,7 @@ void CMainFrame::ReadConfig()
 		_EnableFileWatch = false;
 	}
 
+	// 신호 자동연결 파일 감시 객체를 읽어 온다.
 	_FleWathPath = file_watch_path;
 	VtGlobal::FileWatchPath = _FleWathPath;
 	VtGlobal::EnableFileWatch = _EnableFileWatch;

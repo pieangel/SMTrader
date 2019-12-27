@@ -113,7 +113,7 @@ void VtFDSubAcntPage::OnBnClickedBtnCreate()
 		VtAccount* subAcnt = _SelAccount->CreateSubAccount((LPCTSTR)strAcntNo, (LPCTSTR)strAcntName, _SelAccount->GetSubAccountCount() <= 0 ? true : false);
 		subAcnt->ParentAccount(_SelAccount);
 		VtSubAccountManager* subAcntMgr = VtSubAccountManager::GetInstance();
-		subAcntMgr->AddAccount(subAcnt);
+		subAcntMgr->FindAddAccount(subAcnt);
 		_SubAcntGrid.InitGrid(_SelAccount);
 	}
 }

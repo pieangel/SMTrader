@@ -3274,6 +3274,7 @@ void VtHdCtrl::OnSymbolCode(CString& sTrCode, LONG& nRqID)
 			//TRACE(sData);
 			//TRACE(_T("\n"));
 			//WriteLog(sData);
+			
 			sym = symMgr->FindAddSymbol((LPCTSTR)sData.Trim());
 			sym->ShortCode = sData.Trim();
 
@@ -3288,13 +3289,14 @@ void VtHdCtrl::OnSymbolCode(CString& sTrCode, LONG& nRqID)
 			if (subSection) {
 				subSection->AddSymbol(sym);
 			}
+			
 		}
 
 		HdTaskEventArgs eventArg;
 		eventArg.TaskType = HdTaskType::HdSymbolCode;
 		eventArg.RequestId = nRqID;
 		FireTaskCompleted(std::move(eventArg));
-		Sleep(700);
+		Sleep(500);
 	}
 
 	RemoveRequest(nRqID);

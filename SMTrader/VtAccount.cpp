@@ -227,7 +227,7 @@ void VtAccount::LoadFromXml(pugi::xml_node& account_node)
 			VtAccount* sub_account = new VtAccount();
 			sub_account->LoadFromXml(sub_account_node);
 			_SubAccountList.push_back(sub_account);
-			VtSubAccountManager::GetInstance()->AddAccount(sub_account);
+			VtSubAccountManager::GetInstance()->FindAddAccount(sub_account);
 		}
 	}
 	else {
@@ -660,7 +660,7 @@ void VtAccount::CreateDefaultSubAccount()
 	if (!legSubAcnt) {
 		VtAccount* subAcnt = CreateSubAccount(acntNo, AccountName, true);
 		subAcnt->ParentAccount(this);
-		subAcntMgr->AddAccount(subAcnt);
+		subAcntMgr->FindAddAccount(subAcnt);
 	}
 	else {
 		legSubAcnt->Prime(true);
