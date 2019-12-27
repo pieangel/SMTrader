@@ -2850,7 +2850,7 @@ void VtHdCtrl::OnAccountProfitLoss(CString& sTrCode, LONG& nRqID)
 				acnt->SumOpenPL();
 		}
 	}
-
+	Sleep(500);
 	HdTaskEventArgs eventArg;
 	eventArg.TaskType = HdTaskType::HdAccountProfitLoss;
 	FireTaskCompleted(std::move(eventArg));
@@ -2921,6 +2921,7 @@ void VtHdCtrl::OnApiCustomerProfitLoss(CString& sTrCode, LONG& nRqID)
 			acnt->Fee = fee;
 			acnt->TotalPL = totalPL;
 		}
+		Sleep(500);
 		HdTaskEventArgs eventArg;
 		eventArg.TaskType = HdTaskType::HdApiCustomerProfitLoss;
 		FireTaskCompleted(std::move(eventArg));
@@ -2965,7 +2966,7 @@ void VtHdCtrl::OnApiCustomerProfitLoss(CString& sTrCode, LONG& nRqID)
 			acnt->TradePL = tradePL;
 			acnt->Fee = fee;
 			acnt->TotalPL = totalPL;
-
+			Sleep(500);
 			HdTaskEventArgs eventArg;
 			eventArg.TaskType = HdTaskType::HdAccountFeeInfoStep1;
 			eventArg.Acnt = acnt;
@@ -3125,6 +3126,7 @@ void VtHdCtrl::OnOutstanding(CString& sTrCode, LONG& nRqID)
 
 	VtOrderDialogManager* orderDlgMgr = VtOrderDialogManager::GetInstance();
 	orderDlgMgr->OnOutstanding();
+	Sleep(500);
 	HdTaskEventArgs eventArg;
 	eventArg.TaskType = HdTaskType::HdOutstanding;
 	FireTaskCompleted(std::move(eventArg));
@@ -3213,7 +3215,7 @@ void VtHdCtrl::OnDeposit(CString& sTrCode, LONG& nRqID)
 			
 		}
 	}
-	Sleep(700);
+	Sleep(500);
 	HdTaskEventArgs eventArg;
 	eventArg.TaskType = HdTaskType::HdDeposit;
 	FireTaskCompleted(std::move(eventArg));
@@ -3278,8 +3280,6 @@ void VtHdCtrl::OnSymbolCode(CString& sTrCode, LONG& nRqID)
 			auto ym = VtSymbolManager::GetExpireYearMonth(sym->ShortCode);
 			sym->ExpireYear = std::get<0>(ym);
 			sym->ExpireMonth = std::get<1>(ym);
-
-			//symMgr->AddHdSymbol(sym);
 
 			std::string symCode = sym->ShortCode;
 			std::string subSecCode = symCode.substr(0, 3);
