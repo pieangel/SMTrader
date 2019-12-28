@@ -597,11 +597,11 @@ void CMainFrame::OnShowWindow(BOOL bShow, UINT nStatus)
 {
 	CMDIFrameWndEx::OnShowWindow(bShow, nStatus);
 	
-	// 운영에 관한 설정을 읽어 온다.
-	ReadConfig();
-	VtMarketManager::GetInstance();
-
 	if (!_Init) {
+		// 운영에 관한 설정을 읽어 온다.
+		ReadConfig();
+		VtMarketManager::GetInstance();
+
 		_Init = true;
 		// 증권사 클라이언트 초기회
 		VtHdClient* client = VtHdClient::GetInstance();
