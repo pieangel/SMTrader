@@ -324,8 +324,6 @@ int VtHdCtrl::GetSymbolCode(CString categoryName)
 {
 	if (_Blocked)
 		return -1;
-
-	Sleep(700);
 	CString sTrCode = DefSymbolCode;
 	CString sInput = categoryName;
 	CString strNextKey = _T("");
@@ -2850,7 +2848,7 @@ void VtHdCtrl::OnAccountProfitLoss(CString& sTrCode, LONG& nRqID)
 				acnt->SumOpenPL();
 		}
 	}
-	Sleep(500);
+	Sleep(VtGlobal::ServerSleepTime);
 	HdTaskEventArgs eventArg;
 	eventArg.TaskType = HdTaskType::HdAccountProfitLoss;
 	FireTaskCompleted(std::move(eventArg));
@@ -2921,7 +2919,7 @@ void VtHdCtrl::OnApiCustomerProfitLoss(CString& sTrCode, LONG& nRqID)
 			acnt->Fee = fee;
 			acnt->TotalPL = totalPL;
 		}
-		Sleep(500);
+		Sleep(VtGlobal::ServerSleepTime);
 		HdTaskEventArgs eventArg;
 		eventArg.TaskType = HdTaskType::HdApiCustomerProfitLoss;
 		FireTaskCompleted(std::move(eventArg));
@@ -2966,7 +2964,7 @@ void VtHdCtrl::OnApiCustomerProfitLoss(CString& sTrCode, LONG& nRqID)
 			acnt->TradePL = tradePL;
 			acnt->Fee = fee;
 			acnt->TotalPL = totalPL;
-			Sleep(500);
+			Sleep(VtGlobal::ServerSleepTime);
 			HdTaskEventArgs eventArg;
 			eventArg.TaskType = HdTaskType::HdAccountFeeInfoStep1;
 			eventArg.Acnt = acnt;
@@ -3126,7 +3124,7 @@ void VtHdCtrl::OnOutstanding(CString& sTrCode, LONG& nRqID)
 
 	VtOrderDialogManager* orderDlgMgr = VtOrderDialogManager::GetInstance();
 	orderDlgMgr->OnOutstanding();
-	Sleep(500);
+	Sleep(VtGlobal::ServerSleepTime);
 	HdTaskEventArgs eventArg;
 	eventArg.TaskType = HdTaskType::HdOutstanding;
 	FireTaskCompleted(std::move(eventArg));
@@ -3215,7 +3213,7 @@ void VtHdCtrl::OnDeposit(CString& sTrCode, LONG& nRqID)
 			
 		}
 	}
-	Sleep(500);
+	Sleep(VtGlobal::ServerSleepTime);
 	HdTaskEventArgs eventArg;
 	eventArg.TaskType = HdTaskType::HdDeposit;
 	FireTaskCompleted(std::move(eventArg));
@@ -3291,12 +3289,11 @@ void VtHdCtrl::OnSymbolCode(CString& sTrCode, LONG& nRqID)
 			}
 			
 		}
-
+		Sleep(VtGlobal::ServerSleepTime);
 		HdTaskEventArgs eventArg;
 		eventArg.TaskType = HdTaskType::HdSymbolCode;
 		eventArg.RequestId = nRqID;
 		FireTaskCompleted(std::move(eventArg));
-		Sleep(500);
 	}
 
 	RemoveRequest(nRqID);
@@ -4276,7 +4273,7 @@ void VtHdCtrl::UnregisterCurrent()
 
 int VtHdCtrl::GetAcceptedHistory(std::string accountNo, std::string pwd)
 {
-	Sleep(700);
+	Sleep(VtGlobal::ServerSleepTime);
 
 	std::string reqString;
 	std::string temp;
@@ -4336,7 +4333,7 @@ int VtHdCtrl::GetOutstandingHistory(std::string accountNo, std::string pwd)
 
 int VtHdCtrl::GetOutstanding(std::string accountNo, std::string pwd)
 {
-	Sleep(700);
+	Sleep(VtGlobal::ServerSleepTime);
 	std::string reqString;
 	std::string temp;
 	temp = PadRight(accountNo, ' ', 11);
@@ -4451,7 +4448,7 @@ int VtHdCtrl::GetAsset(std::string accountNo, std::string pwd)
 
 int VtHdCtrl::GetDeposit(std::string accountNo, std::string pwd)
 {
-	Sleep(700);
+	Sleep(VtGlobal::ServerSleepTime);
 	std::string reqString;
 	std::string temp;
 	temp = PadRight(accountNo, ' ', 11);
@@ -4663,7 +4660,7 @@ int VtHdCtrl::GetAccountProfitLoss(std::string accountNo, std::string pwd)
 
 int VtHdCtrl::GetApiCustomerProfitLoss(std::string accountNo, std::string pwd)
 {
-	Sleep(700);
+	Sleep(VtGlobal::ServerSleepTime);
 	std::string reqString;
 	std::string temp;
 	temp = PadRight(accountNo, ' ', 11);
@@ -6201,7 +6198,7 @@ void VtHdCtrl::OnDataRecv(CString sTrCode, LONG nRqID)
 				SmSymbolReader::GetInstance()->DomesticSymbolMasterFileSet.erase(it);
 			}
 
-			Sleep(500);
+			Sleep(VtGlobal::ServerSleepTime);
 			HdTaskEventArgs eventArg;
 			eventArg.TaskType = HdTaskType::HdSymbolFileDownload;
 			FireTaskCompleted(std::move(eventArg));

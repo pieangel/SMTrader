@@ -1588,6 +1588,12 @@
     <ClInclude Include="VtMarketManager.h">
       <Filter>Market</Filter>
     </ClInclude>
+    <ClInclude Include="SplitterControl.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="SmSystemConnector.h">
+      <Filter>System</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ChildFrm.cpp">
@@ -2837,6 +2843,12 @@
     </ClCompile>
     <ClCompile Include="VtMarketManager.cpp">
       <Filter>Market</Filter>
+    </ClCompile>
+    <ClCompile Include="SplitterControl.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="SmSystemConnector.cpp">
+      <Filter>System</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

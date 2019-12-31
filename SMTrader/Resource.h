@@ -165,6 +165,7 @@
 #define IDD_ORDER_CENTER_FUND           376
 #define IDD_MINI_JANGO_FUND             377
 #define IDD_ACCOUNT_PWD                 378
+#define IDD_SYS_CONNECTOR               379
 #define IDD_SYS_PROP                    380
 #define IDD_CHART_CONTAINER             384
 #define IDD_DIALOG_CHART1               385
@@ -553,23 +554,32 @@
 #define IDC_STATIC_COR                  1051
 #define IDC_CHECK_ONECLICK              1052
 #define IDC_STATIC_MINI_SUB             1052
+#define IDC_SPLITTER_HOR                1052
 #define IDC_CHECK_FIX_HOGA              1053
 #define IDC_STATIC_MINI_TOP             1053
+#define IDC_SPLITTER_VER                1053
 #define IDC_COMBO_ACCOUNT               1054
 #define IDC_RADIO_CANCEL_LASTORDER      1054
+#define IDC_CHECK_AUTO_ORDER            1054
 #define IDC_RADIO_CANCEL_ORDER_BYSELPOS 1055
+#define IDC_CHECK_DETAIL                1055
 #define IDC_MFCBUTTON_STATE             1056
 #define IDC_SPIN_PS_STOP                1056
+#define IDC_BUTTON_SUM_SIGNAL           1056
 #define IDC_COMBO_SYMBOL                1057
 #define IDC_CHECK_ORDER_BYSPACE         1057
+#define IDC_BUTTON_LIQ_POSITION         1057
 #define IDC_STATIC_ORDER                1058
 #define IDC_SPIN_TS_DEFAULT_LOSS        1058
 #define IDC_CHECK_USE_SHORTCUT          1058
+#define IDC_STATIC_CONNECT_SIGNAL_CHART 1058
 #define IDC_STATIC_REAL_TICK            1059
 #define IDC_SPIN_PS_PROFIT              1059
 #define IDC_CHECK_CONFIRM_SHORTCUTORDER 1059
+#define IDC_STATIC_SIGNAL_CHART         1059
 #define IDC_SPIN_TS                     1060
 #define IDC_EDIT_STOPVAL                1060
+#define IDC_STATIC_RUN_LIST             1060
 #define IDC_RADIO_BY_MOUSE_SELECT       1061
 #define IDC_SPIN_STOPVAL                1061
 #define IDC_RADIO_BY_MOUSE_POS          1062
@@ -699,14 +709,16 @@
 #define ID_32808                        32808
 #define ID_COR_BTWN_PORT                32809
 #define ID_COR_BTWN_SIG                 32810
+#define ID_32811                        32811
+#define ID_SYS_EXTERNAL_TEST            32812
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        376
-#define _APS_NEXT_COMMAND_VALUE         32811
-#define _APS_NEXT_CONTROL_VALUE         1052
+#define _APS_NEXT_RESOURCE_VALUE        382
+#define _APS_NEXT_COMMAND_VALUE         32813
+#define _APS_NEXT_CONTROL_VALUE         1060
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif

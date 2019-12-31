@@ -142,6 +142,7 @@ public:
 	afx_msg void OnCorBtwnSig();
 
 	std::shared_ptr<CWnd> _MainWnd;
+	afx_msg void OnSysExternalTest();
 };
 
 

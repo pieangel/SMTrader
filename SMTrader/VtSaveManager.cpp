@@ -1069,6 +1069,8 @@ void VtSaveManager::LoadRunInfoFromXml()
 		VtGlobal::CloseTime.hour = std::stoi(run_info.child_value("end_hour"));
 		VtGlobal::CloseTime.min = std::stoi(run_info.child_value("end_min"));
 		VtGlobal::CloseTime.sec = std::stoi(run_info.child_value("end_sec"));
+
+		VtGlobal::ServerSleepTime = std::stoi(run_info.child_value("server_sleep_time"));
 	}
 
 	pugi::xml_node file_watch = application.child("file_watch");

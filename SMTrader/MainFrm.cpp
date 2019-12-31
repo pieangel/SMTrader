@@ -69,6 +69,7 @@
 #include "SmTaskManager.h"
 #include <crtdbg.h>
 #include "VtMarketManager.h"
+#include "SmSystemConnector.h"
 
 extern TApplicationFont g_Font;
 
@@ -127,6 +128,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CMDIFrameWndEx)
 	ON_COMMAND(ID_AI, &CMainFrame::OnAi)
 	ON_COMMAND(ID_COR_BTWN_PORT, &CMainFrame::OnCorBtwnPort)
 	ON_COMMAND(ID_COR_BTWN_SIG, &CMainFrame::OnCorBtwnSig)
+	ON_COMMAND(ID_SYS_EXTERNAL_TEST, &CMainFrame::OnSysExternalTest)
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -1312,4 +1314,11 @@ void CMainFrame::OnCorBtwnSig()
 	dlg->Mode(1);
 	dlg->Create(IDD_PORT_COR, this);
 	dlg->ShowWindow(SW_SHOW);
+}
+
+
+void CMainFrame::OnSysExternalTest()
+{
+	SmSystemConnector dlg;
+	dlg.DoModal();
 }

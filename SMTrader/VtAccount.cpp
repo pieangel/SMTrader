@@ -18,6 +18,7 @@
 #include "VtHdClient.h"
 #include "cryptor.hpp"
 #include "VtAccountManager.h"
+#include "VtGlobal.h"
 
 bool VtAccount::hasValidPassword()
 {
@@ -414,7 +415,7 @@ void VtAccount::GetOutstanding()
 
 void VtAccount::GetOutstanding(std::vector<std::pair<std::string, HdTaskArg>>& argList)
 {
-	Sleep(400);
+	Sleep(VtGlobal::ServerSleepTime);
 	HdScheduler* scheduler = HdScheduler::GetInstance();
 	HdTaskArg arg;
 	arg.Type = HdTaskType::HdOutstanding;
@@ -426,7 +427,7 @@ void VtAccount::GetOutstanding(std::vector<std::pair<std::string, HdTaskArg>>& a
 
 void VtAccount::GetAcceptedHistory()
 {
-	Sleep(400);
+	Sleep(VtGlobal::ServerSleepTime);
 	HdScheduler* scheduler = HdScheduler::GetInstance();
 	HdTaskArg arg;
 	arg.Type = HdTaskType::HdAcceptedHistory;
@@ -437,7 +438,7 @@ void VtAccount::GetAcceptedHistory()
 
 void VtAccount::GetAcceptedHistory(std::vector<std::pair<std::string, HdTaskArg>>& argList)
 {
-	Sleep(400);
+	Sleep(VtGlobal::ServerSleepTime);
 	HdScheduler* scheduler = HdScheduler::GetInstance();
 	HdTaskArg arg;
 	arg.Type = HdTaskType::HdAcceptedHistory;

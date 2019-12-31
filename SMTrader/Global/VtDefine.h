@@ -12,6 +12,7 @@ double Rounding(double x, int digit)
 	return (floor((x)* pow(float(10), digit) + 0.5f) / pow(float(10), digit));
 }
 */
+const int ServerSleepTime = 500; // mili second.
 const int ChartDataSize = 1500;
 const int TempDataSize = ChartDataSize;
 const std::string id = _T("angelpie");

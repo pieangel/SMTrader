@@ -87,7 +87,7 @@ void VtProductCategory::GetRecentMonthSymbolMaster()
 				arg.Type = HdTaskType::HdSymbolMaster;
 				arg.AddArg(_T("SymbolCode"), sym->ShortCode);
 				scheduler->AddTask(std::move(arg));
-				Sleep(400);
+				Sleep(VtGlobal::ServerSleepTime);
 
 				LOG_F(INFO, _T("section = %s, req count = %d"), subSection->Name.c_str(), r++);
 				
@@ -99,7 +99,7 @@ void VtProductCategory::GetRecentMonthSymbolMaster()
 					arg.Type = HdTaskType::HdSymbolMaster;
 					arg.AddArg(_T("SymbolCode"), sym->ShortCode);
 					scheduler->AddTask(std::move(arg));
-					Sleep(400);
+					Sleep(ServerSleepTime);
 				}
 				*/
 			}

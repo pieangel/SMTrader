@@ -46,6 +46,7 @@ BEGIN_MESSAGE_MAP(VtAutoSignalManagerDialog, CDialogEx)
 	ON_WM_CLOSE()
 	ON_BN_CLICKED(IDC_BTN_ORDER_CONFIG, &VtAutoSignalManagerDialog::OnBnClickedBtnOrderConfig)
 	ON_BN_CLICKED(IDC_CHECK_ALL, &VtAutoSignalManagerDialog::OnBnClickedCheckAll)
+	ON_WM_SIZE()
 END_MESSAGE_MAP()
 
 
@@ -62,6 +63,7 @@ BOOL VtAutoSignalManagerDialog::OnInitDialog()
 	_DefineGrid.AttachGrid(this, IDC_STATIC_SIGNAL_DEFINITION);
 	_ConnectGrid.TotalGrid(&_TotalSigGrid);
 	SetTimer(RefTimer, 100, NULL);
+	Resize();
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // EXCEPTION: OCX Property Pages should return FALSE
 }
@@ -70,6 +72,190 @@ BOOL VtAutoSignalManagerDialog::OnInitDialog()
 void VtAutoSignalManagerDialog::RefreshOrder()
 {
 	_TotalSigGrid.RefreshOrders();
+}
+
+void VtAutoSignalManagerDialog::Resize()
+{
+	CRect rcDlg;
+	this->GetClientRect(rcDlg);
+
+	int horizontal_position = (rcDlg.Height() * 2) / 3;
+	int vertical_position = rcDlg.Width() / 2;
+	int controlHeight = 32;
+
+	// 위쪽 타이틀
+	CRect rcCtrl;
+	CWnd* pWnd = this->GetDlgItem(IDC_STATIC_RUN_LIST);
+	if (!pWnd->GetSafeHwnd())
+		return;
+
+	rcCtrl.left = rcDlg.left + STD_GAP;
+	rcCtrl.right = rcCtrl.left + 100;
+	rcCtrl.top = rcDlg.top + STD_GAP + 7;
+	rcCtrl.bottom = rcCtrl.top + STD_BUTTON_HEIGHT;
+	pWnd->MoveWindow(rcCtrl, TRUE);
+
+	// 주문설정 버튼
+	pWnd = this->GetDlgItem(IDC_BTN_ORDER_CONFIG);
+
+	int left = rcDlg.right - STD_GAP - 100;
+	rcCtrl.left = left;
+	rcCtrl.right = rcCtrl.left + 100;
+	rcCtrl.top = rcDlg.top + STD_GAP;
+	rcCtrl.bottom = rcCtrl.top + STD_BUTTON_HEIGHT;
+	pWnd->MoveWindow(rcCtrl, TRUE);
+	left = rcCtrl.left;
+
+	// 포지션 청산 버튼
+	pWnd = this->GetDlgItem(IDC_BUTTON_LIQ_POSITION);
+
+	rcCtrl.left = left - STD_GAP - 100;
+	rcCtrl.right = rcCtrl.left + 100;
+	rcCtrl.top = rcDlg.top + STD_GAP;
+	rcCtrl.bottom = rcCtrl.top + STD_BUTTON_HEIGHT;
+	pWnd->MoveWindow(rcCtrl, TRUE);
+	left = rcCtrl.left;
+
+	// 신호 합계 버튼
+	pWnd = this->GetDlgItem(IDC_BUTTON_SUM_SIGNAL);
+
+
+	rcCtrl.left = left - STD_GAP - 100;
+	rcCtrl.right = rcCtrl.left + 100;
+	rcCtrl.top = rcDlg.top + STD_GAP;
+	rcCtrl.bottom = rcCtrl.top + STD_BUTTON_HEIGHT;
+	pWnd->MoveWindow(rcCtrl, TRUE);
+	left = rcCtrl.left;
+
+	// 상세표시 체크 버튼
+	pWnd = this->GetDlgItem(IDC_CHECK_DETAIL);
+
+
+	rcCtrl.left = left - STD_GAP - 100;
+	rcCtrl.right = rcCtrl.left + 100;
+	rcCtrl.top = rcDlg.top + STD_GAP + 2;
+	rcCtrl.bottom = rcCtrl.top + STD_BUTTON_HEIGHT;
+	pWnd->MoveWindow(rcCtrl, TRUE);
+	left = rcCtrl.left;
+
+	// 자동주문 체크 표시 버튼
+	pWnd = this->GetDlgItem(IDC_CHECK_AUTO_ORDER);
+
+	rcCtrl.left = left - STD_GAP - 100;
+	rcCtrl.right = rcCtrl.left + 100;
+	rcCtrl.top = rcDlg.top + STD_GAP + 2;
+	rcCtrl.bottom = rcCtrl.top + STD_BUTTON_HEIGHT;
+	pWnd->MoveWindow(rcCtrl, TRUE);
+	left = rcCtrl.left;
+
+	// 실행 목록 그리드
+	pWnd = this->GetDlgItem(IDC_STATIC_TOTAL_SIGNAL);
+
+
+	rcCtrl.left = rcDlg.left + STD_GAP;
+	rcCtrl.right = rcDlg.right - STD_GAP;
+	rcCtrl.top = rcDlg.top + STD_GAP + controlHeight;
+	rcCtrl.bottom = horizontal_position - STD_GAP;
+	pWnd->MoveWindow(rcCtrl, TRUE);
+
+	// 분할 왼쪽 타이틀
+	rcCtrl;
+	pWnd = this->GetDlgItem(IDC_STATIC_CONNECT_SIGNAL_CHART);
+
+	int top = horizontal_position + STD_GAP;
+	rcCtrl.top = top + 7;
+	rcCtrl.bottom = rcCtrl.top + STD_BUTTON_HEIGHT;
+	rcCtrl.left = rcDlg.left + STD_GAP;
+	rcCtrl.right = rcCtrl.left + 100;
+	pWnd->MoveWindow(rcCtrl, TRUE);
+	left = rcCtrl.right;
+
+	// 모두 선택 버튼 
+	pWnd = this->GetDlgItem(IDC_CHECK_ALL);
+	rcCtrl.top = top + 2;
+	rcCtrl.bottom = rcCtrl.top + STD_BUTTON_HEIGHT;
+	rcCtrl.left = left + STD_GAP;
+	rcCtrl.right = rcCtrl.left + 100;
+	pWnd->MoveWindow(rcCtrl, TRUE);
+
+	// 왼쪽 삭제 버튼 
+	pWnd = this->GetDlgItem(IDC_BTN_DEL_CONNECT);
+	rcCtrl.top = top;
+	rcCtrl.bottom = rcCtrl.top + STD_BUTTON_HEIGHT;
+
+	left = vertical_position - STD_GAP - 60;
+
+	rcCtrl.left = left;
+	rcCtrl.right = rcCtrl.left + 60;
+	pWnd->MoveWindow(rcCtrl, TRUE);
+
+
+	// 왼쪽 추가 버튼
+	pWnd = this->GetDlgItem(IDC_BTN_ADD_CONNECT);
+
+	rcCtrl.top = top;
+	rcCtrl.bottom = rcCtrl.top + STD_BUTTON_HEIGHT;
+	rcCtrl.left = left - STD_GAP - 60;
+	rcCtrl.right = rcCtrl.left + 60;
+	pWnd->MoveWindow(rcCtrl, TRUE);
+
+	// 왼쪽 그리드 목록
+	pWnd = this->GetDlgItem(IDC_STATIC_SIGNAL_CONNECTION);
+
+
+	rcCtrl.left = rcDlg.left + STD_GAP;
+	rcCtrl.right = vertical_position - STD_GAP;
+	rcCtrl.top = horizontal_position + STD_GAP + controlHeight;
+	rcCtrl.bottom = rcDlg.bottom - STD_GAP;
+	pWnd->MoveWindow(rcCtrl, TRUE);
+
+
+
+
+	// 오른쪽 타이틀
+	pWnd = this->GetDlgItem(IDC_STATIC_SIGNAL_CHART);
+
+	rcCtrl.top = top + 7;
+	rcCtrl.bottom = rcCtrl.top + STD_BUTTON_HEIGHT;
+	rcCtrl.left = vertical_position + STD_GAP;
+	rcCtrl.right = rcCtrl.left + 100;
+	pWnd->MoveWindow(rcCtrl, TRUE);
+
+	// 오른쪽 삭제 버튼
+	pWnd = this->GetDlgItem(IDC_BTN_DEL_SIGNAL);
+
+	rcCtrl.top = top;
+	rcCtrl.bottom = rcCtrl.top + STD_BUTTON_HEIGHT;
+	rcCtrl.left = rcDlg.right - STD_GAP - 60;
+	rcCtrl.right = rcCtrl.left + 60;
+	pWnd->MoveWindow(rcCtrl, TRUE);
+
+	left = rcDlg.right - STD_GAP - 60;
+
+	// 오른쪽 추가 버튼
+	pWnd = this->GetDlgItem(IDC_BTN_ADD_SIGNAL);
+
+	rcCtrl.top = top;
+	rcCtrl.bottom = rcCtrl.top + STD_BUTTON_HEIGHT;
+	rcCtrl.left = left - STD_GAP - 60;
+	rcCtrl.right = rcCtrl.left + 60;
+	pWnd->MoveWindow(rcCtrl, TRUE);
+
+	// 오른쪽 그리드 목록
+	pWnd = this->GetDlgItem(IDC_STATIC_SIGNAL_DEFINITION);
+
+
+	rcCtrl.left = vertical_position + STD_GAP;
+	rcCtrl.right = rcDlg.right - STD_GAP;
+	rcCtrl.top = horizontal_position + STD_GAP + controlHeight;
+	rcCtrl.bottom = rcDlg.bottom - STD_GAP;
+	pWnd->MoveWindow(rcCtrl, TRUE);
+
+	_TotalSigGrid.GetScrollBarCtrl(SB_VERT)->Invalidate(TRUE);
+	_ConnectGrid.GetScrollBarCtrl(SB_VERT)->Invalidate(TRUE);
+	_DefineGrid.GetScrollBarCtrl(SB_VERT)->Invalidate(TRUE);
+
+	Invalidate(TRUE);
 }
 
 void VtAutoSignalManagerDialog::OnBnClickedBtnAddConnect()
@@ -145,4 +331,12 @@ void VtAutoSignalManagerDialog::OnBnClickedCheckAll()
 	else {
 		_ConnectGrid.SetCheck(false);
 	}
+}
+
+
+void VtAutoSignalManagerDialog::OnSize(UINT nType, int cx, int cy)
+{
+	CDialogEx::OnSize(nType, cx, cy);
+
+	this->Resize();
 }

@@ -115,6 +115,7 @@ public:
 	static std::list<VtSysLog>& GetSysLogList() {
 		return _SysLogList;
 	}
+	static int ServerSleepTime;
 private:
 
 	VtExchangeName _SeLExcIndex;

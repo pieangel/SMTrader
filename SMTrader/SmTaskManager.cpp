@@ -8,6 +8,7 @@
 #include "VtSaveManager.h"
 #include <set>
 #include "VtSymbol.h"
+#include "VtGlobal.h"
 
 SmTaskManager::SmTaskManager()
 {
@@ -41,7 +42,7 @@ void SmTaskManager::OnRequestComplete(std::shared_ptr<HdTaskArg> arg)
 {
 	if (!arg)
 		return;
-	Sleep(500);
+	Sleep(VtGlobal::ServerSleepTime);
 	auto it = _TaskInfo.argMap.find(arg->RequestID);
 	if (it != _TaskInfo.argMap.end()) {
 		_TaskInfo.argMap.erase(it);

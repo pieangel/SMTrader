@@ -4,6 +4,7 @@
 
 #include "stdafx.h"
 #include "SoundIn.h"
+#include "../Global/VtDefine.h"
 // include callback class
 
 
@@ -112,7 +113,7 @@ void CSoundIn::Stop()
 		else
 		{
 			m_bRecording = FALSE;
-			Sleep(500);
+			Sleep(ServerSleepTime);
 			mmReturn = ::waveInClose(m_hRecord);
 			if(mmReturn) waveInErrorMsg(mmReturn, "in Stop()");
 		}
