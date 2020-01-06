@@ -539,6 +539,8 @@ void SmSymbolReader::ReadKospiFutureFile(std::string fullPath)
 	while (std::getline(infile, line))
 	{
 		std::istringstream iss(line);
+		if (line.length() < 84)
+			continue;
 
 		std::string shcode = line.substr(0, 8);
 		/* 종목코드                             */
@@ -562,14 +564,16 @@ void SmSymbolReader::ReadKospiFutureFile(std::string fullPath)
 		std::string tradewin = line.substr(63, 13);
 		/* 거래승수                         */
 
+		/*
+		// 스프레드기준종목구분코드//
 		std::string spjmgubun = line.substr(84, 1);
-		/* 스프레드기준종목구분코드*/
 
+		// 근월물코드
 		std::string gshcode = line.substr(85, 8);
-		/* 근월물코드                            */
 
+		// 원월물코드
 		std::string wshcode = line.substr(93, 8);
-		/* 원월물코드                           */
+		*/
 
 		std::string product_code = shcode.substr(0, 3);
 
@@ -620,6 +624,9 @@ void SmSymbolReader::ReadKospiOptionFile(std::string fullPath)
 	while (std::getline(infile, line))
 	{
 		std::istringstream iss(line);
+		rtrim(line);
+		if (line.length() < 84)
+			continue;
 
 		std::string shcode = line.substr(0, 8);
 		/* 종목코드                             */
@@ -646,14 +653,16 @@ void SmSymbolReader::ReadKospiOptionFile(std::string fullPath)
 		std::string tradewin = line.substr(64, 13);
 		/* 거래승수                         */
 
-		std::string spjmgubun = line.substr(85, 1);
-		/* 스프레드기준종목구분코드*/
+		/*
+		// 스프레드기준종목구분코드//
+		std::string spjmgubun = line.substr(84, 1);
 
-		std::string gshcode = line.substr(86, 8);
-		/* 근월물코드                            */
+		// 근월물코드
+		std::string gshcode = line.substr(85, 8);
 
-		std::string wshcode = line.substr(94, 8);
-		/* 원월물코드                           */
+		// 원월물코드
+		std::string wshcode = line.substr(93, 8);
+		*/
 
 		std::string product_code = shcode.substr(0, 3);
 
@@ -703,6 +712,9 @@ void SmSymbolReader::ReadKospiWeeklyOptionFile(std::string fullPath)
 	while (std::getline(infile, line))
 	{
 		std::istringstream iss(line);
+		rtrim(line);
+		if (line.length() < 84)
+			continue;
 
 		std::string shcode = line.substr(0, 8);
 		/* 종목코드                             */
@@ -729,14 +741,16 @@ void SmSymbolReader::ReadKospiWeeklyOptionFile(std::string fullPath)
 		std::string tradewin = line.substr(64, 13);
 		/* 거래승수                         */
 
-		std::string spjmgubun = line.substr(85, 1);
-		/* 스프레드기준종목구분코드*/
+		/*
+		// 스프레드기준종목구분코드//
+		std::string spjmgubun = line.substr(84, 1);
 
-		std::string gshcode = line.substr(86, 8);
-		/* 근월물코드                            */
+		// 근월물코드
+		std::string gshcode = line.substr(85, 8);
 
-		std::string wshcode = line.substr(94, 8);
-		/* 원월물코드                           */
+		// 원월물코드
+		std::string wshcode = line.substr(93, 8);
+		*/
 
 		std::string product_code = shcode.substr(0, 3);
 
@@ -785,6 +799,9 @@ void SmSymbolReader::ReadKosdaqFutureFile(std::string fullPath)
 	while (std::getline(infile, line))
 	{
 		std::istringstream iss(line);
+		rtrim(line);
+		if (line.length() < 84)
+			continue;
 
 		std::string shcode = line.substr(0, 8);
 		/* 종목코드                             */
@@ -808,14 +825,16 @@ void SmSymbolReader::ReadKosdaqFutureFile(std::string fullPath)
 		std::string tradewin = line.substr(63, 13);
 		/* 거래승수                         */
 
+		/*
+		// 스프레드기준종목구분코드//
 		std::string spjmgubun = line.substr(84, 1);
-		/* 스프레드기준종목구분코드*/
 
+		// 근월물코드
 		std::string gshcode = line.substr(85, 8);
-		/* 근월물코드                            */
 
+		// 원월물코드
 		std::string wshcode = line.substr(93, 8);
-		/* 원월물코드                           */
+		*/
 
 		std::string product_code = shcode.substr(0, 3);
 
@@ -866,6 +885,9 @@ void SmSymbolReader::ReadMiniKospiFutureFile(std::string fullPath)
 	while (std::getline(infile, line))
 	{
 		std::istringstream iss(line);
+		rtrim(line);
+		if (line.length() < 84)
+			continue;
 
 		std::string shcode = line.substr(0, 8);
 		/* 종목코드                             */
@@ -889,14 +911,16 @@ void SmSymbolReader::ReadMiniKospiFutureFile(std::string fullPath)
 		std::string tradewin = line.substr(63, 13);
 		/* 거래승수                         */
 
+		/*
+		// 스프레드기준종목구분코드//
 		std::string spjmgubun = line.substr(84, 1);
-		/* 스프레드기준종목구분코드*/
 
+		// 근월물코드
 		std::string gshcode = line.substr(85, 8);
-		/* 근월물코드                            */
 
+		// 원월물코드
 		std::string wshcode = line.substr(93, 8);
-		/* 원월물코드                           */
+		*/
 
 		std::string product_code = shcode.substr(0, 3);
 
@@ -947,6 +971,9 @@ void SmSymbolReader::ReadCommodityFutureFile(std::string fullPath)
 	while (std::getline(infile, line))
 	{
 		std::istringstream iss(line);
+		rtrim(line);
+		if (line.length() < 84)
+			continue;
 
 		std::string shcode = line.substr(0, 8);
 		/* 종목코드                             */
@@ -970,15 +997,16 @@ void SmSymbolReader::ReadCommodityFutureFile(std::string fullPath)
 		std::string tradewin = line.substr(63, 13);
 		/* 거래승수                         */
 
+		/*
+		// 스프레드기준종목구분코드//
 		std::string spjmgubun = line.substr(84, 1);
-		/* 스프레드기준종목구분코드*/
-
+		
+		// 근월물코드
 		std::string gshcode = line.substr(85, 8);
-		/* 근월물코드                            */
-
+		
+		// 원월물코드
 		std::string wshcode = line.substr(93, 8);
-		/* 원월물코드                           */
-
+		*/
 		std::string product_code = shcode.substr(0, 3);
 
 
@@ -1024,6 +1052,9 @@ void SmSymbolReader::ReadKospiFutureInfo(std::string fullPath)
 	while (std::getline(infile, line))
 	{
 		std::istringstream iss(line);
+		rtrim(line);
+		if (line.length() < 145)
+			return;
 
 		std::string shcode = line.substr(0, 8);
 		/* 종목코드                             */
@@ -1066,6 +1097,9 @@ void SmSymbolReader::ReadKospiOptionInfo(std::string fullPath)
 	while (std::getline(infile, line))
 	{
 		std::istringstream iss(line);
+		rtrim(line);
+		if (line.length() < 145)
+			return;
 
 		std::string shcode = line.substr(0, 8);
 		/* 종목코드                             */
@@ -1120,6 +1154,9 @@ void SmSymbolReader::ReadUsDollarFutureInfo(std::string fullPath)
 	while (std::getline(infile, line))
 	{
 		std::istringstream iss(line);
+		rtrim(line);
+		if (line.length() < 145)
+			return;
 
 		std::string shcode = line.substr(0, 8);
 		/* 종목코드                             */
@@ -1178,6 +1215,9 @@ void SmSymbolReader::ReadMiniKospiOptionFile(std::string fullPath)
 	while (std::getline(infile, line))
 	{
 		std::istringstream iss(line);
+		rtrim(line);
+		if (line.length() < 84)
+			continue;
 
 		std::string shcode = line.substr(0, 8);
 		/* 종목코드                             */
@@ -1204,14 +1244,16 @@ void SmSymbolReader::ReadMiniKospiOptionFile(std::string fullPath)
 		std::string tradewin = line.substr(64, 13);
 		/* 거래승수                         */
 
-		std::string spjmgubun = line.substr(85, 1);
-		/* 스프레드기준종목구분코드*/
+		/*
+		// 스프레드기준종목구분코드//
+		std::string spjmgubun = line.substr(84, 1);
 
-		std::string gshcode = line.substr(86, 8);
-		/* 근월물코드                            */
+		// 근월물코드
+		std::string gshcode = line.substr(85, 8);
 
-		std::string wshcode = line.substr(94, 8);
-		/* 원월물코드                           */
+		// 원월물코드
+		std::string wshcode = line.substr(93, 8);
+		*/
 
 		std::string product_code = shcode.substr(0, 3);
 
@@ -1261,6 +1303,9 @@ void SmSymbolReader::ReadKosdaqOptionFile(std::string fullPath)
 	while (std::getline(infile, line))
 	{
 		std::istringstream iss(line);
+		rtrim(line);
+		if (line.length() < 84)
+			continue;
 
 		std::string shcode = line.substr(0, 8);
 		/* 종목코드                             */
@@ -1287,14 +1332,16 @@ void SmSymbolReader::ReadKosdaqOptionFile(std::string fullPath)
 		std::string tradewin = line.substr(64, 13);
 		/* 거래승수                         */
 
-		std::string spjmgubun = line.substr(85, 1);
-		/* 스프레드기준종목구분코드*/
+		/*
+		// 스프레드기준종목구분코드//
+		std::string spjmgubun = line.substr(84, 1);
 
-		std::string gshcode = line.substr(86, 8);
-		/* 근월물코드                            */
+		// 근월물코드
+		std::string gshcode = line.substr(85, 8);
 
-		std::string wshcode = line.substr(94, 8);
-		/* 원월물코드                           */
+		// 원월물코드
+		std::string wshcode = line.substr(93, 8);
+		*/
 
 		std::string product_code = shcode.substr(0, 3);
 

@@ -2516,6 +2516,7 @@ int VtHdCtrl::DownloadDomesticMasterFile(std::string file_name)
 	CString sInput = file_name.c_str();
 	CString strNextKey = "";
 	int nRqID = m_CommAgent.CommRqData(sTrCode, sInput, sInput.GetLength(), strNextKey);
+	_SymbolFileReqMap[nRqID] = file_name;
 	return nRqID;
 }
 
@@ -6831,12 +6832,15 @@ void VtHdCtrl::OnGetMsgWithRqId(int nRqId, CString strCode, CString strMsg)
 	CString strLog;
 	strLog.Format("[요청번호 = %d, 코드번호 = %s][메시지 = %s]\n", nRqId, strCode, strMsg);
 	TRACE(strLog);
-// 	if (strCode.Compare("0330") == 0 || 
-// 		strCode.Compare("0331") == 0 ||
-// 		strCode.Compare("0332") == 0 ) {
-// 		//SmTaskManager::GetInstance()->SetTaskInfo(_ttoi(strCode), (LPCTSTR)strMsg);
-// 		SmMarketManager::GetInstance()->ReadAbroadSymbolsFromFile();
-// 	}
+
+	auto it = _SymbolFileReqMap.find(nRqId);
+	if (it != _SymbolFileReqMap.end()) {
+		Sleep(VtGlobal::ServerSleepTime);
+		HdTaskEventArgs eventArg;
+		eventArg.TaskType = HdTaskType::HdSymbolFileDownload;
+		FireTaskCompleted(std::move(eventArg));
+		RemoveRequest(nRqId);
+	}
 	
 	if (strCode.Compare("0332") == 0) {
 		CMainFrame* mainFrm = (CMainFrame*)AfxGetMainWnd();

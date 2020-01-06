@@ -29,7 +29,7 @@ void VtOutSignalDefManager::RemoveOutSignalDef(std::string name)
 void VtOutSignalDefManager::InitDefaultOutSignalDefs()
 {
 	SharedOutSigDef outSig(nullptr);
-	for (int i = 0; i < 20; ++i) {
+	for (int i = 0; i < 80; ++i) {
 		outSig = std::make_shared<VtOutSignalDef>();
 		outSig->SignalName = _T("T");
 		outSig->SignalName.append(std::to_string(i + 1));

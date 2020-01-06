@@ -267,4 +267,5 @@ private:
 	/// </summary>
 	void RefreshAcceptedOrderByError(int reqId);
 	std::mutex m_;
+	std::map<int, std::string> _SymbolFileReqMap;
 };
