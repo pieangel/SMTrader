@@ -75,8 +75,6 @@ BOOL VtProgressDlg::OnInitDialog()
 	//taskMgr->GetSymbolCode();
 	taskMgr->GetSymbolFile();
 
-	//SmTaskManager::GetInstance()->ProgressDlg(this);
-	//SmTaskManager::GetInstance()->StartTask();
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // EXCEPTION: OCX Property Pages should return FALSE
 }

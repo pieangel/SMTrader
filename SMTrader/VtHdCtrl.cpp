@@ -6165,7 +6165,7 @@ void VtHdCtrl::OnDataRecv(CString sTrCode, LONG nRqID)
 
 		CString strFileNm = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "파일명");
 		CString strProcCd = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "응답코드");
-
+		LOG_F(INFO, "symbol file download :: file_name = %s, code = %s", strFileNm, strProcCd);
 		if (strProcCd == "REOK")
 		{
 			ZmConfigManager* configMgr = ZmConfigManager::GetInstance();
@@ -6191,9 +6191,6 @@ void VtHdCtrl::OnDataRecv(CString sTrCode, LONG nRqID)
 			CString strBuff = m_CommAgent.CommGetDataDirect(sTrCode, -1, 128 + 4 + 8, nFileSize, 0, "A");
 			commonfile.Write(strBuff, nFileSize);
 			commonfile.Close();
-
-			LOG_F(INFO, "symbol file download success :: file_name = %s", strFileNm);
-
 			auto it = SmSymbolReader::GetInstance()->DomesticSymbolMasterFileSet.find((LPCTSTR)strFileNm);
 			if (it != SmSymbolReader::GetInstance()->DomesticSymbolMasterFileSet.end()) {
 				SmSymbolReader::GetInstance()->DomesticSymbolMasterFileSet.erase(it);
