@@ -31,7 +31,7 @@
 #include "VtLayoutManager.h"
 #include <libloaderapi.h>
 #include <map>
-#include "Format/format_string.h"
+#include "Format/format.h"
 using Poco::Delegate;
 
 
@@ -240,7 +240,7 @@ BOOL VtOrderWndHd::OnInitDialog()
 	VtOrderDialogManager* orderDlgMgr = VtOrderDialogManager::GetInstance();
 	_OrderWindowEvent += delegate(orderDlgMgr, &VtOrderDialogManager::OnOrderWndEventReceived);
 
-	VtOrderWndEventArgs arg;
+	VtOrderWndHdEventArgs arg;
 	arg.pOrderWnd = this;
 	arg.type = VtOrderWindowEventType::Created;
 	FireOrderWindowEvent(std::move(arg));
@@ -887,7 +887,7 @@ void VtOrderWndHd::OnClose()
 {
 	BlockEvent();
 	CDialog::OnClose();
-	VtOrderWndEventArgs arg;
+	VtOrderWndHdEventArgs arg;
 	arg.pOrderWnd = this;
 	arg.type = VtOrderWindowEventType::Closed;
 	FireOrderWindowEvent(std::move(arg));
@@ -1887,82 +1887,6 @@ void VtOrderWndHd::ShowCtrlByType()
 		_BtnFundEditor.ShowWindow(SW_SHOW);
 	}
 }
-
-
-void VtOrderWndHd::OnMouseMove(UINT nFlags, CPoint point)
-{
-	// TODO: Add your message handler code here and/or call default
-
-	CDialog::OnMouseMove(nFlags, point);
-}
-
-
-void VtOrderWndHd::OnMouseLeave()
-{
-	// TODO: Add your message handler code here and/or call default
-
-	CDialog::OnMouseLeave();
-}
-
-
-void VtOrderWndHd::OnMouseHover(UINT nFlags, CPoint point)
-{
-	// TODO: Add your message handler code here and/or call default
-
-	CDialog::OnMouseHover(nFlags, point);
-}
-
-
-
-// Mouse and keyBoard Handling Functions
-LRESULT VtOrderWndHd::OnMyMouseMove(WPARAM, LPARAM param)
-{
-	AfxMessageBox(_T("MouseMove"));
-	return 1;
-}
-
-
-LRESULT VtOrderWndHd::OnMyMouseLButtonUp(WPARAM, LPARAM param)
-{
-	AfxMessageBox(_T("MouseMove1"));
-	return 1;
-}
-LRESULT VtOrderWndHd::OnMyMouseLButtonDown(WPARAM, LPARAM param)
-{
-	AfxMessageBox(_T("MouseMove2"));
-	return 1;
-}
-LRESULT VtOrderWndHd::OnMyMouseRButtonUp(WPARAM, LPARAM param)
-{
-	AfxMessageBox(_T("MouseMove3"));
-	return 1;
-}
-
-LRESULT VtOrderWndHd::OnMyMouseRButtonDown(WPARAM, LPARAM param)
-{
-	AfxMessageBox(_T("MouseMove4"));
-	return 1;
-}
-
-LRESULT VtOrderWndHd::OnMyMouseLDBClick(WPARAM, LPARAM param)
-{
-	AfxMessageBox(_T("MouseMove5"));
-	return 1;
-}
-
-/*
-BOOL VtOrderWndHd::PreTranslateMessage(MSG* pMsg)
-{
-	if (pMsg->message == WM_SYSKEYDOWN) {
-		if (pMsg->wParam == VK_MENU) {
-			ResetByCenterRow();
-		}
-	}
-
-	return CDialog::PreTranslateMessage(pMsg);
-}
-*/
-
 
 void VtOrderWndHd::OnEnChangeEditPwd()
 {

@@ -13,13 +13,10 @@
 #include "ShadeButtonST.h"
 #include "SmOrderPanel.h"
 #include "Xml/pugixml.hpp"
+#include "VtOrderLeftWnd.h"
 using same_endian_type = std::is_same<simple::LittleEndian, simple::LittleEndian>;
 
 using Poco::BasicEvent;
-const int MinOrderWndSize = 200;
-const int CenterWndWidth = 486;
-const int CenterTopGap = 114;
-const int CenterTop = 24;
 class VtOrderConfigManager;
 class VtSymbol;
 struct VtOrder;
@@ -36,8 +33,7 @@ class VtLayoutManager;
 // 중앙창을 개수만큼 만든다.
 // 중앙창의 컨트롤들을 정렬시킨다.
 // VtOrderWndHd dialog
-const int StartWndID = 40000;
-const int LimitCenterWidth = 264;
+
 
 class VtOrderWndHd : public CDialog
 {
@@ -83,7 +79,6 @@ private:
 	VtFund* _Fund = nullptr;
 	VtOrderLeftWndHd _LeftWnd;
 	VtOrderRightWndHd _RightWnd;
-	//std::vector<VtOrderCenterWndHd*> _CenterWndVector;
 	std::vector<SmOrderPanel*> _CenterWndVector;
 	std::map<VtRealTickWnd*, VtRealTickWnd*> _RealTickWndVector;
 	void Begin();
@@ -144,8 +139,8 @@ public:
 	VtFund* GetCurrentFund();
 	void ShowHideCtrl();
 public:
-	BasicEvent<VtOrderWndEventArgs> _OrderWindowEvent;
-	void FireOrderWindowEvent(VtOrderWndEventArgs&& arg)
+	BasicEvent<VtOrderWndHdEventArgs> _OrderWindowEvent;
+	void FireOrderWindowEvent(VtOrderWndHdEventArgs&& arg)
 	{
 		_OrderWindowEvent(this, arg);
 	}
@@ -224,18 +219,6 @@ private:
 	std::string _DefaultAccountNo;
 	std::string _DefaultFundName;
 	int _OldWndWidth = 0;
-public:
-	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
-	afx_msg void OnMouseLeave();
-	afx_msg void OnMouseHover(UINT nFlags, CPoint point);
-
-protected:
-	afx_msg LRESULT OnMyMouseMove(WPARAM, LPARAM param);
-	afx_msg LRESULT OnMyMouseLDBClick(WPARAM, LPARAM param);
-	afx_msg LRESULT OnMyMouseLButtonUp(WPARAM, LPARAM param);
-	afx_msg LRESULT OnMyMouseLButtonDown(WPARAM, LPARAM param);
-	afx_msg LRESULT OnMyMouseRButtonUp(WPARAM, LPARAM param);
-	afx_msg LRESULT OnMyMouseRButtonDown(WPARAM, LPARAM param);
 //public:
 //	virtual BOOL PreTranslateMessage(MSG* pMsg);
 

@@ -23,6 +23,7 @@ class VtOrderConfigManager;
 class VtStopOrderManager;
 struct VtPosition;
 class SmOrderPanel;
+class SmOrderPanelOut;
 class VtCutManager;
 class SmOrderGrid : public CGridCtrl
 {
@@ -41,6 +42,8 @@ public:
 	void CellHeight(int val) { _CellHeight = val; }
 	int OrderAmount() const { return _OrderAmount; }
 	void OrderAmount(int val) { _OrderAmount = val; }
+	SmOrderPanelOut* CenterWndOut() const { return _CenterWndOut; }
+	void CenterWndOut(SmOrderPanelOut* val) { _CenterWndOut = val; }
 public:
 	// 심볼마스터 이벤트 처리
 	void OnSymbolMaster(VtSymbol* symbol);
@@ -115,7 +118,8 @@ private:
 	int _OldIndexRow = -1;
 	int _CellHeight = 0;
 
-	SmOrderPanel* _CenterWnd;
+	SmOrderPanel* _CenterWnd = nullptr;
+	SmOrderPanelOut* _CenterWndOut = nullptr;
 	std::map<int, int> ValueToRowMap;
 	std::map<int, int> RowToValueMap;
 	std::set<std::pair<int, int>> _OrderPos;

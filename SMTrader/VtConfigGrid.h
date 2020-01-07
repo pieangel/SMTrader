@@ -6,6 +6,7 @@
 #define SPIN_TYPE1					160
 class VtOrderCenterWndHd;
 class SmOrderPanel;
+class SmOrderPanelOut;
 class VtConfigGrid : public VtGrid
 {
 public:
@@ -25,6 +26,8 @@ public:
 	virtual void OnMouseLeaveFromMainGrid();
 	virtual void OnMouseMove(int col, long row, POINT *point, UINT nFlags, BOOL processed = 0);
 	void RestoreButtonCell();
+	SmOrderPanelOut* CenterWndOut() const { return _CenterWndOut; }
+	void CenterWndOut(SmOrderPanelOut* val) { _CenterWndOut = val; }
 private:
 	int _OldBtnCol = -2;
 	int _OldBtnRow = -2;
@@ -45,5 +48,6 @@ private:
 	int					m_nButtonIndex;
 
 	SmOrderPanel* _CenterWnd = nullptr;
+	SmOrderPanelOut* _CenterWndOut = nullptr;
 };
 

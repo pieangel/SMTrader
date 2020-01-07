@@ -60,7 +60,14 @@ public:
 	// 주문창 설정 탭 컨트롤
 	CTabCtrl _TabCtrl;
 	void Reset();
-	void SetOrderConfigMgr(VtOrderConfigManager* val);
+	VtOrderConfigManager* OrderConfigMgr() const { return _OrderConfigMgr; }
+	void OrderConfigMgr(VtOrderConfigManager* val) { _OrderConfigMgr = val; }
+	int DefaultWidth() const { return _DefaultWidth; }
+	void DefaultWidth(int val) { _DefaultWidth = val; }
+	int DefaultHeight() const { return _DefaultHeight; }
+	void DefaultHeight(int val) { _DefaultHeight = val; }
 private:
 	VtOrderConfigManager* _OrderConfigMgr = nullptr;
+	int _DefaultWidth = 167;
+	int _DefaultHeight = 561;
 };

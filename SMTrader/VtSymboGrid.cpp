@@ -7,7 +7,7 @@
 #include "MainFrm.h"
 #include "VtRealtimeRegisterManager.h"
 #include "VtSymbolManager.h"
-#include "VtOrderCenterWnd.h"
+#include "SmOrderPanelOut.h"
 #include "VtSymbolFavoriteDlg.h"
 
 #include "VtProductCategoryManager.h"
@@ -120,12 +120,7 @@ void VtSymboGrid::OnLClicked(int col, long row, int updn, RECT *rect, POINT *poi
 	//std::string value = QuickGetText(col, row);
 	VtSymbol* sym = (VtSymbol*)cell.Tag();
 
-	if (_Source == 0)
-	{
-		if (_OrderCenterWnd && _SymSelector)
-			_OrderCenterWnd->OnSymbolClicked(sym, 1, _SymSelector);
-	}
-	else if (_Source == 1)
+	if (_Source == 1)
 	{
 		for (int yIndex = 0; yIndex < _DataCount; yIndex++)
 		{

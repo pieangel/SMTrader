@@ -48,7 +48,7 @@ void VtOrderDialogManager::OnRealtimeQuoteReceived(VtRealtimeQuoteEventArgs& arg
 	fullCode = trim(fullCode);
 }
 
-void VtOrderDialogManager::OnOrderWindowEventReceived(VtOrderWindowEventArgs& arg)
+void VtOrderDialogManager::OnOrderWindowEventReceived(VtOrderWndEventArgs& arg)
 {
 	if (arg.type == VtOrderWindowEventType::Created)
 		AddOrderWindow(arg.pOrderWnd);
@@ -60,7 +60,7 @@ void VtOrderDialogManager::OnOrderWindowEventReceived(VtOrderWindowEventArgs& ar
 	}
 }
 
-void VtOrderDialogManager::OnOrderWndEventReceived(VtOrderWndEventArgs& arg)
+void VtOrderDialogManager::OnOrderWndEventReceived(VtOrderWndHdEventArgs& arg)
 {
 	if (arg.type == VtOrderWindowEventType::Created)
 		AddOrderWnd(arg.pOrderWnd);
@@ -72,12 +72,12 @@ void VtOrderDialogManager::OnOrderWndEventReceived(VtOrderWndEventArgs& arg)
 	}
 }
 
-void VtOrderDialogManager::AddOrderWindow(CVtOrderWnd* wnd)
+void VtOrderDialogManager::AddOrderWindow(VtOrderWnd* wnd)
 {
 	_OrderWindowMap[wnd] = wnd;
 }
 
-void VtOrderDialogManager::RemoveOrderWindow(CVtOrderWnd* wnd)
+void VtOrderDialogManager::RemoveOrderWindow(VtOrderWnd* wnd)
 {
 	auto it = _OrderWindowMap.find(wnd);
 	if (it != _OrderWindowMap.end())
@@ -180,16 +180,16 @@ void VtOrderDialogManager::RemoveAccountReceiveWindow(std::string acntNo, CVtOrd
 
 void VtOrderDialogManager::OnReceiveRealtimeHoga(VtHoga* hoga)
 {
-	auto it = SymbolDispatcherMap.find(hoga->FullCode);
-	if (it != SymbolDispatcherMap.end())
-	{
-		VtSymbolEventDispatcher* sdp = it->second;
-		for (auto its = sdp->WndMap.begin(); its != sdp->WndMap.end(); ++its)
-		{
-			CVtOrderWnd* wnd = its->second;
-			wnd->OnReceiveRealtimeHoga(hoga);
-		}
-	}
+// 	auto it = SymbolDispatcherMap.find(hoga->FullCode);
+// 	if (it != SymbolDispatcherMap.end())
+// 	{
+// 		VtSymbolEventDispatcher* sdp = it->second;
+// 		for (auto its = sdp->WndMap.begin(); its != sdp->WndMap.end(); ++its)
+// 		{
+// 			CVtOrderWnd* wnd = its->second;
+// 			wnd->OnReceiveRealtimeHoga(hoga);
+// 		}
+// 	}
 	/*
 	for (auto it = OrderWindowMap.begin(); it != OrderWindowMap.end(); ++it)
 	{
@@ -201,16 +201,16 @@ void VtOrderDialogManager::OnReceiveRealtimeHoga(VtHoga* hoga)
 
 void VtOrderDialogManager::OnReceiveHoga(VtHoga* hoga)
 {
-	auto it = SymbolDispatcherMap.find(hoga->FullCode);
-	if (it != SymbolDispatcherMap.end())
-	{
-		VtSymbolEventDispatcher* sdp = it->second;
-		for (auto its = sdp->WndMap.begin(); its != sdp->WndMap.end(); ++its)
-		{
-			CVtOrderWnd* wnd = its->second;
-			wnd->OnReceiveHoga(hoga);
-		}
-	}
+// 	auto it = SymbolDispatcherMap.find(hoga->FullCode);
+// 	if (it != SymbolDispatcherMap.end())
+// 	{
+// 		VtSymbolEventDispatcher* sdp = it->second;
+// 		for (auto its = sdp->WndMap.begin(); its != sdp->WndMap.end(); ++its)
+// 		{
+// 			CVtOrderWnd* wnd = its->second;
+// 			wnd->OnReceiveHoga(hoga);
+// 		}
+// 	}
 	/*
 	for (auto it = OrderWindowMap.begin(); it != OrderWindowMap.end(); ++it)
 	{
@@ -222,16 +222,16 @@ void VtOrderDialogManager::OnReceiveHoga(VtHoga* hoga)
 
 void VtOrderDialogManager::OnOrderReceived(VtOrder* order)
 {
-	auto it = AccountDispatcherMap.find(order->AccountNo);
-	if (it != AccountDispatcherMap.end())
-	{
-		VtAccountEventDispatcher* adp = it->second;
-		for (auto its = adp->WndMap.begin(); its != adp->WndMap.end(); ++its)
-		{
-			CVtOrderWnd* wnd = its->second;
-			wnd->OnOrderReceived(order);
-		}
-	}
+// 	auto it = AccountDispatcherMap.find(order->AccountNo);
+// 	if (it != AccountDispatcherMap.end())
+// 	{
+// 		VtAccountEventDispatcher* adp = it->second;
+// 		for (auto its = adp->WndMap.begin(); its != adp->WndMap.end(); ++its)
+// 		{
+// 			CVtOrderWnd* wnd = its->second;
+// 			wnd->OnOrderReceived(order);
+// 		}
+// 	}
 	/*
 	for (auto it = OrderWindowMap.begin(); it != OrderWindowMap.end(); ++it)
 	{
@@ -243,16 +243,16 @@ void VtOrderDialogManager::OnOrderReceived(VtOrder* order)
 
 void VtOrderDialogManager::OnAccepted(VtOrder* order)
 {
-	auto it = AccountDispatcherMap.find(order->AccountNo);
-	if (it != AccountDispatcherMap.end())
-	{
-		VtAccountEventDispatcher* adp = it->second;
-		for (auto its = adp->WndMap.begin(); its != adp->WndMap.end(); ++its)
-		{
-			CVtOrderWnd* wnd = its->second;
-			wnd->OnAccepted(order);
-		}
-	}
+// 	auto it = AccountDispatcherMap.find(order->AccountNo);
+// 	if (it != AccountDispatcherMap.end())
+// 	{
+// 		VtAccountEventDispatcher* adp = it->second;
+// 		for (auto its = adp->WndMap.begin(); its != adp->WndMap.end(); ++its)
+// 		{
+// 			CVtOrderWnd* wnd = its->second;
+// 			wnd->OnAccepted(order);
+// 		}
+// 	}
 	/*
 	for (auto it = OrderWindowMap.begin(); it != OrderWindowMap.end(); ++it)
 	{
@@ -264,16 +264,16 @@ void VtOrderDialogManager::OnAccepted(VtOrder* order)
 
 void VtOrderDialogManager::OnFilled(VtOrder* order)
 {
-	auto it = AccountDispatcherMap.find(order->AccountNo);
-	if (it != AccountDispatcherMap.end())
-	{
-		VtAccountEventDispatcher* adp = it->second;
-		for (auto its = adp->WndMap.begin(); its != adp->WndMap.end(); ++its)
-		{
-			CVtOrderWnd* wnd = its->second;
-			wnd->OnFilled(order);
-		}
-	}
+// 	auto it = AccountDispatcherMap.find(order->AccountNo);
+// 	if (it != AccountDispatcherMap.end())
+// 	{
+// 		VtAccountEventDispatcher* adp = it->second;
+// 		for (auto its = adp->WndMap.begin(); its != adp->WndMap.end(); ++its)
+// 		{
+// 			CVtOrderWnd* wnd = its->second;
+// 			wnd->OnFilled(order);
+// 		}
+// 	}
 	/*
 	for (auto it = OrderWindowMap.begin(); it != OrderWindowMap.end(); ++it)
 	{
@@ -285,16 +285,16 @@ void VtOrderDialogManager::OnFilled(VtOrder* order)
 
 void VtOrderDialogManager::OnConfirmModify(VtOrder* order)
 {
-	auto it = AccountDispatcherMap.find(order->AccountNo);
-	if (it != AccountDispatcherMap.end())
-	{
-		VtAccountEventDispatcher* adp = it->second;
-		for (auto its = adp->WndMap.begin(); its != adp->WndMap.end(); ++its)
-		{
-			CVtOrderWnd* wnd = its->second;
-			wnd->OnConfirmModify(order);
-		}
-	}
+// 	auto it = AccountDispatcherMap.find(order->AccountNo);
+// 	if (it != AccountDispatcherMap.end())
+// 	{
+// 		VtAccountEventDispatcher* adp = it->second;
+// 		for (auto its = adp->WndMap.begin(); its != adp->WndMap.end(); ++its)
+// 		{
+// 			CVtOrderWnd* wnd = its->second;
+// 			wnd->OnConfirmModify(order);
+// 		}
+// 	}
 	/*
 	for (auto it = OrderWindowMap.begin(); it != OrderWindowMap.end(); ++it)
 	{
@@ -306,16 +306,16 @@ void VtOrderDialogManager::OnConfirmModify(VtOrder* order)
 
 void VtOrderDialogManager::OnConfirmCancel(VtOrder* order)
 {
-	auto it = AccountDispatcherMap.find(order->AccountNo);
-	if (it != AccountDispatcherMap.end())
-	{
-		VtAccountEventDispatcher* adp = it->second;
-		for (auto its = adp->WndMap.begin(); its != adp->WndMap.end(); ++its)
-		{
-			CVtOrderWnd* wnd = its->second;
-			wnd->OnConfirmCancel(order);
-		}
-	}
+// 	auto it = AccountDispatcherMap.find(order->AccountNo);
+// 	if (it != AccountDispatcherMap.end())
+// 	{
+// 		VtAccountEventDispatcher* adp = it->second;
+// 		for (auto its = adp->WndMap.begin(); its != adp->WndMap.end(); ++its)
+// 		{
+// 			CVtOrderWnd* wnd = its->second;
+// 			wnd->OnConfirmCancel(order);
+// 		}
+// 	}
 	/*
 	for (auto it = OrderWindowMap.begin(); it != OrderWindowMap.end(); ++it)
 	{
@@ -327,16 +327,16 @@ void VtOrderDialogManager::OnConfirmCancel(VtOrder* order)
 
 void VtOrderDialogManager::OnReceiveRealtimeQuote(VtQuote* quote)
 {
-	auto it = SymbolDispatcherMap.find(quote->fullCode);
-	if (it != SymbolDispatcherMap.end())
-	{
-		VtSymbolEventDispatcher* sdp = it->second;
-		for (auto its = sdp->WndMap.begin(); its != sdp->WndMap.end(); ++its)
-		{
-			CVtOrderWnd* wnd = its->second;
-			wnd->OnReceiveRealtimeQuote(quote);
-		}
-	}
+// 	auto it = SymbolDispatcherMap.find(quote->fullCode);
+// 	if (it != SymbolDispatcherMap.end())
+// 	{
+// 		VtSymbolEventDispatcher* sdp = it->second;
+// 		for (auto its = sdp->WndMap.begin(); its != sdp->WndMap.end(); ++its)
+// 		{
+// 			CVtOrderWnd* wnd = its->second;
+// 			wnd->OnReceiveRealtimeQuote(quote);
+// 		}
+// 	}
 	/*
 	for (auto it = OrderWindowMap.begin(); it != OrderWindowMap.end(); ++it)
 	{
@@ -348,16 +348,16 @@ void VtOrderDialogManager::OnReceiveRealtimeQuote(VtQuote* quote)
 
 void VtOrderDialogManager::OnReceiveQuote(VtQuote* quote)
 {
-	auto it = SymbolDispatcherMap.find(quote->fullCode);
-	if (it != SymbolDispatcherMap.end())
-	{
-		VtSymbolEventDispatcher* sdp = it->second;
-		for (auto its = sdp->WndMap.begin(); its != sdp->WndMap.end(); ++its)
-		{
-			CVtOrderWnd* wnd = its->second;
-			wnd->OnReceiveQuote(quote);
-		}
-	}
+// 	auto it = SymbolDispatcherMap.find(quote->fullCode);
+// 	if (it != SymbolDispatcherMap.end())
+// 	{
+// 		VtSymbolEventDispatcher* sdp = it->second;
+// 		for (auto its = sdp->WndMap.begin(); its != sdp->WndMap.end(); ++its)
+// 		{
+// 			CVtOrderWnd* wnd = its->second;
+// 			wnd->OnReceiveQuote(quote);
+// 		}
+// 	}
 	/*
 	for (auto it = OrderWindowMap.begin(); it != OrderWindowMap.end(); ++it)
 	{
@@ -1182,16 +1182,16 @@ void VtOrderDialogManager::LoadFromXml(pugi::xml_node& order_window_list_node)
 
 void VtOrderDialogManager::OnReceiveSymbolMaster(VtSymbolMaster* master)
 {
-	auto it = SymbolDispatcherMap.find(master->FullCode);
-	if (it != SymbolDispatcherMap.end())
-	{
-		VtSymbolEventDispatcher* sdp = it->second;
-		for (auto its = sdp->WndMap.begin(); its != sdp->WndMap.end(); ++its)
-		{
-			CVtOrderWnd* wnd = its->second;
-			wnd->OnReceiveSymbolMaster(master);
-		}
-	}
+// 	auto it = SymbolDispatcherMap.find(master->FullCode);
+// 	if (it != SymbolDispatcherMap.end())
+// 	{
+// 		VtSymbolEventDispatcher* sdp = it->second;
+// 		for (auto its = sdp->WndMap.begin(); its != sdp->WndMap.end(); ++its)
+// 		{
+// 			CVtOrderWnd* wnd = its->second;
+// 			wnd->OnReceiveSymbolMaster(master);
+// 		}
+// 	}
 	/*
 	for (auto it = OrderWindowMap.begin(); it != OrderWindowMap.end(); ++it)
 	{
@@ -1203,16 +1203,16 @@ void VtOrderDialogManager::OnReceiveSymbolMaster(VtSymbolMaster* master)
 
 void VtOrderDialogManager::OnReceiveRealtimeSymbolMaster(VtSymbolMaster* master)
 {
-	auto it = SymbolDispatcherMap.find(master->FullCode);
-	if (it != SymbolDispatcherMap.end())
-	{
-		VtSymbolEventDispatcher* sdp = it->second;
-		for (auto its = sdp->WndMap.begin(); its != sdp->WndMap.end(); ++its)
-		{
-			CVtOrderWnd* wnd = its->second;
-			wnd->OnReceiveRealtimeSymbolMaster(master);
-		}
-	}
+// 	auto it = SymbolDispatcherMap.find(master->FullCode);
+// 	if (it != SymbolDispatcherMap.end())
+// 	{
+// 		VtSymbolEventDispatcher* sdp = it->second;
+// 		for (auto its = sdp->WndMap.begin(); its != sdp->WndMap.end(); ++its)
+// 		{
+// 			CVtOrderWnd* wnd = its->second;
+// 			wnd->OnReceiveRealtimeSymbolMaster(master);
+// 		}
+// 	}
 	/*
 	for (auto it = OrderWindowMap.begin(); it != OrderWindowMap.end(); ++it)
 	{
@@ -1225,16 +1225,16 @@ void VtOrderDialogManager::OnReceiveRealtimeSymbolMaster(VtSymbolMaster* master)
 
 void VtOrderDialogManager::OnReceiveAccountDeposit(VtAccount* acnt)
 {
-	auto it = AccountDispatcherMap.find(acnt->AccountNo);
-	if (it != AccountDispatcherMap.end())
-	{
-		VtAccountEventDispatcher* adp = it->second;
-		for (auto its = adp->WndMap.begin(); its != adp->WndMap.end(); ++its)
-		{
-			CVtOrderWnd* wnd = its->second;
-			wnd->OnReceiveAccountDeposit(acnt);
-		}
-	}
+// 	auto it = AccountDispatcherMap.find(acnt->AccountNo);
+// 	if (it != AccountDispatcherMap.end())
+// 	{
+// 		VtAccountEventDispatcher* adp = it->second;
+// 		for (auto its = adp->WndMap.begin(); its != adp->WndMap.end(); ++its)
+// 		{
+// 			CVtOrderWnd* wnd = its->second;
+// 			wnd->OnReceiveAccountDeposit(acnt);
+// 		}
+// 	}
 }
 
 void VtOrderDialogManager::AddOrderWnd(VtOrderWndHd* wnd)
@@ -1484,7 +1484,7 @@ void VtOrderDialogManager::CloseAllWindow()
 {
 	for (auto it = _OrderWindowMap.begin(); it != _OrderWindowMap.end(); ++it)
 	{
-		CVtOrderWnd* wnd = it->second;
+		VtOrderWnd* wnd = it->second;
 		if (wnd->GetSafeHwnd())
 		{
 			wnd->DestroyWindow();

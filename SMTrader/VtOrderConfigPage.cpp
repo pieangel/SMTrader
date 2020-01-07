@@ -74,7 +74,7 @@ void VtOrderConfigPage::InitControlValues()
 {
 	if (!_OrderConfigMgr)
 		return;
-
+	/*
 	if (_OrderConfigMgr->UseOneClickOrder)
 		_CheckOneClick.SetCheck(BST_CHECKED);
 	else
@@ -121,6 +121,7 @@ void VtOrderConfigPage::InitControlValues()
 	{
 		((CButton*)GetDlgItem(IDC_RADIO_CANCEL_ORDER_BYSELPOS))->SetCheck(BST_CHECKED);
 	}
+	*/
 }
 
 
@@ -212,7 +213,7 @@ void VtOrderConfigPage::OnEnChangeEditOrderCellHeight()
 	// with the ENM_CHANGE flag ORed into the mask.
 
 	// TODO:  Add your control notification handler code here
-	_OrderConfigMgr->OrderCellHeight = CVtOrderWnd::GetValue(&_EditOrderCellHeight);
+	//_OrderConfigMgr->OrderCellHeight = CVtOrderWnd::GetValue(&_EditOrderCellHeight);
 }
 
 
@@ -224,5 +225,5 @@ void VtOrderConfigPage::OnEnChangeEditOrderCellWidth()
 	// with the ENM_CHANGE flag ORed into the mask.
 
 	// TODO:  Add your control notification handler code here
-	_OrderConfigMgr->OrderCellWidth = CVtOrderWnd::GetValue(&_EditOrderCellWidth);
+	//_OrderConfigMgr->OrderCellWidth = CVtOrderWnd::GetValue(&_EditOrderCellWidth);
 }

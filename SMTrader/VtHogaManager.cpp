@@ -3,7 +3,7 @@
 #include "VtHoga.h"
 #include "VtKrClient.h"
 #include "VtWindowManager.h"
-#include "VtOrderCenterWnd.h"
+#include "SmOrderPanelOut.h"
 #include "VtOrderDialogManager.h"
 
 VtHogaManager::VtHogaManager()
@@ -34,23 +34,23 @@ void VtHogaManager::AddRealtimeHoga(std::string fullCode, VtRealtimeHoga* realti
 
 void VtHogaManager::ReceiveRealtimeHoga(std::string fullCode, LPCTSTR packet)
 {
-	VtRealtimeHoga* hoga = FindAddRealtimeHoga(fullCode);
-	VtWindowManager* winMgr = VtWindowManager::GetInstance();
-	CVtOrderCenterWnd* wnd = (CVtOrderCenterWnd*)winMgr->FindWindow(_T("OrderCenterWnd"));
-	if (wnd)
-	{
-		wnd->OnReceiveRealtimeHoga(hoga);
-	}
+// 	VtRealtimeHoga* hoga = FindAddRealtimeHoga(fullCode);
+// 	VtWindowManager* winMgr = VtWindowManager::GetInstance();
+// 	CVtOrderCenterWnd* wnd = (CVtOrderCenterWnd*)winMgr->FindWindow(_T("OrderCenterWnd"));
+// 	if (wnd)
+// 	{
+// 		wnd->OnReceiveRealtimeHoga(hoga);
+// 	}
 }
 
 void VtHogaManager::ReceiveRealtimeHoga(VtRealtimeHoga* hoga)
 {
-	VtWindowManager* winMgr = VtWindowManager::GetInstance();
-	CVtOrderCenterWnd* wnd = (CVtOrderCenterWnd*)winMgr->FindWindow(_T("OrderCenterWnd"));
-	if (wnd)
-	{
-		wnd->OnReceiveRealtimeHoga(hoga);
-	}
+// 	VtWindowManager* winMgr = VtWindowManager::GetInstance();
+// 	CVtOrderCenterWnd* wnd = (CVtOrderCenterWnd*)winMgr->FindWindow(_T("OrderCenterWnd"));
+// 	if (wnd)
+// 	{
+// 		wnd->OnReceiveRealtimeHoga(hoga);
+// 	}
 }
 
 void VtHogaManager::ReceiveRealtimeHoga(VtHoga* hoga)

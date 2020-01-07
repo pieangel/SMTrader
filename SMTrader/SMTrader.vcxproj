@@ -260,7 +260,6 @@
     <ClInclude Include="Format\core.h" />
     <ClInclude Include="Format\format-inl.h" />
     <ClInclude Include="Format\format.h" />
-    <ClInclude Include="Format\format_string.h" />
     <ClInclude Include="Format\ostream.h" />
     <ClInclude Include="Format\posix.h" />
     <ClInclude Include="Format\printf.h" />
@@ -350,6 +349,7 @@
     <ClInclude Include="SmOptionGrid.h" />
     <ClInclude Include="SmOrderGrid.h" />
     <ClInclude Include="SmOrderPanel.h" />
+    <ClInclude Include="SmOrderPanelOut.h" />
     <ClInclude Include="SmPLGrid.h" />
     <ClInclude Include="SmPortfolioDlg.h" />
     <ClInclude Include="SmRunInfo.h" />
@@ -548,7 +548,6 @@
     <ClInclude Include="VtOrder.h" />
     <ClInclude Include="VtOrderAvailablePage.h" />
     <ClInclude Include="VtOrderCenterFundWnd.h" />
-    <ClInclude Include="VtOrderCenterWnd.h" />
     <ClInclude Include="VtOrderCenterWndHd.h" />
     <ClInclude Include="VtOrderConfigDlg.h" />
     <ClInclude Include="VtOrderConfigManager.h" />
@@ -816,6 +815,7 @@
     <ClCompile Include="SmOptionGrid.cpp" />
     <ClCompile Include="SmOrderGrid.cpp" />
     <ClCompile Include="SmOrderPanel.cpp" />
+    <ClCompile Include="SmOrderPanelOut.cpp" />
     <ClCompile Include="SmPLGrid.cpp" />
     <ClCompile Include="SmPortfolioDlg.cpp" />
     <ClCompile Include="SmSystemConnector.cpp" />
@@ -1011,7 +1011,6 @@
     <ClCompile Include="VtOrder.cpp" />
     <ClCompile Include="VtOrderAvailablePage.cpp" />
     <ClCompile Include="VtOrderCenterFundWnd.cpp" />
-    <ClCompile Include="VtOrderCenterWnd.cpp" />
     <ClCompile Include="VtOrderCenterWndHd.cpp" />
     <ClCompile Include="VtOrderConfigDlg.cpp" />
     <ClCompile Include="VtOrderConfigManager.cpp" />

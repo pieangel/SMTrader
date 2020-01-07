@@ -24,7 +24,7 @@
 
 using same_endian_type = std::is_same<simple::LittleEndian, simple::LittleEndian>;
 // SmOrderPanel dialog
-class VtOrderWndHd;
+class VtOrderWnd;
 class VtOrderConfigManager;
 class VtSymbol;
 class VtAccount;
@@ -36,20 +36,19 @@ class VtOrderGridConfig;
 class VtFund;
 class VtCutManager;
 class VtLayoutManager;
-
 class VtRefreshManager;
 
-class SmOrderPanel : public CDialogEx
+class SmOrderPanelOut : public CDialogEx
 {
-	DECLARE_DYNAMIC(SmOrderPanel)
+	DECLARE_DYNAMIC(SmOrderPanelOut)
 
 public:
-	SmOrderPanel(CWnd* pParent = NULL);   // standard constructor
-	virtual ~SmOrderPanel();
+	SmOrderPanelOut(CWnd* pParent = NULL);   // standard constructor
+	virtual ~SmOrderPanelOut();
 
-// Dialog Data
+	// Dialog Data
 #ifdef AFX_DESIGN_TIME
-	enum { IDD = IDD_ORDER_PANEL };
+	enum { IDD = IDD_ORDER_PANEL_OUT };
 #endif
 
 	VtOrderConfigManager* OrderConfigMgr() const { return _OrderConfigMgr; }
@@ -130,8 +129,8 @@ public:
 	void ChangeFocus();
 	int GetWindowWidth();
 	void RefreshLayout(bool flag);
-	VtOrderWndHd* ParentDlg() const { return _ParentDlg; }
-	void ParentDlg(VtOrderWndHd* val) { _ParentDlg = val; }
+	VtOrderWnd* ParentDlg() const { return _ParentDlg; }
+	void ParentDlg(VtOrderWnd* val) { _ParentDlg = val; }
 	int x, y, width, height;
 	int GetMaxWidth();
 	void AdjustControlForMode();
@@ -203,7 +202,7 @@ public:
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 private:
 	bool _BlockEvent = true;
-	VtOrderWndHd* _ParentDlg = nullptr;
+	VtOrderWnd* _ParentDlg = nullptr;
 	VtOrderConfigManager* _OrderConfigMgr = nullptr;
 	std::vector<VtOrderGridConfig*> _ConfigDlgVector;
 	//VtRealtimeTickQuoteGrid _TickGrid;

@@ -160,13 +160,13 @@ void CVtOrderRightWnd::Reset()
 	_SymMasterGrid.ResetSymbol();
 }
 
-void CVtOrderRightWnd::SetOrderConfigMgr(VtOrderConfigManager* val)
-{
-	_OrderConfigMgr = val;
-	_SymMasterGrid.SetOrderConfigMgr(val);
-	_AccountRemainGrid.SetOrderConfigMgr(val);
-	_Page1.SetOrderConfigMgr(val);
-	_Page2.SetOrderConfigMgr(val);
-}
+// void CVtOrderRightWnd::SetOrderConfigMgr(VtOrderConfigManager* val)
+// {
+// 	_OrderConfigMgr = val;
+// 	_SymMasterGrid.SetOrderConfigMgr(val);
+// 	_AccountRemainGrid.SetOrderConfigMgr(val);
+// 	_Page1.SetOrderConfigMgr(val);
+// 	_Page2.SetOrderConfigMgr(val);
+// }
 
 

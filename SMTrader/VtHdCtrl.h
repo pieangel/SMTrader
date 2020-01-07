@@ -267,5 +267,18 @@ private:
 	/// </summary>
 	void RefreshAcceptedOrderByError(int reqId);
 	std::mutex m_;
+	// 심볼파일 요청 맵
 	std::map<int, std::string> _SymbolFileReqMap;
+	// 계좌별 손익요청 맵
+	std::map<int, std::string> _AccountPLReqMap;
+	// 심볼코드 요청 맵
+	std::map<int, std::string> _SymbolCodeReqMap;
+	// 심볼마스터 요청 맵
+	std::map<int, std::string> _SymbolMasterReqMap;
+	// 자산 요청 맵
+	std::map<int, std::string> _AccountAssetReqMap;
+	// 종목별 잔고요청 맵
+	std::map<int, std::string> _SymbolRemainReqMap;
+	// 종목별 미체결 요청 맵
+	std::map<int, std::string> _SymbolAcceptedReqMap;
 };

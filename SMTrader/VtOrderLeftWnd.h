@@ -38,8 +38,14 @@ private:
 	VtProductRemainGridEx _RemainGrid;
 	VtTotalRemainGrid _TotalGrid;
 public:
+	VtOrderConfigManager* OrderConfigMgr() const { return _OrderConfigMgr; }
+	void OrderConfigMgr(VtOrderConfigManager* val) { _OrderConfigMgr = val; }
+	int DefaultWidth() const { return _DefaultWidth; }
+	void DefaultWidth(int val) { _DefaultWidth = val; }
+	int DefaultHeight() const { return _DefaultHeight; }
+	void DefaultHeight(int val) { _DefaultHeight = val; }
+
 	virtual BOOL OnInitDialog();
-	void SetOrderConfigMgr(VtOrderConfigManager* val);
 	void InitRealtimeQuote();
 	void InitRemainList();
 	void InitAcceptedList();
@@ -60,4 +66,8 @@ public:
 	afx_msg void OnBnClickedBtnLiqAll();
 
 	void OnOutstanding();
+
+private:
+	int _DefaultWidth = 174;
+	int _DefaultHeight = 774;
 };

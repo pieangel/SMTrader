@@ -7,7 +7,7 @@
 #include "Poco/Delegate.h"
 #include "VtOrderDialogManager.h"
 #include "VtWindowManager.h"
-#include "VtOrderCenterWnd.h"
+#include "SmOrderPanelOut.h"
 #include "VtOrderLeftWnd.h"
 
 using Poco::Delegate;
@@ -71,12 +71,12 @@ void VtQuoteManager::ReceiveRealtimeQuote(std::string fullCode, LPCTSTR packet)
 	arg.pQuote = quote;
 	FireRealtimeQuoteReceived(std::move(arg));
 
-	VtWindowManager* winMgr = VtWindowManager::GetInstance();
-	CVtOrderCenterWnd* wnd = (CVtOrderCenterWnd*)winMgr->FindWindow(_T("OrderCenterWnd"));
-	if (wnd)
-	{
-		wnd->OnReceiveRealtimeQuote(quote);
-	}
+// 	VtWindowManager* winMgr = VtWindowManager::GetInstance();
+// 	CVtOrderCenterWnd* wnd = (CVtOrderCenterWnd*)winMgr->FindWindow(_T("OrderCenterWnd"));
+// 	if (wnd)
+// 	{
+// 		wnd->OnReceiveRealtimeQuote(quote);
+// 	}
 }
 
 void VtQuoteManager::ReceiveRealtimeQuote(VtQuote* quote)
@@ -196,12 +196,12 @@ void VtQuoteManager::ReceiveQuote(std::string fullCode, LPCTSTR packet)
 	memcpy(quote, packet, sizeof(VtQuote));
 
 	
-	VtWindowManager* winMgr = VtWindowManager::GetInstance();
-	CVtOrderCenterWnd* wnd = (CVtOrderCenterWnd*)winMgr->FindWindow(_T("OrderCenterWnd"));
-	if (wnd)
-	{
-		wnd->InitQuote(quote);
-	}
+// 	VtWindowManager* winMgr = VtWindowManager::GetInstance();
+// 	CVtOrderCenterWnd* wnd = (CVtOrderCenterWnd*)winMgr->FindWindow(_T("OrderCenterWnd"));
+// 	if (wnd)
+// 	{
+// 		wnd->InitQuote(quote);
+// 	}
 }
 
 void VtQuoteManager::ReceiveQuote(VtQuote* quote)

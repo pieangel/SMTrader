@@ -8,7 +8,7 @@
 #include "VtProductCategoryManager.h"
 #include "VtProductCategory.h"
 #include "VtGlobal.h"
-#include "VtOrderCenterWnd.h"
+#include "SmOrderPanelOut.h"
 // CVtSymbolFavoriteDlg dialog
 
 IMPLEMENT_DYNAMIC(CVtSymbolFavoriteDlg, CDialogEx)

@@ -22,6 +22,18 @@ const std::string cert = _T("11orion@@@");
 const int BitTrexTimerID = WM_USER + 1000;
 const int BithumbTimerID = WM_USER + 1001;
 
+const int ConfigHeight = 94;
+const int ConfigWidth = 480;
+const int TickWndWidth = 155;
+
+const int MinOrderWndSize = 200;
+const int CenterWndWidth = 486;
+const int CenterTopGap = 114;
+const int CenterTop = 24;
+
+const int StartWndID = 40000;
+const int LimitCenterWidth = 264;
+
 enum class VtTargetServer { KR, HANA, HD };
 enum class VtChartType
 {

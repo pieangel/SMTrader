@@ -679,9 +679,6 @@
     <ClInclude Include="VtCutManager.h">
       <Filter>OrderWindow</Filter>
     </ClInclude>
-    <ClInclude Include="VtOrderCenterWnd.h">
-      <Filter>OrderWindow</Filter>
-    </ClInclude>
     <ClInclude Include="VtOrderCenterWndHd.h">
       <Filter>OrderWindow</Filter>
     </ClInclude>
@@ -1537,9 +1534,6 @@
     <ClInclude Include="SmTickGrid.h">
       <Filter>OrderUI</Filter>
     </ClInclude>
-    <ClInclude Include="Format\format_string.h">
-      <Filter>Format</Filter>
-    </ClInclude>
     <ClInclude Include="Market\SmMarket.h">
       <Filter>Market</Filter>
     </ClInclude>
@@ -1593,6 +1587,9 @@
     </ClInclude>
     <ClInclude Include="SmSystemConnector.h">
       <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="SmOrderPanelOut.h">
+      <Filter>OrderUI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2044,9 +2041,6 @@
       <Filter>OrderWindow</Filter>
     </ClCompile>
     <ClCompile Include="VtCutManager.cpp">
-      <Filter>OrderWindow</Filter>
-    </ClCompile>
-    <ClCompile Include="VtOrderCenterWnd.cpp">
       <Filter>OrderWindow</Filter>
     </ClCompile>
     <ClCompile Include="VtOrderCenterWndHd.cpp">
@@ -2849,6 +2843,9 @@
     </ClCompile>
     <ClCompile Include="SmSystemConnector.cpp">
       <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="SmOrderPanelOut.cpp">
+      <Filter>OrderUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

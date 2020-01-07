@@ -13,13 +13,13 @@ VtSymbol::VtSymbol()
 	_RequestedSymbolMaster = false;
 	Begin();
 	count++;
-	LOG_F(INFO, "constructor :: symbol = count = %d", count);
+	//LOG_F(INFO, "constructor :: symbol = count = %d", count);
 }
 
 
 VtSymbol::~VtSymbol()
 {
-	LOG_F(INFO, "destructor :: symbol = count = %d", count);
+	//LOG_F(INFO, "destructor :: symbol = count = %d", count);
 }
 
 void VtSymbol::Begin()

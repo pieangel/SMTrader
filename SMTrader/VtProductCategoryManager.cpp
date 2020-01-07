@@ -524,6 +524,18 @@ void VtProductCategoryManager::InitHdCategoryNSection()
 	SectionMap[section->Code] = section;
 
 	section = new VtProductSection();
+	section->Code = _T("109O");
+	section->Name = _T("KOSPI 위클리 옵션");
+	section->UserDefinedName = _T("코스피위클리옵션");
+	section->ExPos = _T("SEOUL");
+	cat->AddSection(section);
+
+	section->ProductCategoryManager(this);
+	section->AddSubSection(_T("209"), _T("코스피위클리 콜옵션"));
+	section->AddSubSection(_T("309"), _T("코스피위클리 풋옵션"));
+	SectionMap[section->Code] = section;
+
+	section = new VtProductSection();
 	section->Code = _T("107F");
 	section->Name = _T("EST 선물");
 	section->UserDefinedName = _T("유로선물");

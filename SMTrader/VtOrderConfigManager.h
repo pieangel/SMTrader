@@ -10,10 +10,10 @@ struct VtOrder;
 struct VtPosition;
 class VtOrderManager;
 class VtProductOrderManager;
-class CVtOrderWnd;
+class VtOrderWnd;
 class CVtOrderLeftWnd;
 class CVtOrderRightWnd;
-class CVtOrderCenterWnd;
+class SmOrderPanelOut;
 class VtOrderLeftWndHd;
 class VtOrderRightWndHd;
 class VtOrderCenterWndHd;
@@ -135,10 +135,10 @@ private:
 	void Reset();
 
 public:
-	CVtOrderWnd* orderWnd = nullptr;
+	VtOrderWnd* orderWnd = nullptr;
 	CVtOrderLeftWnd* leftWnd = nullptr;
 	CVtOrderRightWnd* rightWnd = nullptr;
-	CVtOrderCenterWnd* centerWnd = nullptr;
+	SmOrderPanelOut* centerWnd = nullptr;
 	bool ShowLeft = true;
 	bool ShowRight = true;
 	int leftWidth = 0;
@@ -147,7 +147,6 @@ public:
 
 	VtOrderLeftWndHd* _HdLeftWnd = nullptr;
 	VtOrderRightWndHd* _HdRightWnd = nullptr;
-	//VtOrderCenterWndHd* _HdCenterWnd = nullptr;
 	SmOrderPanel* _HdCenterWnd = nullptr;
 	VtOrderWndHd*       _HdOrderWnd = nullptr;
 

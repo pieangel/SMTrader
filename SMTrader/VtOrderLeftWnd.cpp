@@ -77,17 +77,17 @@ BOOL CVtOrderLeftWnd::OnInitDialog()
 				  // EXCEPTION: OCX Property Pages should return FALSE
 }
 
-void CVtOrderLeftWnd::SetOrderConfigMgr(VtOrderConfigManager* val)
-{
-	_OrderConfigMgr = val;
-	_TickQuoteGrid.SetOrderConfigMgr(val);
-	_AcceptGrid.SetOrderConfigMgr(val);
-	_RemainGrid.SetOrderConfigMgr(val);
-	_TotalGrid.SetOrderConfigMgr(val);
-
-	_AcceptGrid.OrderLeftWnd(this);
-	_RemainGrid.OrderLeftWnd(this);
-}
+// void CVtOrderLeftWnd::SetOrderConfigMgr(VtOrderConfigManager* val)
+// {
+// 	_OrderConfigMgr = val;
+// 	_TickQuoteGrid.SetOrderConfigMgr(val);
+// 	_AcceptGrid.SetOrderConfigMgr(val);
+// 	_RemainGrid.SetOrderConfigMgr(val);
+// 	_TotalGrid.SetOrderConfigMgr(val);
+// 
+// 	_AcceptGrid.OrderLeftWnd(this);
+// 	_RemainGrid.OrderLeftWnd(this);
+// }
 
 void CVtOrderLeftWnd::InitRealtimeQuote()
 {

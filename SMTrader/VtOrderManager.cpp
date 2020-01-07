@@ -21,7 +21,7 @@
 #include "VtAccountManager.h"
 #include "VtChartManager.h"
 #include "VtChartFrm.h"
-#include "VtOrderCenterWnd.h"
+#include "SmOrderPanelOut.h"
 #include "VtProductOrderManagerSelector.h"
 #include "VtProductOrderManager.h"
 #include "VtOrderDialogManager.h"

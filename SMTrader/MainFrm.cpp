@@ -613,6 +613,7 @@ void CMainFrame::OnShowWindow(BOOL bShow, UINT nStatus)
 		VtSaveManager* saveMgr = VtSaveManager::GetInstance();
 		int Res = loginDlg.DoModal();
 		if (Res == IDOK) {
+			
 			// 로그인 사용자를 위한 디렉토리를 만든다.
 			VtGlobal::LoginUserID = loginDlg.id;
 			saveMgr->CreateUserDirectory();
@@ -648,6 +649,8 @@ void CMainFrame::OnShowWindow(BOOL bShow, UINT nStatus)
 			else
 				dlg.FromServer(false);
 			dlg.DoModal();
+
+			client->GetTradableCodeTable();
 
 			VtHdClient::GetInstance()->DownloadMasterFiles("futures");
 		}
@@ -745,6 +748,7 @@ void CMainFrame::CreateFileWatch()
 
 bool CMainFrame::ClearAllResources()
 {
+	SmChartDataManager::DestroyInstance();
 	VtScheduler::DestroyInstance();
 	HdScheduler* sch = HdScheduler::GetInstance();
 	sch->ClearTasks();
@@ -826,7 +830,7 @@ bool CMainFrame::ClearAllResources()
 
 	SmSymbolReader::DestroyInstance();
 	SmTaskManager::DestroyInstance();
-	SmChartDataManager::DestroyInstance();
+	
 	
 	SmCallbackManager::DestroyInstance();
 	return true;

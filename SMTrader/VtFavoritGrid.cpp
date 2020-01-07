@@ -4,7 +4,7 @@
 #include "VtSymbol.h"
 #include <string>
 #include "VtSymbolFavoriteDlg.h"
-#include "VtOrderCenterWnd.h"
+#include "SmOrderPanelOut.h"
 
 VtFavoritGrid::VtFavoritGrid()
 {
@@ -109,10 +109,10 @@ int VtFavoritGrid::OnEditFinish(int col, long row, CWnd *edit, LPCTSTR string, B
 	{
 		std::string alias = msg;
 		sym->UserDefinedName = alias;
-		if (_SymFvrtDlg->OrderCenterWnd)
-		{
-			_SymFvrtDlg->OrderCenterWnd->SetFavorite(row, sym);
-		}
+// 		if (_SymFvrtDlg->OrderCenterWnd)
+// 		{
+// 			_SymFvrtDlg->OrderCenterWnd->SetFavorite(row, sym);
+// 		}
 	}
 	return TRUE;
 }

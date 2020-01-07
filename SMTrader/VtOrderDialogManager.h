@@ -9,6 +9,7 @@
 #include "Xml/pugixml.hpp"
 using same_endian_type = std::is_same<simple::LittleEndian, simple::LittleEndian>;
 
+class VtOrderWnd;
 class CVtOrderWnd;
 struct VtHoga;
 struct VtQuote;
@@ -64,12 +65,12 @@ public:
 	~VtOrderDialogManager();
 	void OnRealtimeQuoteReceived(VtRealtimeQuoteEventArgs& arg);
 
-	void OnOrderWindowEventReceived(VtOrderWindowEventArgs& arg);
+	void OnOrderWindowEventReceived(VtOrderWndEventArgs& arg);
 
 
-	void OnOrderWndEventReceived(VtOrderWndEventArgs& arg);
-	void AddOrderWindow(CVtOrderWnd* wnd);
-	void RemoveOrderWindow(CVtOrderWnd* wnd);
+	void OnOrderWndEventReceived(VtOrderWndHdEventArgs& arg);
+	void AddOrderWindow(VtOrderWnd* wnd);
+	void RemoveOrderWindow(VtOrderWnd* wnd);
 
 	void AddSymbolReceiverWindow(std::string fullCode, CVtOrderWnd* wnd);
 	void RemoveSymbolReceiveWindow(std::string fullCode, CVtOrderWnd* wnd);
@@ -160,6 +161,6 @@ private:
 	CMainFrame* _MainFrm;
 	std::map<std::string, HandleOrder> _HandleOrderMap;
 	void CreateOrderDialog(VtOrderWndHd* orderWnd);
-	std::map<CVtOrderWnd*, CVtOrderWnd*> _OrderWindowMap;
+	std::map<VtOrderWnd*, VtOrderWnd*> _OrderWindowMap;
 };
 

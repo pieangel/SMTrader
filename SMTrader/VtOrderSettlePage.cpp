@@ -101,10 +101,10 @@ void VtOrderSettlePage::OnEnChangeEditProfit()
 	// with the ENM_CHANGE flag ORed into the mask.
 
 	// TODO:  Add your control notification handler code here
-	if (_EditProfit.GetSafeHwnd())
-	{
-		_OrderConfigMgr->AutoStopProfitValue = CVtOrderWnd::GetValue(&_EditProfit);
-	}
+// 	if (_EditProfit.GetSafeHwnd())
+// 	{
+// 		_OrderConfigMgr->AutoStopProfitValue = VtOrderWnd::GetValue(&_EditProfit);
+// 	}
 }
 
 
@@ -116,10 +116,10 @@ void VtOrderSettlePage::OnEnChangeEditLoss()
 	// with the ENM_CHANGE flag ORed into the mask.
 
 	// TODO:  Add your control notification handler code here
-	if (_EditLoss.GetSafeHwnd())
-	{
-		_OrderConfigMgr->AutoStopLosscutValue = CVtOrderWnd::GetValue(&_EditLoss);
-	}
+// 	if (_EditLoss.GetSafeHwnd())
+// 	{
+// 		_OrderConfigMgr->AutoStopLosscutValue = CVtOrderWnd::GetValue(&_EditLoss);
+// 	}
 }
 
 
@@ -136,10 +136,10 @@ void VtOrderSettlePage::OnEnChangeEditPsStop()
 	// with the ENM_CHANGE flag ORed into the mask.
 
 	// TODO:  Add your control notification handler code here
-	if (_EditPsStop.GetSafeHwnd())
-	{
-		_OrderConfigMgr->AutoStopPriceSlip = CVtOrderWnd::GetValue(&_EditPsStop);
-	}
+// 	if (_EditPsStop.GetSafeHwnd())
+// 	{
+// 		_OrderConfigMgr->AutoStopPriceSlip = CVtOrderWnd::GetValue(&_EditPsStop);
+// 	}
 }
 
 
@@ -165,10 +165,10 @@ void VtOrderSettlePage::OnEnChangeEditTsDefaultLoss()
 	// with the ENM_CHANGE flag ORed into the mask.
 
 	// TODO:  Add your control notification handler code here
-	if (_EditTsDefaultLoss.GetSafeHwnd())
-	{
-		_OrderConfigMgr->AutoStopPriceSlip = CVtOrderWnd::GetValue(&_EditTsDefaultLoss);
-	}
+// 	if (_EditTsDefaultLoss.GetSafeHwnd())
+// 	{
+// 		_OrderConfigMgr->AutoStopPriceSlip = CVtOrderWnd::GetValue(&_EditTsDefaultLoss);
+// 	}
 }
 
 
@@ -180,10 +180,10 @@ void VtOrderSettlePage::OnEnChangeEditTsProfit()
 	// with the ENM_CHANGE flag ORed into the mask.
 
 	// TODO:  Add your control notification handler code here
-	if (_EditTsProfit.GetSafeHwnd())
-	{
-		_OrderConfigMgr->TrailStopProfit = CVtOrderWnd::GetValue(&_EditTsProfit);
-	}
+// 	if (_EditTsProfit.GetSafeHwnd())
+// 	{
+// 		_OrderConfigMgr->TrailStopProfit = CVtOrderWnd::GetValue(&_EditTsProfit);
+// 	}
 }
 
 
@@ -195,10 +195,10 @@ void VtOrderSettlePage::OnEnChangeEditTsTrail()
 	// with the ENM_CHANGE flag ORed into the mask.
 
 	// TODO:  Add your control notification handler code here
-	if (_EditTsTrail.GetSafeHwnd())
-	{
-		_OrderConfigMgr->TrailStopTrail = CVtOrderWnd::GetValue(&_EditTsTrail);
-	}
+// 	if (_EditTsTrail.GetSafeHwnd())
+// 	{
+// 		_OrderConfigMgr->TrailStopTrail = CVtOrderWnd::GetValue(&_EditTsTrail);
+// 	}
 }
 
 
@@ -224,10 +224,10 @@ void VtOrderSettlePage::OnEnChangeEditTsStop()
 	// with the ENM_CHANGE flag ORed into the mask.
 
 	// TODO:  Add your control notification handler code here
-	if (_EditTsStop.GetSafeHwnd())
-	{
-		_OrderConfigMgr->TrailStopPriceSlip = CVtOrderWnd::GetValue(&_EditTsStop);
-	}
+// 	if (_EditTsStop.GetSafeHwnd())
+// 	{
+// 		_OrderConfigMgr->TrailStopPriceSlip = CVtOrderWnd::GetValue(&_EditTsStop);
+// 	}
 }
 
 
@@ -263,8 +263,8 @@ void VtOrderSettlePage::InitControlValues()
 	else
 		_CheckLoss.SetCheck(BST_UNCHECKED);
 
-	CVtOrderWnd::SetValue(&_EditProfit, _OrderConfigMgr->AutoStopProfitValue);
-	CVtOrderWnd::SetValue(&_EditLoss, _OrderConfigMgr->AutoStopLosscutValue);
+// 	CVtOrderWnd::SetValue(&_EditProfit, _OrderConfigMgr->AutoStopProfitValue);
+// 	CVtOrderWnd::SetValue(&_EditLoss, _OrderConfigMgr->AutoStopLosscutValue);
 
 	if (_OrderConfigMgr->AutoStopPriceType == VtPriceType::Market)
 	{
@@ -275,27 +275,27 @@ void VtOrderSettlePage::InitControlValues()
 		((CButton*)GetDlgItem(IDC_RADIO_STOP))->SetCheck(BST_CHECKED);
 	}
 
-	CVtOrderWnd::SetValue(&_EditPsStop, _OrderConfigMgr->AutoStopPriceSlip);
-
-	if (_OrderConfigMgr->UseTrailStop)
-		_CheckTrailStop.SetCheck(BST_CHECKED);
-	else
-		_CheckTrailStop.SetCheck(BST_UNCHECKED);
-
-	CVtOrderWnd::SetValue(&_EditTsDefaultLoss, _OrderConfigMgr->TrailStopDefaultLosscut);
-	CVtOrderWnd::SetValue(&_EditTsProfit, _OrderConfigMgr->TrailStopProfit);
-	CVtOrderWnd::SetValue(&_EditTsTrail, _OrderConfigMgr->TrailStopTrail);
-
-	if (_OrderConfigMgr->TrailStopPriceType == VtPriceType::Market)
-	{
-		((CButton*)GetDlgItem(IDC_RADIO_TS_ATMARKET))->SetCheck(BST_CHECKED);
-	}
-	else
-	{
-		((CButton*)GetDlgItem(IDC_RADIO_TS_STOP))->SetCheck(BST_CHECKED);
-	}
-	
-	CVtOrderWnd::SetValue(&_EditTsStop, _OrderConfigMgr->TrailStopPriceSlip);
+// 	CVtOrderWnd::SetValue(&_EditPsStop, _OrderConfigMgr->AutoStopPriceSlip);
+// 
+// 	if (_OrderConfigMgr->UseTrailStop)
+// 		_CheckTrailStop.SetCheck(BST_CHECKED);
+// 	else
+// 		_CheckTrailStop.SetCheck(BST_UNCHECKED);
+// 
+// 	CVtOrderWnd::SetValue(&_EditTsDefaultLoss, _OrderConfigMgr->TrailStopDefaultLosscut);
+// 	CVtOrderWnd::SetValue(&_EditTsProfit, _OrderConfigMgr->TrailStopProfit);
+// 	CVtOrderWnd::SetValue(&_EditTsTrail, _OrderConfigMgr->TrailStopTrail);
+// 
+// 	if (_OrderConfigMgr->TrailStopPriceType == VtPriceType::Market)
+// 	{
+// 		((CButton*)GetDlgItem(IDC_RADIO_TS_ATMARKET))->SetCheck(BST_CHECKED);
+// 	}
+// 	else
+// 	{
+// 		((CButton*)GetDlgItem(IDC_RADIO_TS_STOP))->SetCheck(BST_CHECKED);
+// 	}
+// 	
+// 	CVtOrderWnd::SetValue(&_EditTsStop, _OrderConfigMgr->TrailStopPriceSlip);
 }
 
 

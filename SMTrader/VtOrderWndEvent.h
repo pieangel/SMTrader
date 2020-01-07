@@ -3,7 +3,7 @@
 #include "Poco/EventArgs.h"
 
 using Poco::EventArgs;
-class CVtOrderWnd;
+class VtOrderWnd;
 class VtOrderWndHd;
 enum class VtOrderWindowEventType 
 {
@@ -11,14 +11,14 @@ enum class VtOrderWindowEventType
 	Created,
 	Closed
 };
-class VtOrderWindowEventArgs : public EventArgs
+class VtOrderWndEventArgs : public EventArgs
 {
 public:
-	CVtOrderWnd* pOrderWnd = nullptr;
+	VtOrderWnd* pOrderWnd = nullptr;
 	VtOrderWindowEventType type = VtOrderWindowEventType::None;
 };
 
-class VtOrderWndEventArgs : public EventArgs
+class VtOrderWndHdEventArgs : public EventArgs
 {
 public:
 	VtOrderWndHd* pOrderWnd = nullptr;

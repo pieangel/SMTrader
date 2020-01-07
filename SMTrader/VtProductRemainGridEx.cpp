@@ -90,10 +90,10 @@ void VtProductRemainGridEx::OnLClicked(int col, long row, int updn, RECT *rect, 
 			std::string shorCode = msg;
 			VtSymbolManager* symMgr = VtSymbolManager::GetInstance();
 			VtSymbol* sym = symMgr->FindSymbol(shorCode);
-			if (sym && _OrderLeftWnd && _OrderLeftWnd->ParentOrderWnd())
-			{
-				_OrderLeftWnd->ParentOrderWnd()->ResetSymbol(sym);
-			}
+// 			if (sym && _OrderLeftWnd && _OrderLeftWnd->ParentOrderWnd())
+// 			{
+// 				_OrderLeftWnd->ParentOrderWnd()->ResetSymbol(sym);
+// 			}
 		}
 	}
 }
