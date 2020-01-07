@@ -50,6 +50,7 @@ void HdScheduler::OnTaskCompleted(HdTaskEventArgs& arg)
 		int remCnt = RemoveRequest(HdTaskType::HdSymbolCode, arg.RequestId);
 		if (_ProgressDlg) {
 			SetTaskInfo(_T("GetSymbolCode"), remCnt);
+			LOG_F(INFO, _T("심볼코드 남은 갯수 = %d]"), remCnt);
 		}
 		if (!_ReceivedBatchInfo && remCnt == 0) { // 심볼 코드 가져오기가 끝났다면 심볼 마스터 요청
 			GetSymbolMaster2();
@@ -76,7 +77,6 @@ void HdScheduler::OnTaskCompleted(HdTaskEventArgs& arg)
 		if (_ProgressDlg) {
 			SetTaskInfo(_T("GetDeposit"), remCnt);
 		}
-		//Sleep(700);
 		if (!_ReceivedBatchInfo && remCnt == 0) {
 			if (GetCustomProfitLoss() == 0) {
 				HdTaskEventArgs eventArg;
@@ -88,7 +88,6 @@ void HdScheduler::OnTaskCompleted(HdTaskEventArgs& arg)
 	break;
 	case HdTaskType::HdApiCustomerProfitLoss: { // 계좌별, 종목별 손익을 가져온다.
 		int remCnt = RemoveRequest(HdTaskType::HdApiCustomerProfitLoss, arg.RequestId);
-		//Sleep(700); // GetCustomProfitLoss
 		if (_ProgressDlg) {
 			SetTaskInfo(_T("GetCustomProfitLoss"), remCnt);
 		}
@@ -103,7 +102,6 @@ void HdScheduler::OnTaskCompleted(HdTaskEventArgs& arg)
 	break;
 	case HdTaskType::HdOutstanding: { // 종목별 잔고를 가져온다.
 		int remCnt = RemoveRequest(HdTaskType::HdOutstanding, arg.RequestId);
-		//Sleep(700); // GetOutstanding
 		if (_ProgressDlg) {
 			SetTaskInfo(_T("GetOutstanding"), remCnt);
 		}
@@ -118,7 +116,6 @@ void HdScheduler::OnTaskCompleted(HdTaskEventArgs& arg)
 	break;
 	case HdTaskType::HdAcceptedHistory: { // 종목별 접수확인 목록을 가져온다.
 		int remCnt = RemoveRequest(HdTaskType::HdAcceptedHistory, arg.RequestId);
-		//Sleep(700); //GetAcceptedHistory
 		if (_ProgressDlg) {
 			SetTaskInfo(_T("GetAcceptedHistory"), remCnt);
 		}
@@ -270,8 +267,10 @@ void HdScheduler::ExecTask(HdTaskArg&& taskArg)
 	case HdTaskType::HdSymbolCode:
 	{
 		std::string symCode = taskArg.GetArg(_T("Category"));
-		//TRACE(symCode.c_str());
-		//TRACE(_T("\n"));
+		if (symCode.length() == 0) {
+			TRACE(symCode.c_str());
+			TRACE(_T("\n"));
+		}
 		client->GetSymbolCode(CString(symCode.c_str()));
 	}
 		break;

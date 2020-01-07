@@ -72,8 +72,8 @@ BOOL VtProgressDlg::OnInitDialog()
 
 	HdScheduler* taskMgr = HdScheduler::GetInstance();
 	taskMgr->ProgressDlg(this);
-	//taskMgr->GetSymbolCode();
-	taskMgr->GetSymbolFile();
+	taskMgr->GetSymbolCode();
+	//taskMgr->GetSymbolFile();
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // EXCEPTION: OCX Property Pages should return FALSE

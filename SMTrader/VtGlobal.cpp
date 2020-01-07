@@ -22,7 +22,7 @@ size_t VtGlobal::_MaxLog = 200;
 std::list<VtSysLog> VtGlobal::_SysLogList;
 bool VtGlobal::EnableFileWatch = false;
 std::string VtGlobal::FileWatchPath = "";
-int VtGlobal::ServerSleepTime = 500;
+int VtGlobal::ServerSleepTime = 400;
 
 void VtGlobal::PushLog(VtSysLog&& log)
 {

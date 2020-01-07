@@ -650,7 +650,12 @@ void CMainFrame::OnShowWindow(BOOL bShow, UINT nStatus)
 				dlg.FromServer(false);
 			dlg.DoModal();
 
+			// 거래 가능 목록을 읽어 온다.
 			client->GetTradableCodeTable();
+			// 국내 품목별 정보를 읽어 온다.
+			client->GetMasterFile("product.cod");
+			// 국내 시장 목록을 읽어 온다.
+			SmMarketManager::GetInstance()->ReadDomesticMarketTable();
 
 			VtHdClient::GetInstance()->DownloadMasterFiles("futures");
 		}

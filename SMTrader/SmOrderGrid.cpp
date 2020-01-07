@@ -658,6 +658,7 @@ void SmOrderGrid::SetCenterValueForOption(const VtSymbol* sym, std::set<std::pai
 	int zeroRow = _EndRowForValue;
 	if (_IndexRow < endRow) {
 		for (int r = _IndexRow; r < endRow; ++r) {
+			// 0.01 밑으로 안나오게 함
 			if (endValue == 1) {
 				zeroRow = r;
 				break;

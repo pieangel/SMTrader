@@ -79,7 +79,7 @@ void VtAutoSignalManagerDialog::Resize()
 	CRect rcDlg;
 	this->GetClientRect(rcDlg);
 
-	int horizontal_position = (rcDlg.Height() * 2) / 3;
+	int horizontal_position = rcDlg.Height() / 2;
 	int vertical_position = rcDlg.Width() / 2;
 	int controlHeight = 32;
 

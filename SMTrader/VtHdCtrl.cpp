@@ -62,6 +62,8 @@
 #include "Chart/SmChartDataManager.h"
 #include "SmTaskManager.h"
 #include "Market/SmMarketManager.h"
+#include "Market/SmMarket.h"
+#include "Market/SmProduct.h"
 
 using namespace std;
 
@@ -259,25 +261,34 @@ void VtHdCtrl::GetMasterFile(std::string fileName)
 		std::string temp;
 		temp = info.substr(index, 8);
 		temp = VtSymbolManager::TrimRight(temp, ' ');
+		// 제품 코드 추출
 		prdtInfo = symMgr->AddProductInfo(temp);
 		index = index + 8;
 		temp = info.substr(index, 2);
+		// 소수점 자릿수 추출
 		prdtInfo->decimal = std::stoi(temp);
 		index = index + 2;
 		temp = info.substr(index, 5);
 		temp = VtSymbolManager::TrimLeft(temp, ' ');
+		// 틱 크기 추출
 		prdtInfo->tickSize = temp;
 		temp.erase(std::remove(temp.begin(), temp.end(), '.'), temp.end());
+		// 정수 틱크기 추출
 		prdtInfo->intTickSize = std::stoi(temp);
+		// 호가 단위 저장
+		prdtInfo->hogaUnit = prdtInfo->intTickSize;
 		index = index + 5;
 		temp = info.substr(index, 5);
+		// 틱 가치 추출
 		prdtInfo->tickValue = std::stoi(temp);
 		index = index + 5;
 		temp = info.substr(index, 10);
 		temp = VtSymbolManager::TrimLeft(temp, ' ');
+		// 승수 추출
 		prdtInfo->tradeWin = std::stoi(temp);
 		index = index + 10;
 		temp = info.substr(index, 30);
+		// 이름 추출
 		temp = VtSymbolManager::TrimLeft(temp, ' ');
 		prdtInfo->name = temp;
 	}
@@ -335,8 +346,9 @@ int VtHdCtrl::GetSymbolCode(CString categoryName)
 		_SymbolCodeReqMap[nRqID] = categoryName;
 		return nRqID;
 	}
-
-	return -1;
+	else {
+		return -1;
+	}
 }
 
 void VtHdCtrl::GetOptionCodeList(CString categoryName)
@@ -3288,16 +3300,28 @@ void VtHdCtrl::OnDailyProfitLoss(CString& sTrCode, LONG& nRqID)
 
 void VtHdCtrl::OnSymbolCode(CString& sTrCode, LONG& nRqID)
 {
+	CString msg;
+	
 	VtSymbolManager* symMgr = VtSymbolManager::GetInstance();
+	SmMarketManager* marketMgr = SmMarketManager::GetInstance();
+	std::string market_code;
 	int nRepeatCnt = m_CommAgent.CommGetRepeatCnt(sTrCode, -1, "OutRec1");
 	if (nRepeatCnt > 0) {
+		
+		auto it = _SymbolCodeReqMap.find(nRqID);
+		if (it != _SymbolCodeReqMap.end()) {
+			market_code = it->second;
+		}
+		auto market_info = marketMgr->FindMarketInfo(market_code);
+		std::string market_name = market_info.first;
+		SmMarket *market = marketMgr->AddMarket(market_info.first);
+		market->Code(market_code);
 		VtSymbol* sym = nullptr;
 		for (int i = 0; i < nRepeatCnt; i++) {
 			CString sData = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "종목코드");
 			//TRACE(sData);
 			//TRACE(_T("\n"));
 			//WriteLog(sData);
-			CString msg;
 			msg.Format("code = %s, symbol_code = %s\n", sTrCode, sData);
 			TRACE(msg);
 
@@ -3309,25 +3333,48 @@ void VtHdCtrl::OnSymbolCode(CString& sTrCode, LONG& nRqID)
 			sym->ExpireMonth = std::get<1>(ym);
 
 			std::string symCode = sym->ShortCode;
-			std::string subSecCode = symCode.substr(0, 3);
+			std::string product_code = symCode.substr(0, 3);
 			VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();
-			VtProductSubSection* subSection = prdtCatMgr->FindProductSubSection(subSecCode);
+			VtProductSubSection* subSection = prdtCatMgr->FindProductSubSection(product_code);
 			if (subSection) {
 				subSection->AddSymbol(sym);
 			}
 			
+			// 마켓 관리자에 심볼을 추가해 준다.
+			SmProduct* product = market->FindAddProduct(product_code);
+
+			marketMgr->AddProduct(product);
+			marketMgr->AddCategoryMarket(product_code, market_name);
+			product->MarketName(market_name);
+
+			HdProductInfo* product_info = VtSymbolManager::GetInstance()->FindProductInfo(product_code);
+			if (product_info) {
+				product->NameKr(product_info->name);
+				product->NameKr(product_info->name);
+
+				VtSymbol* sym = product->AddSymbol(symCode);
+
+				sym->ProductCode = product_info->code;
+				sym->MarketName = market_name;
+				sym->Decimal = product_info->decimal;
+				sym->Seungsu = product_info->tradeWin;
+				sym->TickSize = std::stod(product_info->tickSize);
+				sym->CtrUnit = sym->TickSize;
+				sym->TickValue = product_info->tickValue;
+			}
 		}
 	}
 
-	// 심볼 코드 요청 오류 처리
-	auto it = _SymbolCodeReqMap.find(nRqID);
-	if (it != _SymbolCodeReqMap.end()) {
-		Sleep(VtGlobal::ServerSleepTime);
-		HdTaskEventArgs eventArg;
-		eventArg.TaskType = HdTaskType::HdSymbolCode;
-		FireTaskCompleted(std::move(eventArg));
-		_SymbolCodeReqMap.erase(it);
-	}
+	// 심볼 코드 요청 처리
+	Sleep(VtGlobal::ServerSleepTime);
+	HdTaskEventArgs eventArg;
+	eventArg.TaskType = HdTaskType::HdSymbolCode;
+	FireTaskCompleted(std::move(eventArg));
+
+	msg.Format("code = %s, nRqID = %d\n", sTrCode, nRqID);
+	TRACE(msg);
+
+	LOG_F(INFO, _T("심볼코드 요청 성공 : 마켓코드 = %s, [요청번호 = %d]"), market_code.c_str(), nRqID);
 
 	RemoveRequest(nRqID);
 }
@@ -3358,8 +3405,8 @@ void VtHdCtrl::OnSymbolMaster(CString& sTrCode, LONG& nRqID)
 	CString strUpRate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "등락률");
 
 	LOG_F(INFO, _T("종목코드 = %s"), strData001);
-	//TRACE(strData001);
-	//TRACE(_T("\n"));
+	TRACE(strData001);
+	TRACE(_T("\n"));
 	std::string code = sym->ShortCode.substr(0, 3);
 	HdProductInfo* prdtInfo = symMgr->FindProductInfo(code);
 	if (prdtInfo) {
@@ -6903,13 +6950,17 @@ void VtHdCtrl::OnGetMsgWithRqId(int nRqId, CString strCode, CString strMsg)
 	it = _SymbolCodeReqMap.find(nRqId);
 	if (it != _SymbolCodeReqMap.end()) {
 		std::string param = it->second;
-		LOG_F(INFO, _T("심볼코드 요청 오류 : 마켓코드 = %s, [요청번호 = %d,  메시지 = %s]"), param.c_str(), nRqId, strMsg);
-		Sleep(VtGlobal::ServerSleepTime);
-		HdTaskEventArgs eventArg;
-		eventArg.TaskType = HdTaskType::HdSymbolCode;
-		FireTaskCompleted(std::move(eventArg));
-		_SymbolCodeReqMap.erase(it);
+		// 오류가 발생했을 때 바로 처리 한다.
+		if (strCode.Compare("91001") == 0) {
+			LOG_F(INFO, _T("심볼코드 요청 오류 : 마켓코드 = %s, [요청번호 = %d,  메시지 = %s]"), param.c_str(), nRqId, strMsg);
+			Sleep(VtGlobal::ServerSleepTime);
+			HdTaskEventArgs eventArg;
+			eventArg.TaskType = HdTaskType::HdSymbolCode;
+			FireTaskCompleted(std::move(eventArg));
+			_SymbolCodeReqMap.erase(it);
+		}
 	}
+	
 
 	// 심볼 마스터 요청 오류 처리
 	it = _SymbolMasterReqMap.find(nRqId);

@@ -53,6 +53,8 @@ public:
 	std::vector<SmRunInfo> GetOptionRunVector() {
 		return _OptionRunVector;
 	}
+	void ReadDomesticMarketTable();
+	std::pair<std::string, std::string> FindMarketInfo(std::string market_code);
 private:
 	void SendSymbolMaster(std::string user_id, VtSymbol* sym);
 	std::vector<SmMarket*> _MarketList;
@@ -67,5 +69,7 @@ private:
 	std::set<std::string> _DomesticList;
 	std::vector<SmRunInfo> _FutureRunVector;
 	std::vector<SmRunInfo> _OptionRunVector;
+	// code -> market name
+	std::map<std::string, std::pair<std::string, std::string>> _DomesticMarketTable;
 };
 

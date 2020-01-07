@@ -274,6 +274,8 @@ void HdFutureGrid::OnSymbolMaster(VtSymbol* sym)
 	cell.Tag(sym);
 	SetCell(2, row, &cell);
 	QuickRedrawCell(2, row);
+	QuickSetText(1, row, sym->Name.c_str());
+	QuickRedrawCell(1, row);
 }
 
 void HdFutureGrid::SetConfigDlg(VtUsdStrategyConfigDlg* ConfigDlg)

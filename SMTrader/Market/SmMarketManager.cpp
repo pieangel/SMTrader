@@ -367,6 +367,50 @@ void SmMarketManager::LoadRunInfo()
 // 	}
 }
 
+void SmMarketManager::ReadDomesticMarketTable()
+{
+	ZmConfigManager* configMgr = ZmConfigManager::GetInstance();
+	std::string appPath;
+	appPath = configMgr->GetAppPath();
+	appPath.append(_T("\\"));
+	appPath.append(_T("config.xml"));
+
+	/// [load xml file]
+	// Create empty XML document within memory
+	pugi::xml_document doc;
+	// Load XML file into memory
+	// Remark: to fully read declaration entries you have to specify
+	// "pugi::parse_declaration"
+	pugi::xml_parse_result result = doc.load_file(appPath.c_str(),
+		pugi::parse_default | pugi::parse_declaration);
+	if (!result)
+	{
+		// 설정 파일이 없을 때
+		std::cout << "Parse error: " << result.description()
+			<< ", character pos= " << result.offset;
+		return;
+	}
+
+	pugi::xml_node application = doc.child("application");
+	pugi::xml_node running_list = application.child("runnig_list");
+	if (running_list) {
+		pugi::xml_node market_code_table = running_list.child("market_code_table");
+		if (market_code_table) {
+			for (pugi::xml_node future_node = market_code_table.first_child(); future_node; future_node = future_node.next_sibling()) {
+				std::string code = future_node.attribute("code").as_string();
+				std::string name = future_node.attribute("name").as_string();
+				std::string custom_name = future_node.attribute("custom_name").as_string();
+				_DomesticMarketTable[code] = std::make_pair(name, custom_name);
+			}
+		}
+	}
+}
+
+std::pair<std::string, std::string> SmMarketManager::FindMarketInfo(std::string market_code)
+{
+	return _DomesticMarketTable[market_code];
+}
+
 void SmMarketManager::SendSymbolMaster(std::string user_id, VtSymbol* sym)
 {
 
