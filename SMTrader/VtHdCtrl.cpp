@@ -338,10 +338,14 @@ int VtHdCtrl::GetSymbolCode(CString categoryName)
 	CString sTrCode = DefSymbolCode;
 	CString sInput = categoryName;
 	CString strNextKey = _T("");
+	
 	int nResult = m_CommAgent.CommGetConnectState();
 	if (nResult == 1)
 	{
 		int nRqID = m_CommAgent.CommRqData(sTrCode, sInput, sInput.GetLength(), strNextKey);
+		CString msg;
+		msg.Format("categoryName = %s, nRqID = %d\n", categoryName, nRqID);
+		TRACE(msg);
 		AddRequest(nRqID, HdTaskType::HdSymbolCode);
 		_SymbolCodeReqMap[nRqID] = categoryName;
 		return nRqID;
@@ -3452,6 +3456,9 @@ void VtHdCtrl::OnSymbolMaster(CString& sTrCode, LONG& nRqID)
 	std::string midCode = sym->ShortCode.substr(0, 3);
 	if (midCode.compare(_T("101")) == 0) {
 		symMgr->Kospi200Current = sym->Quote.intClose;
+	}
+	if (midCode.compare(_T("106")) == 0) {
+		symMgr->Kosdaq150Current = sym->Quote.intClose;
 	}
 
 	CString	strData075 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "호가수신시간");

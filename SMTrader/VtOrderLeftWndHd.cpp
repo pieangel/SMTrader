@@ -17,6 +17,8 @@
 #include "VtSymbol.h"
 #include "VtGlobal.h"
 #include "Poco/NumberFormatter.h"
+#include "SmRunInfo.h"
+#include "Market/SmMarketManager.h"
 using Poco::NumberFormatter;
 
 extern TApplicationFont g_Font;
@@ -89,7 +91,11 @@ END_MESSAGE_MAP()
 BOOL VtOrderLeftWndHd::OnInitDialog()
 {
 	CRHGenericChildDialog::OnInitDialog();
+
 	::EnumChildWindows(m_hWnd, ::SetChildFont, (LPARAM)g_Font.GetFont());
+
+	_RunInfo = SmMarketManager::GetInstance()->GetOptionRunVector();
+
 	_SymbolOptionGrid.LeftWnd(this);
 	_SymbolOptionGrid.OrderConfigMgr(_OrderConfigMgr);
 
@@ -172,7 +178,16 @@ void VtOrderLeftWndHd::End()
 
 void VtOrderLeftWndHd::OnCbnSelchangeComboProduct()
 {
-	// TODO: Add your control notification handler code here
+	int curSel = _ComboProduct.GetCurSel();
+	if (curSel < 0)
+		return;
+	SmRunInfo run_info = _RunInfo[curSel];
+	std::vector<VtSymbol*> sym_list = SmMarketManager::GetInstance()->GetSymbolListByCode(run_info.Code);
+	// 심볼리스트가 0인 것은 선택하지 못하게 한다.
+	if (sym_list.size() == 0) {
+		_ComboProduct.SetCurSel(_OldSelect);
+		return;
+	}
 	_SymbolOptionGrid.Mode(_Mode);
 	_SymbolOptionGrid.SetProductSection();
 	_SymbolOptionGrid.SetYearMonth();
@@ -186,6 +201,7 @@ void VtOrderLeftWndHd::OnCbnSelchangeComboProduct()
 		if (_Mode == 1)
 			_SymbolOptionGrid.GetSymbolMaster();
 	}
+	_OldSelect = curSel;
 }
 
 

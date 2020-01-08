@@ -57,12 +57,14 @@ private:
 	//HdSymbolOptionGrid _SymbolOptionGrid;
 	SmOptionGrid _SymbolOptionGrid;
 	VtOrderConfigManager* _OrderConfigMgr = nullptr;
+	std::vector<SmRunInfo> _RunInfo;
 
 	void Begin();
 	void End();
 
 	int _FutureSymbolMode = 1;
 	int _Mode = 1;
+	int _OldSelect = 0;
 public:
 	CComboBox _ComboProduct;
 	CComboBox _ComboOptionMonth;

@@ -350,11 +350,14 @@ void SmMarketManager::LoadRunInfo()
 				std::string call_code = option_node.attribute("call").as_string();
 				std::string put_code = option_node.attribute("put").as_string();
 				std::string name = option_node.attribute("name").as_string();
+				std::string code = option_node.attribute("code").as_string();
+				std::string custom_name = option_node.attribute("custom_name").as_string();
 				SmRunInfo run_info;
+				run_info.Code = code;
 				run_info.CallCode = call_code;
 				run_info.PutCode = put_code;
 				run_info.Name = name;
-				run_info.UserDefinedName = name;
+				run_info.UserDefinedName = custom_name;
 				AddOptionRunInfo(run_info);
 			}
 		}
@@ -409,6 +412,27 @@ void SmMarketManager::ReadDomesticMarketTable()
 std::pair<std::string, std::string> SmMarketManager::FindMarketInfo(std::string market_code)
 {
 	return _DomesticMarketTable[market_code];
+}
+
+std::vector<VtSymbol*> SmMarketManager::GetSymbolListByCode(std::string market_code)
+{
+	std::vector<VtSymbol*> list;
+	for (auto it = _MarketList.begin(); it != _MarketList.end(); ++it) {
+		SmMarket* mrkt = *it;
+		if (mrkt->Code().compare(market_code) == 0) {
+			std::vector<SmProduct*>& product_list = mrkt->GetProductList();
+			for (size_t i = 0; i < product_list.size(); ++i) {
+				SmProduct* product = product_list[i];
+				std::vector<VtSymbol*>& sym_list = product->GetSymbolList();
+				for (size_t j = 0; j < sym_list.size(); ++j) {
+					list.push_back(sym_list[j]);
+				}
+			}
+			break;
+		}
+	}
+
+	return list;
 }
 
 void SmMarketManager::SendSymbolMaster(std::string user_id, VtSymbol* sym)
