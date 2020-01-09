@@ -2,6 +2,7 @@
 #include "afxcmn.h"
 #include "Skel/VtGrid.h"
 #include "VtSymbolCatPage.h"
+#include <vector>
 
 // VtSymbolSelector dialog
 class CVtOrderCenterWnd;
@@ -40,9 +41,13 @@ private:
 
 	CWnd* _CurrentPage = nullptr;
 	void SetSymbolSelector();
+	std::vector<VtSymbolCatPage*> _PageVector;
+	void Resize();
+	void Resize(int width, int height);
 public:
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 public:
 	void SetOrderCenterWindow(CVtOrderCenterWnd* centerWnd);
 	afx_msg void OnClose();
+	virtual void PostNcDestroy();
 };

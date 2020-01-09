@@ -39,6 +39,7 @@
 #include "VtLayoutManager.h"
 #include "SmCallbackManager.h"
 #include "VtOrderWnd.h"
+#include "VtSymbolSelector.h"
 
 using Poco::NumberParser;
 
@@ -355,9 +356,9 @@ void SmOrderPanelOut::OnBnClickedBtnRemain()
 
 void SmOrderPanelOut::OnBnClickedBtnSelSymbol()
 {
-	HdSymbolSelecter symSelecter;
-	symSelecter.OrderConfigMgr(_OrderConfigMgr);
-	symSelecter.DoModal();
+	VtSymbolSelector* symbol_selector = new VtSymbolSelector;
+	symbol_selector->Create(IDD_SYMBOL_SELECTOR, this);
+	symbol_selector->ShowWindow(SW_SHOW);
 }
 
 void SmOrderPanelOut::OnBnClickedButtonProfitLoss()

@@ -448,6 +448,37 @@ void SmMarketManager::MakeYearMonthForWeeklyOption()
 	}
 }
 
+void SmMarketManager::ReadAbroadMarketList()
+{
+	ZmConfigManager* configMgr = ZmConfigManager::GetInstance();
+	std::string appPath = configMgr->GetAppPath();
+	std::string configPath = appPath;
+	configPath.append(_T("\\config.xml"));
+	pugi::xml_document doc;
+	pugi::xml_parse_result result = doc.load_file(configPath.c_str());
+
+	pugi::xml_node app = doc.first_child();
+	pugi::xml_node abroad_market_list_node = doc.child("application").child("abroad_market_list");
+	pugi::xml_node abroad_market_node = abroad_market_list_node.first_child();
+	while (abroad_market_node) {
+		std::string code = abroad_market_node.text().as_string();
+		_AbroadMarketList.push_back(code);
+		abroad_market_node = abroad_market_node.next_sibling();
+	}
+}
+
+std::vector<SmMarket*> SmMarketManager::GetAbroadMarketList()
+{
+	std::vector<SmMarket*> market_list;
+	for (auto it = _AbroadMarketList.begin(); it != _AbroadMarketList.end(); ++it) {
+		std::string market_name = *it;
+		SmMarket* market = FindMarket(market_name);
+		market_list.push_back(market);
+	}
+
+	return market_list;
+}
+
 void SmMarketManager::SendSymbolMaster(std::string user_id, VtSymbol* sym)
 {
 

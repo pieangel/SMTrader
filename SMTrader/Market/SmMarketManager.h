@@ -57,6 +57,8 @@ public:
 	std::pair<std::string, std::string> FindMarketInfo(std::string market_code);
 	std::vector<VtSymbol*> GetSymbolListByCode(std::string market_code);
 	void MakeYearMonthForWeeklyOption();
+	void ReadAbroadMarketList();
+	std::vector<SmMarket*> GetAbroadMarketList();
 private:
 	void SendSymbolMaster(std::string user_id, VtSymbol* sym);
 	std::vector<SmMarket*> _MarketList;
@@ -73,5 +75,6 @@ private:
 	std::vector<SmRunInfo> _OptionRunVector;
 	// code -> market name
 	std::map<std::string, std::pair<std::string, std::string>> _DomesticMarketTable;
+	std::vector<std::string> _AbroadMarketList;
 };
 

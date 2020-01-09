@@ -453,6 +453,7 @@ void HdScheduler::GetSymbolMaster2()
 	}
 
 	// 코스닥과 위클리 옵션에 한해서 선물 옵션 마스터를 읽어 온다.
+	/*
 	std::vector<VtSymbol*> sym_list = SmMarketManager::GetInstance()->GetSymbolListByCode("106O");
 	for (auto it = sym_list.begin(); it != sym_list.end(); ++it) {
 		master_vector.insert((*it)->ShortCode);
@@ -462,7 +463,7 @@ void HdScheduler::GetSymbolMaster2()
 	for (auto it = sym_list.begin(); it != sym_list.end(); ++it) {
 		master_vector.insert((*it)->ShortCode);
 	}
-
+	*/
 	VtSaveManager::GetInstance()->GetWindowSymbolList(master_vector);
 	HdTaskInfo taskInfo;
 	int i = 0;

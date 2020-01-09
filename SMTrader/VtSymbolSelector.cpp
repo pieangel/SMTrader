@@ -7,7 +7,9 @@
 #include "afxdialogex.h"
 #include "VtProductCategoryManager.h"
 #include "VtProductCategory.h"
-
+#include "Market/SmMarketManager.h"
+#include "Market/SmMarket.h"
+#include "Market/SmProduct.h"
 
 // VtSymbolSelector dialog
 
@@ -21,6 +23,12 @@ VtSymbolSelector::VtSymbolSelector(CWnd* pParent /*=NULL*/)
 
 VtSymbolSelector::~VtSymbolSelector()
 {
+	if (_PageVector.size() > 0) {
+		for (auto it = _PageVector.begin(); it != _PageVector.end(); ++it) {
+			(*it)->DestroyWindow();
+			delete *it;
+		}
+	}
 }
 
 void VtSymbolSelector::DoDataExchange(CDataExchange* pDX)
@@ -50,32 +58,14 @@ void VtSymbolSelector::OnTcnSelchangeTabCategory(NMHDR *pNMHDR, LRESULT *pResult
 	}
 
 	int curIndex = _TabCtrl.GetCurSel();
-	switch (curIndex)
-	{
-	case 0:
-		_Page1.ShowWindow(SW_SHOW);
-		_CurrentPage = &_Page1;
-		break;
-	case 1:
-		_Page2.ShowWindow(SW_SHOW);
-		_CurrentPage = &_Page2;
-		break;
-	case 2:
-		_Page3.ShowWindow(SW_SHOW);
-		_CurrentPage = &_Page3;
-		break;
-	case 3:
-		_Page4.ShowWindow(SW_SHOW);
-		_CurrentPage = &_Page4;
-		break;
-	case 4:
-		_Page5.ShowWindow(SW_SHOW);
-		_CurrentPage = &_Page5;
-		break;
-	case 5:
-		_Page6.ShowWindow(SW_SHOW);
-		_CurrentPage = &_Page6;
-		break;
+	for (size_t i = 0; i < _PageVector.size(); ++i) {
+		if (i == curIndex) {
+			_PageVector[curIndex]->ShowWindow(SW_SHOW);
+			_CurrentPage = _PageVector[curIndex];
+		}
+		else {
+			_PageVector[i]->ShowWindow(SW_HIDE);
+		}
 	}
 
 	*pResult = 0;
@@ -88,87 +78,81 @@ BOOL VtSymbolSelector::OnInitDialog()
 
 	HICON hIcon = LoadIcon(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDR_MAINFRAME));
 	this->SetIcon(hIcon, FALSE);
-
-	// TODO:  Add extra initialization here
-	_Page1.Section(0);
-	_Page2.Section(1);
-	_Page3.Section(2);
-	_Page4.Section(3);
-	_Page5.Section(4);
-	_Page6.Section(5);
 	InitTabCtrl();
 	SetSymbolSelector();
+	Resize();
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // EXCEPTION: OCX Property Pages should return FALSE
 }
 
 void VtSymbolSelector::InitTabCtrl()
 {
-	VtProductCategoryManager* proMgr = VtProductCategoryManager::GetInstance();
-	int i = 0;
-	for (auto it = proMgr->CategoryList.begin(); it != proMgr->CategoryList.end(); ++it)
-	{
-		VtProductCategory* cat = *it;
-		_TabCtrl.InsertItem(i++, cat->Name.c_str());
-	}
-
 	CRect rect;
 	_TabCtrl.GetClientRect(rect);
-
-	_Page1.Create(IDD_SYM_CAT1, &_TabCtrl);
-	_Page1.SetWindowPos(nullptr, 5, 25, rect.Width() - 10, rect.Height() - 30, SWP_NOZORDER);
-	_CurrentPage = &_Page1;
-
-	_Page2.Create(IDD_SYM_CAT2, &_TabCtrl);
-	_Page2.SetWindowPos(nullptr, 5, 25, rect.Width() - 10, rect.Height() - 30, SWP_NOZORDER);
-
-	_Page3.Create(IDD_SYM_CAT3, &_TabCtrl);
-	_Page3.SetWindowPos(nullptr, 5, 25, rect.Width() - 10, rect.Height() - 30, SWP_NOZORDER);
-
-	_Page4.Create(IDD_SYM_CAT4, &_TabCtrl);
-	_Page4.SetWindowPos(nullptr, 5, 25, rect.Width() - 10, rect.Height() - 30, SWP_NOZORDER);
-
-	_Page5.Create(IDD_SYM_CAT5, &_TabCtrl);
-	_Page5.SetWindowPos(nullptr, 5, 25, rect.Width() - 10, rect.Height() - 30, SWP_NOZORDER);
-
-	_Page6.Create(IDD_SYM_CAT6, &_TabCtrl);
-	_Page6.SetWindowPos(nullptr, 5, 25, rect.Width() - 10, rect.Height() - 30, SWP_NOZORDER);
-
+	std::vector<SmMarket*> market_list = SmMarketManager::GetInstance()->GetAbroadMarketList();
+	for (size_t i = 0; i < market_list.size(); ++i)
+	{
+		SmMarket* cat = market_list[i];
+		_TabCtrl.InsertItem(i, cat->Name().c_str());
+		VtSymbolCatPage* page = new VtSymbolCatPage();
+		page->Section(i);
+		page->Create(IDD_SYM_CAT1, &_TabCtrl);
+		page->SetWindowPos(nullptr, 5, 25, rect.Width() - 10, rect.Height() - 30, SWP_NOZORDER);
+		_PageVector.push_back(page);
+	}
+	_CurrentPage = _PageVector[0];
 	_CurrentPage->ShowWindow(SW_SHOW);
 }
 
 
 void VtSymbolSelector::SetSymbolSelector()
 {
-	_Page1.SetSymbolSelector(this);
-	_Page2.SetSymbolSelector(this);
-	_Page3.SetSymbolSelector(this);
-	_Page4.SetSymbolSelector(this);
-	_Page5.SetSymbolSelector(this);
-	_Page6.SetSymbolSelector(this);
+	for (size_t i = 0; i < _PageVector.size(); ++i) {
+		_PageVector[i]->SetSymbolSelector(this);
+	}
+}
+
+void VtSymbolSelector::Resize()
+{
+	CRect rcClient;
+	GetClientRect(rcClient);
+	if (_TabCtrl.GetSafeHwnd())
+	{
+		// Tab 컨트롤은 전체 클라이언트 영역을 처리해야 합니다.
+		_TabCtrl.MoveWindow(0, 0, rcClient.Width(), rcClient.Height());
+	}
+
+	for (size_t i = 0; i < _PageVector.size(); ++i) {
+		_PageVector[i]->Resize();
+	}
+}
+
+void VtSymbolSelector::Resize(int width, int height)
+{
+	if (_TabCtrl.GetSafeHwnd())
+	{
+		// Tab 컨트롤은 전체 클라이언트 영역을 처리해야 합니다.
+		_TabCtrl.MoveWindow(0, 0, width, height);
+	}
+
+	for (size_t i = 0; i < _PageVector.size(); ++i) {
+		_PageVector[i]->Resize(width, height);
+	}
 }
 
 void VtSymbolSelector::OnSize(UINT nType, int cx, int cy)
 {
 	CDialogEx::OnSize(nType, cx, cy);
 	
-	if (_TabCtrl.GetSafeHwnd())
-	{
-		// Tab 컨트롤은 전체 클라이언트 영역을 처리해야 합니다.
-		_TabCtrl.SetWindowPos(NULL, -1, -1, cx, cy, SWP_NOMOVE | SWP_NOACTIVATE | SWP_NOZORDER);
-	}
+	Resize(cx, cy);
 	
 }
 
 void VtSymbolSelector::SetOrderCenterWindow(CVtOrderCenterWnd* centerWnd)
 {
-	_Page1.SetOrderCenterWindow(centerWnd);
-	_Page2.SetOrderCenterWindow(centerWnd);
-	_Page3.SetOrderCenterWindow(centerWnd);
-	_Page4.SetOrderCenterWindow(centerWnd);
-	_Page5.SetOrderCenterWindow(centerWnd);
-	_Page6.SetOrderCenterWindow(centerWnd);
-
+	for (size_t i = 0; i < _PageVector.size(); ++i) {
+		_PageVector[i]->SetOrderCenterWindow(centerWnd);
+	}
 }
 
 
@@ -177,4 +161,11 @@ void VtSymbolSelector::OnClose()
 	// TODO: Add your message handler code here and/or call default
 	//ShowWindow(SW_HIDE);
 	CDialogEx::OnClose();
+}
+
+
+void VtSymbolSelector::PostNcDestroy()
+{
+	CDialogEx::PostNcDestroy();
+	delete this;
 }

@@ -37,7 +37,7 @@ class VtFund;
 class VtCutManager;
 class VtLayoutManager;
 class VtRefreshManager;
-
+class VtSymbolSelector;
 class SmOrderPanelOut : public CDialogEx
 {
 	DECLARE_DYNAMIC(SmOrderPanelOut)
@@ -246,6 +246,7 @@ private:
 private:
 	void CreateChildWindow(VtOrderConfigDlg* centerWnd, UINT id, CWnd* parent);
 	CRect GetClientArea(int resourceID);
+	VtSymbolSelector* symbol_selector = nullptr;
 public:
 	void SetRemain(int remain);
 	void RefreshOrderPositon();

@@ -32,7 +32,8 @@ public:
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg void OnSetFocus(CWnd* pOldWnd);
 	virtual BOOL OnInitDialog();
-
+	void Resize();
+	void Resize(int width, int height);
 public:
 	void SetOrderCenterWindow(CVtOrderCenterWnd* centerWnd);
 	void SetSymbolSelector(VtSymbolSelector* symSelector);

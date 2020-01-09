@@ -260,6 +260,8 @@ void SmProduct::AddToYearMonth(VtSymbol* symbol)
 
 	if (isdigit(symbol_code.at(2))) { // ±π≥ª ªÛ«≥
 		std::string product_code = symbol_code.substr(0, 3);
+		if (name.length() == 0)
+			return;
 		std::string yeay_month_week = name.substr(15, 6);
 
 		std::string year = "20";

@@ -15,6 +15,11 @@
 #include "VtProductSection.h"
 #include "VtSymbol.h"
 #include "VtGlobal.h"
+#include "Market/SmMarketManager.h"
+#include "Market/SmMarket.h"
+#include "Market/SmProduct.h"
+
+#include <vector>
 VtSymboGrid::VtSymboGrid()
 {
 	_Source = 0;
@@ -34,6 +39,7 @@ void VtSymboGrid::OnSetup()
 	
 	SetDoubleBufferMode(TRUE);
 	SetDefColWidth(80);
+	_RowCount = 100;
 
 	SetNumberRows(_RowCount);
 	SetNumberCols(_ColCount);
@@ -204,46 +210,40 @@ void VtSymboGrid::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 void VtSymboGrid::SetProduct()
 {
 	CUGCell cell;
-	VtProductCategoryManager* catMgr = VtProductCategoryManager::GetInstance();
-	VtProductCategory* cat = catMgr->CategoryList[_Section];
+	std::vector<SmMarket*> market_list = SmMarketManager::GetInstance()->GetAbroadMarketList();
+	if (market_list.size() == 0)
+		return;
+	SmMarket* market = market_list[_Section];
+	std::vector<SmProduct*> product_list = market->GetProductList();
 	int i = 0;
-	for (auto it = cat->SectionList.begin(); it != cat->SectionList.end(); ++it)
-	{
-		VtProductSection* sec = *it;
-		QuickSetText(0, i, sec->ExPos.c_str());
-		QuickSetBackColor(0, i, RGB(240, 240, 240));
-		QuickSetText(1, i, sec->Name.c_str());
-		QuickSetBackColor(1, i, RGB(240, 240, 240));
-		QuickSetText(2, i, sec->Code.c_str());
-		QuickSetBackColor(2, i, RGB(240, 240, 240));
-		QuickSetBorderColor(2, i, RGB(0, 0, 0));
-		sec->SymbolList.sort(CompareSymbol());
-		int j = 3;
-		for (auto itcol = sec->SymbolList.begin(); itcol != sec->SymbolList.end(); ++itcol)
-		{
-			try
-			{
+	for (auto it = product_list.begin(); it != product_list.end(); ++it) {
+		SmProduct* sec = *it;
+		std::vector<VtSymbol*>& symbol_list = sec->GetSymbolList();
+		if (symbol_list.size() > 0) {
+			QuickSetText(0, i, sec->Exchange().c_str());
+			QuickSetBackColor(0, i, RGB(240, 240, 240));
+			QuickSetText(1, i, sec->NameKr().c_str());
+			QuickSetBackColor(1, i, RGB(240, 240, 240));
+			QuickSetText(2, i, sec->Code().c_str());
+			QuickSetBackColor(2, i, RGB(240, 240, 240));
+			QuickSetBorderColor(2, i, RGB(0, 0, 0));
+			int j = 3;
+			for (auto itcol = symbol_list.begin(); itcol != symbol_list.end(); ++itcol) {
 				VtSymbol* sym = *itcol;
-				//TRACE(sym->ShortName.c_str());
-				//TRACE(_T("\n"));
-				QuickSetText(j, i, sym->ShortName.c_str());
+				std::string short_name = sym->Name.substr(sym->Name.length() - 7, 7);
+				QuickSetText(j, i, short_name.c_str());
 				GetCell(j, i, &cell);
 				cell.Tag((void*)sym);
 				//cell.UserMessage(sym->ShortCode.c_str());
 				if (j == 3)
 					cell.SetBackColor(RGB(255, 255, 0));
 				SetCell(j, i, &cell);
+				j++;
 			}
-			catch (std::exception ex)
-			{
-				std::string msg = ex.what();
-
-			}
-			j++;
+			i++;
 		}
-		i++;
 	}
-
+	
 	_DataCount = i;
 }
 

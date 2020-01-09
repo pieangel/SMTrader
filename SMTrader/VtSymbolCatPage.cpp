@@ -86,10 +86,7 @@ void VtSymbolCatPage::SetProduct()
 void VtSymbolCatPage::OnSize(UINT nType, int cx, int cy)
 {
 	CDialogEx::OnSize(nType, cx, cy);
-	if (_GridCtrl.GetSafeHwnd())
-	{
-		_GridCtrl.MoveWindow(0, 0, cx, cy);
-	}
+	Resize();
 }
 
 
@@ -115,6 +112,24 @@ BOOL VtSymbolCatPage::OnInitDialog()
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // EXCEPTION: OCX Property Pages should return FALSE
+}
+
+void VtSymbolCatPage::Resize()
+{
+	CRect rcClient;
+	GetClientRect(rcClient);
+	if (_GridCtrl.GetSafeHwnd())
+	{
+		_GridCtrl.MoveWindow(0, 0, rcClient.Width(), rcClient.Height());
+	}
+}
+
+void VtSymbolCatPage::Resize(int width, int height)
+{
+	if (_GridCtrl.GetSafeHwnd())
+	{
+		_GridCtrl.MoveWindow(0, 0, width, height);
+	}
 }
 
 void VtSymbolCatPage::SetOrderCenterWindow(CVtOrderCenterWnd* centerWnd)

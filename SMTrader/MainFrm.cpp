@@ -657,6 +657,8 @@ void CMainFrame::OnShowWindow(BOOL bShow, UINT nStatus)
 			client->GetMasterFile("product.cod");
 			// 국내 시장 목록을 읽어 온다.
 			SmMarketManager::GetInstance()->ReadDomesticMarketTable();
+			// 해외 시장 목록을 읽어 온다.
+			SmMarketManager::GetInstance()->ReadAbroadMarketList();
 			// 해외 종목 파일을 다운로드 한다.
 			VtHdClient::GetInstance()->DownloadMasterFiles("futures");
 			// 실시간 시세를 등록해 준다.
