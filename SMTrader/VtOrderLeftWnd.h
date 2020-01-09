@@ -39,7 +39,7 @@ private:
 	VtTotalRemainGrid _TotalGrid;
 public:
 	VtOrderConfigManager* OrderConfigMgr() const { return _OrderConfigMgr; }
-	void OrderConfigMgr(VtOrderConfigManager* val) { _OrderConfigMgr = val; }
+	void OrderConfigMgr(VtOrderConfigManager* val);
 	int DefaultWidth() const { return _DefaultWidth; }
 	void DefaultWidth(int val) { _DefaultWidth = val; }
 	int DefaultHeight() const { return _DefaultHeight; }

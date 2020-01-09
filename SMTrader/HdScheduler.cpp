@@ -64,6 +64,9 @@ void HdScheduler::OnTaskCompleted(HdTaskEventArgs& arg)
 		}
 		if (!_ReceivedBatchInfo && remCnt == 0){
 			Sleep(VtGlobal::ServerSleepTime);
+			SmMarketManager* mrktMgr = SmMarketManager::GetInstance();
+			// 위클리 옵션을 위한 년월물 생성을 한다.
+			mrktMgr->MakeYearMonthForWeeklyOption();
 			if (GetDeposit() == 0) {
 				HdTaskEventArgs eventArg;
 				eventArg.TaskType = HdTaskType::HdDeposit;

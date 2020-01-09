@@ -435,6 +435,19 @@ std::vector<VtSymbol*> SmMarketManager::GetSymbolListByCode(std::string market_c
 	return list;
 }
 
+void SmMarketManager::MakeYearMonthForWeeklyOption()
+{
+	SmProduct* product = FindProductFromMap("209");
+	if (product) {
+		product->MakeYearMonth();
+	}
+
+	product = FindProductFromMap("309");
+	if (product) {
+		product->MakeYearMonth();
+	}
+}
+
 void SmMarketManager::SendSymbolMaster(std::string user_id, VtSymbol* sym)
 {
 

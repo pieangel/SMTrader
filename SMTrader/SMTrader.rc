@@ -317,6 +317,10 @@ BEGIN
         MENUITEM "포트폴리오상관관계",                   ID_COR_BTWN_PORT
         MENUITEM "신호별상관관계",                     ID_COR_BTWN_SIG
     END
+    POPUP "해외주문"
+    BEGIN
+        MENUITEM "주문",                          ID_ORDER_ABROAD
+    END
 END
 
 IDR_SMTraderTYPE MENU
@@ -356,6 +360,10 @@ BEGIN
     POPUP "전략"
     BEGIN
         MENUITEM "전략툴바",                        ID_STRATEGY_TOOLBAR
+    END
+    POPUP "해외"
+    BEGIN
+        MENUITEM "주문",                          ID_ORDER_ABROAD
     END
 END
 

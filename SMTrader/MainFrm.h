@@ -143,6 +143,7 @@ public:
 
 	std::shared_ptr<CWnd> _MainWnd;
 	afx_msg void OnSysExternalTest();
+	afx_msg void OnOrderAbroad();
 };
 
 

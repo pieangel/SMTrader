@@ -56,6 +56,7 @@ public:
 	void ReadDomesticMarketTable();
 	std::pair<std::string, std::string> FindMarketInfo(std::string market_code);
 	std::vector<VtSymbol*> GetSymbolListByCode(std::string market_code);
+	void MakeYearMonthForWeeklyOption();
 private:
 	void SendSymbolMaster(std::string user_id, VtSymbol* sym);
 	std::vector<SmMarket*> _MarketList;

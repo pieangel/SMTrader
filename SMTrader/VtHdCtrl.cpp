@@ -3354,7 +3354,6 @@ void VtHdCtrl::OnSymbolCode(CString& sTrCode, LONG& nRqID)
 			HdProductInfo* product_info = VtSymbolManager::GetInstance()->FindProductInfo(product_code);
 			if (product_info) {
 				product->NameKr(product_info->name);
-				product->NameKr(product_info->name);
 
 				VtSymbol* sym = product->AddSymbol(symCode);
 
@@ -3409,8 +3408,9 @@ void VtHdCtrl::OnSymbolMaster(CString& sTrCode, LONG& nRqID)
 	CString strUpRate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "등락률");
 
 	LOG_F(INFO, _T("종목코드 = %s"), strData001);
-	TRACE(strData001);
-	TRACE(_T("\n"));
+	CString msg;
+	msg.Format("종목코드 = %s, 한글종목명=%s\n", strData001, strData002);
+	TRACE(msg);
 	std::string code = sym->ShortCode.substr(0, 3);
 	HdProductInfo* prdtInfo = symMgr->FindProductInfo(code);
 	if (prdtInfo) {
@@ -3577,7 +3577,7 @@ void VtHdCtrl::OnSymbolMaster(CString& sTrCode, LONG& nRqID)
 			((HdAccountPLDlg*)wnd)->OnSymbolMaster(sym);
 		}
 	}
-
+	
 	// 심볼 마스터 요청 처리
 	auto it = _SymbolMasterReqMap.find(nRqID);
 	if (it != _SymbolMasterReqMap.end()) {
@@ -6970,16 +6970,16 @@ void VtHdCtrl::OnGetMsgWithRqId(int nRqId, CString strCode, CString strMsg)
 	
 
 	// 심볼 마스터 요청 오류 처리
-	it = _SymbolMasterReqMap.find(nRqId);
-	if (it != _SymbolMasterReqMap.end()) {
-		std::string param = it->second;
-		LOG_F(INFO, _T("심볼마스터 요청 오류 : 심볼코드 = %s, [요청번호 = %d,  메시지 = %s]"), param.c_str(), nRqId, strMsg);
-		//Sleep(VtGlobal::ServerSleepTime);
-		HdTaskEventArgs eventArg;
-		eventArg.TaskType = HdTaskType::HdSymbolMaster;
-		FireTaskCompleted(std::move(eventArg));
-		_SymbolMasterReqMap.erase(it);
-	}
+// 	it = _SymbolMasterReqMap.find(nRqId);
+// 	if (it != _SymbolMasterReqMap.end()) {
+// 		std::string param = it->second;
+// 		LOG_F(INFO, _T("심볼마스터 요청 오류 : 심볼코드 = %s, [요청번호 = %d,  메시지 = %s]"), param.c_str(), nRqId, strMsg);
+// 		//Sleep(VtGlobal::ServerSleepTime);
+// 		HdTaskEventArgs eventArg;
+// 		eventArg.TaskType = HdTaskType::HdSymbolMaster;
+// 		FireTaskCompleted(std::move(eventArg));
+// 		_SymbolMasterReqMap.erase(it);
+// 	}
 
 	// 계좌별 자산 요청 오류 처리
 	it = _AccountAssetReqMap.find(nRqId);

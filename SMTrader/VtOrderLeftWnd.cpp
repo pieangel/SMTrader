@@ -59,6 +59,20 @@ END_MESSAGE_MAP()
 // CVtOrderLeftWnd message handlers
 
 
+void CVtOrderLeftWnd::OrderConfigMgr(VtOrderConfigManager* val)
+{
+	_OrderConfigMgr = val;
+
+	_OrderConfigMgr = val;
+	_TickQuoteGrid.SetOrderConfigMgr(val);
+	_AcceptGrid.SetOrderConfigMgr(val);
+	_RemainGrid.SetOrderConfigMgr(val);
+	_TotalGrid.SetOrderConfigMgr(val);
+
+	_AcceptGrid.OrderLeftWnd(this);
+	_RemainGrid.OrderLeftWnd(this);
+}
+
 BOOL CVtOrderLeftWnd::OnInitDialog()
 {
 	CRHGenericChildDialog::OnInitDialog();

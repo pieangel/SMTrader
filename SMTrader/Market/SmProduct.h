@@ -39,6 +39,7 @@ public:
 	}
 
 	SmProductYearMonth* GetYearMonth(std::string year_month);
+	void MakeYearMonth();
 private:
 	// 품목코드
 	std::string _Code;
@@ -70,6 +71,7 @@ private:
 	std::string _MarketCode;
 	std::vector<VtSymbol*> _SymbolList;
 	std::map<std::string, SmProductYearMonth*> _YearMonthMap;
+	void AddToYearMonth(VtSymbol* symbol);
 	void AddToYearMonth(std::string symbol_code, VtSymbol* symbol);
 	void AddToYearMonth(std::string symbol_code, std::string name, VtSymbol* symbol);
 	std::map<std::string, std::string> _DomesticYearTable;

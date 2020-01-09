@@ -49,8 +49,8 @@ VtOrderWnd::VtOrderWnd(CWnd* pParent /*=NULL*/)
 	_OrderConfigMgr->SetDefaultAccount();
 	_OrderConfigMgr->SetDefaultSymbol();
 
-// 	_LeftWnd.OrderConfigMgr(_OrderConfigMgr);
-// 	_RightWnd.OrderConfigMgr(_OrderConfigMgr);
+ 	_LeftWnd.OrderConfigMgr(_OrderConfigMgr);
+ 	_RightWnd.OrderConfigMgr(_OrderConfigMgr);
 
 	_Fund = nullptr;
 	_Account = nullptr;
@@ -269,11 +269,11 @@ BOOL VtOrderWnd::OnInitDialog()
 
 void VtOrderWnd::SetWindows()
 {
-// 	_OrderConfigMgr->_HdLeftWnd = &_LeftWnd;
-// 	_OrderConfigMgr->_HdRightWnd = &_RightWnd;
-// 	if (_CenterWndVector.size() > 0)
-// 		_OrderConfigMgr->_HdCenterWnd = _CenterWndVector.front();
-// 	_OrderConfigMgr->_HdOrderWnd = this;
+ 	_OrderConfigMgr->leftWnd = &_LeftWnd;
+ 	_OrderConfigMgr->rightWnd = &_RightWnd;
+ 	if (_CenterWndVector.size() > 0)
+ 		_OrderConfigMgr->centerWnd = _CenterWndVector.front();
+ 	_OrderConfigMgr->orderWnd = this;
 }
 
 void VtOrderWnd::InitSettings()
@@ -436,7 +436,7 @@ void VtOrderWnd::CreateChildWindows()
 		SmOrderPanelOut* centerWnd = new SmOrderPanelOut();
 		centerWnd->ParentDlg(this);
 		centerWnd->OrderConfigMgr(_OrderConfigMgr);
-		centerWnd->Create(IDD_ORDER_PANEL, this);
+		centerWnd->Create(IDD_ORDER_PANEL_OUT, this);
 		_CenterWndVector.push_back(centerWnd);
 		//_CenterWndCount = _CenterWndVector.size();
 	}
@@ -445,13 +445,13 @@ void VtOrderWnd::CreateChildWindows()
 			SmOrderPanelOut* centerWnd = *it;
 			centerWnd->ParentDlg(this);
 			centerWnd->OrderConfigMgr(_OrderConfigMgr);
-			centerWnd->Create(IDD_ORDER_PANEL, this);
+			centerWnd->Create(IDD_ORDER_PANEL_OUT, this);
 		}
 	}
 
 	// 자식 윈도우들을 만든다.
-	_LeftWnd.Create(IDD_ORDER_LEFT_HD, this);
-	_RightWnd.Create(IDD_ORDER_RIGHT_HD, this);
+	_LeftWnd.Create(IDD_ORDER_LEFT, this);
+	_RightWnd.Create(IDD_ORDER_RIGHT, this);
 }
 
 
@@ -1087,8 +1087,6 @@ void VtOrderWnd::InitAccount()
 	_ComboAcnt.SetCurSel(selAcnt);
 	if (_OrderConfigMgr->Account()) {
 		_StaticAcntName.SetWindowText(_OrderConfigMgr->Account()->AccountName.c_str());
-		_OrderConfigMgr->_HdLeftWnd->RefreshProfitLoss();
-		_OrderConfigMgr->_HdLeftWnd->RefreshAsset();
 		CString pwd;
 		pwd.Format(_T("%s"), _OrderConfigMgr->Account()->Password.c_str());
 		_EditPwd.SetWindowText(pwd);

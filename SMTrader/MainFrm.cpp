@@ -129,6 +129,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CMDIFrameWndEx)
 	ON_COMMAND(ID_COR_BTWN_PORT, &CMainFrame::OnCorBtwnPort)
 	ON_COMMAND(ID_COR_BTWN_SIG, &CMainFrame::OnCorBtwnSig)
 	ON_COMMAND(ID_SYS_EXTERNAL_TEST, &CMainFrame::OnSysExternalTest)
+	ON_COMMAND(ID_ORDER_ABROAD, &CMainFrame::OnOrderAbroad)
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -1332,4 +1333,16 @@ void CMainFrame::OnSysExternalTest()
 {
 	SmSystemConnector dlg;
 	dlg.DoModal();
+}
+
+
+void CMainFrame::OnOrderAbroad()
+{
+	VtOrderWnd* pOrderDlg = new VtOrderWnd(this);
+	pOrderDlg->WindowHeight(1000);
+	// For the order with the accuount and the product code.
+	pOrderDlg->SetType(0);
+	//pOrderDlg->CenterWndCount(0);
+	pOrderDlg->Create(IDD_ORDER_WND, this);
+	pOrderDlg->ShowWindow(SW_SHOW);
 }
