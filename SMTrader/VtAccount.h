@@ -40,6 +40,8 @@ public:
 	void Fund(VtFund* val) { _Fund = val; }
 	bool Enable() const { return _Enable; }
 	void Enable(bool val) { _Enable = val; }
+	int Gubun() const { return _Gubun; }
+	void Gubun(int val) { _Gubun = val; }
 public:
 	bool hasValidPassword();
 	VtPosition* FindAdd(std::string symbolCode);
@@ -115,6 +117,8 @@ public:
 	std::pair<bool, int> GetRemainCount(std::string symCode);
 
 private:
+	// 계좌 구분 : 9 : 국내, 해외 : 1, FX : 2
+	int _Gubun = 0; 
 	bool _Enable = true;
 	int _AccountLevel = 0; // 0 : 본계좌, 1 : 서브계좌
 

@@ -59,6 +59,11 @@ public:
 	void MakeYearMonthForWeeklyOption();
 	void ReadAbroadMarketList();
 	std::vector<SmMarket*> GetAbroadMarketList();
+	std::string DefaultAbroadProductCode() const { return _DefaultAbroadProductCode; }
+	void DefaultAbroadProductCode(std::string val) { _DefaultAbroadProductCode = val; }
+	VtSymbol* GetDefaultAbroadSymbol();
+	std::string DefaultAbroadMarketName() const { return _DefaultAbroadMarketName; }
+	void DefaultAbroadMarketName(std::string val) { _DefaultAbroadMarketName = val; }
 private:
 	void SendSymbolMaster(std::string user_id, VtSymbol* sym);
 	std::vector<SmMarket*> _MarketList;
@@ -76,5 +81,7 @@ private:
 	// code -> market name
 	std::map<std::string, std::pair<std::string, std::string>> _DomesticMarketTable;
 	std::vector<std::string> _AbroadMarketList;
+	std::string _DefaultAbroadProductCode;
+	std::string _DefaultAbroadMarketName;
 };
 

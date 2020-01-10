@@ -1059,23 +1059,26 @@ void VtOrderWndHd::InitAccount()
 	std::string acntName;
 	for (auto it = acntMgr->AccountMap.begin(); it != acntMgr->AccountMap.end(); ++it) {
 		VtAccount* acnt = it->second;
-		acntName = acnt->AccountNo;
-		acntName.append(_T(" "));
-		acntName.append(acnt->AccountName);
-		index = _ComboAcnt.AddString(acntName.c_str());
-		comboMap[acnt->AccountNo] = std::make_pair(index, acnt);
-		_ComboAcnt.SetItemDataPtr(index, acnt);
-		if (acnt->AccountLevel() == 0) {
-			std::vector<VtAccount*>& subAcntList = acnt->GetSubAccountList();
-			for (auto it = subAcntList.begin(); it != subAcntList.end(); ++it) {
-				VtAccount* subAcnt = *it;
-				acntName = subAcnt->AccountNo;
-				acntName.append(_T(" "));
-				acntName.append(subAcnt->AccountName);
-				index = _ComboAcnt.AddString(acntName.c_str());
-				comboMap[subAcnt->AccountNo] = std::make_pair(index, subAcnt);
-				_ComboAcnt.SetItemDataPtr(index, subAcnt);
-				
+		// 국내 계좌만 로드 한다.
+		if (acnt->Gubun() == 0 || acnt->Gubun() == 9) {
+			acntName = acnt->AccountNo;
+			acntName.append(_T(" "));
+			acntName.append(acnt->AccountName);
+			index = _ComboAcnt.AddString(acntName.c_str());
+			comboMap[acnt->AccountNo] = std::make_pair(index, acnt);
+			_ComboAcnt.SetItemDataPtr(index, acnt);
+			if (acnt->AccountLevel() == 0) {
+				std::vector<VtAccount*>& subAcntList = acnt->GetSubAccountList();
+				for (auto it = subAcntList.begin(); it != subAcntList.end(); ++it) {
+					VtAccount* subAcnt = *it;
+					acntName = subAcnt->AccountNo;
+					acntName.append(_T(" "));
+					acntName.append(subAcnt->AccountName);
+					index = _ComboAcnt.AddString(acntName.c_str());
+					comboMap[subAcnt->AccountNo] = std::make_pair(index, subAcnt);
+					_ComboAcnt.SetItemDataPtr(index, subAcnt);
+
+				}
 			}
 		}
 	}

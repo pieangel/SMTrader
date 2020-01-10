@@ -18,6 +18,7 @@ struct VtAccountInfo {
 	std::string account_no;
 	std::string account_name;
 	int account_type;
+	int account_gubun;
 };
 
 class VtAccountManager : public TemplateSingleton<VtAccountManager>

@@ -174,6 +174,7 @@ void VtAccountManager::FileterAccount()
 			acnt->AccountName = it->second.account_name;
 			acnt->Type = it->second.account_type;
 			acnt->Enable(true);
+			acnt->Gubun(it->second.account_gubun);
 			acnt->CreateDefaultSubAccount();
 			AddAccount(acnt);
 		}
@@ -188,6 +189,7 @@ void VtAccountManager::FileterAccount()
 				acnt->AccountName = it->second.account_name;
 				acnt->Type = it->second.account_type;
 				acnt->Enable(true);
+				acnt->Gubun(it->second.account_gubun);
 				acnt->CreateDefaultSubAccount();
 				AddAccount(acnt);
 			}

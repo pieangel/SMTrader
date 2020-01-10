@@ -45,6 +45,7 @@
 #include "VtSymbol.h"
 #include "VtFundOrderManager.h"
 #include "Log/loguru.hpp"
+#include "SmOrderPanelOut.h"
 
 using Poco::trim;
 using Poco::NumberFormatter;
@@ -310,9 +311,12 @@ void SmOrderGrid::Init()
 	RegisterButtons();
 	
 	SetFont(&_defFont);
+	// 주문영역 색칠하기
 	SetOrderAreaColor();
+	// 중앙에 값 설정하기 - 종목에 따라 값을 설정한다.
 	SetCenterValue();
 
+	// 콜백 함수 등록하기
 	RegisterQuoteCallback();
 	RegisterHogaCallback();
 	RegisterOrderallback();

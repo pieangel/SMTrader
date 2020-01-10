@@ -62,6 +62,10 @@ const CString DEF_HW_ORD_CODE_CNL = "g12003.AO0403%";
 const CString DEF_HW_MSTINFO = "o51211";
 const CString DefAbChartData = "o51200";
 const CString DefAbsChartData2 = "o44005";
+// 해외선물 현재 시세
+const CString DefAbQuote = "o51000";
+// 해외선물 호가
+const CString DefAbHoga = "o51010";
 
 // FX마진	//@lhe 2012.06.22
 const CString DEF_FX_JANGO = "g11004.AQ0901%";		// 자산내역

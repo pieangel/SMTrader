@@ -479,6 +479,17 @@ std::vector<SmMarket*> SmMarketManager::GetAbroadMarketList()
 	return market_list;
 }
 
+VtSymbol* SmMarketManager::GetDefaultAbroadSymbol()
+{
+	SmMarket* market = FindMarket(_DefaultAbroadMarketName);
+	if (!market)
+		return nullptr;
+	SmProduct* product = market->FindProduct(_DefaultAbroadProductCode);
+	if (!product)
+		return nullptr;
+	return product->GetRecentMonthSymbol();
+}
+
 void SmMarketManager::SendSymbolMaster(std::string user_id, VtSymbol* sym)
 {
 

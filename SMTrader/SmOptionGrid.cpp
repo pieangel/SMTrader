@@ -77,22 +77,31 @@ void SmOptionGrid::OnOrderEvent(VtOrder* order)
 	if (!_OrderConfigMgr || !order)
 		return;
 
-	if (_OrderConfigMgr->Type() == 0) {
-		VtAccount* acnt = _OrderConfigMgr->Account();
-		if (!acnt)
-			return;
+	// 체결 이벤트
+	if (order->state == VtOrderState::Filled) {
+		if (_OrderConfigMgr->Type() == 0) {
+			VtAccount* acnt = _OrderConfigMgr->Account();
+			if (!acnt)
+				return;
 
-		VtPosition* posi = acnt->FindPosition(order->shortCode);
-		if (posi)
-			SetRemain(posi);
+			VtPosition* posi = acnt->FindPosition(order->shortCode);
+			if (posi)
+				SetRemain(posi);
+		}
+		else {
+			VtFund* fund = _OrderConfigMgr->Fund();
+			if (!fund)
+				return;
+			int count = 0;
+			VtPosition posi = fund->GetPosition(order->shortCode, count);
+			SetRemain(&posi);
+		}
 	}
-	else {
-		VtFund* fund = _OrderConfigMgr->Fund();
-		if (!fund)
-			return;
-		int count = 0;
-		VtPosition posi = fund->GetPosition(order->shortCode, count);
-		SetRemain(&posi);
+	else { // 나머지 주문 이벤트 
+		VtSymbol* symbol = VtSymbolManager::GetInstance()->FindSymbol(order->shortCode);
+		if (symbol) {
+			SetRemain(symbol);
+		}
 	}
 }
 

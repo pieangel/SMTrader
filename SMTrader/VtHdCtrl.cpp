@@ -2679,6 +2679,73 @@ void VtHdCtrl::ExecuteRequest(std::shared_ptr<HdTaskArg> taskArg)
 	}
 }
 
+void VtHdCtrl::GetAbroadQuote(std::string symbol_code)
+{
+	CString sInput;
+	std::string input = symbol_code;
+	std::string temp = PadRight(input, ' ', 32);
+	sInput = temp.c_str();
+	CString sReqFidInput = "000001002003004005006007008009010011012013014015016017018019020021022023024025026027028029030031032033034035036037";
+	CString strNextKey = m_CommAgent.CommGetNextKey(_RqID, "");
+	_RqID = m_CommAgent.CommFIDRqData(DefAbQuote, sInput, sReqFidInput, sInput.GetLength(), strNextKey);
+}
+
+void VtHdCtrl::GetAbroadHoga(std::string symbol_code)
+{
+
+}
+
+void VtHdCtrl::OnAbQuote(CString& sTrCode, LONG& nRqID)
+{
+	CString	strData000 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "종목코드");
+
+	VtSymbolManager* symMgr = VtSymbolManager::GetInstance();
+	VtSymbol* sym = symMgr->FindSymbol((LPCTSTR)strData000.Trim());
+	if (!sym)
+		return;
+	
+
+	CString	strData002 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "한글종목명");
+	CString strCom = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "전일대비");
+	CString strComGubun = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "전일대비구분");
+	CString strUpRate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "전일대비등락율");
+
+	LOG_F(INFO, _T("종목코드 = %s"), strData000);
+	CString msg;
+	msg.Format("종목코드 = %s, 한글종목명=%s\n", strData000, strData002);
+	TRACE(msg);
+	std::string code = sym->ShortCode.substr(0, 3);
+	HdProductInfo* prdtInfo = symMgr->FindProductInfo(code);
+	if (prdtInfo) {
+		sym->Decimal = prdtInfo->decimal;
+		sym->Seungsu = prdtInfo->tradeWin;
+		sym->intTickSize = prdtInfo->intTickSize;
+		sym->TickValue = prdtInfo->tickValue;
+		sym->TickSize = _ttof(prdtInfo->tickSize.c_str());
+	}
+	strCom.TrimRight();
+	strUpRate.TrimRight();
+
+
+	sym->FullCode = (LPCTSTR)strData000.TrimRight();
+	sym->Name = (LPCTSTR)strData002.TrimRight();
+
+	CString	strData050 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "체결시간");
+	CString	strData051 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "현재가");
+	CString	strData052 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "시가");
+	CString	strData053 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "고가");
+	CString	strData054 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "저가");
+
+
+
+	sym->ComToPrev = _ttoi(strCom);
+	sym->UpdownRate = _ttoi(strUpRate);
+	sym->Quote.intClose = _ttoi(strData051);
+	sym->Quote.intOpen = _ttoi(strData052);
+	sym->Quote.intHigh = _ttoi(strData053);
+	sym->Quote.intLow = _ttoi(strData054);
+}
+
 void VtHdCtrl::OnAcceptedHistory(CString& sTrCode, LONG& nRqID)
 {
 	VtOrderManagerSelector* orderMgrSeledter = VtOrderManagerSelector::GetInstance();
@@ -3579,15 +3646,19 @@ void VtHdCtrl::OnSymbolMaster(CString& sTrCode, LONG& nRqID)
 	}
 	
 	// 심볼 마스터 요청 처리
-	auto it = _SymbolMasterReqMap.find(nRqID);
-	if (it != _SymbolMasterReqMap.end()) {
-		//Sleep(VtGlobal::ServerSleepTime);
-		HdTaskEventArgs eventArg;
-		eventArg.TaskType = HdTaskType::HdSymbolMaster;
-		FireTaskCompleted(std::move(eventArg));
-		_SymbolMasterReqMap.erase(it);
-	}
+// 	auto it = _SymbolMasterReqMap.find(nRqID);
+// 	if (it != _SymbolMasterReqMap.end()) {
+// 		//Sleep(VtGlobal::ServerSleepTime);
+// 		HdTaskEventArgs eventArg;
+// 		eventArg.TaskType = HdTaskType::HdSymbolMaster;
+// 		FireTaskCompleted(std::move(eventArg));
+// 		_SymbolMasterReqMap.erase(it);
+// 	}
 
+	HdTaskEventArgs eventArg;
+	eventArg.TaskType = HdTaskType::HdSymbolMaster;
+	FireTaskCompleted(std::move(eventArg));
+	//_SymbolMasterReqMap.erase(it);
 	RemoveRequest(nRqID);
 }
 
@@ -5787,8 +5858,9 @@ void VtHdCtrl::OnDataRecv(CString sTrCode, LONG nRqID)
 			//WriteLog(strMsg);
 		}
 	}
-	else if (sTrCode == DEF_HW_FID_CODE)
+	else if (sTrCode == DefAbQuote)
 	{
+		/*
 		CString strMsg;
 		strMsg.Format("해외 현재가시세응답[%s]", DEF_HW_FID_CODE);
 		//WriteLog(strMsg);
@@ -5817,6 +5889,8 @@ void VtHdCtrl::OnDataRecv(CString sTrCode, LONG nRqID)
 		strMsg.Format("FID Recv[%s]->[%s]->[%s]->[%s]->[%s]", strCloseP, strType1, strType2, strType3, strType4);
 
 		//WriteLog(strMsg);
+		*/
+		OnAbQuote(sTrCode, nRqID);
 	}
 	else if (sTrCode == DEF_HW_ORD_CODE_NEW)
 	{
@@ -5946,15 +6020,16 @@ void VtHdCtrl::OnDataRecv(CString sTrCode, LONG nRqID)
 			strMsg.Format("[%s][%s][%s]\n", strAcctNo, strAcctNm, strAcctGb);
 			//WriteLog(strMsg);
 			//TRACE(strMsg);
-			if (strAcctGb.Compare(_T("9")) == 0) {
+			//if (strAcctGb.Compare(_T("9")) == 0) {
 				VtAccountInfo acnt_info;
 				acnt_info.account_no = (LPCTSTR)strAcctNo.TrimRight();
 				acnt_info.account_name = (LPCTSTR)strAcctNm.TrimRight();
 				acnt_info.account_type = _ttoi(strAcctGb);
+				acnt_info.account_gubun = _ttoi(strAcctGb);
 				acntMgr->ServerAccountMap[acnt_info.account_no] = acnt_info;
 				VtRealtimeRegisterManager* regMgr = VtRealtimeRegisterManager::GetInstance();
 				regMgr->RegisterAccount(acnt_info.account_no);
-			}
+			//}
 
 		}
 	}

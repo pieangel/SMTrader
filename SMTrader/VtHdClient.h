@@ -78,6 +78,11 @@ public:
 
 	void GetChartData(SmChartDataRequest req);
 	void ExecuteRequest(std::shared_ptr<HdTaskArg> arg);
+
+	// 해외 종목 현재 시세
+	void GetAbroadQuote(std::string symbol_code);
+	// 해외 종목 호가
+	void GetAbroadHoga(std::string symbol_code);
 private:
 	VtHdCtrl* _HdCtrl = nullptr;
 };

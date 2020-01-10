@@ -220,7 +220,16 @@ public:
 	void DownloadMasterFiles(std::string param);
 	int DownloadDomesticMasterFile(std::string file_name);
 	void ExecuteRequest(std::shared_ptr<HdTaskArg> arg);
+
+	// 해외 서비스 요청
+	// 해외 종목 현재 시세
+	void GetAbroadQuote(std::string symbol_code);
+	// 해외 종목 호가
+	void GetAbroadHoga(std::string symbol_code);
+	void OnAbQuote(CString& sTrCode, LONG& nRqID);
 private:
+	// 현재 선물사 요청 번호
+	int _RqID = 0;
 	std::map<int, std::shared_ptr<HdTaskArg>> _TaskReqMap;
 	bool _FileDownloading = false;
 	std::map<std::string, std::set<std::string>> _DataKeyMap;

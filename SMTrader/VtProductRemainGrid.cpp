@@ -17,6 +17,7 @@
 #include <functional>
 #include "VtGlobal.h"
 #include "SmOrderPanel.h"
+#include "SmOrderPanelOut.h"
 #include "SmCallbackManager.h"
 using Poco::NumberFormatter;
 using namespace std;
@@ -423,8 +424,10 @@ void VtProductRemainGrid::ClearPosition()
 	QuickRedrawCell(3, 0);
 	QuickRedrawCell(4, 0);
 	QuickRedrawCell(5, 0);
-
-	_CenterWnd->SetRemain(0);
+	if (_CenterWnd)
+		_CenterWnd->SetRemain(0);
+	if (_CenterWndOut)
+		_CenterWndOut->SetRemain(0);
 }
 
 void VtProductRemainGrid::OnReceiveQuote(VtSymbol* sym)

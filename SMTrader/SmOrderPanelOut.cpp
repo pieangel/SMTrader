@@ -40,6 +40,8 @@
 #include "SmCallbackManager.h"
 #include "VtOrderWnd.h"
 #include "VtSymbolSelector.h"
+#include "Market/SmMarketManager.h"
+#include "VtHdClient.h"
 
 using Poco::NumberParser;
 
@@ -78,6 +80,7 @@ SmOrderPanelOut::SmOrderPanelOut(CWnd* pParent /*=NULL*/)
 	_ProductRemainGrid.CenterWndOut(this);
 	_Unregistered = false;
 	_OrderByRemain = false;
+	// 레이아웃 관리자를 생성한다.
 	_LayoutMgr = new VtLayoutManager((CWnd*)this);
 
 	_OrderGridColOption.push_back(true);
@@ -813,17 +816,11 @@ void SmOrderPanelOut::InitSymbol()
 	VtSymbol* sym = _DefaultSymbol;
 
 	if (!sym) { // 기본 심볼이 없으면 목록에서 첫번째 것을 가져온다.
-		VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();
-		std::string secName = prdtCatMgr->MainFutureVector.front();
-		VtProductSection* section = prdtCatMgr->FindProductSection(secName);
-		if (section) {
-			if (section->SubSectionVector.size() > 0) {
-				VtProductSubSection* subSection = section->SubSectionVector.front();
-				if (subSection->_SymbolVector.size() > 0) {
-					sym = subSection->_SymbolVector.front();
-				}
-			}
-		}
+		// 해외 기본 종목을 가져 온다.
+		sym = SmMarketManager::GetInstance()->GetDefaultAbroadSymbol();
+		if (!sym)
+			return;
+		VtHdClient::GetInstance()->GetAbroadQuote(sym->ShortCode);
 	}
 	SetSymbol(sym);
 	AddSymbolToCombo(sym);
@@ -975,11 +972,12 @@ BOOL SmOrderPanelOut::OnInitDialog()
 	CDialogEx::OnInitDialog();
 	::EnumChildWindows(m_hWnd, ::SetChildFont, (LPARAM)g_Font.GetFont());
 
-
+	// 하단에 익절, 손절 창을 생성한다.
 	_ConfigDlg = new VtOrderConfigDlg();
 	_ConfigDlg->CenterWndOut(this);
 	_ConfigDlg->Create(IDD_CENTER_CONFIG, this);
 
+	// 설정 그리드에 중앙창 설정
 	_ConfigGrid.CenterWndOut(this);
 	_ProductRemainGrid.AttachGrid(this, IDC_STATIC_PRODUCT_REMAIN);
 	//_TickGrid.AttachGrid(this, IDC_STATIC_REAL_TICK);
@@ -995,6 +993,7 @@ BOOL SmOrderPanelOut::OnInitDialog()
 	// 틱창을 옮겨 준다.
 	RepositionTickGrid();
 
+	// 종목명 설정
 	_StaticProductName.SetTextColor(RGB(0, 0, 0));
 	_StaticProductName.SetColor(GetSysColor(COLOR_BTNFACE));
 	_StaticProductName.SetGradientColor(GetSysColor(COLOR_BTNFACE));
@@ -1004,6 +1003,7 @@ BOOL SmOrderPanelOut::OnInitDialog()
 	_StaticProduct.SetGradientColor(GetSysColor(COLOR_BTNFACE));
 	_StaticProduct.SetTextAlign(1);
 
+	// 주문수량 버튼 설정
 	std::vector<CShadeButtonST*> btnVec;
 	btnVec.push_back(&_BtnAmt1);
 	btnVec.push_back(&_BtnAmt2);
@@ -1021,6 +1021,7 @@ BOOL SmOrderPanelOut::OnInitDialog()
 	}
 
 
+	// 검색 버튼 설정
 	_BtnSearch.SetIcon(IDI_SEARCH4, 16, 16, IDI_SEARCH4, 16, 16);
 	_BtnSearch.OffsetColor(BTNST_COLOR_BK_IN, 30);
 	_BtnSearch.SetAlign(ST_ALIGN_VERT);
@@ -1035,25 +1036,31 @@ BOOL SmOrderPanelOut::OnInitDialog()
 	strValue.Format(_T("%d"), m_Grid.CutMgr()->CutProfit());
 
 	strValue.Format(_T("%d"), _OrderAmount);
+	// 주문 수량 설정
 	_EditOrderAmount.SetWindowText(strValue);
 
 	strValue.Format(_T("%d"), _StopVal);
+	// 스탑 값 설정
 	_EditStopVal.SetWindowText(strValue);
 
+	// 펀드 남은 수량 버튼 설정
 	_BtnRemainFund.DrawBorder(TRUE, TRUE);
 	_BtnRemainFund.SetAlign(ST_ALIGN_VERT | ST_ALIGN_HORIZ);
 	_BtnRemainFund.SetColor(BTNST_COLOR_BK_IN, RGB(220, 220, 220), true);
 	_BtnRemainFund.SetColor(BTNST_COLOR_FG_IN, RGB(0, 0, 0), true);
 	_BtnRemainFund.SetColor(BTNST_COLOR_BK_OUT, RGB(220, 220, 220), true);
 
+	// 주문 그리드에 주문설정 관리자 설정
 	m_Grid.OrderConfigMgr(_OrderConfigMgr);
 	//_TickGrid.SetOrderConfigMgr(_OrderConfigMgr);
 	//_TickGrid.CenterWnd(this);
+	// 설정에 따른 컨트롤 보이기 감추기
 	ShowHideCtrl();
+	// 제품 그리드 위치 재설정
 	RepositionProductGrid();
 
 	SetTimer(1, 10, NULL);
-
+	// 심볼 마스터 콜백 등록
 	SmCallbackManager::GetInstance()->SubscribeMasterCallback((long)this, std::bind(&SmOrderPanelOut::OnSymbolMaster, this, _1));
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // EXCEPTION: OCX Property Pages should return FALSE
@@ -1131,6 +1138,7 @@ void SmOrderPanelOut::SetShowPLConfigWnd(bool flag)
 	_ShowRemainConfig = flag;
 }
 
+// 이 함수가 종목과 그리드를 초기화 한다.
 void SmOrderPanelOut::InitAll()
 {
 	if (!_OrderConfigMgr)

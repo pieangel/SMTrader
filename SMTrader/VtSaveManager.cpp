@@ -25,6 +25,7 @@
 #include "cryptor.hpp"
 #include "VtLoginManager.h"
 #include "Log/loguru.hpp"
+#include "Market/SmMarketManager.h"
 //#include "Format/format_string.h"
 
 using namespace std;
@@ -1071,6 +1072,10 @@ void VtSaveManager::LoadRunInfoFromXml()
 		VtGlobal::CloseTime.sec = std::stoi(run_info.child_value("end_sec"));
 
 		VtGlobal::ServerSleepTime = std::stoi(run_info.child_value("server_sleep_time"));
+		std::string default_abroad_product_code = run_info.child_value("default_abroad_product_code");
+		SmMarketManager::GetInstance()->DefaultAbroadProductCode(default_abroad_product_code);
+		std::string default_abroad_market_name = run_info.child_value("default_abroad_market_name");
+		SmMarketManager::GetInstance()->DefaultAbroadMarketName(default_abroad_market_name);
 	}
 
 	pugi::xml_node file_watch = application.child("file_watch");
