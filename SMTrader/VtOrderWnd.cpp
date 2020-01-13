@@ -1052,7 +1052,7 @@ void VtOrderWnd::InitAccount()
 	for (auto it = acntMgr->AccountMap.begin(); it != acntMgr->AccountMap.end(); ++it) {
 		VtAccount* acnt = it->second;
 		// 해외 계좌만 보여준다.
-		if (acnt->Gubun() == 1) {
+		if (acnt->Type == 1) {
 			acntName = acnt->AccountNo;
 			acntName.append(_T(" "));
 			acntName.append(acnt->AccountName);

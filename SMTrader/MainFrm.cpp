@@ -651,18 +651,10 @@ void CMainFrame::OnShowWindow(BOOL bShow, UINT nStatus)
 				dlg.FromServer(false);
 			dlg.DoModal();
 
-			// 거래 가능 목록을 읽어 온다.
 			client->GetTradableCodeTable();
-			// 국내 품목별 정보를 읽어 온다.
-			client->GetMasterFile("product.cod");
-			// 국내 시장 목록을 읽어 온다.
-			SmMarketManager::GetInstance()->ReadDomesticMarketTable();
-			// 해외 시장 목록을 읽어 온다.
+			// 해외 시장 목록을 읽어 드린다.
 			SmMarketManager::GetInstance()->ReadAbroadMarketList();
-			// 해외 종목 파일을 다운로드 한다.
 			VtHdClient::GetInstance()->DownloadMasterFiles("futures");
-			// 실시간 시세를 등록해 준다.
-			VtRealtimeRegisterManager::GetInstance()->RegisterCurrent();
 		}
 		else {
 			ClearAllResources();
@@ -758,7 +750,6 @@ void CMainFrame::CreateFileWatch()
 
 bool CMainFrame::ClearAllResources()
 {
-	SmChartDataManager::DestroyInstance();
 	VtScheduler::DestroyInstance();
 	HdScheduler* sch = HdScheduler::GetInstance();
 	sch->ClearTasks();
@@ -840,7 +831,7 @@ bool CMainFrame::ClearAllResources()
 
 	SmSymbolReader::DestroyInstance();
 	SmTaskManager::DestroyInstance();
-	
+	SmChartDataManager::DestroyInstance();
 	
 	SmCallbackManager::DestroyInstance();
 	return true;

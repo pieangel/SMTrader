@@ -220,16 +220,7 @@ public:
 	void DownloadMasterFiles(std::string param);
 	int DownloadDomesticMasterFile(std::string file_name);
 	void ExecuteRequest(std::shared_ptr<HdTaskArg> arg);
-
-	// 해외 서비스 요청
-	// 해외 종목 현재 시세
-	void GetAbroadQuote(std::string symbol_code);
-	// 해외 종목 호가
-	void GetAbroadHoga(std::string symbol_code);
-	void OnAbQuote(CString& sTrCode, LONG& nRqID);
 private:
-	// 현재 선물사 요청 번호
-	int _RqID = 0;
 	std::map<int, std::shared_ptr<HdTaskArg>> _TaskReqMap;
 	bool _FileDownloading = false;
 	std::map<std::string, std::set<std::string>> _DataKeyMap;
@@ -276,18 +267,6 @@ private:
 	/// </summary>
 	void RefreshAcceptedOrderByError(int reqId);
 	std::mutex m_;
-	// 심볼파일 요청 맵
 	std::map<int, std::string> _SymbolFileReqMap;
-	// 계좌별 손익요청 맵
 	std::map<int, std::string> _AccountPLReqMap;
-	// 심볼코드 요청 맵
-	std::map<int, std::string> _SymbolCodeReqMap;
-	// 심볼마스터 요청 맵
-	std::map<int, std::string> _SymbolMasterReqMap;
-	// 자산 요청 맵
-	std::map<int, std::string> _AccountAssetReqMap;
-	// 종목별 잔고요청 맵
-	std::map<int, std::string> _SymbolRemainReqMap;
-	// 종목별 미체결 요청 맵
-	std::map<int, std::string> _SymbolAcceptedReqMap;
 };

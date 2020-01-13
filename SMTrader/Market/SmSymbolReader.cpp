@@ -532,7 +532,7 @@ void SmSymbolReader::ReadKospiFutureFile(std::string fullPath)
 	SmMarketManager* marketMgr = SmMarketManager::GetInstance();
 	std::string market_name = "코스피선물";
 	SmMarket *market = marketMgr->AddMarket(market_name);
-	market->Code("101");
+	market->Code("101F");
 	CString msg;
 	std::ifstream infile(fullPath);
 	std::string line;
@@ -617,7 +617,7 @@ void SmSymbolReader::ReadKospiOptionFile(std::string fullPath)
 	SmMarketManager* marketMgr = SmMarketManager::GetInstance();
 	std::string market_name = "코스피옵션";
 	SmMarket* market = marketMgr->AddMarket(market_name);
-	market->Code("201");
+	market->Code("101O");
 	CString msg;
 	std::ifstream infile(fullPath);
 	std::string line;
@@ -705,7 +705,7 @@ void SmSymbolReader::ReadKospiWeeklyOptionFile(std::string fullPath)
 	SmMarketManager* marketMgr = SmMarketManager::GetInstance();
 	std::string market_name = "코스피위클리옵션";
 	SmMarket* market = marketMgr->AddMarket(market_name);
-	market->Code("209");
+	market->Code("109O");
 	CString msg;
 	std::ifstream infile(fullPath);
 	std::string line;
@@ -792,7 +792,7 @@ void SmSymbolReader::ReadKosdaqFutureFile(std::string fullPath)
 	SmMarketManager* marketMgr = SmMarketManager::GetInstance();
 	std::string market_name = "코스닥선물";
 	SmMarket* market = marketMgr->AddMarket(market_name);
-	market->Code("106");
+	market->Code("106F");
 	CString msg;
 	std::ifstream infile(fullPath);
 	std::string line;
@@ -878,7 +878,7 @@ void SmSymbolReader::ReadMiniKospiFutureFile(std::string fullPath)
 	SmMarketManager* marketMgr = SmMarketManager::GetInstance();
 	std::string market_name = "미니코스피선물";
 	SmMarket* market = marketMgr->AddMarket(market_name);
-	market->Code("105");
+	market->Code("105F");
 	CString msg;
 	std::ifstream infile(fullPath);
 	std::string line;
@@ -964,7 +964,7 @@ void SmSymbolReader::ReadCommodityFutureFile(std::string fullPath)
 	SmMarketManager* marketMgr = SmMarketManager::GetInstance();
 	std::string market_name = "코스피상품선물";
 	SmMarket* market = marketMgr->AddMarket(market_name);
-	market->Code("107");
+	market->Code("107F");
 	CString msg;
 	std::ifstream infile(fullPath);
 	std::string line;
@@ -1208,7 +1208,7 @@ void SmSymbolReader::ReadMiniKospiOptionFile(std::string fullPath)
 	SmMarketManager* marketMgr = SmMarketManager::GetInstance();
 	std::string market_name = "코스피미니옵션";
 	SmMarket* market = marketMgr->AddMarket(market_name);
-	market->Code("205");
+	market->Code("105O");
 	CString msg;
 	std::ifstream infile(fullPath);
 	std::string line;
@@ -1296,7 +1296,7 @@ void SmSymbolReader::ReadKosdaqOptionFile(std::string fullPath)
 	SmMarketManager* marketMgr = SmMarketManager::GetInstance();
 	std::string market_name = "코스닥옵션";
 	SmMarket* market = marketMgr->AddMarket(market_name);
-	market->Code("206");
+	market->Code("106O");
 	CString msg;
 	std::ifstream infile(fullPath);
 	std::string line;

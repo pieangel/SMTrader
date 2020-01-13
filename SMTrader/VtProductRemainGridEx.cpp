@@ -124,7 +124,7 @@ void VtProductRemainGridEx::SetColTitle()
 	const int ColCount = _ColCount;
 	CUGCell cell;
 	LPCTSTR title[4] = { "청산", "종목", "구분", "평가손익" };
-	int colWidth[4] = { 24, 35, 35, 62 };
+	int colWidth[4] = { 24, 35, 35, 63 };
 
 	QuickSetCellType(0, -1, UGCT_CHECKBOX);
 	QuickSetCellTypeEx(0, -1, UGCT_CHECKBOXCHECKMARK);

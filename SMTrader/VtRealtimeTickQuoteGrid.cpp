@@ -161,7 +161,7 @@ void VtRealtimeTickQuoteGrid::SetColTitle()
 	LPCTSTR title[3] = { "시각", "체결가", "체결" };
 	_ColWidths.push_back(60);
 	_ColWidths.push_back(55);
-	_ColWidths.push_back(35);
+	_ColWidths.push_back(41);
 
 	//SetRowHeight(-1, 22);
 

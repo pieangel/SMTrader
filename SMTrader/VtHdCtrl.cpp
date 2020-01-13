@@ -62,8 +62,6 @@
 #include "Chart/SmChartDataManager.h"
 #include "SmTaskManager.h"
 #include "Market/SmMarketManager.h"
-#include "Market/SmMarket.h"
-#include "Market/SmProduct.h"
 
 using namespace std;
 
@@ -261,34 +259,25 @@ void VtHdCtrl::GetMasterFile(std::string fileName)
 		std::string temp;
 		temp = info.substr(index, 8);
 		temp = VtSymbolManager::TrimRight(temp, ' ');
-		// 제품 코드 추출
 		prdtInfo = symMgr->AddProductInfo(temp);
 		index = index + 8;
 		temp = info.substr(index, 2);
-		// 소수점 자릿수 추출
 		prdtInfo->decimal = std::stoi(temp);
 		index = index + 2;
 		temp = info.substr(index, 5);
 		temp = VtSymbolManager::TrimLeft(temp, ' ');
-		// 틱 크기 추출
 		prdtInfo->tickSize = temp;
 		temp.erase(std::remove(temp.begin(), temp.end(), '.'), temp.end());
-		// 정수 틱크기 추출
 		prdtInfo->intTickSize = std::stoi(temp);
-		// 호가 단위 저장
-		prdtInfo->hogaUnit = prdtInfo->intTickSize;
 		index = index + 5;
 		temp = info.substr(index, 5);
-		// 틱 가치 추출
 		prdtInfo->tickValue = std::stoi(temp);
 		index = index + 5;
 		temp = info.substr(index, 10);
 		temp = VtSymbolManager::TrimLeft(temp, ' ');
-		// 승수 추출
 		prdtInfo->tradeWin = std::stoi(temp);
 		index = index + 10;
 		temp = info.substr(index, 30);
-		// 이름 추출
 		temp = VtSymbolManager::TrimLeft(temp, ' ');
 		prdtInfo->name = temp;
 	}
@@ -338,21 +327,16 @@ int VtHdCtrl::GetSymbolCode(CString categoryName)
 	CString sTrCode = DefSymbolCode;
 	CString sInput = categoryName;
 	CString strNextKey = _T("");
-	
 	int nResult = m_CommAgent.CommGetConnectState();
 	if (nResult == 1)
 	{
 		int nRqID = m_CommAgent.CommRqData(sTrCode, sInput, sInput.GetLength(), strNextKey);
-		CString msg;
-		msg.Format("categoryName = %s, nRqID = %d\n", categoryName, nRqID);
-		TRACE(msg);
 		AddRequest(nRqID, HdTaskType::HdSymbolCode);
-		_SymbolCodeReqMap[nRqID] = categoryName;
+
 		return nRqID;
 	}
-	else {
-		return -1;
-	}
+
+	return -1;
 }
 
 void VtHdCtrl::GetOptionCodeList(CString categoryName)
@@ -394,7 +378,7 @@ int VtHdCtrl::GetSymbolMaster(CString symCode)
 	CString strNextKey = _T("");
 	int nRqID = m_CommAgent.CommFIDRqData(DefSymbolMaster, sInput, sReqFidInput, sInput.GetLength(), strNextKey);
 	AddRequest(nRqID, HdTaskType::HdSymbolMaster);
-	_SymbolMasterReqMap[nRqID] = symCode;
+
 	return nRqID;
 }
 
@@ -2679,73 +2663,6 @@ void VtHdCtrl::ExecuteRequest(std::shared_ptr<HdTaskArg> taskArg)
 	}
 }
 
-void VtHdCtrl::GetAbroadQuote(std::string symbol_code)
-{
-	CString sInput;
-	std::string input = symbol_code;
-	std::string temp = PadRight(input, ' ', 32);
-	sInput = temp.c_str();
-	CString sReqFidInput = "000001002003004005006007008009010011012013014015016017018019020021022023024025026027028029030031032033034035036037";
-	CString strNextKey = m_CommAgent.CommGetNextKey(_RqID, "");
-	_RqID = m_CommAgent.CommFIDRqData(DefAbQuote, sInput, sReqFidInput, sInput.GetLength(), strNextKey);
-}
-
-void VtHdCtrl::GetAbroadHoga(std::string symbol_code)
-{
-
-}
-
-void VtHdCtrl::OnAbQuote(CString& sTrCode, LONG& nRqID)
-{
-	CString	strData000 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "종목코드");
-
-	VtSymbolManager* symMgr = VtSymbolManager::GetInstance();
-	VtSymbol* sym = symMgr->FindSymbol((LPCTSTR)strData000.Trim());
-	if (!sym)
-		return;
-	
-
-	CString	strData002 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "한글종목명");
-	CString strCom = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "전일대비");
-	CString strComGubun = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "전일대비구분");
-	CString strUpRate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "전일대비등락율");
-
-	LOG_F(INFO, _T("종목코드 = %s"), strData000);
-	CString msg;
-	msg.Format("종목코드 = %s, 한글종목명=%s\n", strData000, strData002);
-	TRACE(msg);
-	std::string code = sym->ShortCode.substr(0, 3);
-	HdProductInfo* prdtInfo = symMgr->FindProductInfo(code);
-	if (prdtInfo) {
-		sym->Decimal = prdtInfo->decimal;
-		sym->Seungsu = prdtInfo->tradeWin;
-		sym->intTickSize = prdtInfo->intTickSize;
-		sym->TickValue = prdtInfo->tickValue;
-		sym->TickSize = _ttof(prdtInfo->tickSize.c_str());
-	}
-	strCom.TrimRight();
-	strUpRate.TrimRight();
-
-
-	sym->FullCode = (LPCTSTR)strData000.TrimRight();
-	sym->Name = (LPCTSTR)strData002.TrimRight();
-
-	CString	strData050 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "체결시간");
-	CString	strData051 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "현재가");
-	CString	strData052 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "시가");
-	CString	strData053 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "고가");
-	CString	strData054 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "저가");
-
-
-
-	sym->ComToPrev = _ttoi(strCom);
-	sym->UpdownRate = _ttoi(strUpRate);
-	sym->Quote.intClose = _ttoi(strData051);
-	sym->Quote.intOpen = _ttoi(strData052);
-	sym->Quote.intHigh = _ttoi(strData053);
-	sym->Quote.intLow = _ttoi(strData054);
-}
-
 void VtHdCtrl::OnAcceptedHistory(CString& sTrCode, LONG& nRqID)
 {
 	VtOrderManagerSelector* orderMgrSeledter = VtOrderManagerSelector::GetInstance();
@@ -2823,15 +2740,9 @@ void VtHdCtrl::OnAcceptedHistory(CString& sTrCode, LONG& nRqID)
 		}
 	}
 
-	// 종목별 미체결 요청 오류 처리
-	auto it = _SymbolAcceptedReqMap.find(nRqID);
-	if (it != _SymbolAcceptedReqMap.end()) {
-		Sleep(VtGlobal::ServerSleepTime);
-		HdTaskEventArgs eventArg;
-		eventArg.TaskType = HdTaskType::HdAcceptedHistory;
-		FireTaskCompleted(std::move(eventArg));
-		_SymbolAcceptedReqMap.erase(it);
-	}
+	HdTaskEventArgs eventArg;
+	eventArg.TaskType = HdTaskType::HdAcceptedHistory;
+	FireTaskCompleted(std::move(eventArg));
 
 	RemoveRequest(nRqID);
 }
@@ -3009,16 +2920,10 @@ void VtHdCtrl::OnApiCustomerProfitLoss(CString& sTrCode, LONG& nRqID)
 			acnt->Fee = fee;
 			acnt->TotalPL = totalPL;
 		}
-	
-		// 계좌별 손익 요청 처리
-		auto it = _AccountPLReqMap.find(nRqID);
-		if (it != _AccountPLReqMap.end()) {
-			Sleep(VtGlobal::ServerSleepTime);
-			HdTaskEventArgs eventArg;
-			eventArg.TaskType = HdTaskType::HdApiCustomerProfitLoss;
-			FireTaskCompleted(std::move(eventArg));
-			_AccountPLReqMap.erase(it);
-		}
+		Sleep(VtGlobal::ServerSleepTime);
+		HdTaskEventArgs eventArg;
+		eventArg.TaskType = HdTaskType::HdApiCustomerProfitLoss;
+		FireTaskCompleted(std::move(eventArg));
 
 		RemoveRequest(nRqID);
 	}
@@ -3220,16 +3125,10 @@ void VtHdCtrl::OnOutstanding(CString& sTrCode, LONG& nRqID)
 
 	VtOrderDialogManager* orderDlgMgr = VtOrderDialogManager::GetInstance();
 	orderDlgMgr->OnOutstanding();
-
-	// 종목별 잔고 요청 처리
-	auto it = _SymbolRemainReqMap.find(nRqID);
-	if (it != _SymbolRemainReqMap.end()) {
-		Sleep(VtGlobal::ServerSleepTime);
-		HdTaskEventArgs eventArg;
-		eventArg.TaskType = HdTaskType::HdOutstanding;
-		FireTaskCompleted(std::move(eventArg));
-		_SymbolRemainReqMap.erase(it);
-	}
+	Sleep(VtGlobal::ServerSleepTime);
+	HdTaskEventArgs eventArg;
+	eventArg.TaskType = HdTaskType::HdOutstanding;
+	FireTaskCompleted(std::move(eventArg));
 
 	RemoveRequest(nRqID);
 }
@@ -3315,16 +3214,10 @@ void VtHdCtrl::OnDeposit(CString& sTrCode, LONG& nRqID)
 			
 		}
 	}
-
-	// 계좌별 자산 요청 처리
-	auto it = _AccountAssetReqMap.find(nRqID);
-	if (it != _AccountAssetReqMap.end()) {
-		Sleep(VtGlobal::ServerSleepTime);
-		HdTaskEventArgs eventArg;
-		eventArg.TaskType = HdTaskType::HdDeposit;
-		FireTaskCompleted(std::move(eventArg));
-		_AccountAssetReqMap.erase(it);
-	}
+	Sleep(VtGlobal::ServerSleepTime);
+	HdTaskEventArgs eventArg;
+	eventArg.TaskType = HdTaskType::HdDeposit;
+	FireTaskCompleted(std::move(eventArg));
 	RemoveRequest(nRqID);
 }
 
@@ -3371,31 +3264,16 @@ void VtHdCtrl::OnDailyProfitLoss(CString& sTrCode, LONG& nRqID)
 
 void VtHdCtrl::OnSymbolCode(CString& sTrCode, LONG& nRqID)
 {
-	CString msg;
-	
 	VtSymbolManager* symMgr = VtSymbolManager::GetInstance();
-	SmMarketManager* marketMgr = SmMarketManager::GetInstance();
-	std::string market_code;
 	int nRepeatCnt = m_CommAgent.CommGetRepeatCnt(sTrCode, -1, "OutRec1");
 	if (nRepeatCnt > 0) {
-		
-		auto it = _SymbolCodeReqMap.find(nRqID);
-		if (it != _SymbolCodeReqMap.end()) {
-			market_code = it->second;
-		}
-		auto market_info = marketMgr->FindMarketInfo(market_code);
-		std::string market_name = market_info.first;
-		SmMarket *market = marketMgr->AddMarket(market_info.first);
-		market->Code(market_code);
 		VtSymbol* sym = nullptr;
 		for (int i = 0; i < nRepeatCnt; i++) {
 			CString sData = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "종목코드");
 			//TRACE(sData);
 			//TRACE(_T("\n"));
 			//WriteLog(sData);
-			msg.Format("code = %s, symbol_code = %s\n", sTrCode, sData);
-			TRACE(msg);
-
+			
 			sym = symMgr->FindAddSymbol((LPCTSTR)sData.Trim());
 			sym->ShortCode = sData.Trim();
 
@@ -3404,47 +3282,20 @@ void VtHdCtrl::OnSymbolCode(CString& sTrCode, LONG& nRqID)
 			sym->ExpireMonth = std::get<1>(ym);
 
 			std::string symCode = sym->ShortCode;
-			std::string product_code = symCode.substr(0, 3);
+			std::string subSecCode = symCode.substr(0, 3);
 			VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();
-			VtProductSubSection* subSection = prdtCatMgr->FindProductSubSection(product_code);
+			VtProductSubSection* subSection = prdtCatMgr->FindProductSubSection(subSecCode);
 			if (subSection) {
 				subSection->AddSymbol(sym);
 			}
 			
-			// 마켓 관리자에 심볼을 추가해 준다.
-			SmProduct* product = market->FindAddProduct(product_code);
-
-			marketMgr->AddProduct(product);
-			marketMgr->AddCategoryMarket(product_code, market_name);
-			product->MarketName(market_name);
-
-			HdProductInfo* product_info = VtSymbolManager::GetInstance()->FindProductInfo(product_code);
-			if (product_info) {
-				product->NameKr(product_info->name);
-
-				VtSymbol* sym = product->AddSymbol(symCode);
-
-				sym->ProductCode = product_info->code;
-				sym->MarketName = market_name;
-				sym->Decimal = product_info->decimal;
-				sym->Seungsu = product_info->tradeWin;
-				sym->TickSize = std::stod(product_info->tickSize);
-				sym->CtrUnit = sym->TickSize;
-				sym->TickValue = product_info->tickValue;
-			}
 		}
+		Sleep(VtGlobal::ServerSleepTime);
+		HdTaskEventArgs eventArg;
+		eventArg.TaskType = HdTaskType::HdSymbolCode;
+		eventArg.RequestId = nRqID;
+		FireTaskCompleted(std::move(eventArg));
 	}
-
-	// 심볼 코드 요청 처리
-	Sleep(VtGlobal::ServerSleepTime);
-	HdTaskEventArgs eventArg;
-	eventArg.TaskType = HdTaskType::HdSymbolCode;
-	FireTaskCompleted(std::move(eventArg));
-
-	msg.Format("code = %s, nRqID = %d\n", sTrCode, nRqID);
-	TRACE(msg);
-
-	LOG_F(INFO, _T("심볼코드 요청 성공 : 마켓코드 = %s, [요청번호 = %d]"), market_code.c_str(), nRqID);
 
 	RemoveRequest(nRqID);
 }
@@ -3475,9 +3326,8 @@ void VtHdCtrl::OnSymbolMaster(CString& sTrCode, LONG& nRqID)
 	CString strUpRate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "등락률");
 
 	LOG_F(INFO, _T("종목코드 = %s"), strData001);
-	CString msg;
-	msg.Format("종목코드 = %s, 한글종목명=%s\n", strData001, strData002);
-	TRACE(msg);
+	//TRACE(strData001);
+	//TRACE(_T("\n"));
 	std::string code = sym->ShortCode.substr(0, 3);
 	HdProductInfo* prdtInfo = symMgr->FindProductInfo(code);
 	if (prdtInfo) {
@@ -3523,9 +3373,6 @@ void VtHdCtrl::OnSymbolMaster(CString& sTrCode, LONG& nRqID)
 	std::string midCode = sym->ShortCode.substr(0, 3);
 	if (midCode.compare(_T("101")) == 0) {
 		symMgr->Kospi200Current = sym->Quote.intClose;
-	}
-	if (midCode.compare(_T("106")) == 0) {
-		symMgr->Kosdaq150Current = sym->Quote.intClose;
 	}
 
 	CString	strData075 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "호가수신시간");
@@ -3644,21 +3491,12 @@ void VtHdCtrl::OnSymbolMaster(CString& sTrCode, LONG& nRqID)
 			((HdAccountPLDlg*)wnd)->OnSymbolMaster(sym);
 		}
 	}
-	
-	// 심볼 마스터 요청 처리
-// 	auto it = _SymbolMasterReqMap.find(nRqID);
-// 	if (it != _SymbolMasterReqMap.end()) {
-// 		//Sleep(VtGlobal::ServerSleepTime);
-// 		HdTaskEventArgs eventArg;
-// 		eventArg.TaskType = HdTaskType::HdSymbolMaster;
-// 		FireTaskCompleted(std::move(eventArg));
-// 		_SymbolMasterReqMap.erase(it);
-// 	}
 
 	HdTaskEventArgs eventArg;
 	eventArg.TaskType = HdTaskType::HdSymbolMaster;
 	FireTaskCompleted(std::move(eventArg));
-	//_SymbolMasterReqMap.erase(it);
+	//TRACE(_T("MasterCompleted!\n"));
+
 	RemoveRequest(nRqID);
 }
 
@@ -4453,7 +4291,6 @@ int VtHdCtrl::GetAcceptedHistory(std::string accountNo, std::string pwd)
 	int nRqID = m_CommAgent.CommRqData(sTrCode, sInput, sInput.GetLength(), strNextKey);
 	AddRequest(nRqID, HdTaskType::HdAcceptedHistory);
 
-	_SymbolAcceptedReqMap[nRqID] = accountNo;
 	return nRqID;
 }
 
@@ -4512,7 +4349,7 @@ int VtHdCtrl::GetOutstanding(std::string accountNo, std::string pwd)
 	CString strNextKey = _T("");
 	int nRqID = m_CommAgent.CommRqData(sTrCode, sInput, sInput.GetLength(), strNextKey);
 	AddRequest(nRqID, HdTaskType::HdOutstanding);
-	_SymbolRemainReqMap[nRqID] = accountNo;
+
 	return nRqID;
 }
 
@@ -4626,7 +4463,7 @@ int VtHdCtrl::GetDeposit(std::string accountNo, std::string pwd)
 	CString strNextKey = _T("");
 	int nRqID = m_CommAgent.CommRqData(sTrCode, sInput, sInput.GetLength(), strNextKey);
 	AddRequest(nRqID, HdTaskType::HdDeposit);
-	_AccountAssetReqMap[nRqID] = accountNo;
+
 	return nRqID;
 }
 
@@ -5744,8 +5581,6 @@ void VtHdCtrl::OnDataRecv(CString sTrCode, LONG nRqID)
 		return;
 
 	CString strMsg;
-	strMsg.Format("OnDataRecvcode id = %d\n", nRqID);
-	TRACE(strMsg);
 
 	if (sTrCode == DEF_AVAILABLE_CODE_LIST)
 	{
@@ -5858,9 +5693,8 @@ void VtHdCtrl::OnDataRecv(CString sTrCode, LONG nRqID)
 			//WriteLog(strMsg);
 		}
 	}
-	else if (sTrCode == DefAbQuote)
+	else if (sTrCode == DEF_HW_FID_CODE)
 	{
-		/*
 		CString strMsg;
 		strMsg.Format("해외 현재가시세응답[%s]", DEF_HW_FID_CODE);
 		//WriteLog(strMsg);
@@ -5889,8 +5723,6 @@ void VtHdCtrl::OnDataRecv(CString sTrCode, LONG nRqID)
 		strMsg.Format("FID Recv[%s]->[%s]->[%s]->[%s]->[%s]", strCloseP, strType1, strType2, strType3, strType4);
 
 		//WriteLog(strMsg);
-		*/
-		OnAbQuote(sTrCode, nRqID);
 	}
 	else if (sTrCode == DEF_HW_ORD_CODE_NEW)
 	{
@@ -6025,7 +5857,6 @@ void VtHdCtrl::OnDataRecv(CString sTrCode, LONG nRqID)
 				acnt_info.account_no = (LPCTSTR)strAcctNo.TrimRight();
 				acnt_info.account_name = (LPCTSTR)strAcctNm.TrimRight();
 				acnt_info.account_type = _ttoi(strAcctGb);
-				acnt_info.account_gubun = _ttoi(strAcctGb);
 				acntMgr->ServerAccountMap[acnt_info.account_no] = acnt_info;
 				VtRealtimeRegisterManager* regMgr = VtRealtimeRegisterManager::GetInstance();
 				regMgr->RegisterAccount(acnt_info.account_no);
@@ -6369,23 +6200,17 @@ void VtHdCtrl::OnDataRecv(CString sTrCode, LONG nRqID)
 
 			
 
-			
+			CString strNextKey = m_CommAgent.CommGetNextKey(nRqID, "");
+
+			RemoveRequest(nRqID);
 
 		}
 
-		// 심볼 파일이 처리 되었으면 메시지를 보낸다.
-		auto it = _SymbolFileReqMap.find(nRqID);
-		if (it != _SymbolFileReqMap.end()) {
-			Sleep(VtGlobal::ServerSleepTime);
-			HdTaskEventArgs eventArg;
-			eventArg.TaskType = HdTaskType::HdSymbolFileDownload;
-			FireTaskCompleted(std::move(eventArg));
-			_SymbolFileReqMap.erase(it);
-		}
-		
-		CString strNextKey = m_CommAgent.CommGetNextKey(nRqID, "");
-
-		RemoveRequest(nRqID);
+		Sleep(VtGlobal::ServerSleepTime);
+		HdTaskEventArgs eventArg;
+		eventArg.TaskType = HdTaskType::HdSymbolFileDownload;
+		FireTaskCompleted(std::move(eventArg));
+		//WriteLog("처리완료");
 	}
 	else if (sTrCode == "g11002.DQ0242&")
 	{
@@ -7000,96 +6825,30 @@ void VtHdCtrl::OnGetMsgWithRqId(int nRqId, CString strCode, CString strMsg)
 	if (_Blocked)
 		return;
 
+	CString msg;
+	msg.Format(_T("nRqId = %d, strCode = %s, strMsg = %s\n"), nRqId, strCode, strMsg);
+	//TRACE(msg);
+
 	CString strLog;
-	strLog.Format("[OnGetMsgWithRqId 요청번호 = %d, 코드번호 = %s][메시지 = %s]\n", nRqId, strCode, strMsg);
+	strLog.Format("[요청번호 = %d, 코드번호 = %s][메시지 = %s]\n", nRqId, strCode, strMsg);
 	TRACE(strLog);
 
-	// 심볼파일 요청 오류 처리
 	auto it = _SymbolFileReqMap.find(nRqId);
 	if (it != _SymbolFileReqMap.end()) {
-		std::string param = it->second;
-		LOG_F(INFO, _T("심볼파일 요청 오류 : 파일이름 = %s, [요청번호 = %d, 메시지 = %s]"), param.c_str(), nRqId, strMsg);
 		Sleep(VtGlobal::ServerSleepTime);
 		HdTaskEventArgs eventArg;
 		eventArg.TaskType = HdTaskType::HdSymbolFileDownload;
 		FireTaskCompleted(std::move(eventArg));
-		_SymbolFileReqMap.erase(it);
+		RemoveRequest(nRqId);
 	}
 
-	// 계좌별 손익 요청 오류 처리
 	it = _AccountPLReqMap.find(nRqId);
 	if (it != _AccountPLReqMap.end()) {
-		std::string param = it->second;
-		LOG_F(INFO, _T("계좌별 손익 요청 오류 : 계좌번호 = %s, [요청번호 = %d,  메시지 = %s]"), param.c_str(), nRqId, strMsg);
 		Sleep(VtGlobal::ServerSleepTime);
 		HdTaskEventArgs eventArg;
 		eventArg.TaskType = HdTaskType::HdApiCustomerProfitLoss;
 		FireTaskCompleted(std::move(eventArg));
-		_AccountPLReqMap.erase(it);
-	}
-
-	// 심볼 코드 요청 오류 처리
-	it = _SymbolCodeReqMap.find(nRqId);
-	if (it != _SymbolCodeReqMap.end()) {
-		std::string param = it->second;
-		// 오류가 발생했을 때 바로 처리 한다.
-		if (strCode.Compare("91001") == 0) {
-			LOG_F(INFO, _T("심볼코드 요청 오류 : 마켓코드 = %s, [요청번호 = %d,  메시지 = %s]"), param.c_str(), nRqId, strMsg);
-			Sleep(VtGlobal::ServerSleepTime);
-			HdTaskEventArgs eventArg;
-			eventArg.TaskType = HdTaskType::HdSymbolCode;
-			FireTaskCompleted(std::move(eventArg));
-			_SymbolCodeReqMap.erase(it);
-		}
-	}
-	
-
-	// 심볼 마스터 요청 오류 처리
-// 	it = _SymbolMasterReqMap.find(nRqId);
-// 	if (it != _SymbolMasterReqMap.end()) {
-// 		std::string param = it->second;
-// 		LOG_F(INFO, _T("심볼마스터 요청 오류 : 심볼코드 = %s, [요청번호 = %d,  메시지 = %s]"), param.c_str(), nRqId, strMsg);
-// 		//Sleep(VtGlobal::ServerSleepTime);
-// 		HdTaskEventArgs eventArg;
-// 		eventArg.TaskType = HdTaskType::HdSymbolMaster;
-// 		FireTaskCompleted(std::move(eventArg));
-// 		_SymbolMasterReqMap.erase(it);
-// 	}
-
-	// 계좌별 자산 요청 오류 처리
-	it = _AccountAssetReqMap.find(nRqId);
-	if (it != _AccountAssetReqMap.end()) {
-		std::string param = it->second;
-		LOG_F(INFO, _T("계좌별 요청 오류 : 계좌번호 = %s, [요청번호 = %d,  메시지 = %s]"), param.c_str(), nRqId, strMsg);
-		Sleep(VtGlobal::ServerSleepTime);
-		HdTaskEventArgs eventArg;
-		eventArg.TaskType = HdTaskType::HdDeposit;
-		FireTaskCompleted(std::move(eventArg));
-		_AccountAssetReqMap.erase(it);
-	}
-
-	// 종목별 잔고 요청 오류 처리
-	it = _SymbolRemainReqMap.find(nRqId);
-	if (it != _SymbolRemainReqMap.end()) {
-		std::string param = it->second;
-		LOG_F(INFO, _T("종목별잔고 요청 오류 : 계좌번호 = %s, [요청번호 = %d,  메시지 = %s]"), param.c_str(), nRqId, strMsg);
-		Sleep(VtGlobal::ServerSleepTime);
-		HdTaskEventArgs eventArg;
-		eventArg.TaskType = HdTaskType::HdOutstanding;
-		FireTaskCompleted(std::move(eventArg));
-		_SymbolRemainReqMap.erase(it);
-	}
-
-	// 종목별 미체결 요청 오류 처리
-	it = _SymbolAcceptedReqMap.find(nRqId);
-	if (it != _SymbolAcceptedReqMap.end()) {
-		std::string param = it->second;
-		LOG_F(INFO, _T("종목별미체결 요청 오류 : 계좌번호 = %s, [요청번호 = %d,  메시지 = %s]"), param.c_str(), nRqId, strMsg);
-		Sleep(VtGlobal::ServerSleepTime);
-		HdTaskEventArgs eventArg;
-		eventArg.TaskType = HdTaskType::HdAcceptedHistory;
-		FireTaskCompleted(std::move(eventArg));
-		_SymbolAcceptedReqMap.erase(it);
+		RemoveRequest(nRqId);
 	}
 	
 	if (strCode.Compare("0332") == 0) {
@@ -7126,11 +6885,11 @@ void VtHdCtrl::OnGetMsgWithRqId(int nRqId, CString strCode, CString strMsg)
 			return;
 		}
 
-// 		HdTaskEventArgs eventArg;
-// 		HdTaskArg arg = FindRequest(nRqId);
-// 		eventArg.TaskType = arg.Type;
-// 		eventArg.RequestId = nRqId;
-// 		FireTaskCompleted(std::move(eventArg));
+		HdTaskEventArgs eventArg;
+		HdTaskArg arg = FindRequest(nRqId);
+		eventArg.TaskType = arg.Type;
+		eventArg.RequestId = nRqId;
+		FireTaskCompleted(std::move(eventArg));
 
 		VtSysLog syslog;
 		syslog.LogTime = VtGlobal::GetDateTime();

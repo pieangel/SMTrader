@@ -17,10 +17,12 @@ IMPLEMENT_DYNAMIC(CVtOrderRightWnd, CDialog)
 CVtOrderRightWnd::CVtOrderRightWnd()
 {
 	ParentOrderWnd(nullptr);
+	_DefaultWidth = 184;
 }
 
 CVtOrderRightWnd::~CVtOrderRightWnd()
 {
+	
 }
 
 int CVtOrderRightWnd::CRHGetDialogID()
@@ -104,11 +106,11 @@ void CVtOrderRightWnd::InitTabCtrl()
 	_TabCtrl.GetClientRect(rect);
 
 	_Page1.Create(IDD_ORDER_SETTLE, &_TabCtrl);
-	_Page1.SetWindowPos(nullptr, 0, 25, rect.Width(), rect.Height() - 30, SWP_NOZORDER);
+	_Page1.SetWindowPos(nullptr, 3, 25, rect.Width() - 6, rect.Height() - 30, SWP_NOZORDER);
 	_CurrentPage = &_Page1;
 
 	_Page2.Create(IDD_ORDER_CONFIG, &_TabCtrl);
-	_Page2.SetWindowPos(nullptr, 0, 25, rect.Width(), rect.Height() - 30, SWP_NOZORDER);
+	_Page2.SetWindowPos(nullptr, 3, 25, rect.Width() - 6, rect.Height() - 30, SWP_NOZORDER);
 
 	_CurrentPage->ShowWindow(SW_SHOW);
 
@@ -159,14 +161,4 @@ void CVtOrderRightWnd::Reset()
 {
 	_SymMasterGrid.ResetSymbol();
 }
-
-// void CVtOrderRightWnd::SetOrderConfigMgr(VtOrderConfigManager* val)
-// {
-// 	_OrderConfigMgr = val;
-// 	_SymMasterGrid.SetOrderConfigMgr(val);
-// 	_AccountRemainGrid.SetOrderConfigMgr(val);
-// 	_Page1.SetOrderConfigMgr(val);
-// 	_Page2.SetOrderConfigMgr(val);
-// }
-
 

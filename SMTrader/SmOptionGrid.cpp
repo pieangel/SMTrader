@@ -74,6 +74,9 @@ void SmOptionGrid::OnMasterEvent(VtSymbol* sym)
 
 void SmOptionGrid::OnOrderEvent(VtOrder* order)
 {
+	CString msg;
+	msg.Format("OnOrderEvent code = %s\n", order->shortCode.c_str());
+	TRACE(msg);
 	if (!_OrderConfigMgr || !order)
 		return;
 
@@ -466,7 +469,6 @@ std::pair<int, int> SmOptionGrid::FindValueStartRow(int height)
 			if (product->Code().compare("206") == 0) {
 				std::string centerVal = sym->Name.substr(18, 6);
 				centerVal.erase(std::remove(centerVal.begin(), centerVal.end(), ','), centerVal.end());
-				// 소수점 두자리 때문에 100을 곱해 준다.
 				intCenter = std::stoi(centerVal) * (int)(std::pow(10, 2));
 				delta = std::abs(symMgr->Kosdaq150Current - intCenter);
 				if (delta < minVal) {
@@ -708,6 +710,10 @@ void SmOptionGrid::SetRemain(VtPosition* posi)
 			QuickSetBackColor(std::get<0>(pos), std::get<1>(pos), RGB(255, 255, 255));
 		}
 		InvalidateCellRect(std::get<0>(pos), std::get<1>(pos));
+
+		CString msg;
+		msg.Format("SetRemain row = %d, col = %d\n", std::get<0>(pos), std::get<1>(pos));
+		TRACE(msg);
 	}
 }
 

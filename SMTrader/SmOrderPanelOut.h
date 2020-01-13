@@ -212,7 +212,8 @@ private:
 	bool _FixedCenter;
 	VtRealTickWnd* _RealTickWnd = nullptr;
 	bool _Init = false;
-	bool _ShowRemainConfig = true;
+	// 하단의 잔고에 대한 설정창 보이기 / 감추기
+	bool _ShowRemainConfig = false;
 	bool _ShowOrderCountArea = true;
 	bool _UseHogaSiseFilter = true;
 

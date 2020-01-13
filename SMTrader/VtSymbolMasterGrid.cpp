@@ -66,7 +66,7 @@ void VtSymbolMasterGrid::SetRowTitle()
 	LPCTSTR title[11] = { "상품명", "시가", "고가", "저가", "종가", "전일대비", "총거래량", "틱가치", "틱크기", "거래소", "만기일" };
 
 	SetColWidth(0, 60);
-	SetColWidth(1, 100);
+	SetColWidth(1, 103);
 
 	for (int i = 0; i < _RowCount; i++)
 	{

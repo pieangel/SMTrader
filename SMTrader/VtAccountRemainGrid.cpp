@@ -68,7 +68,7 @@ void VtAccountRemainGrid::SetRowTitle()
 	CUGCell cell;
 	LPCTSTR title[6] = { "예탁금잔액", "평가손익", "청산손익", "수수료", "주문가능액", "통화코드" };
 	SetColWidth(0, 60);
-	SetColWidth(1, 100);
+	SetColWidth(1, 103);
 	for (int i = 0; i < _RowCount; i++)
 	{
 		QuickSetText(0, i, title[i]);

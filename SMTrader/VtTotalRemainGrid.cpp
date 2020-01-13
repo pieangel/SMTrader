@@ -62,7 +62,7 @@ void VtTotalRemainGrid::SetRowTitle()
 	CUGCell cell;
 	LPCTSTR title[6] = { "평가손익", "실현손익", "총손익" };
 	SetColWidth(0, 56);
-	SetColWidth(1, 100);
+	SetColWidth(1, 101);
 	for (int i = 0; i < _RowCount; i++)
 	{
 		QuickSetText(0, i, title[i]);

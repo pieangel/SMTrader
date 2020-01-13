@@ -130,7 +130,7 @@ void VtProductAcceptedGrid::SetColTitle()
 	const int ColCount = _ColCount;
 	CUGCell cell;
 	LPCTSTR title[4] = { "취소", "종목", "구분" , "미체결" }; //, "주문가격", "주문량", "주문시간", "주문번호", "원주문번호" };
-	int colWidth[4] = { 24, 35, 35, 62 }; //, 60, 60, 60, 60, 60 };
+	int colWidth[4] = { 24, 35, 35, 63 }; //, 60, 60, 60, 60, 60 };
 
 
 	for (int i = 0; i < _ColCount; i++)

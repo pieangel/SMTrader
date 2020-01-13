@@ -26,6 +26,7 @@ CVtOrderLeftWnd::CVtOrderLeftWnd(CWnd* pParent )
 CVtOrderLeftWnd::CVtOrderLeftWnd()
 {
 	_ParentOrderWnd = nullptr;
+	_DefaultWidth = 162;
 }
 
 CVtOrderLeftWnd::~CVtOrderLeftWnd()

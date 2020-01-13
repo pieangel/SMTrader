@@ -68,6 +68,6 @@ public:
 	void OnOutstanding();
 
 private:
-	int _DefaultWidth = 174;
+	int _DefaultWidth = 162;
 	int _DefaultHeight = 774;
 };
