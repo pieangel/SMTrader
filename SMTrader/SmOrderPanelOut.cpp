@@ -76,7 +76,7 @@ SmOrderPanelOut::SmOrderPanelOut(CWnd* pParent /*=NULL*/)
 	height = 0;
 	_GridGap = 0;
 	_OrderConfigMgr = nullptr;
-	m_Grid.CenterWndOut(this);
+	m_Grid.CenterWnd(this);
 	_ProductRemainGrid.CenterWndOut(this);
 	_Unregistered = false;
 	_OrderByRemain = false;

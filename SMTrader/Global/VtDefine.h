@@ -351,5 +351,14 @@ struct VtLayerInfo
 	int colorIndex;
 };
 
+enum class SmOrderGridCol {
+	STOP,
+	ORDER,
+	COUNT,
+	QUANTITY,
+	CENTER
+};
+
+
 const int StressLineWidth = 5;
 

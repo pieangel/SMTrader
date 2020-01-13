@@ -7,7 +7,6 @@
 #include "Global/VtDefine.h"
 #include <memory>
 
-class VtOrderCenterWndHd;
 class VtSymbol;
 class VtAccount;
 class VtOrderConfigManager;
@@ -16,13 +15,13 @@ struct VtPosition;
 class SmOrderPanel;
 class SmOrderPanelOut;
 class VtCutManager;
-class SmOrderGrid : public CGridCtrl
+class SmOrderGridOut : public CGridCtrl
 {
 public:
-	SmOrderGrid();
-	~SmOrderGrid();
-	SmOrderPanel* CenterWnd() const { return _CenterWnd; }
-	void CenterWnd(SmOrderPanel* val) { _CenterWnd = val; }
+	SmOrderGridOut();
+	~SmOrderGridOut();
+	SmOrderPanelOut* CenterWnd() const { return _CenterWnd; }
+	void CenterWnd(SmOrderPanelOut* val) { _CenterWnd = val; }
 	VtCutManager* CutMgr() const { return _CutMgr; }
 	void CutMgr(VtCutManager* val) { _CutMgr = val; }
 	bool ShowOrderQuantityCol() const { return _ShowOrderQuantityCol; }
@@ -33,8 +32,6 @@ public:
 	void CellHeight(int val) { _CellHeight = val; }
 	int OrderAmount() const { return _OrderAmount; }
 	void OrderAmount(int val) { _OrderAmount = val; }
-	SmOrderPanelOut* CenterWndOut() const { return _CenterWndOut; }
-	void CenterWndOut(SmOrderPanelOut* val) { _CenterWndOut = val; }
 public:
 	// 심볼마스터 이벤트 처리
 	void OnSymbolMaster(VtSymbol* symbol);
@@ -109,8 +106,7 @@ private:
 	int _OldIndexRow = -1;
 	int _CellHeight = 0;
 
-	SmOrderPanel* _CenterWnd = nullptr;
-	SmOrderPanelOut* _CenterWndOut = nullptr;
+	SmOrderPanelOut* _CenterWnd = nullptr;
 	std::map<int, int> ValueToRowMap;
 	std::map<int, int> RowToValueMap;
 	std::set<std::pair<int, int>> _OrderPos;
@@ -243,4 +239,5 @@ public:
 private:
 	VtCutManager* _CutMgr;
 };
+
 

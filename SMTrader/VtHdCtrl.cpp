@@ -369,17 +369,21 @@ int VtHdCtrl::GetSymbolMaster(CString symCode)
 	if (_Blocked)
 		return -1;
 
-	//CString sInput = "101N600040020";
-	CString sInput = symCode.TrimRight();
-	sInput.Append(_T("40001"));
-	//단축코드[000], 호가수신시간[075], 현재가[051], 누적거래량[057], 최종결제가[040], 상장일[006], 고가[053]  1건 조회시
-	CString sReqFidInput = _T("000001002003004005006007008009010011012013014015016017018019020021022023024025026027028029030031032033034035036037038039040041042043044045046047048049050051052053054055056057058059060061062063064065066067068069070071072073074075076077078079080081082083084085086087088089090091092093094095096097098099100101102103104105106107108109110111112113114115116117118119120121122123124125126127128129130131132133134135136137138139140141142143144145146147148149150151152153154155156157158159160161162163164165166167168169170171172173174175176177178179180181182183184185186187188189190191192193194195196197198199200201202203204205206207208209210211212213214215216217218219220221222223224225226227228229230231232");
-	//CString sReqFidInput = _T("000001002003004005049050051052053054075076078079080081082083084085086087089090091092093094095096097098099100101102103104105106107108109115");
-	CString strNextKey = _T("");
-	int nRqID = m_CommAgent.CommFIDRqData(DefSymbolMaster, sInput, sReqFidInput, sInput.GetLength(), strNextKey);
-	AddRequest(nRqID, HdTaskType::HdSymbolMaster);
-
-	return nRqID;
+	if (isdigit(symCode.GetAt(2))) {
+		CString sInput;
+		sInput = symCode;
+		sInput.Append(_T("40001"));
+		//단축코드[000], 호가수신시간[075], 현재가[051], 누적거래량[057], 최종결제가[040], 상장일[006], 고가[053]  1건 조회시
+		CString sReqFidInput = _T("000001002003004005006007008009010011012013014015016017018019020021022023024025026027028029030031032033034035036037038039040041042043044045046047048049050051052053054055056057058059060061062063064065066067068069070071072073074075076077078079080081082083084085086087088089090091092093094095096097098099100101102103104105106107108109110111112113114115116117118119120121122123124125126127128129130131132133134135136137138139140141142143144145146147148149150151152153154155156157158159160161162163164165166167168169170171172173174175176177178179180181182183184185186187188189190191192193194195196197198199200201202203204205206207208209210211212213214215216217218219220221222223224225226227228229230231232");
+		//CString sReqFidInput = _T("000001002003004005049050051052053054075076078079080081082083084085086087089090091092093094095096097098099100101102103104105106107108109115");
+		CString strNextKey = _T("");
+		int nRqID = m_CommAgent.CommFIDRqData(DefSymbolMaster, sInput, sReqFidInput, sInput.GetLength(), strNextKey);
+		AddRequest(nRqID, HdTaskType::HdSymbolMaster);
+		return nRqID;
+	}
+	else {
+		return GetAbroadQuote((LPCTSTR)symCode);
+	}
 }
 
 void VtHdCtrl::RegisterProduct(CString symCode)
@@ -2662,6 +2666,82 @@ void VtHdCtrl::ExecuteRequest(std::shared_ptr<HdTaskArg> taskArg)
 		break;
 	}
 }
+
+int VtHdCtrl::GetAbroadQuote(std::string symbol_code)
+{
+	CString sInput;
+	std::string input = symbol_code;
+	std::string temp = PadRight(input, ' ', 32);
+	sInput = temp.c_str();
+	CString sReqFidInput = "000001002003004005006007008009010011012013014015016017018019020021022023024025026027028029030031032033034035036037";
+	CString strNextKey = m_CommAgent.CommGetNextKey(_RqID, "");
+	_RqID = m_CommAgent.CommFIDRqData(DefAbQuote, sInput, sReqFidInput, sInput.GetLength(), strNextKey);
+
+	return _RqID;
+}
+
+int VtHdCtrl::GetAbroadHoga(std::string symbol_code)
+{
+	return -1;
+}
+
+
+void VtHdCtrl::OnAbQuote(CString& sTrCode, LONG& nRqID)
+{
+	CString	strData000 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "종목코드");
+
+	VtSymbolManager* symMgr = VtSymbolManager::GetInstance();
+	VtSymbol* sym = symMgr->FindSymbol((LPCTSTR)strData000.Trim());
+	if (!sym)
+		return;
+
+
+	CString	strData002 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "한글종목명");
+	CString strCom = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "전일대비");
+	CString strComGubun = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "전일대비구분");
+	CString strUpRate = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "전일대비등락율");
+
+	LOG_F(INFO, _T("종목코드 = %s"), strData000);
+	CString msg;
+	msg.Format("종목코드 = %s, 한글종목명=%s\n", strData000, strData002);
+	TRACE(msg);
+	std::string code = sym->ShortCode.substr(0, 3);
+	HdProductInfo* prdtInfo = symMgr->FindProductInfo(code);
+	if (prdtInfo) {
+		sym->Decimal = prdtInfo->decimal;
+		sym->Seungsu = prdtInfo->tradeWin;
+		sym->intTickSize = prdtInfo->intTickSize;
+		sym->TickValue = prdtInfo->tickValue;
+		sym->TickSize = _ttof(prdtInfo->tickSize.c_str());
+	}
+	strCom.TrimRight();
+	strUpRate.TrimRight();
+
+
+	sym->FullCode = (LPCTSTR)strData000.TrimRight();
+	sym->Name = (LPCTSTR)strData002.TrimRight();
+
+	CString	strData050 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "체결시간");
+	CString	strData051 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "현재가");
+	CString	strData052 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "시가");
+	CString	strData053 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "고가");
+	CString	strData054 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "저가");
+
+
+
+	sym->ComToPrev = _ttoi(strCom);
+	sym->UpdownRate = _ttoi(strUpRate);
+	sym->Quote.intClose = _ttoi(strData051);
+	sym->Quote.intOpen = _ttoi(strData052);
+	sym->Quote.intHigh = _ttoi(strData053);
+	sym->Quote.intLow = _ttoi(strData054);
+
+	HdTaskEventArgs eventArg;
+	eventArg.TaskType = HdTaskType::HdSymbolMaster;
+	FireTaskCompleted(std::move(eventArg));
+	RemoveRequest(nRqID);
+}
+
 
 void VtHdCtrl::OnAcceptedHistory(CString& sTrCode, LONG& nRqID)
 {
@@ -5693,36 +5773,9 @@ void VtHdCtrl::OnDataRecv(CString sTrCode, LONG nRqID)
 			//WriteLog(strMsg);
 		}
 	}
-	else if (sTrCode == DEF_HW_FID_CODE)
+	else if (sTrCode == DefAbQuote)
 	{
-		CString strMsg;
-		strMsg.Format("해외 현재가시세응답[%s]", DEF_HW_FID_CODE);
-		//WriteLog(strMsg);
-
-		CString strSeries = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "종목코드");
-		CString strTime = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "국내시간"); //해외시세 조회 오류 수정 - 20160830 sivas
-		CString strCloseP = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "현재가");
-		CString strVolume = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "누적거래량");
-
-		//m_edSeriesO.SetWindowText(strSeries);
-		//m_edTimeO.SetWindowText(strTime);
-		CString strFormatPrice = strCloseP;
-		strFormatPrice = m_CommAgent.CommGetHWOrdPrice(strSeries, strCloseP, 0);
-		//m_edClosePO.SetWindowText(strFormatPrice);
-		//m_edVolumeO.SetWindowText(strVolume);
-
-		strMsg.Format("FID 종목[%s]시간[%s]현재가[%s]거래량[%s]", strSeries, strTime, strCloseP, strVolume);
-		//WriteLog(strMsg);
-
-		CString strType1, strType2, strType3, strType4;
-		strCloseP = strCloseP;//"1241300";
-		strType1 = m_CommAgent.CommGetHWOrdPrice(strSeries, strCloseP, 0);
-		strType2 = m_CommAgent.CommGetHWOrdPrice(strSeries, strType1, 1);
-		strType3 = m_CommAgent.CommGetHWOrdPrice(strSeries, strType2, 2);
-		strType4 = m_CommAgent.CommGetHWOrdPrice(strSeries, strType3, 0);
-		strMsg.Format("FID Recv[%s]->[%s]->[%s]->[%s]->[%s]", strCloseP, strType1, strType2, strType3, strType4);
-
-		//WriteLog(strMsg);
+		OnAbQuote(sTrCode, nRqID);
 	}
 	else if (sTrCode == DEF_HW_ORD_CODE_NEW)
 	{

@@ -1,5 +1,5 @@
 #pragma once
-#include "SmOrderGrid.h"
+#include "SmOrderGridOut.h"
 #include "GenericChildDialog.h"
 #include "VtOrderPanelGrid.h"
 #include "VtProductRemainGrid.h"
@@ -95,7 +95,7 @@ public:
 	void RegisterRealtimeAccount();
 	void UnregisterRealtimeAccount();
 	virtual BOOL OnInitDialog();
-	SmOrderGrid m_Grid;
+	SmOrderGridOut m_Grid;
 	afx_msg void OnClose();
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 public:
@@ -113,7 +113,7 @@ public:
 	{
 		return m_Grid.CellHeight();
 	}
-	SmOrderGrid& GetOrderPanelGrid()
+	SmOrderGridOut& GetOrderPanelGrid()
 	{
 		return m_Grid;
 	}

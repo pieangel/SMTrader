@@ -348,6 +348,7 @@
     <ClInclude Include="SmFutureGrid.h" />
     <ClInclude Include="SmOptionGrid.h" />
     <ClInclude Include="SmOrderGrid.h" />
+    <ClInclude Include="SmOrderGridOut.h" />
     <ClInclude Include="SmOrderPanel.h" />
     <ClInclude Include="SmOrderPanelOut.h" />
     <ClInclude Include="SmPLGrid.h" />
@@ -814,6 +815,7 @@
     <ClCompile Include="SmFutureGrid.cpp" />
     <ClCompile Include="SmOptionGrid.cpp" />
     <ClCompile Include="SmOrderGrid.cpp" />
+    <ClCompile Include="SmOrderGridOut.cpp" />
     <ClCompile Include="SmOrderPanel.cpp" />
     <ClCompile Include="SmOrderPanelOut.cpp" />
     <ClCompile Include="SmPLGrid.cpp" />

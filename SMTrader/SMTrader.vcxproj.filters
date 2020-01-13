@@ -1591,6 +1591,9 @@
     <ClInclude Include="SmOrderPanelOut.h">
       <Filter>OrderUI</Filter>
     </ClInclude>
+    <ClInclude Include="SmOrderGridOut.h">
+      <Filter>OrderUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ChildFrm.cpp">
@@ -2845,6 +2848,9 @@
       <Filter>System</Filter>
     </ClCompile>
     <ClCompile Include="SmOrderPanelOut.cpp">
+      <Filter>OrderUI</Filter>
+    </ClCompile>
+    <ClCompile Include="SmOrderGridOut.cpp">
       <Filter>OrderUI</Filter>
     </ClCompile>
   </ItemGroup>

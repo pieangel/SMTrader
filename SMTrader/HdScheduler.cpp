@@ -449,6 +449,11 @@ void HdScheduler::GetSymbolMaster2()
 		}
 	}
 
+	// 해외 기본 종목을 가져 온다.
+	VtSymbol* symbol = SmMarketManager::GetInstance()->GetDefaultAbroadSymbol();
+	master_vector.insert(symbol->ShortCode);
+
+	// 윈도우 창의 종목들을 가져온다.
 	VtSaveManager::GetInstance()->GetWindowSymbolList(master_vector);
 	HdTaskInfo taskInfo;
 	int i = 0;
