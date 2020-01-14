@@ -186,6 +186,14 @@ void VtAccount::SaveToXml(pugi::xml_node& node_account)
 	account_child.append_child(pugi::node_pcdata).set_value(std::to_string(_AccountLevel).c_str());
 	account_child = node_account.append_child("prime");
 	account_child.append_child(pugi::node_pcdata).set_value(std::to_string(_Prime).c_str());
+	account_child = node_account.append_child("type");
+	// 국내, 해외, FX 구분자
+	if (_AccountLevel == 1) {
+		account_child.append_child(pugi::node_pcdata).set_value(std::to_string(_ParentAccount->Type).c_str());
+	}
+	else {
+		account_child.append_child(pugi::node_pcdata).set_value(std::to_string(Type).c_str());
+	}
 	if (_SubAccountList.size() > 0) {
 		account_child = node_account.append_child("sub_account_list");
 		for (auto it = _SubAccountList.begin(); it != _SubAccountList.end(); ++it) {
@@ -219,6 +227,11 @@ void VtAccount::LoadFromXml(pugi::xml_node& account_node)
 	}
 	else {
 		_ParentAccount = VtAccountManager::GetInstance()->FindAccount(ParentAccountNo);
+	}
+
+	pugi::xml_node account_type_node = account_node.child("type");
+	if (account_type_node) {
+		Type = std::stoi(account_node.child_value("type"));
 	}
 
 	pugi::xml_node sub_account_list_node = account_node.child("sub_account_list");

@@ -113,7 +113,9 @@ void VtAccountPasswordDlg::OnBnClickedBtnSave()
 	_PasswordGrid.SavePassword();
 
 	VtSaveManager* saveMgr = VtSaveManager::GetInstance();
-	saveMgr->SaveAccountList();
+	//saveMgr->SaveAccountList();
+	// 계좌 정보를 저장한다.
+	saveMgr->SaveAccountListToXml();
 
 	ZmConfigManager* configMgr = ZmConfigManager::GetInstance();
 	std::string section = _T("ACCOUNT_INFO");

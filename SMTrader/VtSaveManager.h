@@ -13,6 +13,7 @@ class VtSaveManager : public TemplateSingleton<VtSaveManager>
 public:
 	VtSaveManager();
 	~VtSaveManager();
+	void SaveAccountListToXml();
 	void WriteSettings();
 	void ReadSettings();
 	void ReadWindows();

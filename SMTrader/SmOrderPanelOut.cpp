@@ -820,10 +820,18 @@ void SmOrderPanelOut::InitSymbol()
 		sym = SmMarketManager::GetInstance()->GetDefaultAbroadSymbol();
 		if (!sym)
 			return;
-		VtHdClient::GetInstance()->GetAbroadQuote(sym->ShortCode);
 	}
+	// 종목 현재 시세 요청
+	VtHdClient::GetInstance()->GetAbroadQuote(sym->ShortCode);
+	// 종목 현재 호가 요청
+	VtHdClient::GetInstance()->GetAbroadHoga(sym->ShortCode);
+	// 실시간 등록
+	VtRealtimeRegisterManager::GetInstance()->RegisterProduct(sym->ShortCode);
+	// 심볼 설정
 	SetSymbol(sym);
+	// 콤보에 심볼 추가
 	AddSymbolToCombo(sym);
+	// 제품 이름 설정
 	SetProductName(sym);
 }
 
@@ -1143,10 +1151,13 @@ void SmOrderPanelOut::InitAll()
 {
 	if (!_OrderConfigMgr)
 		return;
+	// 심볼 초기화
 	InitSymbol();
+	// 포지션 초기화
 	InitPosition();
 	// 주문 그리드 셀들을 설정한다.
 	m_Grid.Init();
+	// 틱 그리드 초기화
 	_TickGrid.Init();
 	// 그리드 컬럼 옵션을 설정해 준다.
 	m_Grid.ShowHideOrderGrid(_OrderGridColOption);

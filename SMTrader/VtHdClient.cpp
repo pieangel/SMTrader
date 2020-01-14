@@ -313,12 +313,12 @@ void VtHdClient::ExecuteRequest(std::shared_ptr<HdTaskArg> arg)
 
 void VtHdClient::GetAbroadQuote(std::string symbol_code)
 {
-	//_HdCtrl->GetAbroadQuote(symbol_code);
+	_HdCtrl->GetAbroadQuote(symbol_code);
 }
 
 void VtHdClient::GetAbroadHoga(std::string symbol_code)
 {
-	//_HdCtrl->GetAbroadHoga(symbol_code);
+	_HdCtrl->GetAbroadHoga(symbol_code);
 }
 
 void VtHdClient::GetMasterFile(std::string fileName)

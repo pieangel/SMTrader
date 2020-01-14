@@ -515,11 +515,18 @@ void SmSymbolReader::ReadJmFile(std::string fullPath)
 			//symMgr->AddHdSymbol(sym);
 			sym->ProductCode = cat->Code();
 			sym->MarketName = cat->MarketName();
+			// 소수점
 			sym->Decimal = std::stoi(Pdesz);
+			// 숭수
 			sym->Seungsu = std::stoi(MltiPler);
+			// 계약 크기
 			sym->CtrUnit = std::stod(CtrtSize);
+			// 틱 가치
 			sym->TickValue = std::stod(TickValue);
+			// 틱 크기
 			sym->TickSize = std::stod(TickSize);
+			// 정수 틱 크기를 계산하여 넣어 준다.
+			sym->intTickSize = sym->TickSize * std::pow(10, sym->Decimal);
 			sym->LastDate = last_date;
 		}
 	}

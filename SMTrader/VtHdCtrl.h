@@ -225,7 +225,10 @@ public:
 	int GetAbroadQuote(std::string symbol_code);
 	// 해외 종목 호가
 	int GetAbroadHoga(std::string symbol_code);
+	// 해외 현재 시세 수신
 	void OnAbQuote(CString& sTrCode, LONG& nRqID);
+	// 해외 현재 호가 수신
+	void OnAbHoga(CString& sTrCode, LONG& nRqID);
 private:
 	int _RqID = 0;
 	std::map<int, std::shared_ptr<HdTaskArg>> _TaskReqMap;

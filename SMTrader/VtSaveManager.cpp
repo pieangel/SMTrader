@@ -41,6 +41,53 @@ VtSaveManager::~VtSaveManager()
 {
 }
 
+void VtSaveManager::SaveAccountListToXml()
+{
+	ZmConfigManager* configMgr = ZmConfigManager::GetInstance();
+	std::string id = VtLoginManager::GetInstance()->ID;
+	// 아이디가 없으면 그냥 반환한다.
+	if (id.length() == 0)
+		return;
+
+	std::string appPath;
+	appPath = configMgr->GetAppPath();
+	appPath.append(_T("\\"));
+	appPath.append(id);
+	// 사용자 디렉토리가 있나 검사하고 없으면 만들어 준다.
+
+	appPath.append(_T("\\"));
+	appPath.append(VtStringUtil::getTimeStr());
+	appPath.append(_T(".xml"));
+	filesystem::path path1(appPath);
+	if (!path1.exists()) {
+		return;
+	}
+
+	/// [load xml file]
+	// Create empty XML document within memory
+	pugi::xml_document doc;
+	// Load XML file into memory
+	// Remark: to fully read declaration entries you have to specify
+	// "pugi::parse_declaration"
+	pugi::xml_parse_result result = doc.load_file(appPath.c_str(),
+		pugi::parse_default | pugi::parse_declaration);
+	if (!result) {
+		return;
+	}
+
+	pugi::xml_node application = doc.child("application");
+
+	// 	application.remove_child("login_info");
+	// 	pugi::xml_node login_info = application.append_child("login_info");
+	// 	VtLoginManager::GetInstance()->SaveToXml(login_info);
+
+	application.remove_child("account_list");
+	pugi::xml_node account_list = application.append_child("account_list");
+	VtAccountManager::GetInstance()->SaveToXml(account_list);
+
+	doc.save_file(appPath.c_str());
+}
+
 void VtSaveManager::WriteSettings()
 {
 	ZmConfigManager* configMgr = ZmConfigManager::GetInstance();
