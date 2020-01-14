@@ -948,7 +948,8 @@ void SmSymbolReader::ReadMiniKospiFutureFile(std::string fullPath)
 		sym->MarketName = product->MarketName();
 		sym->Decimal = std::stoi(deli);
 		sym->Seungsu = std::stoi(tradewin);
-		int hoga_unit = std::stoi(hounit);
+		// 호가 단위가 파일이 잘못되어 있음
+		int hoga_unit = 2; // std::stoi(hounit);
 		int deci = std::stoi(deli);
 		sym->intTickSize = hoga_unit;
 		double tick_size = hoga_unit / std::pow(10, deci);

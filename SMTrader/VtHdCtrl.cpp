@@ -6892,7 +6892,6 @@ void VtHdCtrl::OnGetMsgWithRqId(int nRqId, CString strCode, CString strMsg)
 		HdTaskEventArgs eventArg;
 		eventArg.TaskType = HdTaskType::HdSymbolFileDownload;
 		FireTaskCompleted(std::move(eventArg));
-		RemoveRequest(nRqId);
 	}
 
 	it = _AccountPLReqMap.find(nRqId);
@@ -6901,7 +6900,6 @@ void VtHdCtrl::OnGetMsgWithRqId(int nRqId, CString strCode, CString strMsg)
 		HdTaskEventArgs eventArg;
 		eventArg.TaskType = HdTaskType::HdApiCustomerProfitLoss;
 		FireTaskCompleted(std::move(eventArg));
-		RemoveRequest(nRqId);
 	}
 	
 	if (strCode.Compare("0332") == 0) {
