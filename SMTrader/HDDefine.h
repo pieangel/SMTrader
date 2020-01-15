@@ -54,13 +54,20 @@ const CString DefIndustryMaster = "s10001";
 const CString DefServerTime = "o44011";
 
 // 해외
+// 잔고
 const CString DEF_HW_JANGO = "g11004.AQ0605%";
+// 
 const CString DEF_HW_FID_CODE = "o51000";
+// 해외 신규 주문
 const CString DEF_HW_ORD_CODE_NEW = "g12003.AO0401%";
+// 해외 정정 주문
 const CString DEF_HW_ORD_CODE_MOD = "g12003.AO0402%";
+// 해외 취소 주문
 const CString DEF_HW_ORD_CODE_CNL = "g12003.AO0403%";
 const CString DEF_HW_MSTINFO = "o51211";
+// 해외 차트 데이터
 const CString DefAbChartData = "o51200";
+// 해외 차트 데이터
 const CString DefAbsChartData2 = "o44005";
 // 해외선물 현재 시세
 const CString DefAbQuote = "o51000";

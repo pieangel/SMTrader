@@ -199,6 +199,29 @@ public:
 	void PutOrder(HdOrderRequest&& request);
 	void ChangeOrder(HdOrderRequest&& request);
 	void CancelOrder(HdOrderRequest&& request);
+
+	// 해외 신규 주문
+	void AbPutOrder(HdOrderRequest&& request);
+	// 해외 정정 주문
+	void AbChangeOrder(HdOrderRequest&& request);
+	// 해외 취소 주문
+	void AbCancelOrder(HdOrderRequest&& request);
+	
+	// 해외 신규 주문 서버 응답
+	void AbOnNewOrderHd(CString& sTrCode, LONG& nRqID);
+	// 해외 정정 주문 서버 응답
+	void AbOnModifyOrderHd(CString& sTrCode, LONG& nRqID);
+	// 해외 취소 주문 서버 응답
+	void AbOnCancelOrderHd(CString& sTrCode, LONG& nRqID);
+	// 해외 주문 서버 응답
+	void AbOnOrderReceivedHd(CString& sTrCode, LONG& nRqID);
+	// 해외 주문 접수확인
+	void AbOnOrderAcceptedHd(CString& sTrCode, LONG& nRqID);
+	// 해외 주문 미체결 
+	void AbOnOrderUnfilledHd(CString& sTrCode, LONG& nRqID);
+	// 해외 주문 체결
+	void AbOnOrderFilledHd(CString& sTrCode, LONG& nRqID);
+
 	static std::string PadLeft(double input, char padding, int len, int decimal);
 	static std::string PadRight(double input, char padding, int len, int decimal);
 	static std::string PadLeft(int input, char padding, int len);
