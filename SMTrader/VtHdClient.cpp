@@ -321,6 +321,21 @@ void VtHdClient::GetAbroadHoga(std::string symbol_code)
 	_HdCtrl->GetAbroadHoga(symbol_code);
 }
 
+void VtHdClient::AbPutOrder(HdOrderRequest&& request)
+{
+	_HdCtrl->AbPutOrder(std::move(request));
+}
+
+void VtHdClient::AbChangeOrder(HdOrderRequest&& request)
+{
+	_HdCtrl->AbChangeOrder(std::move(request));
+}
+
+void VtHdClient::AbCancelOrder(HdOrderRequest&& request)
+{
+	_HdCtrl->AbCancelOrder(std::move(request));
+}
+
 void VtHdClient::GetMasterFile(std::string fileName)
 {
 	if (_HdCtrl)

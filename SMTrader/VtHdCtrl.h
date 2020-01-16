@@ -201,11 +201,11 @@ public:
 	void CancelOrder(HdOrderRequest&& request);
 
 	// 해외 신규 주문
-	void AbPutOrder(HdOrderRequest&& request);
+	void AbPutOrder(HdOrderRequest& request);
 	// 해외 정정 주문
-	void AbChangeOrder(HdOrderRequest&& request);
+	void AbChangeOrder(HdOrderRequest& request);
 	// 해외 취소 주문
-	void AbCancelOrder(HdOrderRequest&& request);
+	void AbCancelOrder(HdOrderRequest& request);
 	
 	// 해외 신규 주문 서버 응답
 	void AbOnNewOrderHd(CString& sTrCode, LONG& nRqID);

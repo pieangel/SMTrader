@@ -378,6 +378,8 @@ struct HdOrderRequest
 	int LiqReqOrderNo = -1;
 	// 선물사에서 받은 주문요청 번호 - 이것으로 본래 요청 정보를 식별한다.
 	int HtsOrderReqID = -1;
+	// 마켓 : 1 : 해외, 2 : FX, 9 : 국내
+	int Market = 9;
 };
 
 struct VtRealtimeOrder

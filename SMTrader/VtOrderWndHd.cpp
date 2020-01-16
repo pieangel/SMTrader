@@ -1060,7 +1060,7 @@ void VtOrderWndHd::InitAccount()
 	for (auto it = acntMgr->AccountMap.begin(); it != acntMgr->AccountMap.end(); ++it) {
 		VtAccount* acnt = it->second;
 		// 국내 계좌만 로드 한다.
-		if (acnt->Gubun() == 0 || acnt->Gubun() == 9) {
+		if (acnt->Type == 0 || acnt->Type == 9) {
 			acntName = acnt->AccountNo;
 			acntName.append(_T(" "));
 			acntName.append(acnt->AccountName);

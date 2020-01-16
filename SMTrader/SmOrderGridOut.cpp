@@ -1419,6 +1419,7 @@ void SmOrderGridOut::PutOrder(int price, VtPositionType position, VtPriceType pr
 			VtAccount* acnt = _OrderConfigMgr->Account();
 
 			HdOrderRequest request;
+			request.Market = 1; // 해외 선물 시장 설정
 			request.Price = price;
 			request.Position = position;
 			request.Amount = _CenterWnd->OrderAmount();
@@ -1471,6 +1472,7 @@ void SmOrderGridOut::PutOrder(int price, VtPositionType position, VtPriceType pr
 				VtOrderManager* orderMgr = orderMgrSelector->FindAddOrderManager(subAcnt->AccountNo);
 
 				HdOrderRequest request;
+				request.Market = 1; // 해외 선물 시장 설정
 				request.Type = 2;
 				request.Price = price;
 				request.Position = position;
@@ -1517,6 +1519,7 @@ void SmOrderGridOut::PutOrder(VtPosition* posi, int price, bool liqud /*= false*
 		return;
 
 	HdOrderRequest request;
+	request.Market = 1; // 해외 선물 시장 설정
 	request.Amount = std::abs(posi->OpenQty);
 	if (_OrderConfigMgr->Type() == 0) { // 본계좌나 서브 계좌일때
 		if (acnt->AccountLevel() == 0) { // 본계좌 일 때
@@ -2261,6 +2264,7 @@ void SmOrderGridOut::AddStopOrder(int price, VtPositionType posi)
 			return;
 		VtAccount* acnt = _OrderConfigMgr->Account();
 		HdOrderRequest* request = new HdOrderRequest();
+		request->Market = 1; // 해외 선물 시장 설정
 		if (acnt->AccountLevel() == 0) { // 본계좌인 경우
 			request->Type = 0;
 			request->AccountNo = acnt->AccountNo;
@@ -2300,6 +2304,7 @@ void SmOrderGridOut::AddStopOrder(int price, VtPositionType posi)
 				continue;
 
 			HdOrderRequest* request = new HdOrderRequest();
+			request->Market = 1; // 해외 선물 시장 설정
 			request->Type = 2;
 			request->Price = price;
 			request->Position = posi;
@@ -2467,6 +2472,7 @@ void SmOrderGridOut::ChangeOrder(VtOrder* order, int newPrice)
 		VtAccount* acnt = _OrderConfigMgr->Account();
 
 		HdOrderRequest request;
+		request.Market = 1; // 해외 선물 시장 설정
 		request.Price = newPrice;
 		request.Position = order->orderPosition;
 		request.Amount = order->amount;
@@ -2519,6 +2525,7 @@ void SmOrderGridOut::ChangeOrder(VtOrder* order, int newPrice)
 				return;
 
 			HdOrderRequest request;
+			request.Market = 1; // 해외 선물 시장 설정
 			request.Type = 2;
 			request.RequestType = order->RequestType;
 			request.Price = newPrice;
@@ -2614,6 +2621,7 @@ void SmOrderGridOut::CancelOrder(VtOrder* order)
 			VtAccount* acnt = _OrderConfigMgr->Account();
 
 			HdOrderRequest request;
+			request.Market = 1; // 해외 선물 시장 설정
 			request.Price = order->intOrderPrice;
 			request.Position = order->orderPosition;
 			request.Amount = order->amount;
@@ -2666,6 +2674,7 @@ void SmOrderGridOut::CancelOrder(VtOrder* order)
 					return;
 
 				HdOrderRequest request;
+				request.Market = 1; // 해외 선물 시장 설정
 				request.Type = 2;
 				request.RequestType = order->RequestType;
 				request.Price = order->intOrderPrice;

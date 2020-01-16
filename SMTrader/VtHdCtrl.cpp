@@ -5469,6 +5469,10 @@ void VtHdCtrl::PutOrder(HdOrderRequest&& request)
 	std::lock_guard<std::mutex> lock(m_);
 	if (!CheckPassword(request))
 		return;
+	if (request.Market == 1) {
+		AbPutOrder(request);
+		return;
+	}
 
 	std::string orderString;
 	std::string temp;
@@ -5552,6 +5556,11 @@ void VtHdCtrl::ChangeOrder(HdOrderRequest&& request)
 	if (!CheckPassword(request))
 		return;
 
+	if (request.Market == 1) {
+		AbChangeOrder(request);
+		return;
+	}
+
 	std::string orderString;
 	std::string temp;
 	temp = PadRight(request.AccountNo, ' ', 11);
@@ -5633,6 +5642,11 @@ void VtHdCtrl::CancelOrder(HdOrderRequest&& request)
 	if (!CheckPassword(request))
 		return;
 
+	if (request.Market == 1) {
+		AbCancelOrder(request);
+		return;
+	}
+
 	std::string orderString;
 	std::string temp;
 	temp = PadRight(request.AccountNo, ' ', 11);
@@ -5710,9 +5724,8 @@ void VtHdCtrl::CancelOrder(HdOrderRequest&& request)
 		request.FundName.c_str(), request.Position == VtPositionType::Buy ? _T("매수") : _T("매도"), request.Amount, request.RequestType);
 }
 
-void VtHdCtrl::AbPutOrder(HdOrderRequest&& request)
+void VtHdCtrl::AbPutOrder(HdOrderRequest& request)
 {
-	std::lock_guard<std::mutex> lock(m_);
 	if (!CheckPassword(request))
 		return;
 
@@ -5746,6 +5759,8 @@ void VtHdCtrl::AbPutOrder(HdOrderRequest&& request)
 		orderString.append(_T("2"));
 	else if (request.FillCondition == VtFilledCondition::Fak)
 		orderString.append(_T("3"));
+	else if (request.FillCondition == VtFilledCondition::Day)
+		orderString.append(_T("0"));
 
 	// 주문 가격
 	if (request.PriceType == VtPriceType::Price)
@@ -5802,7 +5817,7 @@ void VtHdCtrl::AbPutOrder(HdOrderRequest&& request)
 		request.FundName.c_str(), request.Position == VtPositionType::Buy ? _T("매수") : _T("매도"), request.Amount, request.RequestType);
 }
 
-void VtHdCtrl::AbChangeOrder(HdOrderRequest&& request)
+void VtHdCtrl::AbChangeOrder(HdOrderRequest& request)
 {
 	std::lock_guard<std::mutex> lock(m_);
 	if (!CheckPassword(request))
@@ -5892,7 +5907,7 @@ void VtHdCtrl::AbChangeOrder(HdOrderRequest&& request)
 
 }
 
-void VtHdCtrl::AbCancelOrder(HdOrderRequest&& request)
+void VtHdCtrl::AbCancelOrder(HdOrderRequest& request)
 {
 	std::lock_guard<std::mutex> lock(m_);
 	if (!CheckPassword(request))
@@ -6821,6 +6836,44 @@ void VtHdCtrl::AbOnOrderAcceptedHd(CString& strKey, LONG& nRealType)
 	else { // 이미 주문이 있는 경우
 		   // 거래소 접수되었지만 그 원주문이 이미 체결된 경우에는 현재 주문도 접수확인 목록에서 제거해 준다.
 		   // 이미 체결된 상태이기 때문에 추가적인 처리는 하지 않는다.
+		   // 계좌 번호
+		order->AccountNo = (LPCTSTR)strAcctNo;
+		// 심볼 코드
+		order->shortCode = (LPCTSTR)strSeries;
+		// 주문 번호
+		order->orderNo = _ttoi(strOrdNo);
+		// 정수주문가격 설정
+		order->intOrderPrice = GetIntOrderPrice(strSeries, strPrice, strOriOrderPrice);
+		// 주문 수량
+		order->amount = _ttoi(strAmount);
+		// 소수로 표현된 주문 가격
+		order->orderPrice = _ttof(strOriOrderPrice);
+		// 최초 원주문번호
+		order->firstOrderNo = _ttoi(strFirstOrderNo);
+		// 원주문 번호
+		order->oriOrderNo = _ttoi(strOriOrderNo);
+		// 주문 유형 - 매수 / 매도
+		if (strPosition.Compare(_T("1")) == 0) {
+			order->orderPosition = VtPositionType::Buy;
+		}
+		else if (strPosition.Compare(_T("2")) == 0) {
+			order->orderPosition = VtPositionType::Sell;
+		}
+
+		// 거래 시간
+		order->tradeTime = (LPCTSTR)strTraderTime;
+
+		// 주문 유형 - 신규, 정정, 취소
+		if (strMan.Compare(_T("1")) == 0) {
+			order->orderType = VtOrderType::New;
+		}
+		else if (strMan.Compare(_T("2")) == 0) {
+			order->orderType = VtOrderType::Change;
+		}
+		else if (strMan.Compare(_T("3")) == 0) {
+			order->orderType = VtOrderType::Cancel;
+		}
+
 		VtOrder* origin_order = orderMgr->FindOrder(_ttoi(strOriOrderNo));
 		if (origin_order) {
 			if (origin_order->state == VtOrderState::Filled || origin_order->state == VtOrderState::Settled) {
@@ -7546,16 +7599,15 @@ void VtHdCtrl::OnDataRecv(CString sTrCode, LONG nRqID)
 	}
 	else if (sTrCode == DEF_HW_ORD_CODE_NEW)
 	{
-		int nRepeatCnt = m_CommAgent.CommGetRepeatCnt(sTrCode, -1, "OutRec1");
-
-		CString strExchTp = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "접수구분");
-		CString strProcTp = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "처리코드");
-		CString strAcctNo = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "처리메시지");
-		CString strOrdNo = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "주문번호");
-
-		CString strMsg;
-		strMsg.Format("주문응답 번호[%d][%s]처리[%s]계좌번호[%s]주문번호[%s]", nRqID, strExchTp, strProcTp, strAcctNo, strOrdNo);
-		//WriteLog(strMsg);
+		AbOnNewOrderHd(sTrCode, nRqID);
+	}
+	else if (sTrCode == DEF_HW_ORD_CODE_MOD)
+	{
+		AbOnModifyOrderHd(sTrCode, nRqID);
+	}
+	else if (sTrCode == DEF_HW_ORD_CODE_CNL)
+	{
+		AbOnCancelOrderHd(sTrCode, nRqID);
 	}
 	else if (sTrCode == DEF_FX_ORD_CODE_MOD) {
 		int nRepeatCnt = m_CommAgent.CommGetRepeatCnt(sTrCode, -1, "OutRec1");
@@ -8566,6 +8618,15 @@ void VtHdCtrl::OnGetBroadData(CString strKey, LONG nRealType)
 		}
 	}
 	break;
+	case 296: // 해외 주문 접수
+		AbOnOrderAcceptedHd(strKey, nRealType);
+		break;
+	case 286: // 해외 주문 미체결
+		AbOnOrderUnfilledHd(strKey, nRealType);
+		break;
+	case 289: // 해외 주문 체결
+		AbOnOrderFilledHd(strKey, nRealType);
+		break;
 	// FX마진		//@lhe 2012.05.16
 	case 171: //FX 시세
 	{

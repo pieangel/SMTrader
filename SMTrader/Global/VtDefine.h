@@ -86,7 +86,8 @@ enum class VtFilledCondition
 	None = 0,
 	Fas = 1, //
 	Fok = 2, //
-	Fak = 3
+	Fak = 3,
+	Day = 4
 };
 
 

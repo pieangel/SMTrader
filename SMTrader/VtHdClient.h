@@ -83,6 +83,12 @@ public:
 	void GetAbroadQuote(std::string symbol_code);
 	// 해외 종목 호가
 	void GetAbroadHoga(std::string symbol_code);
+	// 해외 신규 주문
+	void AbPutOrder(HdOrderRequest&& request);
+	// 해외 정정 주문
+	void AbChangeOrder(HdOrderRequest&& request);
+	// 해외 취소 주문
+	void AbCancelOrder(HdOrderRequest&& request);
 private:
 	VtHdCtrl* _HdCtrl = nullptr;
 };
