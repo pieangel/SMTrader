@@ -118,7 +118,7 @@ void VtSystem::Fund(VtFund* val)
 
 void VtSystem::OnTimer()
 {
-	
+
 }
 
 void VtSystem::OnRegularTimer()
@@ -598,7 +598,7 @@ bool VtSystem::CheckByArg(ArgNameType argName, VtSymbol* sym, double param, int 
 		VtChartData* chartData = _RefDataMap[dataKey];
 		if (!chartData)
 			return false;
-		std::vector<double>& sellVec= chartData->GetDataArray(_T("close"));
+		std::vector<double>& sellVec = chartData->GetDataArray(_T("close"));
 		if (sellVec.size() == 0 || index <= sellVec.size())
 			return false;
 
@@ -618,7 +618,7 @@ bool VtSystem::CheckByArg(ArgNameType argName, VtSymbol* sym, double param, int 
 			return false;
 		}
 	}
-		break;
+								break;
 	case ArgNameType::KbcGtKac: {
 		std::string code = sym->ShortCode + (_T("SHTC"));
 		std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
@@ -638,14 +638,14 @@ bool VtSystem::CheckByArg(ArgNameType argName, VtSymbol* sym, double param, int 
 		if (buyVec.size() == 0 || index <= buyVec.size())
 			return false;
 
-		if (buyVec[index]*param > sellVec[index]) {
+		if (buyVec[index] * param > sellVec[index]) {
 			return true;
 		}
 		else {
 			return false;
 		}
 	}
-		break;
+								break;
 	case ArgNameType::QbcGtQac: {
 		std::string code = sym->ShortCode + (_T("SHTC"));
 		std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
@@ -665,14 +665,14 @@ bool VtSystem::CheckByArg(ArgNameType argName, VtSymbol* sym, double param, int 
 		if (buyVec.size() == 0 || index <= buyVec.size())
 			return false;
 
-		if (buyVec[index] *param > sellVec[index]) {
+		if (buyVec[index] * param > sellVec[index]) {
 			return true;
 		}
 		else {
 			return false;
 		}
 	}
-		break;
+								break;
 	case ArgNameType::UacGtUbc: {
 		std::string code = sym->ShortCode + (_T("SHTC"));
 		std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
@@ -692,14 +692,14 @@ bool VtSystem::CheckByArg(ArgNameType argName, VtSymbol* sym, double param, int 
 		if (buyVec.size() == 0 || index <= buyVec.size())
 			return false;
 
-		if (sellVec[index]*param > buyVec[index]) {
+		if (sellVec[index] * param > buyVec[index]) {
 			return true;
 		}
 		else {
 			return false;
 		}
 	}
-		break;
+								break;
 	case ArgNameType::KasMiKbs: {
 		std::string code = sym->ShortCode + (_T("SHTQ"));
 		std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
@@ -726,7 +726,7 @@ bool VtSystem::CheckByArg(ArgNameType argName, VtSymbol* sym, double param, int 
 			return false;
 		}
 	}
-		break;
+								break;
 	case ArgNameType::KacGtKbc: {
 		std::string code = sym->ShortCode + (_T("SHTC"));
 		std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
@@ -746,14 +746,14 @@ bool VtSystem::CheckByArg(ArgNameType argName, VtSymbol* sym, double param, int 
 		if (buyVec.size() == 0 || index <= buyVec.size())
 			return false;
 
-		if (sellVec[index] *param > buyVec[index]) {
+		if (sellVec[index] * param > buyVec[index]) {
 			return true;
 		}
 		else {
 			return false;
 		}
 	}
-		break;
+								break;
 	case ArgNameType::QacGtQbc: {
 		std::string code = sym->ShortCode + (_T("SHTC"));
 		std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
@@ -773,14 +773,14 @@ bool VtSystem::CheckByArg(ArgNameType argName, VtSymbol* sym, double param, int 
 		if (buyVec.size() == 0 || index <= buyVec.size())
 			return false;
 
-		if (sellVec[index]*param > buyVec[index]) {
+		if (sellVec[index] * param > buyVec[index]) {
 			return true;
 		}
 		else {
 			return false;
 		}
 	}
-		break;
+								break;
 	case ArgNameType::UbcGtUac: {
 		std::string code = sym->ShortCode + (_T("SHTC"));
 		std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
@@ -800,14 +800,14 @@ bool VtSystem::CheckByArg(ArgNameType argName, VtSymbol* sym, double param, int 
 		if (buyVec.size() == 0 || index <= buyVec.size())
 			return false;
 
-		if (buyVec[index]*param > sellVec[index]) {
+		if (buyVec[index] * param > sellVec[index]) {
 			return true;
 		}
 		else {
 			return false;
 		}
 	}
-		break;
+								break;
 	case ArgNameType::QbsGtQas: {
 		std::string code = sym->ShortCode + (_T("SHTQ"));
 		std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
@@ -827,14 +827,14 @@ bool VtSystem::CheckByArg(ArgNameType argName, VtSymbol* sym, double param, int 
 		if (buyVec.size() == 0 || index <= buyVec.size())
 			return false;
 
-		if (buyVec[index]*param > sellVec[index]) {
+		if (buyVec[index] * param > sellVec[index]) {
 			return true;
 		}
 		else {
 			return false;
 		}
 	}
-		break;
+								break;
 	case ArgNameType::QasGtQbs: {
 		std::string code = sym->ShortCode + (_T("SHTQ"));
 		std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
@@ -854,14 +854,14 @@ bool VtSystem::CheckByArg(ArgNameType argName, VtSymbol* sym, double param, int 
 		if (buyVec.size() == 0 || index <= buyVec.size())
 			return false;
 
-		if (sellVec[index]*param > buyVec[index]) {
+		if (sellVec[index] * param > buyVec[index]) {
 			return true;
 		}
 		else {
 			return false;
 		}
 	}
-		break;
+								break;
 	case ArgNameType::UbsGtUas: {
 		std::string code = sym->ShortCode + (_T("SHTQ"));
 		std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
@@ -881,14 +881,14 @@ bool VtSystem::CheckByArg(ArgNameType argName, VtSymbol* sym, double param, int 
 		if (buyVec.size() == 0 || index <= buyVec.size())
 			return false;
 
-		if (buyVec[index] *param > sellVec[index]) {
+		if (buyVec[index] * param > sellVec[index]) {
 			return true;
 		}
 		else {
 			return false;
 		}
 	}
-		break;
+								break;
 	case ArgNameType::UasGtUbs: {
 		std::string code = sym->ShortCode + (_T("SHTQ"));
 		std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
@@ -908,14 +908,14 @@ bool VtSystem::CheckByArg(ArgNameType argName, VtSymbol* sym, double param, int 
 		if (buyVec.size() == 0 || index <= buyVec.size())
 			return false;
 
-		if (sellVec[index]*param > buyVec[index]) {
+		if (sellVec[index] * param > buyVec[index]) {
 			return true;
 		}
 		else {
 			return false;
 		}
 	}
-		break;
+								break;
 	case ArgNameType::KbsGtKas: {
 		std::string code = sym->ShortCode + (_T("SHTQ"));
 		std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
@@ -935,14 +935,14 @@ bool VtSystem::CheckByArg(ArgNameType argName, VtSymbol* sym, double param, int 
 		if (buyVec.size() == 0 || index <= buyVec.size())
 			return false;
 
-		if (buyVec[index]*param > sellVec[index]) {
+		if (buyVec[index] * param > sellVec[index]) {
 			return true;
 		}
 		else {
 			return false;
 		}
 	}
-		break;
+								break;
 	case ArgNameType::KasGtKbs: {
 		std::string code = sym->ShortCode + (_T("SHTQ"));
 		std::string dataKey = VtChartDataManager::MakeChartDataKey(code, VtChartType::MIN, _Cycle);
@@ -962,14 +962,14 @@ bool VtSystem::CheckByArg(ArgNameType argName, VtSymbol* sym, double param, int 
 		if (buyVec.size() == 0 || index <= buyVec.size())
 			return false;
 
-		if (sellVec[index]*param > buyVec[index]) {
+		if (sellVec[index] * param > buyVec[index]) {
 			return true;
 		}
 		else {
 			return false;
 		}
 	}
-		break;
+								break;
 	default:
 		break;
 	}
@@ -1137,6 +1137,8 @@ bool VtSystem::PutLiqOrder(VtPosition* posi)
 		VtOrderManager* orderMgr = orderMgrSelector->FindAddOrderManager(acnt->AccountNo);
 
 		HdOrderRequest request;
+		request.Type = (int)_SysTargetType;
+		request.StratageName = _Name;
 		request.Amount = std::abs(posi->OpenQty);
 		if (acnt->AccountLevel() == 0) { // 본계좌 일 때
 			request.AccountNo = acnt->AccountNo;
@@ -1295,7 +1297,7 @@ int VtSystem::FindDateIndex(double date, std::vector<double>& dateArray)
 	return -1;
 }
 
-void VtSystem::PutOrder(int price, VtPositionType position, VtPriceType priceType )
+void VtSystem::PutOrder(int price, VtPositionType position, VtPriceType priceType)
 {
 	if (!_Symbol)
 		return;
@@ -1306,13 +1308,16 @@ void VtSystem::PutOrder(int price, VtPositionType position, VtPriceType priceTyp
 			LOG_F(INFO, _T("시스템 계좌 주문 : 계좌 %s, 주문개수 = %d"), _Account->AccountNo.c_str(), _OrderAmount * _SeungSu);
 			VtOrderManager* orderMgr = orderMgrSelector->FindAddOrderManager(_Account->AccountNo);
 			HdOrderRequest request;
+			request.Type = (int)_SysTargetType;
+			request.StratageName = _Name;
 			request.Price = price;
 			request.Position = position;
 			request.Amount = _OrderAmount * _SeungSu;
 			if (_Account->AccountLevel() == 0) { // 실계좌 일 때
 				request.AccountNo = _Account->AccountNo;
 				request.Password = _Account->Password;
-			} else { // 서브 계좌 일 때
+			}
+			else { // 서브 계좌 일 때
 				VtAccount* parentAcnt = _Account->ParentAccount();
 				if (parentAcnt) { // 본계좌의 정보를 넣어 준다.
 					request.AccountNo = parentAcnt->AccountNo;
@@ -1328,7 +1333,8 @@ void VtSystem::PutOrder(int price, VtPositionType position, VtPriceType priceTyp
 			if (_Account->AccountLevel() == 0) { // 실계좌일 때
 				request.SubAccountNo = _T("");
 				request.FundName = _T("");
-			} else { // 서브 계좌 일 때
+			}
+			else { // 서브 계좌 일 때
 				request.SubAccountNo = _Account->AccountNo;
 				request.FundName = _T("");
 			}
@@ -1348,6 +1354,8 @@ void VtSystem::PutOrder(int price, VtPositionType position, VtPriceType priceTyp
 				LOG_F(INFO, _T("시스템 펀드 주문 : 펀드 =%s, 계좌 %s, 주문개수 = %d"), _Fund->Name.c_str(), subAcnt->AccountNo.c_str(), _OrderAmount * _SeungSu);
 
 				HdOrderRequest request;
+				request.Type = (int)_SysTargetType;
+				request.StratageName = _Name;
 				request.Price = price;
 				request.Position = position;
 				request.Amount = _OrderAmount * subAcnt->SeungSu * _SeungSu;
@@ -1378,7 +1386,7 @@ void VtSystem::PutOrder(VtPosition* posi, int price, bool liqud /*= false*/)
 	if (!posi || posi->OpenQty == 0 || !_Symbol)
 		return;
 
-	LOG_F(INFO, _T("청산 주문 : 계좌 %s, 잔고 = %d"), posi->AccountNo.c_str() ,posi->OpenQty);
+	LOG_F(INFO, _T("청산 주문 : 계좌 %s, 잔고 = %d"), posi->AccountNo.c_str(), posi->OpenQty);
 	VtAccount* acnt = nullptr;
 	VtAccountManager* acntMgr = VtAccountManager::GetInstance();
 	acnt = acntMgr->FindAccount(posi->AccountNo);
@@ -1468,7 +1476,8 @@ bool VtSystem::LiqudAll()
 		_MaxProfit = 0.0;
 
 		return true;
-	} else {
+	}
+	else {
 		if (!_Fund)
 			return false;
 		std::vector<VtAccount*>& fundAcntList = _Fund->GetFundAccountVector();
@@ -1577,7 +1586,7 @@ void VtSystem::Save(simple::file_ostream<same_endian_type>& ss)
 	ss << _OutSignalName;
 	ss << _OrderTick; // 지정가 주문 틱수
 
-	// 시스템 매개변수를 그룹별로 저장한다.
+					  // 시스템 매개변수를 그룹별로 저장한다.
 	ss << _ArgGroupMap.size();
 	for (auto it = _ArgGroupMap.begin(); it != _ArgGroupMap.end(); ++it) {
 		VtSystemArgGroup& grp = *it;
@@ -1622,7 +1631,7 @@ void VtSystem::Load(simple::file_istream<same_endian_type>& ss)
 	ss >> _BandMulti;
 	ss >> _FilterMulti;
 	ss >> _OutSignalName;
-	ss >> _OrderTick; 
+	ss >> _OrderTick;
 
 	if (_SysTargetType == TargetType::RealAccount) {
 		VtAccountManager* acntMgr = VtAccountManager::GetInstance();
@@ -1865,8 +1874,8 @@ int VtSystem::GetDailyIndex()
 	begin = *localtime(&now);
 	//end = *localtime(&now);
 
-	begin.tm_hour = VtGlobal::OpenTime.hour; 
-	begin.tm_min = VtGlobal::OpenTime.min; 
+	begin.tm_hour = VtGlobal::OpenTime.hour;
+	begin.tm_min = VtGlobal::OpenTime.min;
 	begin.tm_sec = VtGlobal::OpenTime.sec;
 	//end.tm_hour = 9;
 	//end.tm_min = 5;
@@ -2088,7 +2097,8 @@ void VtSystem::AddSystemArg(std::string groupName, VtSystemArg arg)
 	VtSystemArgGroup* argGrp = FindArgGroup(groupName);
 	if (argGrp) {
 		argGrp->AddSystemArg(arg.Name, arg);
-	} else {
+	}
+	else {
 		VtSystemArgGroup group;
 		group.Name(groupName);
 		group.AddSystemArg(arg.Name, arg);
@@ -2254,7 +2264,7 @@ void VtSystem::UpdateSystem(int index)
 	}
 	else {
 		if (!_Fund)
-			return ;
+			return;
 
 		int count = 0;
 		VtPosition posi = _Fund->GetPosition(_Symbol->ShortCode, count);
@@ -2383,7 +2393,8 @@ void VtSystem::GetHLChannelValue(int index, int period, double* high, double* lo
 
 	if (index < period) {
 		highest = Chart::NoValue;
-	} else {
+	}
+	else {
 		highest = high[index - period];
 		for (int k = index - period; k <= index - 1; ++k) {
 			if (high[k] > highest)
@@ -2393,7 +2404,8 @@ void VtSystem::GetHLChannelValue(int index, int period, double* high, double* lo
 
 	if (index < period) {
 		lowest = Chart::NoValue;
-	} else {
+	}
+	else {
 		lowest = low[index - period];
 		for (int k = index - period; k <= index - 1; ++k) {
 			if (low[k] < lowest)
@@ -2408,7 +2420,8 @@ double VtSystem::GetHighest(int index, int period, double* data)
 
 	if (index < period) {
 		highest = Chart::NoValue;
-	} else {
+	}
+	else {
 		highest = data[index - period];
 		for (int k = index - period; k <= index - 1; ++k) {
 			if (data[k] > highest)
@@ -2425,7 +2438,8 @@ double VtSystem::GetLowest(int index, int period, double* data)
 
 	if (index < period) {
 		lowest = Chart::NoValue;
-	} else {
+	}
+	else {
 		lowest = data[index - period];
 		for (int k = index - period; k <= index - 1; ++k)
 		{
@@ -2526,7 +2540,7 @@ void VtSystem::ReadExtraArgs()
 				else if (arg.Name.compare(_T("c>o,c<o")) == 0) {
 					_EnableByOpen = true;
 				}
-			} 
+			}
 			else {
 				if (arg.Name.compare(_T("ATRMulti")) == 0) {
 					_ATRMulti = std::stod(arg.sValue);
@@ -2703,7 +2717,7 @@ int VtSystem::EntriesToday(double datetime)
 	for (auto it = SignalVector.rbegin(); it != SignalVector.rend(); ++it) {
 		VtSignal* sig = *it;
 		double sigDate = Chart::getChartYMD(sig->DateTime());
-		if ((sig->SignalType() == VtPositionType::Buy || sig->SignalType() == VtPositionType::Sell) && 
+		if ((sig->SignalType() == VtPositionType::Buy || sig->SignalType() == VtPositionType::Sell) &&
 			givenDate == sigDate)
 			count++;
 		if (sigDate < givenDate)
@@ -2790,10 +2804,10 @@ void VtSystem::SaveToXml(pugi::xml_node& node)
 
 	system_child = node.append_child("target_profit");
 	system_child.append_child(pugi::node_pcdata).set_value(std::to_string(_TargetProfit).c_str());
-	
+
 	system_child = node.append_child("max_entrance");
 	system_child.append_child(pugi::node_pcdata).set_value(std::to_string(_MaxEntrance).c_str());
-	
+
 	system_child = node.append_child("liq_price_type");
 	system_child.append_child(pugi::node_pcdata).set_value(std::to_string((int)(_LiqPriceType)).c_str());
 
