@@ -192,7 +192,8 @@ IDB_BITMAP_PORT         BITMAP                  "res\\bmp00006.bmp"
 
 IDB_BITMAP_GLASS        BITMAP                  "res\\search.bmp"
 
-IDB_BITMAP_S2           BITMAP                  "res\\s2.bmp"
+IDB_BITMAP_S2           BITMAP                  "C:\\Users\\shiwan sung\\Pictures\\s2.bmp"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
