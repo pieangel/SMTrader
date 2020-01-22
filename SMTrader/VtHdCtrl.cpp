@@ -7764,7 +7764,7 @@ void VtHdCtrl::OnDataRecv(CString sTrCode, LONG nRqID)
 			strMsg.Format("[%s][%s][%s]\n", strAcctNo, strAcctNm, strAcctGb);
 			//WriteLog(strMsg);
 			//TRACE(strMsg);
-			//if (strAcctGb.Compare(_T("9")) == 0) {
+			if (strAcctGb.Compare(_T("9")) == 0 || strAcctGb.Compare(_T("1")) == 0) {
 				VtAccountInfo acnt_info;
 				acnt_info.account_no = (LPCTSTR)strAcctNo.TrimRight();
 				acnt_info.account_name = (LPCTSTR)strAcctNm.TrimRight();
@@ -7772,7 +7772,7 @@ void VtHdCtrl::OnDataRecv(CString sTrCode, LONG nRqID)
 				acntMgr->ServerAccountMap[acnt_info.account_no] = acnt_info;
 				VtRealtimeRegisterManager* regMgr = VtRealtimeRegisterManager::GetInstance();
 				regMgr->RegisterAccount(acnt_info.account_no);
-			//}
+			}
 
 		}
 	}
