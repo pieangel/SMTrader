@@ -51,7 +51,7 @@ void VtChartOrderManager::RemovePreOrder(int orderNo)
 	}
 }
 
-void VtChartOrderManager::RemoveAccepted(int orderNo)
+void VtChartOrderManager::RemoveAccepted(std::string orderNo)
 {
 	auto it = AcceptedMap.find(orderNo);
 	if (it != AcceptedMap.end())
@@ -60,7 +60,7 @@ void VtChartOrderManager::RemoveAccepted(int orderNo)
 	}
 }
 
-void VtChartOrderManager::RemoveFilled(int orderNo)
+void VtChartOrderManager::RemoveFilled(std::string orderNo)
 {
 	auto it = FilledMap.find(orderNo);
 	if (it != FilledMap.end())

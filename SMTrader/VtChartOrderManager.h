@@ -11,8 +11,8 @@ public:
 	~VtChartOrderManager();
 	
 	std::map<int, VtOrder*> PreOrderMap;
-	std::map<int, VtOrder*> AcceptedMap;
-	std::map<int, VtOrder*> FilledMap;
+	std::map<std::string, VtOrder*> AcceptedMap;
+	std::map<std::string, VtOrder*> FilledMap;
 
 	void OrderArrived(VtOrder* order);
 	void AddPreOrder(VtOrder* order);
@@ -20,8 +20,8 @@ public:
 	void OrderFilled(VtOrder* order);
 
 	void RemovePreOrder(int orderNo);
-	void RemoveAccepted(int orderNo);
-	void RemoveFilled(int orderNo);
+	void RemoveAccepted(std::string orderNo);
+	void RemoveFilled(std::string orderNo);
 	XYChart* Chart() const { return _Chart; }
 	void Chart(XYChart* val) { _Chart = val; }
 	int DefaultOrderQty() const { return _DefaultOrderQty; }

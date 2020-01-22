@@ -192,7 +192,7 @@ IDB_BITMAP_PORT         BITMAP                  "res\\bmp00006.bmp"
 
 IDB_BITMAP_GLASS        BITMAP                  "res\\search.bmp"
 
-IDB_BITMAP_S2           BITMAP                  "C:\\Users\\shiwan sung\\Pictures\\s2.bmp"
+IDB_BITMAP_S2           BITMAP                  "res\\s2.bmp"
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -545,10 +545,9 @@ CAPTION "전략설정창"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     LTEXT           "최종진입가격",IDC_STATIC,64,162,45,8
-    LTEXT           "전략",IDC_STATIC,5,3,16,8
     COMBOBOX        IDC_COMBO_STRATEGY,29,0,89,240,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON      "계좌",IDC_BTN_ACCOUNT,1,14,27,14
-    LTEXT           "",IDC_STATIC_ACCOUNT,30,15,61,13,WS_BORDER
+    LTEXT           "",IDC_STATIC_ACCOUNT,29,15,61,13,WS_BORDER
     PUSHBUTTON      "종목",IDC_BTN_SYMBOL,92,14,27,14
     LTEXT           "",IDC_STATIC_SYMBOL,121,15,50,13,WS_BORDER
     LTEXT           "손익:",IDC_STATIC,177,17,22,8
@@ -586,6 +585,7 @@ BEGIN
     CONTROL         "실행",IDC_CHECK_RUN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,155,2,27,10
     LTEXT           "",IDC_STATIC_POSITION,188,2,41,8
     PUSHBUTTON      "주문",IDC_BTN_SYS_ORDER,0,159,25,14
+    PUSHBUTTON      "전략",IDC_BTN_ORDER_HISTORY,1,0,27,14
 END
 
 IDD_SYSTEM_PROPERTY DIALOGEX 0, 0, 140, 220
@@ -1595,6 +1595,14 @@ BEGIN
     CONTROL         "Custom1",IDC_STATIC_REAL_TICK,"MFCGridCtrl",WS_TABSTOP,321,69,106,376
 END
 
+IDD_ORDER_LOG DIALOGEX 0, 0, 393, 440
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+CAPTION "시스템 주문 로그창"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "",IDC_STATIC_GRID,0,0,393,439,WS_BORDER
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -2030,6 +2038,10 @@ BEGIN
     BEGIN
         RIGHTMARGIN, 427
     END
+
+    IDD_ORDER_LOG, DIALOG
+    BEGIN
+    END
 END
 #endif    // APSTUDIO_INVOKED
 
@@ -2325,6 +2337,11 @@ BEGIN
 END
 
 IDD_ORDER_LEFT AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_ORDER_LOG AFX_DIALOG_LAYOUT
 BEGIN
     0
 END

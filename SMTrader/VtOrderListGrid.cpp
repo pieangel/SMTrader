@@ -137,7 +137,7 @@ void VtOrderListGrid::InitGrid()
 {
 	VtSymbolManager* symMgr = VtSymbolManager::GetInstance();
 	VtTotalOrderManager* totalOrderMgr = VtTotalOrderManager::GetInstance();
-	std::map<int, VtOrder*>& orderMap = totalOrderMgr->GetOrderMap();
+	std::map<std::string, VtOrder*>& orderMap = totalOrderMgr->GetOrderMap();
 	int i = 2;
 	// 주문을 역순으로 표시
 	for (auto it = orderMap.rbegin(); it != orderMap.rend(); ++it) {
@@ -204,10 +204,10 @@ void VtOrderListGrid::InitGrid()
 		QuickSetText(8, i, order->tradeTime.c_str());
 		QuickRedrawCell(8, i);
 		// 주문번호
-		QuickSetNumber(9, i, order->orderNo);
+		QuickSetText(9, i, order->orderNo.c_str());
 		QuickRedrawCell(9, i);
 		// 원주문번호
-		QuickSetNumber(10, i, order->oriOrderNo);
+		QuickSetText(10, i, order->oriOrderNo.c_str());
 		QuickRedrawCell(10, i);
 		// 주문타입
 		if (order->priceType == VtPriceType::Price)
@@ -288,10 +288,10 @@ void VtOrderListGrid::InitGrid(std::vector<VtOrder*>&& orderMap)
 		QuickSetText(8, i, order->tradeTime.c_str());
 		QuickRedrawCell(8, i);
 		// 주문번호
-		QuickSetNumber(9, i, order->orderNo);
+		QuickSetText(9, i, order->orderNo.c_str());
 		QuickRedrawCell(9, i);
 		// 원주문번호
-		QuickSetNumber(10, i, order->oriOrderNo);
+		QuickSetText(10, i, order->oriOrderNo.c_str());
 		QuickRedrawCell(10, i);
 		// 주문타입
 		if (order->priceType == VtPriceType::Price)

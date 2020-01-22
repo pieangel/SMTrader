@@ -167,6 +167,7 @@ BEGIN_MESSAGE_MAP(VtOrderWndHd, CDialog)
 	ON_WM_MOUSELEAVE()
 	ON_WM_MOUSEHOVER()
 	ON_EN_CHANGE(IDC_EDIT_PWD, &VtOrderWndHd::OnEnChangeEditPwd)
+	ON_CBN_DROPDOWN(IDC_COMBO_ACCOUNT_HD, &VtOrderWndHd::OnCbnDropdownComboAccountHd)
 END_MESSAGE_MAP()
 
 
@@ -1054,6 +1055,9 @@ void VtOrderWndHd::InitAccount()
 	_StaticAcnt.SetWindowText(_T("계좌"));
 	std::map<std::string, std::pair<int, VtAccount*>> comboMap;
 
+	// 먼저 기존 계좌를 지워준다.
+	_ComboAcnt.ResetContent();
+
 	VtAccountManager* acntMgr = VtAccountManager::GetInstance();
 	int selAcnt = -1, index = 0;
 	std::string acntName;
@@ -1907,6 +1911,12 @@ void VtOrderWndHd::OnEnChangeEditPwd()
 		}
 	}
 }
+
+void VtOrderWndHd::OnCbnDropdownComboAccountHd()
+{
+	InitAccount();
+}
+
 
 void VtOrderWndHd::SaveToXml(pugi::xml_node& node_order_window)
 {

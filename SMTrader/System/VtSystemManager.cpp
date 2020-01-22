@@ -43,6 +43,10 @@
 #include "../VtChartDataCollector.h"
 #include "../VtKo3s.h"
 #include "../VtKo4b.h"
+#include "../Market/SmMarketManager.h"
+#include "../Market/SmMarket.h"
+#include "../Market/SmProduct.h"
+
 using namespace std::chrono;
 
 VtPriceType VtSystemManager::PriceType = VtPriceType::Price;
@@ -394,7 +398,7 @@ void VtSystemManager::UpdateRealtimeArgs(VtChartData* chartData)
 		Kas = sym->Hoga.TotSellQty;
 		Kbc = sym->Hoga.TotBuyNo;
 		Kac = sym->Hoga.TotSellNo;
-	} 
+	}
 	else if (symCode.find(_T("106")) != std::string::npos) {
 		Qbs = sym->Hoga.TotBuyQty;
 		Qas = sym->Hoga.TotSellQty;
@@ -459,8 +463,10 @@ void VtSystemManager::InitDataSource(int cycle)
 {
 	VtRealtimeRegisterManager* realRegiMgr = VtRealtimeRegisterManager::GetInstance();
 	VtProductCategoryManager* prdtCatMgr = VtProductCategoryManager::GetInstance();
+	SmMarketManager* mrktMgr = SmMarketManager::GetInstance();
+	SmProduct* product = mrktMgr->FindProduct("101");
 	// Kospi200 총호가 수량과 건수
-	VtSymbol* sym = prdtCatMgr->GetRecentFutureSymbol(_T("101F"));
+	VtSymbol* sym = product->GetRecentMonthSymbol();
 	if (sym) {
 		std::string symCode = sym->ShortCode;
 		realRegiMgr->RegisterProduct(symCode);
@@ -481,8 +487,9 @@ void VtSystemManager::InitDataSource(int cycle)
 		AddDataSource(code, VtChartType::MIN, cycle);
 		_ArgMap[symCode] = sym;
 	}
+	product = mrktMgr->FindProduct("106");
 	// 코스닥 150 선눌지수와 건수
-	sym = prdtCatMgr->GetRecentFutureSymbol(_T("106F"));
+	sym = product->GetRecentMonthSymbol();
 	if (sym) {
 		std::string symCode = sym->ShortCode;
 		// 실시간 데이터 등록
@@ -504,9 +511,9 @@ void VtSystemManager::InitDataSource(int cycle)
 		AddDataSource(code, VtChartType::MIN, cycle);
 		_ArgMap[symCode] = sym;
 	}
-
 	// 원달러 선물지수와 건수
-	sym = prdtCatMgr->GetRecentFutureSymbol(_T("175F"));
+	product = mrktMgr->FindProduct("175");
+	sym = product->GetRecentMonthSymbol();
 	if (sym) {
 		std::string symCode = sym->ShortCode;
 		// 실시간 데이터 등록
@@ -553,4 +560,5 @@ void VtSystemManager::InitDataSource(VtSymbol* sym, int cycle)
 	// 매수호가총건수
 	code = symCode + (_T("BHTC"));
 	AddDataSource(code, VtChartType::MIN, cycle);
+	_ArgMap[symCode] = sym;
 }

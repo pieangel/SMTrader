@@ -49,7 +49,7 @@ std::vector<VtOrder*> HdOrderDialog::FindByAccount(std::pair<int, std::string> a
 	int type = std::get<0>(acnt);
 	std::string acntNo = std::get<1>(acnt);
 	VtTotalOrderManager* totalOrderMgr = VtTotalOrderManager::GetInstance();
-	std::map<int, VtOrder*>& orderMap = totalOrderMgr->GetOrderMap();
+	std::map<std::string, VtOrder*>& orderMap = totalOrderMgr->GetOrderMap();
 	for (auto it = orderMap.rbegin(); it != orderMap.rend(); ++it) {
 		VtOrder* order = it->second;
 		if (type == 0) {
@@ -72,7 +72,7 @@ std::vector<VtOrder*> HdOrderDialog::FindBySymbol(std::string symbolCode)
 {
 	std::vector<VtOrder*> orderList;
 	VtTotalOrderManager* totalOrderMgr = VtTotalOrderManager::GetInstance();
-	std::map<int, VtOrder*>& orderMap = totalOrderMgr->GetOrderMap();
+	std::map<std::string, VtOrder*>& orderMap = totalOrderMgr->GetOrderMap();
 	for (auto it = orderMap.rbegin(); it != orderMap.rend(); ++it) {
 		VtOrder* order = it->second;
 		if (order->shortCode.compare(symbolCode) == 0)
@@ -86,7 +86,7 @@ BOOL HdOrderDialog::OnInitDialog()
 	CDialogEx::OnInitDialog();
 
 	VtTotalOrderManager* totalOrderMgr = VtTotalOrderManager::GetInstance();
-	std::map<int, VtOrder*>& orderMap = totalOrderMgr->GetOrderMap();
+	std::map<std::string, VtOrder*>& orderMap = totalOrderMgr->GetOrderMap();
 	for (auto it = orderMap.begin(); it != orderMap.end(); ++it) {
 		VtOrder* order = it->second;
 		_AccountSet.insert(std::make_pair(0, order->AccountNo));

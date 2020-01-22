@@ -13,8 +13,9 @@ using Poco::NumberFormatter;
 
 VtSysLogGrid::VtSysLogGrid()
 {
-	_MaxRow = 20;
 	_CellHeight = 18;
+	_RowCount = 120;
+	_MaxRow = _RowCount;
 }
 
 
@@ -139,6 +140,19 @@ void VtSysLogGrid::UpdateLog()
 	}
 }
 
+void VtSysLogGrid::UpdateOrderLog(std::vector<std::pair<std::string, std::string>> log_vec)
+{
+	_OrderLogVec = log_vec;
+	InitOrderLog();
+}
+
+void VtSysLogGrid::Resize(CRect& rect)
+{
+	_MaxRow = GetMaxRow(rect);
+	SetColWidth(2, rect.Width() - 120 - 5);
+	InitOrderLog();
+}
+
 void VtSysLogGrid::OnSetup()
 {
 	_defFont.CreateFont(12, 0, 0, 0, 500, 0, 0, 0, 0, 0, 0, 0, 0, _T("굴림"));
@@ -158,7 +172,10 @@ void VtSysLogGrid::OnSetup()
 	for (int i = 0; i < _RowCount; i++) {
 		QuickSetAlignment(0, i, UG_ALIGNCENTER | UG_ALIGNVCENTER);
 		QuickSetAlignment(1, i, UG_ALIGNRIGHT | UG_ALIGNVCENTER);
-		QuickSetAlignment(2, i, UG_ALIGNRIGHT | UG_ALIGNVCENTER);
+		if (_Mode == 0)
+			QuickSetAlignment(2, i, UG_ALIGNRIGHT | UG_ALIGNVCENTER);
+		else
+			QuickSetAlignment(2, i, UG_ALIGNLEFT | UG_ALIGNVCENTER);
 
 		QuickSetFont(0, i, &_defFont);
 		QuickSetFont(1, i, &_defFont);
@@ -171,29 +188,50 @@ void VtSysLogGrid::OnSetup()
 	SetVS_Width(0);
 	SetHS_Height(0);
 	SetColTitle();
-	UpdateLog();
+	if (_Mode == 0)
+		UpdateLog();
 }
 
 void VtSysLogGrid::SetColTitle()
 {
 	const int ColCount = _ColCount;
-	CUGCell cell;
-	LPCTSTR title[3] = { "시간", "오류코드", "오류내용" };
-	_ColWidths.push_back(120);
-	_ColWidths.push_back(80);
-	_ColWidths.push_back(262);
+	if (_Mode == 0) {
+		CUGCell cell;
+		LPCTSTR title[3] = { "시간", "오류코드", "오류내용" };
+		_ColWidths.push_back(120);
+		_ColWidths.push_back(80);
+		_ColWidths.push_back(262);
 
-	//SetRowHeight(-1, 22);
+		//SetRowHeight(-1, 22);
 
-	for (int i = 0; i < _ColCount; i++) {
-		SetColWidth(i, _ColWidths[i]);
-		QuickSetText(i, -1, title[i]);
-		GetCell(i, -1, &cell);
-		cell.SetBackColor(VtGlobal::GridTitleBackColor);
-		cell.SetTextColor(VtGlobal::GridTitleTextColor);
-		SetCell(i, -1, &cell);
-		QuickSetFont(i, -1, &_defFont);
-		RedrawCell(i, -1);
+		for (int i = 0; i < _ColCount; i++) {
+			SetColWidth(i, _ColWidths[i]);
+			QuickSetText(i, -1, title[i]);
+			GetCell(i, -1, &cell);
+			cell.SetBackColor(VtGlobal::GridTitleBackColor);
+			cell.SetTextColor(VtGlobal::GridTitleTextColor);
+			SetCell(i, -1, &cell);
+			QuickSetFont(i, -1, &_defFont);
+			RedrawCell(i, -1);
+		}
+	}
+	else {
+		CUGCell cell;
+		LPCTSTR title[3] = { "시간", "코드", "주문내용" };
+		_ColWidths.push_back(120);
+		_ColWidths.push_back(0);
+		_ColWidths.push_back(342);
+
+		for (int i = 0; i < _ColCount; i++) {
+			SetColWidth(i, _ColWidths[i]);
+			QuickSetText(i, -1, title[i]);
+			GetCell(i, -1, &cell);
+			cell.SetBackColor(VtGlobal::GridTitleBackColor);
+			cell.SetTextColor(VtGlobal::GridTitleTextColor);
+			SetCell(i, -1, &cell);
+			QuickSetFont(i, -1, &_defFont);
+			RedrawCell(i, -1);
+		}
 	}
 }
 
@@ -250,6 +288,23 @@ void VtSysLogGrid::OnReceiveQuote(VtSymbol* sym)
 		sym->Quote.QuoteItemQ.pop_back();
 }
 
+void VtSysLogGrid::InitOrderLog()
+{
+	int i = 0;
+	for (auto it = _OrderLogVec.begin(); it != _OrderLogVec.end(); ++it) {
+		std::pair<std::string, std::string> item = *it;
+		QuickSetText(0, i, item.first.c_str());
+		QuickSetNumber(1, i, i);
+		QuickSetText(2, i, item.second.c_str());
+		QuickRedrawCell(0, i);
+		QuickRedrawCell(1, i);
+		QuickRedrawCell(2, i);
+		i++;
+		if (_MaxRow == i)
+			break;
+	}
+}
+
 int VtSysLogGrid::GetMaxRow()
 {
 	int rowHeight = _CellHeight;
@@ -262,4 +317,12 @@ int VtSysLogGrid::GetMaxRow()
 	return count - 1;
 }
 
+int VtSysLogGrid::GetMaxRow(CRect& rect)
+{
+	int rowHeight = _CellHeight;
+
+	int count = (rect.bottom - rect.top) / rowHeight;
+
+	return count - 1;
+}
 

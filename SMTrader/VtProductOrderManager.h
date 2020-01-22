@@ -18,7 +18,7 @@ public:
 
 	void ClearAccepted();
 	void ClearFilled();
-	std::map<int, VtOrder*> AcceptedMap;
+	std::map<std::string, VtOrder*> AcceptedMap;
 	std::list<VtOrder*> FilledList;
 
 	void OnRemain(VtPosition&& curPosi);
@@ -48,35 +48,35 @@ public:
 	VtOrderManager* OrderMgr() const { return _OrderMgr; }
 	void OrderMgr(VtOrderManager* val) { _OrderMgr = val; }
 
-	void RemoveAcceptedOrder(int oldOrderNo);
+	void RemoveAcceptedOrder(std::string oldOrderNo);
 	void OnReceiveQuoteHd(VtSymbol* sym);
 	int GetAcceptedOrderCount();
 	bool Init() const { return _Init; }
 	void Init(bool val) { _Init = val; }
 	void AddToRemain(VtOrder* order);
-	void RemoveFromRemain(int orderNo);
+	void RemoveFromRemain(std::string orderNo);
 	void AddToLiqud(VtOrder* order);
-	void RemoveFromLiqud(int orderNo);
+	void RemoveFromLiqud(std::string orderNo);
 	void RegisterOrderPosition(VtOrder* order, VtPosition* posi);
-	std::map<int, VtOrder*> GetRemainMap() {
+	std::map<std::string, VtOrder*> GetRemainMap() {
 		return RemainMap;
 	}
 
 	void RefreshAcceptedOrders();
-	void RefreshAcceptedOrder(int orderNo);
+	void RefreshAcceptedOrder(std::string orderNo);
 private:
 	// 잔고 주문 맵
-	std::map<int, VtOrder*> RemainMap;
+	std::map<std::string, VtOrder*> RemainMap;
 	// 청산 요청 중인 맵 - 청산이 끝나면 사라진다.
 	// 청산은 현재 잔고로 있던 주문을 주문 번호를 청산요청과 함께 보낸다.
 	// 청산 요청으로 들어온 주문번호를 찾아서 청산해 준다.
-	std::map<int, VtOrder*> LiqudMap;
+	std::map<std::string, VtOrder*> LiqudMap;
 	VtOrderManager* _OrderMgr = nullptr;
 	std::string _ProductCode;
 	VtPosition* _Position = nullptr;
 	VtSymbolMaster* _SymbolMaster = nullptr;
 	VtAccount* _Account = nullptr;
-	VtOrder* FindAccepted(int orderNo);
+	VtOrder* FindAccepted(std::string orderNo);
 
 	void ResetPositionValue(VtPosition* posi);
 	double CalcOpenPL(VtOrder* order, double avgPrice, int count);
@@ -90,7 +90,7 @@ private:
 	bool _Init = false;
 	void AdjustRemainQ(int newRemainQty);
 	void RemoveAllRemain();
-	void RemoveByOrderNo(int orderNo);
+	void RemoveByOrderNo(std::string orderNo);
 public:
 	void Save(simple::file_ostream<same_endian_type>& ss);
 	void Load(simple::file_istream<same_endian_type>& ss);

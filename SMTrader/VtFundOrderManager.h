@@ -22,7 +22,7 @@ public:
 	{
 		return _OrderMgrMap;
 	}
-	virtual std::map<int, VtOrder*> GetTotalRemain(std::string symbolCode);
+	virtual std::map<std::string, VtOrder*> GetTotalRemain(std::string symbolCode);
 	virtual void ClearRemainOrderMap(std::string symbolCode);
 private:
 	VtFund* _CurFund;

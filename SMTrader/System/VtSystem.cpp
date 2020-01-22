@@ -29,6 +29,7 @@
 #include "../VtOutSignalDefManager.h"
 #include "../Util/VtTime.h"
 #include "../VtScheduler.h"
+#include "../VtStringUtil.h"
 
 VtSystem::VtSystem()
 {
@@ -50,6 +51,12 @@ VtSystem::VtSystem()
 	_LiqTime.hour = 15;
 	_LiqTime.min = 29;
 	_LiqTime.sec = 0;
+
+	for (int i = 0; i < 20; i++) {
+		std::string now_time = VtStringUtil::NowTime();
+		std::string msg = "test message";
+		LogVector.push_back(std::make_pair(now_time, msg));
+	}
 }
 
 
@@ -121,9 +128,11 @@ void VtSystem::OnTimer()
 
 }
 
+// 마지막 종가 청산을 위한 타이머 핸들러.
 void VtSystem::OnRegularTimer()
 {
-	if (_AllSettled)
+	// 시스템 실행을 풀었거나 모두 청산되었을 경우에는 정규 타이머에 의한 청산이 동작하지 않게 한다. 
+	if (!_Enable || _AllSettled)
 		return;
 	if (LiqByEndTime()) {
 		// 여기서 현재 포지션 상태를 설정해 추가로 주문이 나가지 않게 한다.

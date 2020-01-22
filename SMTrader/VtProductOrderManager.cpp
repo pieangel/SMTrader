@@ -188,6 +188,8 @@ void VtProductOrderManager::OnFilled(VtOrder* order)
 	int buho = order->orderPosition == VtPositionType::Buy ? 1 : -1;
 	if (!posi) { // 포지션이 없는 경우
 		posi = acnt->CreatePosition(order);
+		// 전략 이름을 넣어 준다.
+		posi->StrategyName = order->StrategyName;
 		posi->Position = order->orderPosition;
 		posi->AvgPrice = order->filledPrice;
 		posi->OpenQty = buho *order->filledQty;
@@ -199,6 +201,8 @@ void VtProductOrderManager::OnFilled(VtOrder* order)
 		return;
 	} else  { // 포지션이 있는 경우
 		RegisterOrderPosition(order, posi);
+		// 전략 이름을 넣어 준다.
+		posi->StrategyName = order->StrategyName;
 		if (order->orderPosition == VtPositionType::Sell) { //체결수량이 매도	
 			if (posi->OpenQty > 0) { // 보유수량이 매수			
 				if (posi->OpenQty >= order->filledQty) { //보유수량이 크거나 같은 경우
@@ -212,7 +216,7 @@ void VtProductOrderManager::OnFilled(VtOrder* order)
 						posi->OpenProfitLoss = 0;
 					}
 					if ((order->RequestType == 1 || order->RequestType == 2) && 
-						 order->LiqReqOrderNo > 0) { // 손절이나 익절로 인한  지정된 청산 주문이다.
+						 order->LiqReqOrderNo.compare("-1") != 0) { // 손절이나 익절로 인한  지정된 청산 주문이다.
 						// 지정된 주문을 없애 준다.
 						RemoveByOrderNo(order->LiqReqOrderNo);
 					}
@@ -259,7 +263,7 @@ void VtProductOrderManager::OnFilled(VtOrder* order)
 					}
 
 					if ((order->RequestType == 1 || order->RequestType == 2) &&
-						order->LiqReqOrderNo > 0) { // 손절이나 익절로 인한  지정된 청산 주문이다.
+						order->LiqReqOrderNo.compare("-1") != 0) { // 손절이나 익절로 인한  지정된 청산 주문이다.
 													// 지정된 주문을 없애 준다.
 						RemoveByOrderNo(order->LiqReqOrderNo);
 					} else { // 지정된 청산 주문이 아닐 경우
@@ -375,7 +379,7 @@ void VtProductOrderManager::CancelAllAccepted()
 	}
 }
 
-VtOrder* VtProductOrderManager::FindAccepted(int orderNo)
+VtOrder* VtProductOrderManager::FindAccepted(std::string orderNo)
 {
 	auto it = AcceptedMap.find(orderNo);
 	if (it != AcceptedMap.end())
@@ -384,7 +388,7 @@ VtOrder* VtProductOrderManager::FindAccepted(int orderNo)
 		return nullptr;
 }
 
-void VtProductOrderManager::RemoveAcceptedOrder(int oldOrderNo)
+void VtProductOrderManager::RemoveAcceptedOrder(std::string oldOrderNo)
 {
 	auto it = AcceptedMap.find(oldOrderNo);
 	if (it != AcceptedMap.end())
@@ -412,7 +416,7 @@ void VtProductOrderManager::AddToRemain(VtOrder* order)
 	RemainMap[order->orderNo] = order;
 }
 
-void VtProductOrderManager::RemoveFromRemain(int orderNo)
+void VtProductOrderManager::RemoveFromRemain(std::string orderNo)
 {
 	auto it = RemainMap.find(orderNo);
 	if (it != RemainMap.end()) {
@@ -428,7 +432,7 @@ void VtProductOrderManager::AddToLiqud(VtOrder* order)
 	LiqudMap[order->orderNo] = order;
 }
 
-void VtProductOrderManager::RemoveFromLiqud(int orderNo)
+void VtProductOrderManager::RemoveFromLiqud(std::string orderNo)
 {
 	auto it = LiqudMap.find(orderNo);
 	if (it != LiqudMap.end()) {
@@ -468,7 +472,7 @@ void VtProductOrderManager::RefreshAcceptedOrders()
 	}
 }
 
-void VtProductOrderManager::RefreshAcceptedOrder(int orderNo)
+void VtProductOrderManager::RefreshAcceptedOrder(std::string orderNo)
 {
 	auto it = AcceptedMap.find(orderNo);
 	if (it != AcceptedMap.end()) {
@@ -592,7 +596,7 @@ void VtProductOrderManager::RemoveAllRemain()
 	RemainMap.clear();
 }
 
-void VtProductOrderManager::RemoveByOrderNo(int orderNo)
+void VtProductOrderManager::RemoveByOrderNo(std::string orderNo)
 {
 	auto it = RemainMap.find(orderNo);
 	if (it != RemainMap.end()) {

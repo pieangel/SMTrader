@@ -349,12 +349,14 @@
     <ClInclude Include="SmOptionGrid.h" />
     <ClInclude Include="SmOrderGrid.h" />
     <ClInclude Include="SmOrderGridOut.h" />
+    <ClInclude Include="SmOrderManager.h" />
     <ClInclude Include="SmOrderPanel.h" />
     <ClInclude Include="SmOrderPanelOut.h" />
     <ClInclude Include="SmPLGrid.h" />
     <ClInclude Include="SmPortfolioDlg.h" />
     <ClInclude Include="SmRunInfo.h" />
     <ClInclude Include="SmSystemConnector.h" />
+    <ClInclude Include="SmSystemPositionManager.h" />
     <ClInclude Include="SmTaskManager.h" />
     <ClInclude Include="SmTickGrid.h" />
     <ClInclude Include="SMTrader.h" />
@@ -498,6 +500,7 @@
     <ClInclude Include="VtEditCtrl.h" />
     <ClInclude Include="VtEntireBand.h" />
     <ClInclude Include="VtMarketManager.h" />
+    <ClInclude Include="VtOrderLogDlg.h" />
     <ClInclude Include="VtOutSysDef.h" />
     <ClInclude Include="VtOutSystemManager.h" />
     <ClInclude Include="VtFavoritGrid.h" />
@@ -816,11 +819,13 @@
     <ClCompile Include="SmOptionGrid.cpp" />
     <ClCompile Include="SmOrderGrid.cpp" />
     <ClCompile Include="SmOrderGridOut.cpp" />
+    <ClCompile Include="SmOrderManager.cpp" />
     <ClCompile Include="SmOrderPanel.cpp" />
     <ClCompile Include="SmOrderPanelOut.cpp" />
     <ClCompile Include="SmPLGrid.cpp" />
     <ClCompile Include="SmPortfolioDlg.cpp" />
     <ClCompile Include="SmSystemConnector.cpp" />
+    <ClCompile Include="SmSystemPositionManager.cpp" />
     <ClCompile Include="SmTaskManager.cpp" />
     <ClCompile Include="SmTickGrid.cpp" />
     <ClCompile Include="SMTrader.cpp" />
@@ -965,6 +970,7 @@
     <ClCompile Include="VtEditCtrl.cpp" />
     <ClCompile Include="VtEntireBand.cpp" />
     <ClCompile Include="VtMarketManager.cpp" />
+    <ClCompile Include="VtOrderLogDlg.cpp" />
     <ClCompile Include="VtOutSystemManager.cpp" />
     <ClCompile Include="VtFavoritGrid.cpp" />
     <ClCompile Include="VtFDMultiAcntPage.cpp" />
@@ -1183,6 +1189,8 @@
     <Image Include="res\properties_hc.bmp" />
     <Image Include="res\properties_wnd.ico" />
     <Image Include="res\properties_wnd_hc.ico" />
+    <Image Include="res\s2.bmp" />
+    <Image Include="res\search.bmp" />
     <Image Include="res\search24.ico" />
     <Image Include="res\search_3.ico" />
     <Image Include="res\Search_4.ico" />

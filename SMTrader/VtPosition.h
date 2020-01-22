@@ -3,6 +3,9 @@
 #include "Global/VtDefine.h"
 struct VtPosition
 {
+	// 전략이름
+	std::string StrategyName;
+	// 펀드 이름 - 펀드는 서브 계좌로 이루어져 현재는 사용되지 않음
 	std::string FundName;
 	std::string SubAccountNo; // 서브 계좌 번호
 	std::string AccountNo; //	12	string	가상계좌번호

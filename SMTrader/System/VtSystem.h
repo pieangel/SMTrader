@@ -34,7 +34,7 @@ public:
 	}
 	VtSystem();
 	virtual ~VtSystem();
-	
+
 	std::map<std::string, double*> DataMap;
 	std::vector<VtSignal*> SignalVector;
 	VtSystemType SystemType() const { return _SystemType; }
@@ -174,7 +174,7 @@ public:
 	virtual bool CheckEntranceForSell(size_t index);
 	virtual bool CheckLiqForSell(size_t index);
 	virtual bool CheckLiqForBuy(size_t index);
-	
+
 	int EntryToday() const { return _EntryToday; }
 	void EntryToday(int val) { _EntryToday = val; }
 	VtSymbol* Symbol() const { return _Symbol; }
@@ -257,6 +257,7 @@ public:
 	std::string GetLiqTime();
 	std::chrono::system_clock::time_point LiqTimepoint;
 	int GetDailyIndexByChart();
+	std::vector<std::pair<std::string, std::string>> LogVector;
 protected:
 	std::mutex _LiqMutex;
 	int GetOrderPrice(VtPositionType position);

@@ -610,7 +610,7 @@ void CGridCellBase::AddOrder(VtOrder* order)
 	OrderMap[order->orderNo] = order;
 }
 
-void CGridCellBase::RemoveOrder(int orderNo)
+void CGridCellBase::RemoveOrder(std::string orderNo)
 {
 	auto it = OrderMap.find(orderNo);
 	if (it != OrderMap.end()) {

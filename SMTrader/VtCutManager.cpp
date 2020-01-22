@@ -406,7 +406,7 @@ void VtCutManager::MakePositionStopByRemain(int mode, VtSymbol* sym)
 {
 	if (!sym || !_OrderConfigMgr || !_OrderConfigMgr->OrderMgr())
 		return;
-	std::map<int, VtOrder*> remainMap = _OrderConfigMgr->OrderMgr()->GetTotalRemain(sym->ShortCode);
+	std::map<std::string, VtOrder*> remainMap = _OrderConfigMgr->OrderMgr()->GetTotalRemain(sym->ShortCode);
 	// 잔고 목록이 비어 있으면 수행하지 않는다.
 	if (remainMap.size() == 0)
 		return;
@@ -447,7 +447,7 @@ void VtCutManager::MakePositionStopByRemain(VtSymbol* sym)
 {
 	if (!sym || !_OrderConfigMgr || !_OrderConfigMgr->OrderMgr())
 		return;
-	std::map<int, VtOrder*> remainMap = _OrderConfigMgr->OrderMgr()->GetTotalRemain(sym->ShortCode);
+	std::map<std::string, VtOrder*> remainMap = _OrderConfigMgr->OrderMgr()->GetTotalRemain(sym->ShortCode);
 	// 잔고 목록이 비어 있으면 수행하지 않는다.
 	if (remainMap.size() == 0)
 		return;
@@ -667,7 +667,7 @@ bool VtCutManager::CheckProfitLoss(VtSymbol* sym)
 	if (!sym)
 		return false;
 	// 잔고 주문 목록을 가져온다.
-	std::map<int, VtOrder*> remainMap = _OrderConfigMgr->OrderMgr()->GetTotalRemain(sym->ShortCode);
+	std::map<std::string, VtOrder*> remainMap = _OrderConfigMgr->OrderMgr()->GetTotalRemain(sym->ShortCode);
 	// 잔고가 없으면 처리하지 않는다.
 	if (remainMap.size() == 0)
 		return false;
@@ -718,7 +718,7 @@ std::pair<int, VtOrder*> VtCutManager::GetTotalRemain(VtSymbol* sym, VtOrderMana
 	if (!sym || !orderMgr)
 		return std::make_pair(0, nullptr);
 
-	std::map<int, VtOrder*> remainMap = orderMgr->GetTotalRemain(sym->ShortCode);
+	std::map<std::string, VtOrder*> remainMap = orderMgr->GetTotalRemain(sym->ShortCode);
 	// 잔고 목록이 비어 있으면 수행하지 않는다.
 	if (remainMap.size() == 0)
 		return std::make_pair(0, nullptr);;
@@ -738,7 +738,7 @@ int VtCutManager::GetAvg(VtSymbol* sym)
 	if (!sym)
 		return -1;
 
-	std::map<int, VtOrder*> remainMap = _OrderConfigMgr->OrderMgr()->GetTotalRemain(sym->ShortCode);
+	std::map<std::string, VtOrder*> remainMap = _OrderConfigMgr->OrderMgr()->GetTotalRemain(sym->ShortCode);
 	// 잔고 목록이 비어 있으면 수행하지 않는다.
 	if (remainMap.size() == 0)
 		return -1;

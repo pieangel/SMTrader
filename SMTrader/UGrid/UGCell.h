@@ -171,7 +171,7 @@ protected:
 public:
 
 	std::vector<VtOrder*> OrderList;
-	std::map<int, VtOrder*> OrderMap;
+	std::map<std::string, VtOrder*> OrderMap;
 	std::vector<VtOrderRequest*> StopOrderList;
 	std::vector<HdOrderRequest*> StopOrderListHd;
 

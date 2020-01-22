@@ -68,11 +68,11 @@ public:
 	{
 		return _ArgMap;
 	}
+	void InitDataSource(VtSymbol* sym, int cycle);
 private:
 	bool _EditingSystem = false;
 	VtChartData*  AddDataSource(std::string symCode, VtChartType type, int cycle);
 	void InitDataSource(int cycle);
-	void InitDataSource(VtSymbol* sym, int cycle);
 	void RemoveTimer(VtSystem* sys);
 	std::map<std::string, VtSystem*> _SystemMap;
 	std::vector<VtSystem*> _SystemVector;

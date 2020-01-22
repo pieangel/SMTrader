@@ -1594,6 +1594,15 @@
     <ClInclude Include="SmOrderGridOut.h">
       <Filter>OrderUI</Filter>
     </ClInclude>
+    <ClInclude Include="SmSystemPositionManager.h">
+      <Filter>Position</Filter>
+    </ClInclude>
+    <ClInclude Include="VtOrderLogDlg.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="SmOrderManager.h">
+      <Filter>Order</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ChildFrm.cpp">
@@ -2853,6 +2862,15 @@
     <ClCompile Include="SmOrderGridOut.cpp">
       <Filter>OrderUI</Filter>
     </ClCompile>
+    <ClCompile Include="SmSystemPositionManager.cpp">
+      <Filter>Position</Filter>
+    </ClCompile>
+    <ClCompile Include="VtOrderLogDlg.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="SmOrderManager.cpp">
+      <Filter>Order</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="SMTrader.rc">
@@ -3038,6 +3056,12 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="..\..\..\Users\shiwan sung\Pictures\s2.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\search.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\s2.bmp">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

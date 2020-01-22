@@ -121,7 +121,7 @@ public:
 	/// <summary>
 	/// 전체 주문 맵 : 키는 주문번호
 	/// </summary>
-	std::map<int, VtOrder*> OrderMap;
+	std::map<std::string, VtOrder*> OrderMap;
 	/// <summary>
 	/// 예약 주문 목록
 	/// </summary>
@@ -130,7 +130,7 @@ public:
 	/// 접수확인 주문 목록
 	/// </summary>
 	//std::list<VtOrder*> AcceptedList;
-	std::map<int, VtOrder*> AcceptedMap;
+	std::map<std::string, VtOrder*> AcceptedMap;
 	/// <summary>
 	/// 계좌에서 가져온 현재 체결과 미체결 목록
 	/// 참조용으로 사용된다.
@@ -176,12 +176,12 @@ public:
 	/// 접수확인 주문목록에서 주문 삭제
 	/// </summary>
 	/// <param name="orderNo"></param>
-	void RemoveAccepted(int orderNo);
+	void RemoveAccepted(std::string orderNo);
 	/// <summary>
 	/// 체결 주문 목록에서 주문 삭제
 	/// </summary>
 	/// <param name="orderNo"></param>
-	void RemoveFilled(int orderNo);
+	void RemoveFilled(std::string orderNo);
 	/// <summary>
 	/// 주문 요청 번호로 주문 객체 검색
 	/// </summary>
@@ -193,19 +193,19 @@ public:
 	/// </summary>
 	/// <param name="orderNo"></param>
 	/// <returns></returns>
-	VtOrder* FindAccepted(int orderNo);
+	VtOrder* FindAccepted(std::string orderNo);
 	/// <summary>
 	/// 체결 주문에서 주문 검색
 	/// </summary>
 	/// <param name="orderNo"></param>
 	/// <returns></returns>
-	VtOrder* FindFilled(int orderNo);
+	VtOrder* FindFilled(std::string orderNo);
 	/// <summary>
 	/// 주문 목록에서 주문 검색
 	/// </summary>
 	/// <param name="orderNo"></param>
 	/// <returns></returns>
-	VtOrder* FindOrder(int orderNo);
+	VtOrder* FindOrder(std::string orderNo);
 	/// <summary>
 	/// 주문 복사
 	/// </summary>
@@ -280,7 +280,7 @@ private:
 	void AddFilledOrderToChart(VtOrder* order);
 
 	void FillRequest(VtOrderDirectRequest&& request, VtOrder* order);
-	void RemoveOriginalOrder(int oldOrderNo);
+	void RemoveOriginalOrder(std::string oldOrderNo);
 public:
 	void DirectPutOrder(VtOrderDirectRequest&& request);
 	void DirectChangeOrder(VtOrder* oldOrder, std::string newValue);
@@ -367,7 +367,7 @@ public:
 	void OnOrderFilledHd(VtOrder* order);
 
 	void RemoveAcceptedHd(VtOrder* order);
-	void RemoveAcceptedHd(std::string symbol_code, int order_no);
+	void RemoveAcceptedHd(std::string symbol_code, std::string order_no);
 
 	void OnReceiveQuoteHd(VtSymbol* sym);
 	std::string AccountNo;
@@ -378,16 +378,16 @@ public:
 	int GetAcceptedCount();
 	bool GetInit();
 	void RefreshAcceptedOrders(std::string symCode);
-	void RefreshAcceptedOrder(int orderNo);
+	void RefreshAcceptedOrder(std::string orderNo);
 public:
 	//VtProductOrderManagerSelector* ProductOrderManagerSelector() const { return _ProductOrderManagerSelector; }
 	//void ProductOrderManagerSelector(VtProductOrderManagerSelector* val) { _ProductOrderManagerSelector = val; }
 	VtProductOrderManager* GetProductOrderManager(std::string symbolCode);
 	VtProductOrderManager* FindAddProductOrderManager(std::string symbolCode);
-	virtual std::map<int, VtOrder*> GetTotalRemain(std::string symbolCode);
+	virtual std::map<std::string, VtOrder*> GetTotalRemain(std::string symbolCode);
 	virtual void ClearRemainOrderMap(std::string symbolCode);
 	int GetAvg(std::string symbolCode);
-	void GetRemainMap(std::string symbolCode, std::map<int, VtOrder*>& remainMap);
+	void GetRemainMap(std::string symbolCode, std::map<std::string, VtOrder*>& remainMap);
 private:
 	VtProductOrderManagerSelector* _ProductOrderManagerSelector = nullptr;
 	void HandleReverseConfirmModify(VtRealtimeOrder&& real);

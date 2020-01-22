@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <time.h>
 #include <ctime>
+#include <windows.h>
 
 class VtStringUtil
 {
@@ -29,5 +30,6 @@ public:
 	static std::time_t GetEpochTime(const std::string& dateTime);
 	static long long GetCurrentNanoseconds();
 	static std::time_t GetUTCTimestampByDate();
+	static std::string NowTime();
 };
 

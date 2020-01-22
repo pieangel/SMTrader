@@ -36,7 +36,7 @@ void VtSymboGrid::OnSetup()
 {
 	_defFont.CreateFont(11, 0, 0, 0, 400, 0, 0, 0, 0, 0, 0, 0, 0, _T("굴림"));
 	_titleFont.CreateFont(11, 0, 0, 0, 500, 0, 0, 0, 0, 0, 0, 0, 0, _T("굴림"));
-	
+
 	SetDoubleBufferMode(TRUE);
 	SetDefColWidth(80);
 	_RowCount = 100;
@@ -170,7 +170,7 @@ void VtSymboGrid::SetColTitle()
 {
 	CUGCell cell;
 	LPCTSTR title[4] = { "거래소", "종목명", "코드", "거래월물" };
-	int colWidth[4] = { 50, 140, 65, 80};
+	int colWidth[4] = { 50, 140, 65, 80 };
 
 	for (int i = 0; i < 3; i++)
 	{
@@ -243,7 +243,7 @@ void VtSymboGrid::SetProduct()
 			i++;
 		}
 	}
-	
+
 	_DataCount = i;
 }
 

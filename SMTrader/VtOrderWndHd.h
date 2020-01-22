@@ -225,6 +225,7 @@ private:
 public:
 	CEdit _EditPwd;
 	afx_msg void OnEnChangeEditPwd();
+	afx_msg void OnCbnDropdownComboAccountHd();
 public:
 	void SaveToXml(pugi::xml_node& node);
 	void LoadFromXml(pugi::xml_node& node);

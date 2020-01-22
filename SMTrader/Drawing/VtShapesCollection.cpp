@@ -542,12 +542,12 @@ VtElement* VtShapesCollection::FindObjectByOrder(VtOrder* order)
 	return nullptr;
 }
 
-VtElement* VtShapesCollection::FindObjectByOrderNo(int orderNo)
+VtElement* VtShapesCollection::FindObjectByOrderNo(std::string orderNo)
 {
 	for (auto it = List.begin(); it != List.end(); ++it)
 	{
 		VtElement* ele = *it;
-		if (ele->Order()->orderNo == orderNo)
+		if (ele->Order()->orderNo.compare(orderNo) == 0)
 		{
 			return ele;
 		}

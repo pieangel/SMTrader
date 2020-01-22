@@ -40,6 +40,7 @@ BEGIN_MESSAGE_MAP(HdAccountPLDlg, CDialogEx)
 	ON_WM_CLOSE()
 	ON_CBN_SELCHANGE(IDC_COMBO_ACCOUNT, &HdAccountPLDlg::OnCbnSelchangeComboAccount)
 	ON_WM_SIZE()
+	ON_CBN_DROPDOWN(IDC_COMBO_ACCOUNT, &HdAccountPLDlg::OnCbnDropdownComboAccount)
 END_MESSAGE_MAP()
 
 
@@ -143,7 +144,7 @@ void HdAccountPLDlg::InitAccount()
 	_ComboAccount.ResetContent();
 	VtGlobal* global = VtGlobal::GetInstance();
 	VtAccountManager* acntMgr = VtAccountManager::GetInstance();
-	
+
 	std::string acntName;
 	std::map<std::string, int> comboMap;
 	for (auto it = acntMgr->AccountMap.begin(); it != acntMgr->AccountMap.end(); ++it) {
@@ -167,10 +168,10 @@ void HdAccountPLDlg::InitAccount()
 			}
 		}
 	}
-	
+
 	if (comboMap.size() == 0)
 		return;
-	
+
 	int selAcnt = 0;
 	auto it = comboMap.find(_DefaultAccount);
 	it == comboMap.end() ? selAcnt = 0 : selAcnt = it->second;
@@ -279,4 +280,10 @@ void HdAccountPLDlg::OnSize(UINT nType, int cx, int cy)
 	// TODO: Add your message handler code here
 	if (_ProductGrid.GetSafeHwnd())
 		_ProductGrid.MoveWindow(0, 112, cx, cy - 20);
+}
+
+
+void HdAccountPLDlg::OnCbnDropdownComboAccount()
+{
+	InitAccount();
 }

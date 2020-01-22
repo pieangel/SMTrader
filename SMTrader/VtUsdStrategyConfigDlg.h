@@ -20,6 +20,8 @@ class VtSymbol;
 class VtAccount;
 class VtFund;
 class VtStrategyGrid;
+struct VtOrder;
+class VtOrderLogDlg;
 const int ArgTimer = 0x00000008;
 class VtUsdStrategyConfigDlg : public CDialogEx
 {
@@ -29,7 +31,7 @@ public:
 	VtUsdStrategyConfigDlg(CWnd* pParent = nullptr);   // standard constructor
 	virtual ~VtUsdStrategyConfigDlg();
 
-// Dialog Data
+	// Dialog Data
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_SYSTEM_USD };
 #endif
@@ -60,6 +62,13 @@ public:
 	virtual BOOL OnInitDialog();
 	void ClearArgMap();
 private:
+	// 콜백 이벤트
+	void RegisterOrderCallback();
+	// 주문 이벤트 콜백
+	void OnOrderEvent(VtOrder* order);
+	// 콜백 함수 취소
+	void UnregisterAllCallback();
+
 	void InitComboMap();
 	std::map<int, std::pair<std::string, VtSystem*>> _SystemMap;
 	VtUsdEntConfigGrid _EntGrid;
@@ -134,4 +143,8 @@ public:
 	CGradientStatic _StaticPosition;
 	afx_msg void OnBnClickedBtnSysOrder();
 	CShadeButtonST _BtnSysOrder;
+	afx_msg void OnBnClickedBtnOrderHistory();
+
+	VtOrderLogDlg* _LogDlg = nullptr;
+	CShadeButtonST _OrderHistoryBtn;
 };

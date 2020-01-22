@@ -760,11 +760,11 @@ void VtHdCtrl::OnNewOrderHd(CString& sTrCode, LONG& nRqID)
 	auto it = _ReqIdToRequestMap.find(nRqID);
 	if (it != _ReqIdToRequestMap.end()) {
 		HdOrderRequest req = it->second;
-		_OrderNoToRequestMap[_ttoi(strOrdNo)] = req;
+		_OrderNoToRequestMap[(LPCTSTR)strOrdNo] = req;
 	}
 
 	VtOrder* order = nullptr;
-	order = orderMgr->FindOrder(_ttoi(strOrdNo));
+	order = orderMgr->FindOrder((LPCTSTR)strOrdNo);
 	// 주문이 없다면 새로 만든다.
 	if (!order){
 		order = new VtOrder();
@@ -777,7 +777,7 @@ void VtHdCtrl::OnNewOrderHd(CString& sTrCode, LONG& nRqID)
 		// 심볼 코드
 		order->shortCode = (LPCTSTR)strSeries;
 		// 주문 번호
-		order->orderNo = _ttoi(strOrdNo);
+		order->orderNo = (LPCTSTR)(strOrdNo);
 		// 정수로 변환한 주문 가격
 		order->intOrderPrice = _ttoi(strPrice);
 		// 주문 수량
@@ -1000,6 +1000,7 @@ void VtHdCtrl::OnModifyOrderHd(CString& sTrCode, LONG& nRqID)
 	strPrice.Remove('.'); // 주문 가격 정수형으로 변환
 	strAcctNo.TrimRight(); // 계좌 번호
 	strOrdNo.TrimLeft('0'); // 주문 번호
+	strOriOrdNo.TrimLeft('0'); // 원주문 번호
 	strSeries.TrimRight(); // 심볼 코드
 	strPrice.TrimRight(); // 주문 가격 
 	strAmount.TrimRight(); // 주문 수량
@@ -1010,18 +1011,18 @@ void VtHdCtrl::OnModifyOrderHd(CString& sTrCode, LONG& nRqID)
 	HdOrderRequest* order_req = GetOrderRequestByOrderReqId(nRqID);
 	if (order_req) {
 		// 새로운 주문번호를 넣어 준다.
-		order_req->NewOrderNo = _ttoi(strOrdNo);
+		order_req->NewOrderNo = (LPCTSTR)strOrdNo;
 	}
 	// 여기서 주문요청 아이디와 주문요청 객체를 매칭해 준다.
 	auto it = _ReqIdToRequestMap.find(nRqID);
 	if (it != _ReqIdToRequestMap.end()) {
 		HdOrderRequest req = it->second;
-		_OrderNoToRequestMap[_ttoi(strOrdNo)] = req;
-		_OrderNoToRequestMap[_ttoi(strOriOrdNo)] = req;
+		_OrderNoToRequestMap[(LPCTSTR)(strOrdNo)] = req;
+		_OrderNoToRequestMap[(LPCTSTR)(strOriOrdNo)] = req;
 	}
 
 	// 정정된 원주문이 체결된 경우는 더이상 처리하지 않는다.
-	VtOrder* originOrder = orderMgr->FindOrder(_ttoi(strOriOrdNo));
+	VtOrder* originOrder = orderMgr->FindOrder((LPCTSTR)(strOriOrdNo));
 	if (originOrder && originOrder->state == VtOrderState::Filled) {
 		// 원주문을 제거해 준다.
 		orderMgr->RemoveAcceptedHd(originOrder);
@@ -1067,7 +1068,7 @@ void VtHdCtrl::OnModifyOrderHd(CString& sTrCode, LONG& nRqID)
 	}
 
 	VtOrder* order = nullptr;
-	order = orderMgr->FindOrder(_ttoi(strOrdNo));
+	order = orderMgr->FindOrder((LPCTSTR)(strOrdNo));
 	if (!order) { // 주문이 없는 경우는 처음으로 이곳으로 주문이 들어와 생성되는 것이다.
 		strMsg.Format("new ::::: OnModifyOrderHd 번호[%d][%s]처리[%s]계좌번호[%s]주문번호[%s]\n", nRqID, strExchTp, strProcTp, strAcctNo, strOrdNo);
 		//WriteLog(strMsg);
@@ -1083,13 +1084,13 @@ void VtHdCtrl::OnModifyOrderHd(CString& sTrCode, LONG& nRqID)
 		// 심볼 코드
 		order->shortCode = (LPCTSTR)strSeries;
 		// 주문 번호
-		order->orderNo = _ttoi(strOrdNo);
+		order->orderNo = (LPCTSTR)(strOrdNo);
 		// 정수로 변환된 주문 가격
 		order->intOrderPrice = _ttoi(strPrice);
 		// 주문 수량
 		order->amount = _ttoi(strAmount);
 		// 원 주문 번호
-		order->oriOrderNo = _ttoi(strOriOrdNo);
+		order->oriOrderNo = (LPCTSTR)(strOriOrdNo);
 		// 소수로 표시된 주문 가격
 		order->orderPrice = _ttof(strOriOrderPrice);
 
@@ -1313,6 +1314,8 @@ void VtHdCtrl::OnCancelOrderHd(CString& sTrCode, LONG& nRqID)
 		strAcctNo.TrimRight();
 		// 주문 번호
 		strOrdNo.TrimLeft('0');
+		// 원주문 번호
+		strOriOrdNo.TrimLeft('0');
 		// 심볼 코드
 		strSeries.TrimRight();
 		// 주문 수량
@@ -1325,18 +1328,18 @@ void VtHdCtrl::OnCancelOrderHd(CString& sTrCode, LONG& nRqID)
 		HdOrderRequest* order_req = GetOrderRequestByOrderReqId(nRqID);
 		if (order_req) {
 			// 새로운 주문번호를 넣어 준다.
-			order_req->NewOrderNo = _ttoi(strOrdNo);
+			order_req->NewOrderNo = (LPCTSTR)(strOrdNo);
 		}
 		// 여기서 주문요청 아이디와 주문요청 객체를 매칭해 준다.
 		auto it = _ReqIdToRequestMap.find(nRqID);
 		if (it != _ReqIdToRequestMap.end()) {
 			HdOrderRequest req = it->second;
-			_OrderNoToRequestMap[_ttoi(strOrdNo)] = req;
-			_OrderNoToRequestMap[_ttoi(strOriOrdNo)] = req;
+			_OrderNoToRequestMap[(LPCTSTR)(strOrdNo)] = req;
+			_OrderNoToRequestMap[(LPCTSTR)(strOriOrdNo)] = req;
 		}
 
 		// 취소된 원주문이 체결된 경우는 별도로 처리해 준다.
-		VtOrder* originOrder = orderMgr->FindOrder(_ttoi(strOriOrdNo));
+		VtOrder* originOrder = orderMgr->FindOrder((LPCTSTR)(strOriOrdNo));
 		if (originOrder && originOrder->state == VtOrderState::Filled) {
 			// 원주문을 제거해 준다.
 			orderMgr->RemoveAcceptedHd(originOrder);
@@ -1382,7 +1385,7 @@ void VtHdCtrl::OnCancelOrderHd(CString& sTrCode, LONG& nRqID)
 		}
 
 		VtOrder* order = nullptr;
-		order = orderMgr->FindOrder(_ttoi(strOrdNo));
+		order = orderMgr->FindOrder((LPCTSTR)(strOrdNo));
 		if (!order) {
 			order = new VtOrder();
 			// 주문 요청 번호
@@ -1394,13 +1397,13 @@ void VtHdCtrl::OnCancelOrderHd(CString& sTrCode, LONG& nRqID)
 			// 심볼 코드
 			order->shortCode = (LPCTSTR)strSeries;
 			// 주문 번호
-			order->orderNo = _ttoi(strOrdNo);
+			order->orderNo = (LPCTSTR)(strOrdNo);
 			// 정수로 변환된 주문 가격
 			order->intOrderPrice = _ttoi(strPrice);
 			// 주문 수량
 			order->amount = _ttoi(strAmount);
 			// 원 주문 번호
-			order->oriOrderNo = _ttoi(strOriOrdNo);
+			order->oriOrderNo = (LPCTSTR)(strOriOrdNo);
 			// 소수로 표시된 주문 가격
 			order->orderPrice = _ttof(strOriOrderPrice);
 
@@ -1711,6 +1714,8 @@ void VtHdCtrl::OnOrderAcceptedHd(CString& strKey, LONG& nRealType)
 
 	strAcctNo.TrimRight(); // 계좌 번호
 	strOrdNo.TrimLeft('0'); // 주문 번호
+	strOriOrderNo.TrimLeft('0'); // 원주문 번호
+	strFirstOrderNo.TrimLeft('0'); // 최초 원주문 번호
 	strSeries.TrimRight(); // 심볼 코드
 	strPrice = strPrice.TrimLeft('0'); // 주문 가격 트림
 	CString strOriOrderPrice; 
@@ -1725,10 +1730,10 @@ void VtHdCtrl::OnOrderAcceptedHd(CString& strKey, LONG& nRealType)
 
 	VtOrderManagerSelector* orderMgrSeledter = VtOrderManagerSelector::GetInstance();
 	VtOrderManager* orderMgr = orderMgrSeledter->FindAddOrderManager((LPCTSTR)strAcctNo);
-	HdOrderRequest* order_req = GetOrderRequestByOrderNo(_ttoi(strOrdNo));
+	HdOrderRequest* order_req = GetOrderRequestByOrderNo((LPCTSTR)(strOrdNo));
 
 	VtOrder* order = nullptr;
-	order = orderMgr->FindOrder(_ttoi(strOrdNo));
+	order = orderMgr->FindOrder((LPCTSTR)(strOrdNo));
 	// 주문이 없는 경우는 외부 주문이나 내부주문중 아직 주문 번호가 도착하지 않은 주문이다.
 	if (!order) {
 		strMsg.Format("new OnOrderAcceptedHd 계좌번호[%s]주문번호[%s]\n", strAcctNo, strOrdNo);
@@ -1741,7 +1746,7 @@ void VtHdCtrl::OnOrderAcceptedHd(CString& strKey, LONG& nRealType)
 		// 심볼 코드
 		order->shortCode = (LPCTSTR)strSeries;
 		// 주문 번호
-		order->orderNo = _ttoi(strOrdNo);
+		order->orderNo = (LPCTSTR)(strOrdNo);
 		// 정수주문가격 설정
 		order->intOrderPrice = GetIntOrderPrice(strSeries, strPrice, strOriOrderPrice);
 		// 주문 수량
@@ -1749,9 +1754,9 @@ void VtHdCtrl::OnOrderAcceptedHd(CString& strKey, LONG& nRealType)
 		// 소수로 표현된 주문 가격
 		order->orderPrice = _ttof(strOriOrderPrice);
 		// 최초 원주문번호
-		order->firstOrderNo = _ttoi(strFirstOrderNo);
+		order->firstOrderNo = (LPCTSTR)(strFirstOrderNo);
 		// 원주문 번호
-		order->oriOrderNo = _ttoi(strOriOrderNo);
+		order->oriOrderNo = (LPCTSTR)(strOriOrderNo);
 		// 주문 유형 - 매수 / 매도
 		if (strPosition.Compare(_T("1")) == 0) {
 			order->orderPosition = VtPositionType::Buy;
@@ -1785,7 +1790,7 @@ void VtHdCtrl::OnOrderAcceptedHd(CString& strKey, LONG& nRealType)
 	else { // 이미 주문이 있는 경우
 		// 거래소 접수되었지만 그 원주문이 이미 체결된 경우에는 현재 주문도 접수확인 목록에서 제거해 준다.
 		// 이미 체결된 상태이기 때문에 추가적인 처리는 하지 않는다.
-		VtOrder* origin_order = orderMgr->FindOrder(_ttoi(strOriOrderNo));
+		VtOrder* origin_order = orderMgr->FindOrder((LPCTSTR)(strOriOrderNo));
 		if (origin_order) {
 			if (origin_order->state == VtOrderState::Filled || origin_order->state == VtOrderState::Settled) {
 				orderMgr->RemoveAcceptedHd(order);
@@ -1869,7 +1874,7 @@ void VtHdCtrl::OnOrderAcceptedHd(CString& strKey, LONG& nRealType)
 
 		if (order_req->Type == 1) { // 서브계좌 주문인 경우
 			subOrderMgr = orderMgrSelecter->FindAddOrderManager(order_req->SubAccountNo);
-			subAcntOrder = subOrderMgr->FindOrder(_ttoi(strOrdNo));
+			subAcntOrder = subOrderMgr->FindOrder((LPCTSTR)(strOrdNo));
 			if (!subAcntOrder) {
 				// 본주문을 복사한다.
 				subAcntOrder = subOrderMgr->CloneOrder(order);
@@ -1893,7 +1898,7 @@ void VtHdCtrl::OnOrderAcceptedHd(CString& strKey, LONG& nRealType)
 		}
 		else if (order_req->Type == 2) { // 펀드 주문인 경우
 			subOrderMgr = orderMgrSelecter->FindAddOrderManager(order_req->SubAccountNo);
-			subAcntOrder = subOrderMgr->FindOrder(_ttoi(strOrdNo));
+			subAcntOrder = subOrderMgr->FindOrder((LPCTSTR)(strOrdNo));
 			if (!subAcntOrder) {
 				// 본주문을 복사한다.
 				subAcntOrder = subOrderMgr->CloneOrder(order);
@@ -1999,7 +2004,7 @@ void VtHdCtrl::OnOrderUnfilledHd(CString& strKey, LONG& nRealType)
 
 	VtOrderManagerSelector* orderMgrSeledter = VtOrderManagerSelector::GetInstance();
 	VtOrderManager* orderMgr = orderMgrSeledter->FindAddOrderManager((LPCTSTR)strAcctNo);
-	HdOrderRequest* order_req = GetOrderRequestByOrderNo(_ttoi(strOrdNo));
+	HdOrderRequest* order_req = GetOrderRequestByOrderNo((LPCTSTR)(strOrdNo));
 
 
 	// 처리할 갯수
@@ -2012,7 +2017,7 @@ void VtHdCtrl::OnOrderUnfilledHd(CString& strKey, LONG& nRealType)
 	int orderCnt = _ttoi(strAmount);
 
 	VtOrder* order = nullptr;
-	order = orderMgr->FindOrder(_ttoi(strOrdNo));
+	order = orderMgr->FindOrder((LPCTSTR)(strOrdNo));
 	if (!order) {
 		order = new VtOrder();
 		// 주문 계좌 번호
@@ -2020,7 +2025,7 @@ void VtHdCtrl::OnOrderUnfilledHd(CString& strKey, LONG& nRealType)
 		// 심볼 코드
 		order->shortCode = (LPCTSTR)strSeries;
 		// 주문 번호
-		order->orderNo = _ttoi(strOrdNo);
+		order->orderNo = (LPCTSTR)(strOrdNo);
 		// 정수주문가격 설정
 		order->intOrderPrice = GetIntOrderPrice(strSeries, strPrice, strOriOrderPrice);
 		// 주문 수량
@@ -2040,9 +2045,9 @@ void VtHdCtrl::OnOrderUnfilledHd(CString& strKey, LONG& nRealType)
 		// 신규 주문, 정정 주문 , 취소 주문 시 처리할 주문의 수 - 0이면 모두 처리한 것이다.
 		order->unacceptedQty = _ttoi(strRemain);
 		// 첫 주문 번호
-		order->firstOrderNo = _ttoi(strFirstOrderNo);
+		order->firstOrderNo = (LPCTSTR)(strFirstOrderNo);
 		// 주문 번호
-		order->oriOrderNo = _ttoi(strOriOrderNo);
+		order->oriOrderNo = (LPCTSTR)(strOriOrderNo);
 		// 정정한 주문 갯수
 		order->modifiedOrderCount = _ttoi(strModyCnt);
 
@@ -2083,7 +2088,7 @@ void VtHdCtrl::OnOrderUnfilledHd(CString& strKey, LONG& nRealType)
 
 		if (order_req->Type == 1) { // 서브계좌 주문인 경우
 			subOrderMgr = orderMgrSelecter->FindAddOrderManager(order_req->SubAccountNo);
-			subAcntOrder = subOrderMgr->FindOrder(_ttoi(strOrdNo));
+			subAcntOrder = subOrderMgr->FindOrder((LPCTSTR)(strOrdNo));
 			if (!subAcntOrder) {
 				subAcntOrder = subOrderMgr->CloneOrder(order);
 				// 주문 종류를 복사해 준다. 0 : 계좌 주문, 1 : 서브계좌 주문, 2 : 펀드 주문
@@ -2121,7 +2126,7 @@ void VtHdCtrl::OnOrderUnfilledHd(CString& strKey, LONG& nRealType)
 		}
 		else if (order_req->Type == 2) { // 펀드 주문인 경우
 			subOrderMgr = orderMgrSelecter->FindAddOrderManager(order_req->SubAccountNo);
-			subAcntOrder = subOrderMgr->FindOrder(_ttoi(strOrdNo));
+			subAcntOrder = subOrderMgr->FindOrder((LPCTSTR)(strOrdNo));
 			if (!subAcntOrder) {
 				subAcntOrder = subOrderMgr->CloneOrder(order);
 				// 주문 종류를 복사해 준다. 0 : 계좌 주문, 1 : 서브계좌 주문, 2 : 펀드 주문
@@ -2215,7 +2220,7 @@ void VtHdCtrl::OnOrderFilledHd(CString& strKey, LONG& nRealType)
 
 	VtOrderManagerSelector* orderMgrSeledter = VtOrderManagerSelector::GetInstance();
 	VtOrderManager* orderMgr = orderMgrSeledter->FindAddOrderManager((LPCTSTR)strAcctNo);
-	HdOrderRequest* order_req = GetOrderRequestByOrderNo(_ttoi(strOrdNo));
+	HdOrderRequest* order_req = GetOrderRequestByOrderNo((LPCTSTR)(strOrdNo));
 	// 이미 체결된 주문이 정정된 경우에 대하여 새로운 주문을 없애 준다.
 	if (order_req) {
 		// 이미 체결된 본 주문 처리
@@ -2237,7 +2242,7 @@ void VtHdCtrl::OnOrderFilledHd(CString& strKey, LONG& nRealType)
 
 	VtOrder* order = nullptr;
 	// 주문이 있는지 찾아본다. 목록에 없으면 새로 생성해 준다.
-	order = orderMgr->FindOrder(_ttoi(strOrdNo));
+	order = orderMgr->FindOrder((LPCTSTR)(strOrdNo));
 	// 주문이 주문 목록에 없는 경우는 외부 주문이거나 역전되어 오는 주문이다. 
 	if (!order) {
 		order = new VtOrder();
@@ -2246,7 +2251,7 @@ void VtHdCtrl::OnOrderFilledHd(CString& strKey, LONG& nRealType)
 		// 심볼 코드
 		order->shortCode = (LPCTSTR)strSeries;
 		// 주문 번호
-		order->orderNo = _ttoi(strOrdNo);
+		order->orderNo = (LPCTSTR)(strOrdNo);
 
 		// 주문 타입
 		if (strPosition.Compare(_T("1")) == 0) {
@@ -2270,7 +2275,7 @@ void VtHdCtrl::OnOrderFilledHd(CString& strKey, LONG& nRealType)
 	orderMgr->OnOrderFilledHd(order);
 
 	SmCallbackManager::GetInstance()->OnOrderEvent(order);
-	LOG_F(INFO, _T("메인 주문 체결 확인 : 체결가격 = %s, 요청번호 = %d, 종목이름 = %s, 주문 번호 = %s, 이전주문번호 = %d, 계좌번호 = %s, 주문종류 = %s, 체결갯수 = %s, 요청 타입 = %d"), strFillPrice, order->HtsOrderReqID, strSeries, strOrdNo, order_req != nullptr ? order_req->NewOrderNo : 0, strAcctNo, strPosition.Compare(_T("1")) == 0 ? _T("매수") : _T("매도"), strFillAmount, order->RequestType);
+	LOG_F(INFO, _T("메인 주문 체결 확인 : 체결가격 = %s, 요청번호 = %d, 종목이름 = %s, 주문 번호 = %s, 이전주문번호 = %s, 계좌번호 = %s, 주문종류 = %s, 체결갯수 = %s, 요청 타입 = %d"), strFillPrice, order->HtsOrderReqID, strSeries, strOrdNo, order_req != nullptr ? order_req->NewOrderNo.c_str() : "0", strAcctNo, strPosition.Compare(_T("1")) == 0 ? _T("매수") : _T("매도"), strFillAmount, order->RequestType);
 
 	HdWindowManager* wndMgr = HdWindowManager::GetInstance();
 	std::map<CWnd*, std::pair<HdWindowType, CWnd*>>& wndMap = wndMgr->GetWindowMap();
@@ -2296,7 +2301,7 @@ void VtHdCtrl::OnOrderFilledHd(CString& strKey, LONG& nRealType)
 
 		if (order_req->Type == 1) { // 서브계좌 주문인 경우
 			subOrderMgr = orderMgrSelecter->FindAddOrderManager(order_req->SubAccountNo);
-			subAcntOrder = subOrderMgr->FindOrder(_ttoi(strOrdNo));
+			subAcntOrder = subOrderMgr->FindOrder((LPCTSTR)(strOrdNo));
 			if (!subAcntOrder) {
 				subAcntOrder = subOrderMgr->CloneOrder(order);
 				// 주문 종류를 복사해 준다. 0 : 계좌 주문, 1 : 서브계좌 주문, 2 : 펀드 주문
@@ -2327,7 +2332,7 @@ void VtHdCtrl::OnOrderFilledHd(CString& strKey, LONG& nRealType)
 		}
 		else if (order_req->Type == 2) { // 펀드 주문인 경우
 			subOrderMgr = orderMgrSelecter->FindAddOrderManager(order_req->SubAccountNo);
-			subAcntOrder = subOrderMgr->FindOrder(_ttoi(strOrdNo));
+			subAcntOrder = subOrderMgr->FindOrder((LPCTSTR)(strOrdNo));
 			if (!subAcntOrder) {
 				subAcntOrder = subOrderMgr->CloneOrder(order);
 				// 주문 종류를 복사해 준다. 0 : 계좌 주문, 1 : 서브계좌 주문, 2 : 펀드 주문
@@ -2361,7 +2366,7 @@ void VtHdCtrl::OnOrderFilledHd(CString& strKey, LONG& nRealType)
 	}
 }
 
-HdOrderRequest* VtHdCtrl::GetOrderRequestByOrderNo(int order_no)
+HdOrderRequest* VtHdCtrl::GetOrderRequestByOrderNo(std::string order_no)
 {
 	auto it = _OrderNoToRequestMap.find(order_no);
 	if (it != _OrderNoToRequestMap.end())
@@ -2863,11 +2868,13 @@ void VtHdCtrl::OnAcceptedHistory(CString& sTrCode, LONG& nRqID)
 
 		strAcctNo.TrimRight();
 		strOrdNo.TrimLeft('0');
+		strOriOrderNo.TrimLeft('0');
+		strFirstOrderNo.TrimLeft('0');
 		strSeries.TrimRight();
 
 		VtOrderManager* orderMgr = orderMgrSeledter->FindAddOrderManager((LPCTSTR)strAcctNo);
 
-		order = orderMgr->FindOrder(_ttoi(strOrdNo));
+		order = orderMgr->FindOrder((LPCTSTR)(strOrdNo));
 		if (!order) {
 			order = new VtOrder();
 
@@ -2888,7 +2895,7 @@ void VtHdCtrl::OnAcceptedHistory(CString& sTrCode, LONG& nRqID)
 
 			order->AccountNo = (LPCTSTR)strAcctNo;
 			order->shortCode = (LPCTSTR)strSeries;
-			order->orderNo = _ttoi(strOrdNo);
+			order->orderNo = (LPCTSTR)(strOrdNo);
 			order->intOrderPrice = _ttoi(strPrice);
 			order->amount = _ttoi(strAmount);
 
@@ -2908,8 +2915,8 @@ void VtHdCtrl::OnAcceptedHistory(CString& sTrCode, LONG& nRqID)
 
 			order->orderType = VtOrderType::New;
 
-			order->firstOrderNo = _ttoi(strFirstOrderNo);
-			order->oriOrderNo = _ttoi(strOriOrderNo);
+			order->firstOrderNo = (LPCTSTR)(strFirstOrderNo);
+			order->oriOrderNo = (LPCTSTR)(strOriOrderNo);
 
 			orderMgr->OnOrderAcceptedHd(order);
 
@@ -5545,8 +5552,8 @@ void VtHdCtrl::PutOrder(HdOrderRequest&& request)
 	_ReqIdToRequestMap[nRqID] = request;
 
 	//LOG_F(INFO,_T("PutOrder :: Req id = %d, order string = %s"), nRqID, orderString.c_str());
-	LOG_F(INFO, _T("신규주문요청 : 요청번호 = %d, 종목이름 = %s, 원주문 번호 = %d, 계좌번호 = %s, 서브계좌번호 = %s, 펀드 이름 = %s, 주문종류 = %s, 주문갯수 = %d, 요청 타입 = %d"),
-		nRqID, request.SymbolCode.c_str(), request.OrderNo, request.AccountNo.c_str(), request.SubAccountNo.c_str(),
+	LOG_F(INFO, _T("신규주문요청 : 요청번호 = %d, 종목이름 = %s, 원주문 번호 = %s, 계좌번호 = %s, 서브계좌번호 = %s, 펀드 이름 = %s, 주문종류 = %s, 주문갯수 = %d, 요청 타입 = %d"),
+		nRqID, request.SymbolCode.c_str(), request.OrderNo.c_str(), request.AccountNo.c_str(), request.SubAccountNo.c_str(),
 		request.FundName.c_str(), request.Position == VtPositionType::Buy ? _T("매수") : _T("매도"), request.Amount, request.RequestType);
 
 }
@@ -5632,8 +5639,8 @@ void VtHdCtrl::ChangeOrder(HdOrderRequest&& request)
 	request.HtsOrderReqID = nRqID;
 	// 주문요청 번호와 함께 주문요청 맵에 넣어준다.
 	_ReqIdToRequestMap[nRqID] = request;
-	LOG_F(INFO, _T("정정주문요청 : 요청번호 = %d, 종목이름 = %s, 원주문 번호 = %d, 계좌번호 = %s, 서브계좌번호 = %s, 펀드 이름 = %s, 주문종류 = %s, 주문갯수 = %d, 요청 타입 = %d "),
-		nRqID, request.SymbolCode.c_str(), request.OrderNo, request.AccountNo.c_str(), request.SubAccountNo.c_str(),
+	LOG_F(INFO, _T("정정주문요청 : 요청번호 = %d, 종목이름 = %s, 원주문 번호 = %s, 계좌번호 = %s, 서브계좌번호 = %s, 펀드 이름 = %s, 주문종류 = %s, 주문갯수 = %d, 요청 타입 = %d "),
+		nRqID, request.SymbolCode.c_str(), request.OrderNo.c_str(), request.AccountNo.c_str(), request.SubAccountNo.c_str(),
 		request.FundName.c_str(), request.Position == VtPositionType::Buy ? _T("매수") : _T("매도"), request.Amount, request.RequestType);
 }
 
@@ -5719,8 +5726,8 @@ void VtHdCtrl::CancelOrder(HdOrderRequest&& request)
 	// 주문요청 번호와 함께 주문요청 맵에 넣어준다.
 	_ReqIdToRequestMap[nRqID] = request;
 	//LOG_F(INFO, _T("Cancel Order :: Req id = %d, order string = %s"), nRqID, orderString.c_str());
-	LOG_F(INFO, _T("취소주문요청 : 요청번호 = %d, 종목이름 = %s, 원주문 번호 = %d, 계좌번호 = %s, 서브계좌번호 = %s, 펀드 이름 = %s, 주문종류 = %s, 주문갯수 = %d, 요청 타입 = %d"),
-		nRqID, request.SymbolCode.c_str(), request.OrderNo, request.AccountNo.c_str(), request.SubAccountNo.c_str(),
+	LOG_F(INFO, _T("취소주문요청 : 요청번호 = %d, 종목이름 = %s, 원주문 번호 = %s, 계좌번호 = %s, 서브계좌번호 = %s, 펀드 이름 = %s, 주문종류 = %s, 주문갯수 = %d, 요청 타입 = %d"),
+		nRqID, request.SymbolCode.c_str(), request.OrderNo.c_str(), request.AccountNo.c_str(), request.SubAccountNo.c_str(),
 		request.FundName.c_str(), request.Position == VtPositionType::Buy ? _T("매수") : _T("매도"), request.Amount, request.RequestType);
 }
 
@@ -5812,8 +5819,8 @@ void VtHdCtrl::AbPutOrder(HdOrderRequest& request)
 	_ReqIdToRequestMap[nRqID] = request;
 
 	//LOG_F(INFO,_T("PutOrder :: Req id = %d, order string = %s"), nRqID, orderString.c_str());
-	LOG_F(INFO, _T("신규주문요청 : 요청번호 = %d, 종목이름 = %s, 원주문 번호 = %d, 계좌번호 = %s, 서브계좌번호 = %s, 펀드 이름 = %s, 주문종류 = %s, 주문갯수 = %d, 요청 타입 = %d"),
-		nRqID, request.SymbolCode.c_str(), request.OrderNo, request.AccountNo.c_str(), request.SubAccountNo.c_str(),
+	LOG_F(INFO, _T("신규주문요청 : 요청번호 = %d, 종목이름 = %s, 원주문 번호 = %s, 계좌번호 = %s, 서브계좌번호 = %s, 펀드 이름 = %s, 주문종류 = %s, 주문갯수 = %d, 요청 타입 = %d"),
+		nRqID, request.SymbolCode.c_str(), request.OrderNo.c_str(), request.AccountNo.c_str(), request.SubAccountNo.c_str(),
 		request.FundName.c_str(), request.Position == VtPositionType::Buy ? _T("매수") : _T("매도"), request.Amount, request.RequestType);
 }
 
@@ -5847,6 +5854,8 @@ void VtHdCtrl::AbChangeOrder(HdOrderRequest& request)
 		orderString.append(_T("2"));
 	else if (request.FillCondition == VtFilledCondition::Fak)
 		orderString.append(_T("3"));
+	else if (request.FillCondition == VtFilledCondition::Day)
+		orderString.append(_T("0"));
 
 	// 주문 가격
 	if (request.PriceType == VtPriceType::Price)
@@ -5901,8 +5910,8 @@ void VtHdCtrl::AbChangeOrder(HdOrderRequest& request)
 	_ReqIdToRequestMap[nRqID] = request;
 
 	//LOG_F(INFO,_T("PutOrder :: Req id = %d, order string = %s"), nRqID, orderString.c_str());
-	LOG_F(INFO, _T("신규주문요청 : 요청번호 = %d, 종목이름 = %s, 원주문 번호 = %d, 계좌번호 = %s, 서브계좌번호 = %s, 펀드 이름 = %s, 주문종류 = %s, 주문갯수 = %d, 요청 타입 = %d"),
-		nRqID, request.SymbolCode.c_str(), request.OrderNo, request.AccountNo.c_str(), request.SubAccountNo.c_str(),
+	LOG_F(INFO, _T("신규주문요청 : 요청번호 = %d, 종목이름 = %s, 원주문 번호 = %s, 계좌번호 = %s, 서브계좌번호 = %s, 펀드 이름 = %s, 주문종류 = %s, 주문갯수 = %d, 요청 타입 = %d"),
+		nRqID, request.SymbolCode.c_str(), request.OrderNo.c_str(), request.AccountNo.c_str(), request.SubAccountNo.c_str(),
 		request.FundName.c_str(), request.Position == VtPositionType::Buy ? _T("매수") : _T("매도"), request.Amount, request.RequestType);
 
 }
@@ -5937,6 +5946,8 @@ void VtHdCtrl::AbCancelOrder(HdOrderRequest& request)
 		orderString.append(_T("2"));
 	else if (request.FillCondition == VtFilledCondition::Fak)
 		orderString.append(_T("3"));
+	else if (request.FillCondition == VtFilledCondition::Day)
+		orderString.append(_T("0"));
 
 	// 주문 가격 15
 	temp = "               ";
@@ -5989,7 +6000,7 @@ void VtHdCtrl::AbCancelOrder(HdOrderRequest& request)
 
 	//LOG_F(INFO,_T("PutOrder :: Req id = %d, order string = %s"), nRqID, orderString.c_str());
 	LOG_F(INFO, _T("신규주문요청 : 요청번호 = %d, 종목이름 = %s, 원주문 번호 = %d, 계좌번호 = %s, 서브계좌번호 = %s, 펀드 이름 = %s, 주문종류 = %s, 주문갯수 = %d, 요청 타입 = %d"),
-		nRqID, request.SymbolCode.c_str(), request.OrderNo, request.AccountNo.c_str(), request.SubAccountNo.c_str(),
+		nRqID, request.SymbolCode.c_str(), request.OrderNo.c_str(), request.AccountNo.c_str(), request.SubAccountNo.c_str(),
 		request.FundName.c_str(), request.Position == VtPositionType::Buy ? _T("매수") : _T("매도"), request.Amount, request.RequestType);
 
 
@@ -6013,11 +6024,11 @@ void VtHdCtrl::AbOnNewOrderHd(CString& sTrCode, LONG& nRqID)
 	auto it = _ReqIdToRequestMap.find(nRqID);
 	if (it != _ReqIdToRequestMap.end()) {
 		HdOrderRequest req = it->second;
-		_OrderNoToRequestMap[_ttoi(strOrdNo)] = req;
+		_OrderNoToRequestMap[(LPCTSTR)(strOrdNo)] = req;
 	}
 
 	VtOrder* order = nullptr;
-	order = orderMgr->FindOrder(_ttoi(strOrdNo));
+	order = orderMgr->FindOrder((LPCTSTR)(strOrdNo));
 	// 주문이 없다면 새로 만든다.
 	if (!order) {
 		order = new VtOrder();
@@ -6028,7 +6039,7 @@ void VtHdCtrl::AbOnNewOrderHd(CString& sTrCode, LONG& nRqID)
 		// 계좌 번호
 		order->AccountNo = (LPCTSTR)strAcctNo;
 		// 주문 번호
-		order->orderNo = _ttoi(strOrdNo);
+		order->orderNo = (LPCTSTR)(strOrdNo);
 		// 주문 타입 - 신규 주문
 		order->orderType = VtOrderType::New;
 
@@ -6224,18 +6235,18 @@ void VtHdCtrl::AbOnModifyOrderHd(CString& sTrCode, LONG& nRqID)
 	HdOrderRequest* order_req = GetOrderRequestByOrderReqId(nRqID);
 	if (order_req) {
 		// 새로운 주문번호를 넣어 준다.
-		order_req->NewOrderNo = _ttoi(strOrdNo);
+		order_req->NewOrderNo = (LPCTSTR)(strOrdNo);
 	}
 	// 여기서 주문요청 아이디와 주문요청 객체를 매칭해 준다.
 	auto it = _ReqIdToRequestMap.find(nRqID);
 	if (it != _ReqIdToRequestMap.end()) {
 		HdOrderRequest req = it->second;
-		_OrderNoToRequestMap[_ttoi(strOrdNo)] = req;
-		_OrderNoToRequestMap[_ttoi(strOriOrdNo)] = req;
+		_OrderNoToRequestMap[(LPCTSTR)(strOrdNo)] = req;
+		_OrderNoToRequestMap[(LPCTSTR)(strOriOrdNo)] = req;
 	}
 
 	// 정정된 원주문이 체결된 경우는 더이상 처리하지 않는다.
-	VtOrder* originOrder = orderMgr->FindOrder(_ttoi(strOriOrdNo));
+	VtOrder* originOrder = orderMgr->FindOrder((LPCTSTR)(strOriOrdNo));
 	if (originOrder && originOrder->state == VtOrderState::Filled) {
 		// 원주문을 제거해 준다.
 		orderMgr->RemoveAcceptedHd(originOrder);
@@ -6281,7 +6292,7 @@ void VtHdCtrl::AbOnModifyOrderHd(CString& sTrCode, LONG& nRqID)
 	}
 
 	VtOrder* order = nullptr;
-	order = orderMgr->FindOrder(_ttoi(strOrdNo));
+	order = orderMgr->FindOrder((LPCTSTR)(strOrdNo));
 	if (!order) { // 주문이 없는 경우는 처음으로 이곳으로 주문이 들어와 생성되는 것이다.
 		strMsg.Format("new ::::: OnModifyOrderHd 번호[%d][%s]처리[%s]계좌번호[%s]주문번호[%s]\n", nRqID, strExchTp, strProcTp, strAcctNo, strOrdNo);
 		//WriteLog(strMsg);
@@ -6295,9 +6306,9 @@ void VtHdCtrl::AbOnModifyOrderHd(CString& sTrCode, LONG& nRqID)
 		// 주문 번호
 		order->AccountNo = (LPCTSTR)strAcctNo;
 		// 주문 번호
-		order->orderNo = _ttoi(strOrdNo);
+		order->orderNo = (LPCTSTR)(strOrdNo);
 		// 원 주문 번호
-		order->oriOrderNo = _ttoi(strOriOrdNo);
+		order->oriOrderNo = (LPCTSTR)(strOriOrdNo);
 	
 		// 주문 유형
 		order->orderType = VtOrderType::Change;
@@ -6493,6 +6504,8 @@ void VtHdCtrl::AbOnCancelOrderHd(CString& sTrCode, LONG& nRqID)
 		strAcctNo.TrimRight();
 		// 주문 번호
 		strOrdNo.TrimLeft('0');
+		strOriOrdNo.TrimLeft('0'); // 원주문 번호
+		strFirstOriOrdNo.TrimLeft('0'); // 최초 원주문 번호
 		// 원주문번호
 		strOriOrdNo.TrimRight();
 
@@ -6501,18 +6514,18 @@ void VtHdCtrl::AbOnCancelOrderHd(CString& sTrCode, LONG& nRqID)
 		HdOrderRequest* order_req = GetOrderRequestByOrderReqId(nRqID);
 		if (order_req) {
 			// 새로운 주문번호를 넣어 준다.
-			order_req->NewOrderNo = _ttoi(strOrdNo);
+			order_req->NewOrderNo = (LPCTSTR)(strOrdNo);
 		}
 		// 여기서 주문요청 아이디와 주문요청 객체를 매칭해 준다.
 		auto it = _ReqIdToRequestMap.find(nRqID);
 		if (it != _ReqIdToRequestMap.end()) {
 			HdOrderRequest req = it->second;
-			_OrderNoToRequestMap[_ttoi(strOrdNo)] = req;
-			_OrderNoToRequestMap[_ttoi(strOriOrdNo)] = req;
+			_OrderNoToRequestMap[(LPCTSTR)(strOrdNo)] = req;
+			_OrderNoToRequestMap[(LPCTSTR)(strOriOrdNo)] = req;
 		}
 
 		// 취소된 원주문이 체결된 경우는 별도로 처리해 준다.
-		VtOrder* originOrder = orderMgr->FindOrder(_ttoi(strOriOrdNo));
+		VtOrder* originOrder = orderMgr->FindOrder((LPCTSTR)(strOriOrdNo));
 		if (originOrder && originOrder->state == VtOrderState::Filled) {
 			// 원주문을 제거해 준다.
 			orderMgr->RemoveAcceptedHd(originOrder);
@@ -6558,7 +6571,7 @@ void VtHdCtrl::AbOnCancelOrderHd(CString& sTrCode, LONG& nRqID)
 		}
 
 		VtOrder* order = nullptr;
-		order = orderMgr->FindOrder(_ttoi(strOrdNo));
+		order = orderMgr->FindOrder((LPCTSTR)(strOrdNo));
 		if (!order) {
 			order = new VtOrder();
 			// 주문 요청 번호
@@ -6568,9 +6581,9 @@ void VtHdCtrl::AbOnCancelOrderHd(CString& sTrCode, LONG& nRqID)
 			// 주문 번호
 			order->AccountNo = (LPCTSTR)strAcctNo;
 			// 주문 번호
-			order->orderNo = _ttoi(strOrdNo);
+			order->orderNo = (LPCTSTR)(strOrdNo);
 			// 원 주문 번호
-			order->oriOrderNo = _ttoi(strOriOrdNo);
+			order->oriOrderNo = (LPCTSTR)(strOriOrdNo);
 			// 주문 유형
 			order->orderType = VtOrderType::Cancel;
 
@@ -6770,7 +6783,10 @@ void VtHdCtrl::AbOnOrderAcceptedHd(CString& strKey, LONG& nRealType)
 
 	strAcctNo.TrimRight(); // 계좌 번호
 	strOrdNo.TrimLeft('0'); // 주문 번호
+	strOriOrderNo.TrimLeft('0'); // 원주문 번호
+	strFirstOrderNo.TrimLeft('0'); // 최초 원주문 번호
 	strSeries.TrimRight(); // 심볼 코드
+	strPrice.TrimRight();
 	strPrice = strPrice.TrimLeft('0'); // 주문 가격 트림
 	CString strOriOrderPrice;
 	strOriOrderPrice = strPrice; // 원주문가격 저장
@@ -6784,10 +6800,10 @@ void VtHdCtrl::AbOnOrderAcceptedHd(CString& strKey, LONG& nRealType)
 
 	VtOrderManagerSelector* orderMgrSeledter = VtOrderManagerSelector::GetInstance();
 	VtOrderManager* orderMgr = orderMgrSeledter->FindAddOrderManager((LPCTSTR)strAcctNo);
-	HdOrderRequest* order_req = GetOrderRequestByOrderNo(_ttoi(strOrdNo));
+	HdOrderRequest* order_req = GetOrderRequestByOrderNo((LPCTSTR)(strOrdNo));
 
 	VtOrder* order = nullptr;
-	order = orderMgr->FindOrder(_ttoi(strOrdNo));
+	order = orderMgr->FindOrder((LPCTSTR)(strOrdNo));
 	// 주문이 없는 경우는 외부 주문이나 내부주문중 아직 주문 번호가 도착하지 않은 주문이다.
 	if (!order) {
 		strMsg.Format("new OnOrderAcceptedHd 계좌번호[%s]주문번호[%s]\n", strAcctNo, strOrdNo);
@@ -6800,7 +6816,7 @@ void VtHdCtrl::AbOnOrderAcceptedHd(CString& strKey, LONG& nRealType)
 		// 심볼 코드
 		order->shortCode = (LPCTSTR)strSeries;
 		// 주문 번호
-		order->orderNo = _ttoi(strOrdNo);
+		order->orderNo = (LPCTSTR)(strOrdNo);
 		// 정수주문가격 설정
 		order->intOrderPrice = GetIntOrderPrice(strSeries, strPrice, strOriOrderPrice);
 		// 주문 수량
@@ -6808,9 +6824,9 @@ void VtHdCtrl::AbOnOrderAcceptedHd(CString& strKey, LONG& nRealType)
 		// 소수로 표현된 주문 가격
 		order->orderPrice = _ttof(strOriOrderPrice);
 		// 최초 원주문번호
-		order->firstOrderNo = _ttoi(strFirstOrderNo);
+		order->firstOrderNo = (LPCTSTR)(strFirstOrderNo);
 		// 원주문 번호
-		order->oriOrderNo = _ttoi(strOriOrderNo);
+		order->oriOrderNo = (LPCTSTR)(strOriOrderNo);
 		// 주문 유형 - 매수 / 매도
 		if (strPosition.Compare(_T("1")) == 0) {
 			order->orderPosition = VtPositionType::Buy;
@@ -6841,7 +6857,7 @@ void VtHdCtrl::AbOnOrderAcceptedHd(CString& strKey, LONG& nRealType)
 		// 심볼 코드
 		order->shortCode = (LPCTSTR)strSeries;
 		// 주문 번호
-		order->orderNo = _ttoi(strOrdNo);
+		order->orderNo = (LPCTSTR)(strOrdNo);
 		// 정수주문가격 설정
 		order->intOrderPrice = GetIntOrderPrice(strSeries, strPrice, strOriOrderPrice);
 		// 주문 수량
@@ -6849,9 +6865,9 @@ void VtHdCtrl::AbOnOrderAcceptedHd(CString& strKey, LONG& nRealType)
 		// 소수로 표현된 주문 가격
 		order->orderPrice = _ttof(strOriOrderPrice);
 		// 최초 원주문번호
-		order->firstOrderNo = _ttoi(strFirstOrderNo);
+		order->firstOrderNo = (LPCTSTR)(strFirstOrderNo);
 		// 원주문 번호
-		order->oriOrderNo = _ttoi(strOriOrderNo);
+		order->oriOrderNo = (LPCTSTR)(strOriOrderNo);
 		// 주문 유형 - 매수 / 매도
 		if (strPosition.Compare(_T("1")) == 0) {
 			order->orderPosition = VtPositionType::Buy;
@@ -6874,7 +6890,7 @@ void VtHdCtrl::AbOnOrderAcceptedHd(CString& strKey, LONG& nRealType)
 			order->orderType = VtOrderType::Cancel;
 		}
 
-		VtOrder* origin_order = orderMgr->FindOrder(_ttoi(strOriOrderNo));
+		VtOrder* origin_order = orderMgr->FindOrder((LPCTSTR)(strOriOrderNo));
 		if (origin_order) {
 			if (origin_order->state == VtOrderState::Filled || origin_order->state == VtOrderState::Settled) {
 				orderMgr->RemoveAcceptedHd(order);
@@ -6958,7 +6974,7 @@ void VtHdCtrl::AbOnOrderAcceptedHd(CString& strKey, LONG& nRealType)
 
 		if (order_req->Type == 1) { // 서브계좌 주문인 경우
 			subOrderMgr = orderMgrSelecter->FindAddOrderManager(order_req->SubAccountNo);
-			subAcntOrder = subOrderMgr->FindOrder(_ttoi(strOrdNo));
+			subAcntOrder = subOrderMgr->FindOrder((LPCTSTR)(strOrdNo));
 			if (!subAcntOrder) {
 				// 본주문을 복사한다.
 				subAcntOrder = subOrderMgr->CloneOrder(order);
@@ -6982,7 +6998,7 @@ void VtHdCtrl::AbOnOrderAcceptedHd(CString& strKey, LONG& nRealType)
 		}
 		else if (order_req->Type == 2) { // 펀드 주문인 경우
 			subOrderMgr = orderMgrSelecter->FindAddOrderManager(order_req->SubAccountNo);
-			subAcntOrder = subOrderMgr->FindOrder(_ttoi(strOrdNo));
+			subAcntOrder = subOrderMgr->FindOrder((LPCTSTR)(strOrdNo));
 			if (!subAcntOrder) {
 				// 본주문을 복사한다.
 				subAcntOrder = subOrderMgr->CloneOrder(order);
@@ -7076,7 +7092,7 @@ void VtHdCtrl::AbOnOrderUnfilledHd(CString& strKey, LONG& nRealType)
 
 	VtOrderManagerSelector* orderMgrSeledter = VtOrderManagerSelector::GetInstance();
 	VtOrderManager* orderMgr = orderMgrSeledter->FindAddOrderManager((LPCTSTR)strAcctNo);
-	HdOrderRequest* order_req = GetOrderRequestByOrderNo(_ttoi(strOrdNo));
+	HdOrderRequest* order_req = GetOrderRequestByOrderNo((LPCTSTR)(strOrdNo));
 
 
 	// 처리할 갯수
@@ -7089,7 +7105,7 @@ void VtHdCtrl::AbOnOrderUnfilledHd(CString& strKey, LONG& nRealType)
 	int orderCnt = _ttoi(strAmount);
 
 	VtOrder* order = nullptr;
-	order = orderMgr->FindOrder(_ttoi(strOrdNo));
+	order = orderMgr->FindOrder((LPCTSTR)(strOrdNo));
 	if (!order) {
 		order = new VtOrder();
 		// 주문 계좌 번호
@@ -7097,7 +7113,7 @@ void VtHdCtrl::AbOnOrderUnfilledHd(CString& strKey, LONG& nRealType)
 		// 심볼 코드
 		order->shortCode = (LPCTSTR)strSeries;
 		// 주문 번호
-		order->orderNo = _ttoi(strOrdNo);
+		order->orderNo = (LPCTSTR)(strOrdNo);
 		// 정수주문가격 설정
 		order->intOrderPrice = GetIntOrderPrice(strSeries, strPrice, strOriOrderPrice);
 		// 주문 수량
@@ -7117,9 +7133,9 @@ void VtHdCtrl::AbOnOrderUnfilledHd(CString& strKey, LONG& nRealType)
 		// 신규 주문, 정정 주문 , 취소 주문 시 처리할 주문의 수 - 0이면 모두 처리한 것이다.
 		order->unacceptedQty = _ttoi(strRemain);
 		// 첫 주문 번호
-		order->firstOrderNo = _ttoi(strFirstOrderNo);
+		order->firstOrderNo = (LPCTSTR)(strFirstOrderNo);
 		// 주문 번호
-		order->oriOrderNo = _ttoi(strOriOrderNo);
+		order->oriOrderNo = (LPCTSTR)(strOriOrderNo);
 		// 정정한 주문 갯수
 		order->modifiedOrderCount = _ttoi(strModyCnt);
 
@@ -7160,7 +7176,7 @@ void VtHdCtrl::AbOnOrderUnfilledHd(CString& strKey, LONG& nRealType)
 
 		if (order_req->Type == 1) { // 서브계좌 주문인 경우
 			subOrderMgr = orderMgrSelecter->FindAddOrderManager(order_req->SubAccountNo);
-			subAcntOrder = subOrderMgr->FindOrder(_ttoi(strOrdNo));
+			subAcntOrder = subOrderMgr->FindOrder((LPCTSTR)(strOrdNo));
 			if (!subAcntOrder) {
 				subAcntOrder = subOrderMgr->CloneOrder(order);
 				// 주문 종류를 복사해 준다. 0 : 계좌 주문, 1 : 서브계좌 주문, 2 : 펀드 주문
@@ -7198,7 +7214,7 @@ void VtHdCtrl::AbOnOrderUnfilledHd(CString& strKey, LONG& nRealType)
 		}
 		else if (order_req->Type == 2) { // 펀드 주문인 경우
 			subOrderMgr = orderMgrSelecter->FindAddOrderManager(order_req->SubAccountNo);
-			subAcntOrder = subOrderMgr->FindOrder(_ttoi(strOrdNo));
+			subAcntOrder = subOrderMgr->FindOrder((LPCTSTR)(strOrdNo));
 			if (!subAcntOrder) {
 				subAcntOrder = subOrderMgr->CloneOrder(order);
 				// 주문 종류를 복사해 준다. 0 : 계좌 주문, 1 : 서브계좌 주문, 2 : 펀드 주문
@@ -7283,7 +7299,7 @@ void VtHdCtrl::AbOnOrderFilledHd(CString& strKey, LONG& nRealType)
 
 	VtOrderManagerSelector* orderMgrSeledter = VtOrderManagerSelector::GetInstance();
 	VtOrderManager* orderMgr = orderMgrSeledter->FindAddOrderManager((LPCTSTR)strAcctNo);
-	HdOrderRequest* order_req = GetOrderRequestByOrderNo(_ttoi(strOrdNo));
+	HdOrderRequest* order_req = GetOrderRequestByOrderNo((LPCTSTR)(strOrdNo));
 	// 이미 체결된 주문이 정정된 경우에 대하여 새로운 주문을 없애 준다.
 	if (order_req) {
 		// 이미 체결된 본 주문 처리
@@ -7305,7 +7321,7 @@ void VtHdCtrl::AbOnOrderFilledHd(CString& strKey, LONG& nRealType)
 
 	VtOrder* order = nullptr;
 	// 주문이 있는지 찾아본다. 목록에 없으면 새로 생성해 준다.
-	order = orderMgr->FindOrder(_ttoi(strOrdNo));
+	order = orderMgr->FindOrder((LPCTSTR)(strOrdNo));
 	// 주문이 주문 목록에 없는 경우는 외부 주문이거나 역전되어 오는 주문이다. 
 	if (!order) {
 		order = new VtOrder();
@@ -7314,7 +7330,7 @@ void VtHdCtrl::AbOnOrderFilledHd(CString& strKey, LONG& nRealType)
 		// 심볼 코드
 		order->shortCode = (LPCTSTR)strSeries;
 		// 주문 번호
-		order->orderNo = _ttoi(strOrdNo);
+		order->orderNo = (LPCTSTR)(strOrdNo);
 
 		// 주문 타입
 		if (strPosition.Compare(_T("1")) == 0) {
@@ -7338,7 +7354,7 @@ void VtHdCtrl::AbOnOrderFilledHd(CString& strKey, LONG& nRealType)
 	orderMgr->OnOrderFilledHd(order);
 
 	SmCallbackManager::GetInstance()->OnOrderEvent(order);
-	LOG_F(INFO, _T("메인 주문 체결 확인 : 체결가격 = %s, 요청번호 = %d, 종목이름 = %s, 주문 번호 = %s, 이전주문번호 = %d, 계좌번호 = %s, 주문종류 = %s, 체결갯수 = %s, 요청 타입 = %d"), strFillPrice, order->HtsOrderReqID, strSeries, strOrdNo, order_req != nullptr ? order_req->NewOrderNo : 0, strAcctNo, strPosition.Compare(_T("1")) == 0 ? _T("매수") : _T("매도"), strFillAmount, order->RequestType);
+	LOG_F(INFO, _T("메인 주문 체결 확인 : 체결가격 = %s, 요청번호 = %d, 종목이름 = %s, 주문 번호 = %s, 이전주문번호 = %s, 계좌번호 = %s, 주문종류 = %s, 체결갯수 = %s, 요청 타입 = %d"), strFillPrice, order->HtsOrderReqID, strSeries, strOrdNo, order_req != nullptr ? order_req->NewOrderNo.c_str() : "0", strAcctNo, strPosition.Compare(_T("1")) == 0 ? _T("매수") : _T("매도"), strFillAmount, order->RequestType);
 
 	HdWindowManager* wndMgr = HdWindowManager::GetInstance();
 	std::map<CWnd*, std::pair<HdWindowType, CWnd*>>& wndMap = wndMgr->GetWindowMap();
@@ -7364,7 +7380,7 @@ void VtHdCtrl::AbOnOrderFilledHd(CString& strKey, LONG& nRealType)
 
 		if (order_req->Type == 1) { // 서브계좌 주문인 경우
 			subOrderMgr = orderMgrSelecter->FindAddOrderManager(order_req->SubAccountNo);
-			subAcntOrder = subOrderMgr->FindOrder(_ttoi(strOrdNo));
+			subAcntOrder = subOrderMgr->FindOrder((LPCTSTR)(strOrdNo));
 			if (!subAcntOrder) {
 				subAcntOrder = subOrderMgr->CloneOrder(order);
 				// 주문 종류를 복사해 준다. 0 : 계좌 주문, 1 : 서브계좌 주문, 2 : 펀드 주문
@@ -7395,7 +7411,7 @@ void VtHdCtrl::AbOnOrderFilledHd(CString& strKey, LONG& nRealType)
 		}
 		else if (order_req->Type == 2) { // 펀드 주문인 경우
 			subOrderMgr = orderMgrSelecter->FindAddOrderManager(order_req->SubAccountNo);
-			subAcntOrder = subOrderMgr->FindOrder(_ttoi(strOrdNo));
+			subAcntOrder = subOrderMgr->FindOrder((LPCTSTR)(strOrdNo));
 			if (!subAcntOrder) {
 				subAcntOrder = subOrderMgr->CloneOrder(order);
 				// 주문 종류를 복사해 준다. 0 : 계좌 주문, 1 : 서브계좌 주문, 2 : 펀드 주문
@@ -8859,7 +8875,7 @@ void VtHdCtrl::OnGetMsgWithRqId(int nRqId, CString strCode, CString strMsg)
 		auto it = _ReqIdToRequestMap.find(nRqId);
 		if (it != _ReqIdToRequestMap.end()) {
 			HdOrderRequest& req = it->second;
-			LOG_F(INFO, _T("[주문오류 :: 요청번호 = %d, 주문요청타입 = %d, 주문번호 = %d, 계좌번호 = %s, 종목코드 = %s\n"), nRqId, req.Type, req.OrderNo, req.AccountNo.c_str(), req.SymbolCode.c_str());
+			LOG_F(INFO, _T("[주문오류 :: 요청번호 = %d, 주문요청타입 = %d, 주문번호 = %s, 계좌번호 = %s, 종목코드 = %s\n"), nRqId, req.Type, req.OrderNo.c_str(), req.AccountNo.c_str(), req.SymbolCode.c_str());
 		}
 		// 주문요청 오류에 따른 접수 목록 업데이트
  		RefreshAcceptedOrderByError(nRqId);

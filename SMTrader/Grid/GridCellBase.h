@@ -193,7 +193,7 @@ protected:
 
 public:
 	void AddOrder(VtOrder* order);
-	void RemoveOrder(int orderNo);
+	void RemoveOrder(std::string orderNo);
 	void ClearOrders();
 	int GetOrderCount();
 
@@ -201,7 +201,7 @@ public:
 	void RemoveStopOrder(int reqNo);
 	void ClearStopOrders();
 	int GetStopOrderCount();
-	std::map<int, VtOrder*> GetOrderMap() {
+	std::map<std::string, VtOrder*> GetOrderMap() {
 		return OrderMap;
 	}
 	std::map<int, HdOrderRequest*> GetStopOrderMap() {
@@ -210,7 +210,7 @@ public:
 	
 protected:
     DWORD    m_nState;      // Cell state (selected/focus etc)
-	std::map<int, VtOrder*> OrderMap;
+	std::map<std::string, VtOrder*> OrderMap;
 	std::map<int, HdOrderRequest*> StopOrderMap;
 	void DrawOrder(CDC* pDC, CRect& rect);
 	void DrawMovingRect(CDC* pDC, CRect& rect);

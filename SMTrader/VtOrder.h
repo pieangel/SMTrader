@@ -63,7 +63,7 @@ struct VtOrderRequest
 	/// <summary>
 	/// 원 주문 번호 : 정정이나 취소 때 필요함
 	/// </summary>
-	int oriOrderNo;
+	std::string oriOrderNo;
 	/// <summary>
 	/// 제품의 틱의 자릿수
 	/// </summary>
@@ -142,7 +142,7 @@ struct VtOrderDirectRequest
 	/// <summary>
 	/// 원 주문 번호 : 정정이나 취소 때 필요함
 	/// </summary>
-	int oriOrderNo;
+	std::string oriOrderNo;
 	/// <summary>
 	/// 제품의 틱의 자릿수
 	/// </summary>
@@ -212,7 +212,7 @@ struct VtOrder
 	/// <summary>
 	/// 주문번호
 	/// </summary>
-	int orderNo;
+	std::string orderNo;
 	/// <summary>
 	/// 주문 수량
 	/// </summary>
@@ -220,8 +220,8 @@ struct VtOrder
 	/// <summary>
 	/// 원 주문 번호 : 정정이나 취소 때 필요함
 	/// </summary>
-	int oriOrderNo;
-	int firstOrderNo;
+	std::string oriOrderNo;
+	std::string firstOrderNo;
 	/// <summary>
 	/// 거래 날짜
 	/// </summary>
@@ -297,6 +297,8 @@ struct VtOrder
 	/// The name of the underlying fund.
 	/// </summary>
 	std::string FundName;
+	// 시스템 이름 - 주문을 낸 시스템의 이름
+	std::string StrategyName;
 	// 정산 주문이냐 청산
 	// 0 : 일반 , 1 : 익절 청산, 2 : 손절 청산
 	int RequestType = 0;
@@ -306,7 +308,7 @@ struct VtOrder
 	// 그 주문은 청산 주문에 의해서 상쇄 된다.
 	// 청산 주문 요청을 받으면 잔고 목록에서 즉시 제거된다. 
 	// 왜냐하면 손절 익절 영향을 받지 않기 위해서 이다.
-	int LiqReqOrderNo  = -1;
+	std::string LiqReqOrderNo  = "-1";
 	// 손절 확인 여부 플래그 - 설정되어 있으면 손절 평가 대상이 된다.
 	bool EnableLossCut = false;
 	// 익절 확인 여부 플래그 - 설정되어 있으면 익절 평가 대상이 된다.
@@ -339,9 +341,9 @@ struct HdOrderRequest
 	//주문수량05주문 수량(ex:"1    ")
 	int Amount;
 	// 정정이나 취소시 원 주문 번호
-	int OrderNo = -1;
+	std::string OrderNo = "-1";
 	// 정정이나 취소로 새로 생성된 주문번호
-	int NewOrderNo = -1;
+	std::string NewOrderNo = "-1";
 	// 서브 계좌 번호
 	std::string SubAccountNo = _T("";)
 	// 주문요청 아이디
@@ -375,7 +377,7 @@ struct HdOrderRequest
 	// 그 주문은 청산 주문에 의해서 상쇄 된다.
 	// 청산 주문 요청을 받으면 잔고 목록에서 즉시 제거된다. 
 	// 왜냐하면 손절 익절 영향을 받지 않기 위해서 이다.
-	int LiqReqOrderNo = -1;
+	std::string LiqReqOrderNo = "-1";
 	// 선물사에서 받은 주문요청 번호 - 이것으로 본래 요청 정보를 식별한다.
 	int HtsOrderReqID = -1;
 	// 마켓 : 1 : 해외, 2 : FX, 9 : 국내
@@ -397,8 +399,8 @@ struct VtRealtimeOrder
 	double	filledPrice;	/* 체결가격														*/
 	int	filledAmount;	/* 체결수량														*/
 	int	remainQty;	/* 주문잔량	: 미체결 수량													*/
-	int	orderNo;	/* 주문번호														*/
-	int	oriOrderNo;	/* 원주문번호													*/
+	std::string	orderNo;	/* 주문번호														*/
+	std::string	oriOrderNo;	/* 원주문번호													*/
 	std::string	tradeTime;	/* 주문확인,체결,거부 시간										*/
 	double	filledMoney;	/* 체결금액														*/
 	VtOrderType	orderType;	/* 주문구분	(ReplyType==0일때 1.신규 2.정정 3.취소)				*/

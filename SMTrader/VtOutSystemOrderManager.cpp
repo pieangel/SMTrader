@@ -43,13 +43,13 @@ void VtOutSystemOrderManager::RemoveSystem(SharedSystem sys)
 void VtOutSystemOrderManager::OnOutSignal(std::string sig)
 {
 	std::vector<std::string> result = split(sig, ',');
-// 	for (auto it = result.begin(); it != result.end(); /* NOTHING */)
-// 	{
-// 		if ((*it).empty())
-// 			it = result.erase(it);
-// 		else
-// 			++it;
-// 	}
+	// 	for (auto it = result.begin(); it != result.end(); /* NOTHING */)
+	// 	{
+	// 		if ((*it).empty())
+	// 			it = result.erase(it);
+	// 		else
+	// 			++it;
+	// 	}
 	if (result.size() > 5 && result[0].length() > 0) {
 		filesystem::path full_path(result[0]);
 		std::string signame = full_path.filename();
@@ -67,9 +67,15 @@ void VtOutSystemOrderManager::AddSignalOrder(SharedSystem sys)
 {
 	if (!sys || !sys->OutSignal()) return;
 
-	auto it = _SignalOrderMap.find(sys->OutSignal()->SignalName);
+	// 시그널 이름으로 찾는다. 예를 들면 T1, T2, T3 등등
+	// 여기서 시스템의 이름을 시그널 이름으로 넣어 준다.
+	std::string signal_name = sys->OutSignal()->SignalName;
+	auto it = _SignalOrderMap.find(signal_name);
 	if (it != _SignalOrderMap.end()) {
 		SharedSystemMap& orderMap = it->second;
+		// 시스템 이름에 시그널 이름을 넣어준다.
+		// 주문의 전략 필드에 이 시그널 이름이 들어간다.
+		sys->Name(signal_name);
 		orderMap[sys->Id()] = sys;
 	}
 	else {
@@ -123,11 +129,11 @@ void VtOutSystemOrderManager::PutOrder(std::string sigName, int orderKind)
 			switch (orderKind)
 			{
 			case 1: // Buy
-				//msg.Format(_T("신호이름 : %s, 신호 종류 : %d, 주문 : 매수\n"), sigName.c_str(), orderKind);
-				//TRACE(msg);
+					//msg.Format(_T("신호이름 : %s, 신호 종류 : %d, 주문 : 매수\n"), sigName.c_str(), orderKind);
+					//TRACE(msg);
 				LOG_F(INFO, _T("신호이름 : %s, 신호 종류 : %d, 주문 : 매수"), sigName.c_str(), orderKind);
 				sys->PutEntranceOrder(VtPositionType::Buy);
-				
+
 				break;
 			case 2: { // ExitLong -> Sell
 				VtPosition posi = sys->GetPosition();
@@ -136,16 +142,16 @@ void VtOutSystemOrderManager::PutOrder(std::string sigName, int orderKind)
 					sys->PutEntranceOrder(VtPositionType::Sell);
 					//msg.Format(_T("신호이름 : %s, 신호 종류 : %d, 주문 : 매도\n"), sigName.c_str(), orderKind);
 					//TRACE(msg);
-					
+
 				}
 			}
-				break;
+					break;
 			case 3: // Sell
 				LOG_F(INFO, _T("신호이름 : %s, 신호 종류 : %d, 주문 : 매도"), sigName.c_str(), orderKind);
 				sys->PutEntranceOrder(VtPositionType::Sell);
 				//msg.Format(_T("신호이름 : %s, 신호 종류 : %d, 주문 : 매도\n"), sigName.c_str(), orderKind);
 				//TRACE(msg);
-				
+
 				break;
 			case 4: { // ExitShort -> Buy
 				VtPosition posi = sys->GetPosition();
@@ -154,10 +160,10 @@ void VtOutSystemOrderManager::PutOrder(std::string sigName, int orderKind)
 					sys->PutEntranceOrder(VtPositionType::Buy);
 					//msg.Format(_T("신호이름 : %s, 신호 종류 : %d, 주문 : 매수\n"), sigName.c_str(), orderKind);
 					//TRACE(msg);
-					
+
 				}
 			}
-				break;
+					break;
 			default:
 				break;
 			}

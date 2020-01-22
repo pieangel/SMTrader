@@ -37,7 +37,7 @@ void VtTotalOrderManager::RemoveAcceptedOrder(VtOrder* order)
 	}
 }
 
-void VtTotalOrderManager::RemoveAcceptedOrder(int orderNo)
+void VtTotalOrderManager::RemoveAcceptedOrder(std::string orderNo)
 {
 	auto it = _AcceptedMap.find(orderNo);
 	if (it != _AcceptedMap.end()) {

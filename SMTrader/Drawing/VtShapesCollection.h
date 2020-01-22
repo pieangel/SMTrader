@@ -73,7 +73,7 @@ public:
 	void DeleteAllObjects();
 	VtElement* AddHLineByOrder(XYChart* chart, int y, VtColor penC, int penWidth);
 	VtElement* FindObjectByOrder(VtOrder* order);
-	VtElement* FindObjectByOrderNo(int orderNo);
+	VtElement* FindObjectByOrderNo(std::string orderNo);
 private:
 	void DeleteElement(VtElement* ele);
 	double xmin, ymin, xmax, ymax;

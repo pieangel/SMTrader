@@ -22,7 +22,7 @@ public:
 	HdAccountPLDlg(CWnd* pParent = NULL);   // standard constructor
 	virtual ~HdAccountPLDlg();
 
-// Dialog Data
+	// Dialog Data
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_MINI_JANGO };
 #endif
@@ -65,4 +65,5 @@ public:
 	void OnReceiveAccountInfo();
 	afx_msg void OnCbnSelchangeComboAccount();
 	afx_msg void OnSize(UINT nType, int cx, int cy);
+	afx_msg void OnCbnDropdownComboAccount();
 };

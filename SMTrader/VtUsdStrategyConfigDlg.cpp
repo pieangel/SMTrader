@@ -27,6 +27,22 @@
 #include "VtStrategyToolWnd.h"
 #include "Format/time.h"
 #include "VtSystemOrderConfig.h"
+#include "SmCallbackManager.h"
+#include "VtOrder.h"
+#include "SmSystemPositionManager.h"
+#include "VtPosition.h"
+#include "VtAccount.h"
+#include "VtChartDataCollector.h"
+#include "VtStringUtil.h"
+#include "VtOrderLogDlg.h"
+
+#include <functional>
+
+using Poco::NumberFormatter;
+
+using namespace std;
+using namespace std::placeholders;
+
 using Poco::Delegate;
 using Poco::NumberFormatter;
 
@@ -90,6 +106,7 @@ void VtUsdStrategyConfigDlg::DoDataExchange(CDataExchange* pDX)
 	//  DDX_Control(pDX, IDC_STATIC_POSITION, _);
 	DDX_Control(pDX, IDC_STATIC_POSITION, _StaticPosition);
 	DDX_Control(pDX, IDC_BTN_SYS_ORDER, _BtnSysOrder);
+	DDX_Control(pDX, IDC_BTN_ORDER_HISTORY, _OrderHistoryBtn);
 }
 
 
@@ -110,6 +127,7 @@ BEGIN_MESSAGE_MAP(VtUsdStrategyConfigDlg, CDialogEx)
 	ON_EN_CHANGE(IDC_EDIT_ORDER_AMT, &VtUsdStrategyConfigDlg::OnEnChangeEditOrderAmt)
 	ON_WM_TIMER()
 	ON_BN_CLICKED(IDC_BTN_SYS_ORDER, &VtUsdStrategyConfigDlg::OnBnClickedBtnSysOrder)
+	ON_BN_CLICKED(IDC_BTN_ORDER_HISTORY, &VtUsdStrategyConfigDlg::OnBnClickedBtnOrderHistory)
 END_MESSAGE_MAP()
 
 
@@ -145,6 +163,7 @@ BOOL VtUsdStrategyConfigDlg::OnInitDialog()
 	_btnVec.push_back(&_BtnExtraVar);
 	_btnVec.push_back(&_BtnSymbol);
 	_btnVec.push_back(&_BtnSysOrder);
+	_btnVec.push_back(&_OrderHistoryBtn);
 
 	for (auto it = _btnVec.begin(); it != _btnVec.end(); ++it) {
 		CShadeButtonST* btn = *it;
@@ -190,6 +209,75 @@ BOOL VtUsdStrategyConfigDlg::OnInitDialog()
 		VtStrategyWndManager* stgWndMgr = VtStrategyWndManager::GetInstance();
 		stgWndMgr->AddSystemDialog(_System->Name(), this);
 	}
+
+	RegisterOrderCallback();
+
+	_StaticPosition.SetTextColor(GetSysColor(COLOR_3DFACE));
+	_StaticPosition.SetColor(GetSysColor(COLOR_3DFACE));
+	_StaticPosition.SetGradientColor(GetSysColor(COLOR_3DFACE));
+
+	// 실시간 포지션 이익을 표시해 준다.
+	if (_Type == 0 || _Type == 1) {
+		if (!_Account)
+			return TRUE;
+
+		VtPosition* posi = _Account->FindPosition(_SelSymbol->ShortCode);
+		if (posi) {
+			CString msg;
+			if (posi->OpenQty > 0) {
+				_StaticPosition.SetTextColor(RGB(255, 255, 255));
+				_StaticPosition.SetColor(RGB(240, 51, 58));
+				_StaticPosition.SetGradientColor(RGB(240, 51, 58));
+				msg.Format("매수 : %d", posi->OpenQty);
+			}
+			else if (posi->OpenQty < 0) {
+				_StaticPosition.SetTextColor(RGB(255, 255, 255));
+				_StaticPosition.SetColor(RGB(19, 137, 255));
+				_StaticPosition.SetGradientColor(RGB(19, 137, 255));
+				msg.Format("매도 : %d", -1 * posi->OpenQty);
+			}
+			else {
+				_StaticPosition.SetTextColor(GetSysColor(COLOR_3DFACE));
+				_StaticPosition.SetColor(GetSysColor(COLOR_3DFACE));
+				_StaticPosition.SetGradientColor(GetSysColor(COLOR_3DFACE));
+				msg = "";
+			}
+
+			_StaticPosition.SetWindowText(msg);
+		}
+	}
+	else {
+		if (!_Fund)
+			return TRUE;
+
+		int count = 0;
+		VtPosition posi = _Fund->GetPosition(_SelSymbol->ShortCode, count);
+		if (count == 0) {
+			return TRUE;
+		}
+		CString msg;
+		if (posi.OpenQty > 0) {
+			_StaticPosition.SetTextColor(RGB(255, 255, 255));
+			_StaticPosition.SetColor(RGB(240, 51, 58));
+			_StaticPosition.SetGradientColor(RGB(240, 51, 58));
+			msg.Format("매수 : %d", posi.OpenQty);
+		}
+		else if (posi.OpenQty < 0) {
+			_StaticPosition.SetTextColor(RGB(255, 255, 255));
+			_StaticPosition.SetColor(RGB(19, 137, 255));
+			_StaticPosition.SetGradientColor(RGB(19, 137, 255));
+			msg.Format("매도 : %d", -1 * posi.OpenQty);
+		}
+		else {
+			_StaticPosition.SetTextColor(GetSysColor(COLOR_3DFACE));
+			_StaticPosition.SetColor(GetSysColor(COLOR_3DFACE));
+			_StaticPosition.SetGradientColor(GetSysColor(COLOR_3DFACE));
+			msg = "";
+		}
+
+		_StaticPosition.SetWindowText(msg);
+	}
+
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // EXCEPTION: OCX Property Pages should return FALSE
 }
@@ -198,6 +286,133 @@ void VtUsdStrategyConfigDlg::ClearArgMap()
 {
 	_EntGrid.ClearArgMap();
 	_LiqGrid.ClearArgMap();
+}
+
+void VtUsdStrategyConfigDlg::RegisterOrderCallback()
+{
+	// 매개변수가 하나 있음을 나타내는 것이다. 여기서는 VtOrder*
+	SmCallbackManager::GetInstance()->SubscribeOrderCallback((long)this, std::bind(&VtUsdStrategyConfigDlg::OnOrderEvent, this, _1));
+}
+
+void VtUsdStrategyConfigDlg::OnOrderEvent(VtOrder* order)
+{
+	if (!order || !_System)
+		return;
+
+	if (_System->Name().compare(order->StrategyName) != 0)
+		return;
+	if (_SelSymbol->ShortCode.compare(order->shortCode) != 0)
+		return;
+
+	std::string log_time, log_content;
+	log_time = VtStringUtil::NowTime();
+
+	CString msg;
+	try
+	{
+		if (order->Type == 0 || order->Type == 1) {
+			if (!_Account)
+				return;
+			if (_Account->AccountNo.compare(order->AccountNo) != 0)
+				return;
+
+			if (order->state == VtOrderState::Accepted) {
+				log_content.append(_T(" 접수 "));
+				msg.Format(_T(" 시스템 이름 = %s, 주문가격 = %.2f, 종목이름 = %s, 주문 번호 = %d, 이전주문번호 = %d, 계좌번호 = %s, 주문종류 = %s, 주문갯수 = %d"), order->StrategyName.c_str(), order->orderPrice, order->shortCode.c_str(), order->orderNo, order->oriOrderNo, order->AccountNo.c_str(), order->orderPosition == VtPositionType::Buy ? _T("매수") : _T("매도"), order->amount);
+				log_content.append((LPCSTR)msg);
+				_System->LogVector.push_back(std::make_pair(log_time, log_content));
+			}
+			else if (order->state == VtOrderState::Filled || order->state == VtOrderState::Settled) {
+				log_content.append(_T(" 체결 "));
+				msg.Format(_T(" 시스템 이름 = %s, 체결가격 = %.2f, 종목이름 = %s, 주문 번호 = %d, 이전주문번호 = %d, 계좌번호 = %s, 주문종류 = %s, 체결갯수 = %d"), order->StrategyName.c_str(), order->filledPrice, order->shortCode.c_str(), order->orderNo, order->oriOrderNo, order->AccountNo.c_str(), order->orderPosition == VtPositionType::Buy ? _T("매수") : _T("매도"), order->filledQty);
+				log_content.append((LPCSTR)msg);
+				_System->LogVector.push_back(std::make_pair(log_time, log_content));
+			}
+
+			VtPosition* posi = _Account->FindPosition(_SelSymbol->ShortCode);
+			if (posi) {
+				CString msg;
+				if (posi->OpenQty > 0) {
+					_StaticPosition.SetTextColor(RGB(255, 255, 255));
+					_StaticPosition.SetColor(RGB(240, 51, 58));
+					_StaticPosition.SetGradientColor(RGB(240, 51, 58));
+					msg.Format("매수 : %d", posi->OpenQty);
+				}
+				else if (posi->OpenQty < 0) {
+					_StaticPosition.SetTextColor(RGB(255, 255, 255));
+					_StaticPosition.SetColor(RGB(19, 137, 255));
+					_StaticPosition.SetGradientColor(RGB(19, 137, 255));
+					msg.Format("매도 : %d", -1 * posi->OpenQty);
+				}
+				else {
+					_StaticPosition.SetTextColor(GetSysColor(COLOR_3DFACE));
+					_StaticPosition.SetColor(GetSysColor(COLOR_3DFACE));
+					_StaticPosition.SetGradientColor(GetSysColor(COLOR_3DFACE));
+					msg = "";
+				}
+
+				_StaticPosition.SetWindowText(msg);
+			}
+		}
+		else {
+			if (!_Fund)
+				return;
+
+			if (_Fund->Name.compare(order->FundName) != 0)
+				return;
+
+			if (order->state == VtOrderState::Accepted) {
+				log_content.append(_T(" 접수 "));
+				msg.Format(_T(" 시스템 이름 = %s, 주문가격 = %.2f, 종목이름 = %s, 주문 번호 = %d, 이전주문번호 = %d, 계좌번호 = %s, 주문종류 = %s, 주문갯수 = %d"), order->StrategyName.c_str(), order->orderPrice, order->shortCode.c_str(), order->orderNo, order->oriOrderNo, order->AccountNo.c_str(), order->orderPosition == VtPositionType::Buy ? _T("매수") : _T("매도"), order->amount);
+				log_content.append((LPCSTR)msg);
+				_System->LogVector.push_back(std::make_pair(log_time, log_content));
+			}
+			else if (order->state == VtOrderState::Filled || order->state == VtOrderState::Settled) {
+				log_content.append(_T(" 체결 "));
+				msg.Format(_T(" 시스템 이름 = %s, 체결가격 = %.2f, 종목이름 = %s, 주문 번호 = %d, 이전주문번호 = %d, 계좌번호 = %s, 주문종류 = %s, 체결갯수 = %d"), order->StrategyName.c_str(), order->filledPrice, order->shortCode.c_str(), order->orderNo, order->oriOrderNo, order->AccountNo.c_str(), order->orderPosition == VtPositionType::Buy ? _T("매수") : _T("매도"), order->filledQty);
+				log_content.append((LPCSTR)msg);
+				_System->LogVector.push_back(std::make_pair(log_time, log_content));
+			}
+
+			int count = 0;
+			VtPosition posi = _Fund->GetPosition(_SelSymbol->ShortCode, count);
+			if (count == 0) {
+				return;
+			}
+			CString msg;
+			if (posi.OpenQty > 0) {
+				_StaticPosition.SetTextColor(RGB(255, 255, 255));
+				_StaticPosition.SetColor(RGB(240, 51, 58));
+				_StaticPosition.SetGradientColor(RGB(240, 51, 58));
+				msg.Format("매수 : %d", posi.OpenQty);
+			}
+			else if (posi.OpenQty < 0) {
+				_StaticPosition.SetTextColor(RGB(255, 255, 255));
+				_StaticPosition.SetColor(RGB(19, 137, 255));
+				_StaticPosition.SetGradientColor(RGB(19, 137, 255));
+				msg.Format("매도 : %d", -1 * posi.OpenQty);
+			}
+			else {
+				_StaticPosition.SetTextColor(GetSysColor(COLOR_3DFACE));
+				_StaticPosition.SetColor(GetSysColor(COLOR_3DFACE));
+				_StaticPosition.SetGradientColor(GetSysColor(COLOR_3DFACE));
+				msg = "";
+			}
+
+			_StaticPosition.SetWindowText(msg);
+		}
+	}
+	catch (std::exception& e)
+	{
+		std::string error = e.what();
+	}
+
+
+}
+
+void VtUsdStrategyConfigDlg::UnregisterAllCallback()
+{
+	SmCallbackManager::GetInstance()->UnsubscribeOrderCallback((long)this);
 }
 
 void VtUsdStrategyConfigDlg::InitComboMap()
@@ -267,7 +482,7 @@ void VtUsdStrategyConfigDlg::InitControls()
 		if (_System->Account()) {
 			_Account = _System->Account();
 			_StaticAccount.SetWindowText(_System->Account()->AccountNo.c_str());
-		} 
+		}
 		else {
 			_Account = nullptr;
 			_StaticAccount.SetWindowText(_T(""));
@@ -302,7 +517,7 @@ void VtUsdStrategyConfigDlg::InitControls()
 	title.append(_T("M"));
 	SetWindowText(title.c_str());
 
-	
+
 
 	_System->LiqByStop() ? _CheckLiqByStop.SetCheck(BST_CHECKED) : _CheckLiqByStop.SetCheck(BST_UNCHECKED);
 	_LiqByStop = _System->LiqByStop();
@@ -323,7 +538,7 @@ void VtUsdStrategyConfigDlg::InitControls()
 	std::vector<VtSystemArgGroup>& argGrpVec = _System->GetArgGroupVec();
 	for (auto it = argGrpVec.begin(); it != argGrpVec.end(); ++it) {
 		VtSystemArgGroup& argGrp = *it;
-		if (argGrp.Name().compare(_T("매수진입")) == 0 || 
+		if (argGrp.Name().compare(_T("매수진입")) == 0 ||
 			argGrp.Name().compare(_T("매도진입")) == 0) {
 			_EntGrid.SetArg(argGrp);
 		}
@@ -358,7 +573,7 @@ void VtUsdStrategyConfigDlg::InitControls()
 		_ComboProfitTarget.SetCurSel(1);
 		_TargetProfitType = ValueType::Percent;
 	}
-	
+
 	_EnableTrailStop = _System->EnableTrailStop();
 	_EnableLossCut = _System->EnableLossCut();
 	_EnableTargetCut = _System->EnableTargetCut();
@@ -378,7 +593,7 @@ void VtUsdStrategyConfigDlg::InitControls()
 	value.Format(_T("%d"), _System->MaxEntrance());
 	_EditEntMax.SetWindowText(value);
 
-	
+
 
 	COleDateTime NewDate;
 	CTime curTime = CTime::GetCurrentTime();
@@ -470,6 +685,8 @@ void VtUsdStrategyConfigDlg::SetSymbol(VtSymbol* sym)
 	if (_System) {
 		_System->Symbol(_SelSymbol);
 		_System->SymbolCode(_SelSymbol->ShortCode);
+		VtSystemManager::GetInstance()->InitDataSource(_SelSymbol, 1);
+		VtSystemManager::GetInstance()->InitDataSource(_SelSymbol, 5);
 	}
 }
 
@@ -505,7 +722,7 @@ void VtUsdStrategyConfigDlg::OnBnClickedBtnApply()
 			_System->Fund(nullptr);
 			if (_Account->AccountLevel() == 0) {
 				realtimeRegiMgr->RegisterAccount(_Account->AccountNo);
-			} 
+			}
 			else {
 				VtAccount* parentAcnt = _Account->ParentAccount();
 				if (parentAcnt) {
@@ -533,7 +750,7 @@ void VtUsdStrategyConfigDlg::OnBnClickedBtnApply()
 		_System->SymbolCode(_SelSymbol->ShortCode);
 		realtimeRegiMgr->RegisterProduct(_SelSymbol->ShortCode);
 	}
-	
+
 	CTime esTime;
 	_DpEntBegin.GetTime(esTime);
 	VtTime& startTime = _System->EntranceStartTime();
@@ -542,7 +759,7 @@ void VtUsdStrategyConfigDlg::OnBnClickedBtnApply()
 	startTime.sec = esTime.GetSecond();
 
 	_DpEntEnd.GetTime(esTime);
-	VtTime& endTime  = _System->EntranceEndTime();
+	VtTime& endTime = _System->EntranceEndTime();
 	endTime.hour = esTime.GetHour();
 	endTime.min = esTime.GetMinute();
 	endTime.sec = esTime.GetSecond();
@@ -794,11 +1011,10 @@ void VtUsdStrategyConfigDlg::OnRealTimeEvent()
 {
 	if (!_System)
 		return;
-
-	std::string temp = NumberFormatter::format(_System->ProfitLoss(), 0);
-	CString profitLoss = XFormatNumber(temp.c_str(), -1);
-
-	_StaticPl.SetWindowText(profitLoss);
+	CString profitLoss;
+	std::string temp;
+	//std::string temp = NumberFormatter::format(_System->ProfitLoss(), 0);
+	//profitLoss = XFormatNumber(temp.c_str(), -1);
 
 	CString profit;
 	profit.Format(_T("%d"), _System->EntryToday());
@@ -812,23 +1028,6 @@ void VtUsdStrategyConfigDlg::OnRealTimeEvent()
 		profitLoss.Format(_T("%d"), _System->LatestEntPrice());
 	}
 	_StaticLastEntPrice.SetWindowText(profitLoss);
-	if (_System->PositionState.Find(_T("매수")) >= 0) {
-		_StaticPosition.SetTextColor(RGB(255, 255, 255));
-		_StaticPosition.SetColor(RGB(240, 51, 58));
-		_StaticPosition.SetGradientColor(RGB(240, 51, 58));
-	} 
-	else if (_System->PositionState.Find(_T("매도")) >= 0) {
-		_StaticPosition.SetTextColor(RGB(255, 255, 255));
-		_StaticPosition.SetColor(RGB(19, 137, 255));
-		_StaticPosition.SetGradientColor(RGB(19, 137, 255));
-	}
-	else {
-		_StaticPosition.SetTextColor(GetSysColor(COLOR_3DFACE));
-		_StaticPosition.SetColor(GetSysColor(COLOR_3DFACE));
-		_StaticPosition.SetGradientColor(GetSysColor(COLOR_3DFACE));
-	}
-	_StaticPosition.SetWindowText(_System->PositionState);
-
 
 	VtDate curDate = VtGlobal::GetLocalDate();
 	VtTime curTime = VtGlobal::GetLocalTime();
@@ -843,6 +1042,70 @@ void VtUsdStrategyConfigDlg::OnRealTimeEvent()
 	title.append(_T("    "));
 	title.append(td);
 	SetWindowText(title.c_str());
+
+	/*
+	// 실시간 포지션 이익을 표시해 준다.
+	if (_Type == 0 || _Type == 1) {
+	if (!_Account)
+	return;
+
+	VtPosition* posi = _Account->FindPosition(_SelSymbol->ShortCode);
+	if (posi) {
+	CString msg;
+	if (posi->OpenQty > 0) {
+	_StaticPosition.SetTextColor(RGB(255, 255, 255));
+	_StaticPosition.SetColor(RGB(240, 51, 58));
+	_StaticPosition.SetGradientColor(RGB(240, 51, 58));
+	msg.Format("매수 : %d", posi->OpenQty);
+	}
+	else if (posi->OpenQty < 0) {
+	_StaticPosition.SetTextColor(RGB(255, 255, 255));
+	_StaticPosition.SetColor(RGB(19, 137, 255));
+	_StaticPosition.SetGradientColor(RGB(19, 137, 255));
+	msg.Format("매도 : %d", -1 * posi->OpenQty);
+	}
+	else {
+	_StaticPosition.SetTextColor(GetSysColor(COLOR_3DFACE));
+	_StaticPosition.SetColor(GetSysColor(COLOR_3DFACE));
+	_StaticPosition.SetGradientColor(GetSysColor(COLOR_3DFACE));
+	msg = "";
+	}
+
+	_StaticPosition.SetWindowText(msg);
+	}
+	}
+	else {
+	if (!_Fund)
+	return;
+
+	int count = 0;
+	VtPosition posi = _Fund->GetPosition(_SelSymbol->ShortCode, count);
+	if (count == 0) {
+	return;
+	}
+	CString msg;
+	if (posi.OpenQty > 0) {
+	_StaticPosition.SetTextColor(RGB(255, 255, 255));
+	_StaticPosition.SetColor(RGB(240, 51, 58));
+	_StaticPosition.SetGradientColor(RGB(240, 51, 58));
+	msg.Format("매수 : %d", posi.OpenQty);
+	}
+	else if (posi.OpenQty < 0) {
+	_StaticPosition.SetTextColor(RGB(255, 255, 255));
+	_StaticPosition.SetColor(RGB(19, 137, 255));
+	_StaticPosition.SetGradientColor(RGB(19, 137, 255));
+	msg.Format("매도 : %d", -1 * posi.OpenQty);
+	}
+	else {
+	_StaticPosition.SetTextColor(GetSysColor(COLOR_3DFACE));
+	_StaticPosition.SetColor(GetSysColor(COLOR_3DFACE));
+	_StaticPosition.SetGradientColor(GetSysColor(COLOR_3DFACE));
+	msg = "";
+	}
+
+	_StaticPosition.SetWindowText(msg);
+	}
+	*/
 }
 
 void VtUsdStrategyConfigDlg::RefreshRealTimeValue(std::string argName, CString value)
@@ -876,12 +1139,7 @@ void VtUsdStrategyConfigDlg::RefreshRealTimeValue(std::string argName, double va
 
 void VtUsdStrategyConfigDlg::OnEnChangeEditOrderAmt()
 {
-	// TODO:  If this is a RICHEDIT control, the control will not
-	// send this notification unless you override the CDialogEx::OnInitDialog()
-	// function and call CRichEditCtrl().SetEventMask()
-	// with the ENM_CHANGE flag ORed into the mask.
 
-	// TODO:  Add your control notification handler code here
 }
 
 void VtUsdStrategyConfigDlg::UpdateRunCheck(VtSystem* sys)
@@ -918,7 +1176,7 @@ void VtUsdStrategyConfigDlg::OnTimer(UINT_PTR nIDEvent)
 		RefreshRealTimeValue(_T("Qbc>Qac"), _QbcGtQac, 2);
 		double _QacGtQbc = sysMgr->Qac == 0 ? 0 : sysMgr->Qbc / sysMgr->Qac;
 		RefreshRealTimeValue(_T("Qac>Qbc"), _QacGtQbc, 2);
-		
+
 		double _UbsGtUas = sysMgr->Ubs == 0 ? 0 : sysMgr->Uas / sysMgr->Ubs;
 		RefreshRealTimeValue(_T("Ubs>Uas"), _UbsGtUas, 2);
 		double _UasGtUbs = sysMgr->Uas == 0 ? 0 : sysMgr->Ubs / sysMgr->Uas;
@@ -946,5 +1204,16 @@ void VtUsdStrategyConfigDlg::OnBnClickedBtnSysOrder()
 	if (result == IDOK && _System) {
 		_System->PriceType(sysOrderConfig._PriceType);
 		_System->OrderTick(sysOrderConfig._OrderTick);
+	}
+}
+
+
+void VtUsdStrategyConfigDlg::OnBnClickedBtnOrderHistory()
+{
+	if (_System) {
+		_LogDlg = new VtOrderLogDlg();
+		_LogDlg->Create(IDD_ORDER_LOG, this);
+		_LogDlg->UpdateOrderLog(_System->LogVector);
+		_LogDlg->ShowWindow(SW_SHOW);
 	}
 }

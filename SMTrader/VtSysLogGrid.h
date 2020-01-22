@@ -18,7 +18,8 @@ public:
 
 	void SetColTitle();
 	int _ColCount = 3;
-	int _RowCount = 20;
+	int RowCount() const { return _RowCount; }
+	void RowCount(int val) { _RowCount = val; }
 	CFont _defFont;
 	CFont _titleFont;
 	virtual void OnLClicked(int col, long row, int updn, RECT *rect, POINT *point, int processed);
@@ -36,13 +37,22 @@ public:
 	void CenterWnd(SmOrderPanel* val) { _CenterWnd = val; }
 	int GetGridWidth();
 	void UpdateLog();
+	void UpdateOrderLog(std::vector<std::pair<std::string, std::string>> log_vec);
+	int Mode() const { return _Mode; }
+	void Mode(int val) { _Mode = val; }
+	void Resize(CRect& rect);
 private:
+	void InitOrderLog();
+	std::vector<std::pair<std::string, std::string>> _OrderLogVec;
 	VtOrderConfigManager* _OrderConfigMgr = nullptr;
 	int GetMaxRow();
+	int GetMaxRow(CRect& rect);
 	int _MaxRow = 20;
 	int _CellHeight;
 	std::vector<int> _ColWidths;
 	SmOrderPanel* _CenterWnd = nullptr;
+	int _Mode = 0;
+	int _RowCount = 80;
 };
 
 

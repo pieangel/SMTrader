@@ -275,10 +275,10 @@ private:
 	// 선물사 요청 번호 와 주문 요청 정보 매칭 맵 
 	std::map<int, HdOrderRequest> _ReqIdToRequestMap;
 	// 주문 번호와 주문 요청 정보 매칭 맵
-	std::map<int, HdOrderRequest> _OrderNoToRequestMap;
+	std::map<std::string, HdOrderRequest> _OrderNoToRequestMap;
 	// 주문번호로 원래 요청을 찾아 낸다.
 	// 주문번호로 원래 요청을 찾을 수 없다면 외부에서 이루어진 주문이다.
-	HdOrderRequest* GetOrderRequestByOrderNo(int order_no);
+	HdOrderRequest* GetOrderRequestByOrderNo(std::string order_no);
 	// 주문요청번호로 원래 요청을 찾아 낸다.
 	// 요청번호가 없는 것은 전부 외부에서 이루어진 주문이다.
 	HdOrderRequest* GetOrderRequestByOrderReqId(int req_id);

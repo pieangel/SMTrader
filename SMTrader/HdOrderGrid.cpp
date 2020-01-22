@@ -158,11 +158,11 @@ void HdOrderGrid::InitGrid()
 		QuickSetText(5, row, amount.c_str());
 
 		QuickSetText(6, row, order->tradeTime.c_str());
-		std::string orderNo = NumberFormatter::format(order->orderNo, 5);
+		std::string orderNo = order->orderNo; // NumberFormatter::format(order->orderNo, 5);
 		orderNo = trim(orderNo);
 		QuickSetText(7, row, orderNo.c_str());
 
-		std::string oriOrderNo = NumberFormatter::format(order->oriOrderNo, 5);
+		std::string oriOrderNo = order->oriOrderNo; // NumberFormatter::format(order->oriOrderNo, 5);
 		oriOrderNo = trim(oriOrderNo);
 		QuickSetText(8, row, oriOrderNo.c_str());
 

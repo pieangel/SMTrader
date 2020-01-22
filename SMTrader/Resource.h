@@ -171,6 +171,8 @@
 #define IDD_DIALOG_CHART1               385
 #define IDD_TIME_TOOLBAR                386
 #define IDD_SYSTEM_PROPERTY             388
+#define IDD_DIALOG1                     389
+#define IDD_ORDER_LOG                   389
 #define IDD_PROGRESS                    391
 #define IDI_SEARCH                      393
 #define IDD_MAIN_TOOLBAR                394
@@ -431,6 +433,7 @@
 #define IDC_BTN_DEL                     1015
 #define IDC_BUSY_PIC                    1015
 #define IDC_BTN_ADD_SIGNAL              1015
+#define IDC_BTN_ORDER_HISTORY           1015
 #define IDC_COMBO_ACCOUNT5              1016
 #define IDC_BUSY_TEXT                   1016
 #define IDC_COMBO_ACNT                  1016
@@ -720,7 +723,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        388
+#define _APS_NEXT_RESOURCE_VALUE        391
 #define _APS_NEXT_COMMAND_VALUE         32816
 #define _APS_NEXT_CONTROL_VALUE         1060
 #define _APS_NEXT_SYMED_VALUE           310

@@ -206,7 +206,7 @@ void VtOrderManager::Buy(int amount)
 	request.orderPosition = VtPositionType::Buy;
 	request.priceType = VtPriceType::Market;
 	request.tradeType = VtTradeType::Market;
-	request.oriOrderNo = 0;
+	request.oriOrderNo = "0";
 
 	PutOrder(std::move(request));
 }
@@ -267,7 +267,7 @@ void VtOrderManager::Sell(int amount)
 	request.orderPosition = VtPositionType::Sell;
 	request.priceType = VtPriceType::Market;
 	request.tradeType = VtTradeType::Market;
-	request.oriOrderNo = 0;
+	request.oriOrderNo = "0";
 	PutOrder(std::move(request));
 }
 
@@ -317,7 +317,7 @@ void VtOrderManager::PutOrder(int chartId, VtOrderCmd cmd, int qty, double price
 	request.orderPrice = price;
 	request.requestID = GetOrderRequestID();
 	request.orderType = VtOrderType::New;
-	request.oriOrderNo = 0;
+	request.oriOrderNo = "0";
 
 	switch (cmd)
 	{
@@ -544,11 +544,11 @@ VtOrder* VtOrderManager::RemovePreOrder(int orderRequestID)
 	return order;
 }
 
-void VtOrderManager::RemoveAccepted(int orderNo)
+void VtOrderManager::RemoveAccepted(std::string orderNo)
 {
 	for (auto it = AcceptedMap.begin(); it != AcceptedMap.end(); ++it) {
 		VtOrder* order = it->second;
-		if (order->orderNo == orderNo) {
+		if (order->orderNo.compare(orderNo) == 0) {
 			AcceptedMap.erase(it);
 			break;
 		}
@@ -558,11 +558,11 @@ void VtOrderManager::RemoveAccepted(int orderNo)
 	totalOrderMgr->RemoveAcceptedOrder(orderNo);
 }
 
-void VtOrderManager::RemoveFilled(int orderNo)
+void VtOrderManager::RemoveFilled(std::string orderNo)
 {
 	for (auto it = FilledList.begin(); it != FilledList.end(); ++it) {
 		VtOrder* order = *it;
-		if (order->orderNo == orderNo) {
+		if (order->orderNo.compare(orderNo) == 0) {
 			FilledList.erase(it);
 			break;
 		}
@@ -583,7 +583,7 @@ VtOrder* VtOrderManager::FindPreOrderByRequestID(int requestID)
 	return nullptr;
 }
 
-VtOrder* VtOrderManager::FindAccepted(int orderNo)
+VtOrder* VtOrderManager::FindAccepted(std::string orderNo)
 {
 	auto it = AcceptedMap.find(orderNo);
 	if (it != AcceptedMap.end())
@@ -592,7 +592,7 @@ VtOrder* VtOrderManager::FindAccepted(int orderNo)
 		return nullptr;
 }
 
-VtOrder* VtOrderManager::FindFilled(int orderNo)
+VtOrder* VtOrderManager::FindFilled(std::string orderNo)
 {
 	for (auto it = FilledList.begin(); it != FilledList.end(); ++it)
 	{
@@ -606,7 +606,7 @@ VtOrder* VtOrderManager::FindFilled(int orderNo)
 	return nullptr;
 }
 
-VtOrder* VtOrderManager::FindOrder(int orderNo)
+VtOrder* VtOrderManager::FindOrder(std::string orderNo)
 {
 	auto it = OrderMap.find(orderNo);
 	if (it != OrderMap.end())
@@ -716,7 +716,7 @@ void VtOrderManager::FillRequest(VtOrderDirectRequest&& request, VtOrder* order)
 	request.tradeType = order->tradeType;
 }
 
-void VtOrderManager::RemoveOriginalOrder(int oldOrderNo)
+void VtOrderManager::RemoveOriginalOrder(std::string oldOrderNo)
 {
 	auto it = AcceptedMap.find(oldOrderNo);
 	if (it != AcceptedMap.end())
@@ -1377,7 +1377,7 @@ void VtOrderManager::RemoveAcceptedHd(VtOrder* order)
 	RemoveAccepted(order->orderNo);
 }
 
-void VtOrderManager::RemoveAcceptedHd(std::string symbol_code, int order_no)
+void VtOrderManager::RemoveAcceptedHd(std::string symbol_code, std::string order_no)
 {
 	VtTotalOrderManager* totalOrderMgr = VtTotalOrderManager::GetInstance();
 	totalOrderMgr->RemoveAcceptedOrder(order_no);
@@ -1472,7 +1472,7 @@ void VtOrderManager::RefreshAcceptedOrders(std::string symCode)
 	prdtOrderMgr->RefreshAcceptedOrders();
 }
 
-void VtOrderManager::RefreshAcceptedOrder(int orderNo)
+void VtOrderManager::RefreshAcceptedOrder(std::string orderNo)
 {
 	auto it = AcceptedMap.find(orderNo);
 	if (it != AcceptedMap.end()) {
@@ -1497,7 +1497,7 @@ VtProductOrderManager* VtOrderManager::FindAddProductOrderManager(std::string sy
 	return _ProductOrderManagerSelector->FindAdd(symbolCode);
 }
 
-std::map<int, VtOrder*> VtOrderManager::GetTotalRemain(std::string symbolCode)
+std::map<std::string, VtOrder*> VtOrderManager::GetTotalRemain(std::string symbolCode)
 {
 	VtProductOrderManager* prdtOrderMgr = FindAddProductOrderManager(symbolCode);
 	return prdtOrderMgr->GetRemainMap();
@@ -1511,7 +1511,7 @@ void VtOrderManager::ClearRemainOrderMap(std::string symbolCode)
 
 int VtOrderManager::GetAvg(std::string symbolCode)
 {
-	std::map<int, VtOrder*> remainMap = GetTotalRemain(symbolCode);
+	std::map<std::string, VtOrder*> remainMap = GetTotalRemain(symbolCode);
 	if (remainMap.size() == 0)
 		return -1;
 
@@ -1527,12 +1527,12 @@ int VtOrderManager::GetAvg(std::string symbolCode)
 	return avg;
 }
 
-void VtOrderManager::GetRemainMap(std::string symbolCode, std::map<int, VtOrder*>& remainMap)
+void VtOrderManager::GetRemainMap(std::string symbolCode, std::map<std::string, VtOrder*>& remainMap)
 {
 	VtProductOrderManager* prdtOrderMgr = _ProductOrderManagerSelector->Find(symbolCode);
 	if (!prdtOrderMgr)
 		return;
-	std::map<int, VtOrder*> prdtRemainMap = prdtOrderMgr->GetRemainMap();
+	std::map<std::string, VtOrder*> prdtRemainMap = prdtOrderMgr->GetRemainMap();
 	for (auto it = prdtRemainMap.begin(); it != prdtRemainMap.end(); ++it)
 	{
 		remainMap[it->first] = it->second;
