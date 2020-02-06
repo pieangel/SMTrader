@@ -1,163 +1,306 @@
 #include "stdafx.h"
 #include "VtTotalRemainGrid.h"
-#include "VtAccount.h"
 #include "VtOrderConfigManager.h"
+#include "VtAccount.h"
+#include "Poco/NumberFormatter.h"
+#include "VtSymbol.h"
+#include "XFormatNumber.h"
+#include "VtFund.h"
 #include "VtGlobal.h"
+#include <algorithm> 
+#include <functional>
+#include "SmCallbackManager.h"
+
+using namespace std;
+using namespace std::placeholders;
+
+using Poco::NumberFormatter;
 
 VtTotalRemainGrid::VtTotalRemainGrid()
 {
+	RegisterQuoteCallback();
 }
 
 
 VtTotalRemainGrid::~VtTotalRemainGrid()
 {
+	UnregisterAllCallback();
 }
 
 
-void VtTotalRemainGrid::OnSetup()
+void VtTotalRemainGrid::UnregisterAllCallback()
 {
-	SetUGMode(UGMode::OrderNormal);
+	UnregisterQuoteCallback();
+}
 
+void VtTotalRemainGrid::RegisterQuoteCallback()
+{
+	SmCallbackManager::GetInstance()->SubscribeQuoteCallback((long)this, std::bind(&VtTotalRemainGrid::OnQuoteEvent, this, _1));
+}
+
+void VtTotalRemainGrid::UnregisterQuoteCallback()
+{
+	SmCallbackManager::GetInstance()->UnsubscribeQuoteCallback((long)this);
+}
+
+void VtTotalRemainGrid::OnQuoteEvent(VtSymbol* symbol)
+{
+	if (!symbol)
+		return;
+	InitGrid();
+}
+
+
+void VtTotalRemainGrid::Init()
+{
+	_CellHeight = 20;
 	_defFont.CreateFont(12, 0, 0, 0, 500, 0, 0, 0, 0, 0, 0, 0, 0, _T("굴림"));
-	_titleFont.CreateFont(11, 0, 0, 0, 500, 0, 0, 0, 0, 0, 0, 0, 0, _T("굴림"));
 
-	SetDoubleBufferMode(TRUE);
-	SetDefColWidth(80);
+	SetRowCount(_RowCount);
+	SetColumnCount(_ColCount);
+	SetFixedRowCount(0);
+	SetFixedColumnCount(0);
+	EnableScrollBars(SB_VERT, FALSE);
+	EnableScrollBars(SB_HORZ, FALSE);
+	SetFixedColumnSelection(FALSE);
+	SetFixedRowSelection(FALSE);
+	SetCompareFunction(CGridCtrl::pfnCellNumericCompare);
+	SetDoubleBuffering(TRUE);
+	EnableSelection(FALSE);
+	SetEditable(FALSE);
+	EnableTitleTips(FALSE);
+	SetColumnResize(FALSE);
+	SetRowResize(FALSE);
+	AllowReorderColumn(false);
 
-	SetNumberRows(_RowCount);
-	SetNumberCols(_ColCount);
+	for (int i = 0; i < _RowCount; i++) {
+		SetRowHeight(i, _CellHeight);
+		for (int j = 0; j < _ColCount; ++j) {
+			CGridCellBase* pCell = GetCell(i, j);
+			if (pCell) {
+				if (j == 0)
+					pCell->SetFormat(DT_CENTER | DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX);
+				else // 텍스트 정렬
+					pCell->SetFormat(DT_RIGHT | DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX);
+				// 셀 배경 색 설정
+				pCell->SetBackClr(RGB(255, 255, 255));
+				// 셀 글자색 설정
+				pCell->SetTextClr(RGB(0, 0, 0));
 
-
-
-	SetDefFont(&_defFont);
-	SetSH_Width(0);
-	SetTH_Height(0);
-	SetRowTitle();
-	SetVS_Width(0);
-	SetHS_Height(0);
-
-	EnableMenu(TRUE);
-
-	for (int yIndex = 0; yIndex < _RowCount; yIndex++)
-	{
-		for (int xIndex = 0; xIndex < _ColCount; xIndex++)
-		{
-			QuickSetAlignment(xIndex, yIndex, UG_ALIGNCENTER | UG_ALIGNVCENTER);
+				InvalidateCellRect(i, j);
+			}
 		}
 	}
 
-	RedrawAll();
+	SetFont(&_defFont);
 
-}
-
-
-void VtTotalRemainGrid::OnLClicked(int col, long row, int updn, RECT *rect, POINT *point, int processed)
-{
-	return;
+	SetRowTitle();
 }
 
 void VtTotalRemainGrid::SetRowTitle()
 {
-	const int rowCount = _RowCount;
-	CUGCell cell;
-	LPCTSTR title[6] = { "평가손익", "실현손익", "총손익" };
-	SetColWidth(0, 56);
-	SetColWidth(1, 101);
-	for (int i = 0; i < _RowCount; i++)
-	{
-		QuickSetText(0, i, title[i]);
-		GetCell(0, i, &cell);
-		cell.SetBackColor(VtGlobal::GridTitleBackColor);
-		cell.SetTextColor(VtGlobal::GridTitleTextColor);
-		SetCell(0, i, &cell);
-		QuickSetFont(0, i, &_titleFont);
-		QuickSetAlignment(0, i, UG_ALIGNCENTER | UG_ALIGNVCENTER);
-		RedrawCell(0, i);
+	LPCTSTR title[3] = { "평가손익", "실현손익", "총손익" };
+	SetColumnWidth(0, 60);
+	SetColumnWidth(1, 97);
+	for (int i = 0; i < _RowCount; i++) {
+		QuickSetText(i, 0, title[i]);
+		QuickSetBackColor(i, 0, VtGlobal::GridTitleBackColor);
+		QuickSetTextColor(i, 0, VtGlobal::GridTitleTextColor);
+		InvalidateCellRect(i, 0);
 	}
 }
 
-void VtTotalRemainGrid::QuickRedrawCell(int col, long row)
+
+void VtTotalRemainGrid::QuickSetBackColor(int row, int col, COLORREF color)
 {
-	CRect rect;
-	GetCellRect(col, row, rect);
-	m_CUGGrid->m_drawHint.AddHint(col, row, col, row);
-
-	if (GetCurrentRow() != row || GetCurrentCol() != col)
-		TempDisableFocusRect();
-
-	m_CUGGrid->PaintDrawHintsNow(rect);
+	CGridCellBase* pCell = GetCell(row, col);
+	if (pCell) {
+		pCell->SetBackClr(color);
+	}
 }
 
-void VtTotalRemainGrid::SetOrderConfigMgr(VtOrderConfigManager* val)
+void VtTotalRemainGrid::QuickSetText(int row, int col, LPCTSTR text)
 {
-	_OrderConfigMgr = val;
+	CGridCellBase* pCell = GetCell(row, col);
+	if (pCell) {
+		pCell->SetText(text);
+	}
 }
 
-void VtTotalRemainGrid::OnReceiveAccountDeposit(VtAccount* acnt)
+void VtTotalRemainGrid::QuickSetNumber(int row, int col, int number)
 {
-	if (!_OrderConfigMgr || !_OrderConfigMgr->Account())
+	CGridCellBase* pCell = GetCell(row, col);
+	if (pCell) {
+		CString text;
+		text.Format("%d", number);
+		pCell->SetText(text);
+	}
+}
+
+void VtTotalRemainGrid::QuickSetTextColor(int row, int col, COLORREF color)
+{
+	CGridCellBase* pCell = GetCell(row, col);
+	if (pCell) {
+		pCell->SetTextClr(color);
+	}
+}
+
+
+void VtTotalRemainGrid::InitGrid()
+{
+	if (!_OrderConfigMgr)
 		return;
-	if (_OrderConfigMgr->Account() != acnt)
-		return;
 
-	ShowAccountInfo(acnt);
+	if (_OrderConfigMgr->Type() == 0)
+		ShowAccountProfitLoss();
+	else
+		ShowFundProfitLoss();
 }
 
-void VtTotalRemainGrid::ShowAccountInfo(VtAccount* acnt)
+void VtTotalRemainGrid::OnOutstanding()
 {
-	NUMBERFMT numberformat2 = { 0 };
-	TCHAR bufILZero[3] = { 0 };
-	GetLocaleInfo(LOCALE_USER_DEFAULT, LOCALE_ILZERO, bufILZero, 3);
-	numberformat2.LeadingZero = _ttoi(bufILZero);
-	TCHAR bufINegNum[3] = { 0 };
-	GetLocaleInfo(LOCALE_USER_DEFAULT, LOCALE_INEGNUMBER, bufINegNum, 3);
-	numberformat2.NegativeOrder = _ttoi(bufINegNum);
-	numberformat2.Grouping = 3;
-	TCHAR bufSThousands[5] = { 0 };
-	GetLocaleInfo(LOCALE_USER_DEFAULT, LOCALE_STHOUSAND, bufSThousands, 5);
-	numberformat2.lpThousandSep = bufSThousands;
-	TCHAR bufSDecimal[5] = { 0 };
-	GetLocaleInfo(LOCALE_USER_DEFAULT, LOCALE_SDECIMAL, bufSDecimal, 5);
-	numberformat2.lpDecimalSep = bufSDecimal;
-	numberformat2.NumDigits = 2;
-	CTextNumber::s_lpNumberFormat = &numberformat2;
-	CTextNumber tn;
+	InitGrid();
+}
 
-	//msg.Format(_T("%.2f"), acnt->OpenPL);
-	//thousandsep(acnt->OpenPL, buffer, sizeof(buffer), 2);
-	//msg = buffer;
-	tn = acnt->OpenPL;
-	QuickSetText(1, 0, tn.GetString());
-	if (acnt->OpenPL < 0)
-		QuickSetTextColor(1, 0, RGB(0, 0, 255));
-	else if (acnt->OpenPL > 0)
-		QuickSetTextColor(1, 0, RGB(255, 0, 0));
-	QuickSetAlignment(1, 0, UG_ALIGNRIGHT | UG_ALIGNVCENTER);
-	QuickRedrawCell(1, 0);
+void VtTotalRemainGrid::OnReceiveQuote(VtSymbol* sym)
+{
+	if (!sym)
+		return;
 
-	//msg.Format(_T("%.2f"), acnt->TradePL);
-	//thousandsep(acnt->TradePL, buffer, sizeof(buffer), 2);
-	//msg = buffer;
-	tn = acnt->TradePL;
-	QuickSetText(1, 1, tn.GetString());
-	if (acnt->TradePL < 0)
-		QuickSetTextColor(1, 1, RGB(0, 0, 255));
-	else if (acnt->TradePL > 0)
+	InitGrid();
+}
+
+void VtTotalRemainGrid::OnReceiveAccountInfo()
+{
+	InitGrid();
+}
+
+void VtTotalRemainGrid::ShowAccountProfitLoss()
+{
+	VtAccount* acnt = _OrderConfigMgr->Account();
+
+	if (!acnt)
+		return;
+
+	// 계좌 업데이트를 활성화 시킨다.
+	// 계좌의 평가손익이 업데이트 된다.
+	acnt->Updating(true);
+	std::string temp = NumberFormatter::format(acnt->OpenPL, 0);
+	CString profitLoss = XFormatNumber(temp.c_str(), 2);
+
+	if (acnt->OpenPL > 0) {
+		QuickSetTextColor(0, 1, RGB(255, 0, 0));
+		QuickSetText(0, 1, profitLoss);
+	}
+	else if (acnt->OpenPL < 0) {
+		QuickSetTextColor(0, 1, RGB(0, 0, 255));
+		QuickSetText(0, 1, profitLoss);
+	}
+	else {
+		QuickSetTextColor(0, 1, RGB(0, 0, 0));
+		QuickSetNumber(0, 1, 0);
+	}
+
+	temp = NumberFormatter::format(acnt->TradePL, 0);
+	profitLoss = XFormatNumber(temp.c_str(), 2);
+
+	if (acnt->TradePL > 0) {
 		QuickSetTextColor(1, 1, RGB(255, 0, 0));
-	QuickSetAlignment(1, 1, UG_ALIGNRIGHT | UG_ALIGNVCENTER);
-	QuickRedrawCell(1, 1);
+		QuickSetText(1, 1, profitLoss);
+	}
+	else if (acnt->TradePL < 0) {
+		QuickSetTextColor(1, 1, RGB(0, 0, 255));
+		QuickSetText(1, 1, profitLoss);
+	}
+	else {
+		QuickSetTextColor(1, 1, RGB(0, 0, 0));
+		QuickSetNumber(1, 1, 0);
+	}
 
-	//msg.Format(_T("%.2f"), acnt->OpenPL + acnt->TradePL);
-	//thousandsep(acnt->OpenPL + acnt->TradePL, buffer, sizeof(buffer), 2);
-	//msg = buffer;
-	double total = (acnt->OpenPL + acnt->TradePL);
-	tn = total;
-	QuickSetAlignment(1, 2, UG_ALIGNRIGHT | UG_ALIGNVCENTER);
-	if (acnt->OpenPL + acnt->TradePL < 0)
-		QuickSetTextColor(1, 2, RGB(0, 0, 255));
-	else if (acnt->OpenPL + acnt->TradePL > 0)
-		QuickSetTextColor(1, 2, RGB(255, 0, 0));
-	QuickSetText(1, 2, tn.GetString());
-	QuickRedrawCell(1, 2);
+	double total_pl = acnt->OpenPL + acnt->TradePL + acnt->Fee;
+	temp = NumberFormatter::format(total_pl, 0);
+	profitLoss = XFormatNumber(temp.c_str(), 2);
+
+	if (total_pl > 0) {
+		QuickSetTextColor(2, 1, RGB(255, 0, 0));
+		QuickSetText(2, 1, profitLoss);
+	}
+	else if (total_pl < 0) {
+		QuickSetTextColor(2, 1, RGB(0, 0, 255));
+		QuickSetText(2, 1, profitLoss);
+	}
+	else {
+		QuickSetTextColor(2, 1, RGB(0, 0, 0));
+		QuickSetNumber(2, 1, 0);
+	}
+	InvalidateCellRect(0, 1);
+	InvalidateCellRect(1, 1);
+	InvalidateCellRect(2, 1);
 }
 
+void VtTotalRemainGrid::ShowFundProfitLoss()
+{
+	VtFund* fund = _OrderConfigMgr->Fund();
+	if (!fund)
+		return;
+
+	std::string temp = NumberFormatter::format(fund->OpenPL, 0);
+	CString profitLoss = XFormatNumber(temp.c_str(), -1);
+
+	if (fund->OpenPL > 0)
+	{
+		QuickSetTextColor(0, 1, RGB(255, 0, 0));
+		QuickSetText(0, 1, profitLoss);
+	}
+	else if (fund->OpenPL < 0)
+	{
+		QuickSetTextColor(0, 1, RGB(0, 0, 255));
+		QuickSetText(0, 1, profitLoss);
+	}
+	else
+	{
+		QuickSetTextColor(0, 1, RGB(0, 0, 0));
+		QuickSetNumber(0, 1, 0);
+	}
+
+	temp = NumberFormatter::format(fund->TradePL, 0);
+	profitLoss = XFormatNumber(temp.c_str(), -1);
+
+	if (fund->TradePL > 0)
+	{
+		QuickSetTextColor(1, 1, RGB(255, 0, 0));
+		QuickSetText(1, 1, profitLoss);
+	}
+	else if (fund->TradePL < 0)
+	{
+		QuickSetTextColor(1, 1, RGB(0, 0, 255));
+		QuickSetText(1, 1, profitLoss);
+	}
+	else
+	{
+		QuickSetTextColor(1, 1, RGB(0, 0, 0));
+		QuickSetNumber(1, 1, 0);
+	}
+
+	temp = NumberFormatter::format(fund->TotalPL, 0);
+	profitLoss = XFormatNumber(temp.c_str(), -1);
+
+	if (fund->TotalPL > 0)
+	{
+		QuickSetTextColor(2, 1, RGB(255, 0, 0));
+		QuickSetText(2, 1, profitLoss);
+	}
+	else if (fund->TotalPL < 0)
+	{
+		QuickSetTextColor(2, 1, RGB(0, 0, 255));
+		QuickSetText(2, 1, profitLoss);
+	}
+	else
+	{
+		QuickSetTextColor(2, 1, RGB(0, 0, 0));
+		QuickSetNumber(2, 1, 0);
+	}
+	InvalidateCellRect(0, 1);
+	InvalidateCellRect(1, 1);
+	InvalidateCellRect(2, 1);
+}

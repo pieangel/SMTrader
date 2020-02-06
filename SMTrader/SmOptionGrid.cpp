@@ -79,6 +79,9 @@ void SmOptionGrid::OnOrderEvent(VtOrder* order)
 	TRACE(msg);
 	if (!_OrderConfigMgr || !order)
 		return;
+	// 잔고 모드가 아니면 반응하지 않는다.
+	if (_Mode != 0)
+		return;
 
 	// 체결 이벤트
 	if (order->state == VtOrderState::Filled) {

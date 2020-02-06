@@ -196,6 +196,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AbOrderGridConfigDlg.h" />
     <ClInclude Include="AnimWnd.h" />
     <ClInclude Include="BlockingQueue.h" />
     <ClInclude Include="BtnST.h" />
@@ -352,8 +353,10 @@
     <ClInclude Include="SmOrderManager.h" />
     <ClInclude Include="SmOrderPanel.h" />
     <ClInclude Include="SmOrderPanelOut.h" />
+    <ClInclude Include="SmPLConfigDlg.h" />
     <ClInclude Include="SmPLGrid.h" />
     <ClInclude Include="SmPortfolioDlg.h" />
+    <ClInclude Include="SmRealtickGrid.h" />
     <ClInclude Include="SmRunInfo.h" />
     <ClInclude Include="SmSystemConnector.h" />
     <ClInclude Include="SmSystemPositionManager.h" />
@@ -680,6 +683,7 @@
     <ClInclude Include="ZmConfigManager.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AbOrderGridConfigDlg.cpp" />
     <ClCompile Include="AnimWnd.cpp" />
     <ClCompile Include="BtnST.cpp" />
     <ClCompile Include="CeXDib.cpp" />
@@ -822,8 +826,10 @@
     <ClCompile Include="SmOrderManager.cpp" />
     <ClCompile Include="SmOrderPanel.cpp" />
     <ClCompile Include="SmOrderPanelOut.cpp" />
+    <ClCompile Include="SmPLConfigDlg.cpp" />
     <ClCompile Include="SmPLGrid.cpp" />
     <ClCompile Include="SmPortfolioDlg.cpp" />
+    <ClCompile Include="SmRealtickGrid.cpp" />
     <ClCompile Include="SmSystemConnector.cpp" />
     <ClCompile Include="SmSystemPositionManager.cpp" />
     <ClCompile Include="SmTaskManager.cpp" />

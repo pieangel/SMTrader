@@ -177,17 +177,18 @@ void SmOrderGridOut::OnQuoteEvent(VtSymbol* symbol)
 		ClearOldStopOrders(refreshSet);
 		SetStopOrderInfo(refreshSet);
 		CalcPosStopOrders(refreshSet);
+		RefreshCells(refreshSet);
 	}
 
-	ClearQuotes(refreshSet);
-	// 중앙 고정일때는 종가 행을 새로 찾아서 매칭해준다.
-	if (_CenterWnd->FixedCenter()) {
-		_IndexRow = FindIndexRow();
-		SetCenterValue(_CenterWnd->Symbol(), refreshSet);
-	}
-	SetQuoteColor(_CenterWnd->Symbol(), refreshSet);
-
-	RefreshCells(refreshSet);
+// 	ClearQuotes(refreshSet);
+// 	// 중앙 고정일때는 종가 행을 새로 찾아서 매칭해준다.
+// 	if (_CenterWnd->FixedCenter()) {
+// 		_IndexRow = FindIndexRow();
+// 		SetCenterValue(_CenterWnd->Symbol(), refreshSet);
+// 	}
+// 	SetQuoteColor(_CenterWnd->Symbol(), refreshSet);
+// 
+// 	RefreshCells(refreshSet);
 }
 
 void SmOrderGridOut::RegisterHogaCallback()
@@ -212,11 +213,11 @@ void SmOrderGridOut::OnHogaEvent(VtSymbol* symbol)
 	if (_CenterWnd->Symbol()->ShortCode.compare(symbol->ShortCode) != 0)
 		return;
 
-	std::set<std::pair<int, int>> refreshSet;
-	ClearHogas(refreshSet);
-	SetHogaInfo(symbol, refreshSet);
-	RefreshCells(refreshSet);
-	Invalidate();
+// 	std::set<std::pair<int, int>> refreshSet;
+// 	ClearHogas(refreshSet);
+// 	SetHogaInfo(symbol, refreshSet);
+// 	RefreshCells(refreshSet);
+// 	Invalidate();
 }
 
 void SmOrderGridOut::RegisterOrderallback()
@@ -237,6 +238,12 @@ void SmOrderGridOut::OnOrderEvent(VtOrder* order)
 	if (!_CenterWnd || !_CutMgr || !_CenterWnd->Symbol()) {
 		return;
 	}
+
+
+	// 좌측창 접수확인 목록을 업데이트 한다.
+	_OrderConfigMgr->leftWnd->RefreshAcceptedList();
+	_OrderConfigMgr->leftWnd->RefreshRemainList();
+
 	std::set<std::pair<int, int>> refreshSet;
 	ClearOldOrders(refreshSet);
 	SetOrderInfo(refreshSet);
@@ -282,42 +289,48 @@ void SmOrderGridOut::OnOrderEvent(VtOrder* order)
 
 void SmOrderGridOut::Init()
 {
-	UnregisterButtons();
-	_RowCount = GetMaxValueRowCount() + 1;
-	_IndexRow = FindIndexRow();
-	_EndRowForValue = _RowCount - 3;
-	SetRowCount(_RowCount);
-	SetColumnCount(_ColCount);
-	SetFixedRowCount(_FixedRow);
-	SetFixedColumnCount(_FixedCol);
-	SetColTitle(_Init);
-	EnableScrollBars(SB_VERT, FALSE);
-	EnableScrollBars(SB_HORZ, FALSE);
-	SetFixedColumnSelection(FALSE);
-	SetFixedRowSelection(FALSE);
-	EnableColumnHide();
-	SetCompareFunction(CGridCtrl::pfnCellNumericCompare);
-	SetDoubleBuffering(TRUE);
-	EnableSelection(FALSE);
-	SetEditable(FALSE);
-	EnableTitleTips(FALSE);
-	SetColumnResize(FALSE);
-	SetRowResize(FALSE);
-	AllowReorderColumn(false);
+	// 아직 초기화 되지 않았을 때만 그리드에 설정을 한다.
+	if (!_Init) {
+		UnregisterButtons();
+		_RowCount = GetMaxValueRowCount() + 1;
+		_IndexRow = FindIndexRow();
+		_EndRowForValue = _RowCount - 3;
+		SetRowCount(_RowCount);
+		SetColumnCount(_ColCount);
+		SetFixedRowCount(_FixedRow);
+		SetFixedColumnCount(_FixedCol);
+		SetColTitle(_Init);
+		EnableScrollBars(SB_VERT, FALSE);
+		EnableScrollBars(SB_HORZ, FALSE);
+		SetFixedColumnSelection(FALSE);
+		SetFixedRowSelection(FALSE);
+		EnableColumnHide();
+		SetCompareFunction(CGridCtrl::pfnCellNumericCompare);
+		SetDoubleBuffering(TRUE);
+		EnableSelection(FALSE);
+		SetEditable(FALSE);
+		EnableTitleTips(FALSE);
+		SetColumnResize(FALSE);
+		SetRowResize(FALSE);
+		AllowReorderColumn(false);
 
-	for (int i = 1; i < m_nRows; ++i) {
-		SetRowHeight(i, _CellHeight);
+		for (int i = 1; i < m_nRows; ++i) {
+			SetRowHeight(i, _CellHeight);
+		}
+
+		RegisterButtons();
+
+		SetFont(&_defFont);
+		SetOrderAreaColor();
+
+
+		RegisterQuoteCallback();
+		RegisterHogaCallback();
+		RegisterOrderallback();
 	}
 
-	RegisterButtons();
-
-	SetFont(&_defFont);
-	SetOrderAreaColor();
+	// 그리드 내용들을 채운다.
 	SetCenterValue();
-
-	RegisterQuoteCallback();
-	RegisterHogaCallback();
-	RegisterOrderallback();
 
 	_Init = true;
 }
@@ -2495,7 +2508,7 @@ void SmOrderGridOut::ChangeOrder(VtOrder* order, int newPrice)
 			request.Type = 1;
 		}
 		request.SymbolCode = order->shortCode;
-		request.FillCondition = VtFilledCondition::Fas;
+		request.FillCondition = _CenterWnd->FillCondition();
 		request.PriceType = VtPriceType::Price;
 		request.OrderNo = order->orderNo;
 		request.RequestId = _OrderConfigMgr->OrderMgr()->GetOrderRequestID();

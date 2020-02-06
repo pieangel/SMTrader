@@ -1034,6 +1034,15 @@ void VtOrderDialogManager::CreateOrderDialog(VtOrderWndHd* orderWnd)
 	orderWnd->ShowWindow(SW_SHOW);
 }
 
+void VtOrderDialogManager::CreateAbOrderDialog(VtOrderWnd* orderWnd)
+{
+	if (!orderWnd)
+		return;
+
+	orderWnd->Create(IDD_ORDER_WND, (CWnd*)_MainFrm);
+	orderWnd->ShowWindow(SW_SHOW);
+}
+
 void VtOrderDialogManager::OnFundAdded()
 {
 	for (auto it = _OrderWndMap.begin(); it != _OrderWndMap.end(); ++it)
@@ -1180,6 +1189,25 @@ void VtOrderDialogManager::LoadFromXml(pugi::xml_node& order_window_list_node)
 	}
 }
 
+void VtOrderDialogManager::AbSaveToXml(pugi::xml_node& node)
+{
+	for (auto it = _AbOrderWndMap.begin(); it != _AbOrderWndMap.end(); ++it) {
+		VtOrderWnd* orderWnd = it->second;
+		pugi::xml_node order_window = node.append_child("order_window");
+		orderWnd->SaveToXml(order_window);
+	}
+}
+
+void VtOrderDialogManager::AbLoadFromXml(pugi::xml_node& order_window_list_node)
+{
+	for (pugi::xml_node order_window_node = order_window_list_node.child("order_window"); order_window_node; order_window_node = order_window_node.next_sibling("order_window")) {
+		VtOrderWnd* orderWnd = new VtOrderWnd();
+		orderWnd->LoadFromXml(order_window_node);
+		CreateAbOrderDialog(orderWnd);
+		orderWnd->SetDefaultCenterWnd();
+	}
+}
+
 void VtOrderDialogManager::OnReceiveSymbolMaster(VtSymbolMaster* master)
 {
 // 	auto it = SymbolDispatcherMap.find(master->FullCode);
@@ -1287,6 +1315,21 @@ void VtOrderDialogManager::RemoveOrderWnd(std::string key, VtOrderCenterWndHd* w
 	}
 }
 
+void VtOrderDialogManager::AddAbOrderWnd(VtOrderWnd* wnd)
+{
+	_AbOrderWndMap[wnd] = wnd;
+}
+
+void VtOrderDialogManager::RemoveAbOrderWnd(VtOrderWnd* wnd)
+{
+	auto it = _AbOrderWndMap.find(wnd);
+	if (it != _AbOrderWndMap.end()) {
+		VtOrderWnd* value = it->second;
+		_AbOrderWndMap.erase(it);
+		delete value;
+	}
+}
+
 void VtOrderDialogManager::AddSymbolWnd(std::string symCode, VtOrderCenterWndHd* wnd)
 {
 	auto it = SymbolMap.find(symCode);
@@ -1388,6 +1431,7 @@ void VtOrderDialogManager::End()
 	ReleaseAccountWnd();
 	ReleaseOrderWnd();
 	ReleaseMainOrderWnd();
+	ReleaseAbOrderWnd();
 }
 
 void VtOrderDialogManager::ReleaseSymbolWnd()
@@ -1428,6 +1472,18 @@ void VtOrderDialogManager::ReleaseMainOrderWnd()
 	}
 
 	_OrderWndMap.clear();
+}
+
+void VtOrderDialogManager::ReleaseAbOrderWnd()
+{
+	for (auto it = _AbOrderWndMap.begin(); it != _AbOrderWndMap.end(); ++it) {
+		VtOrderWnd* wnd = it->second;
+		wnd->BlockEvent();
+		wnd->DestroyWindow();
+		delete wnd;
+	}
+
+	_AbOrderWndMap.clear();
 }
 
 void VtOrderDialogManager::OnExpected(VtSymbol* sym)

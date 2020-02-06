@@ -50,6 +50,8 @@ public:
 	void SetSymbol(VtSymbol* sym);
 	SmOrderPanelOut* CenterWndOut() const { return _CenterWndOut; }
 	void CenterWndOut(SmOrderPanelOut* val) { _CenterWndOut = val; }
+	int Mode() const { return _Mode; }
+	void Mode(int val) { _Mode = val; }
 private:
 	void ShowSinglePosition();
 	void ShowFundPosition();
@@ -79,5 +81,7 @@ public:
 	int GetGridWidth(std::vector<bool>& colOptions);
 private:
 	VtOrderConfigManager* _OrderConfigMgr = nullptr;
+	// 모드 : 0 : 국내, 1 : 해외
+	int _Mode = 0;
 };
 

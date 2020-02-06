@@ -10,6 +10,13 @@ public:
 	VtSymbolMasterGrid();
 	~VtSymbolMasterGrid();
 
+	// 콜백 함수 취소
+	void UnregisterAllCallback();
+
+	void RegisterQuoteCallback();
+	void UnregisterQuoteCallback();
+	void OnQuoteEvent(VtSymbol* symbol);
+
 	virtual void OnSetup();
 	void SetRowTitle();
 	int _ColCount = 2;
@@ -21,6 +28,7 @@ public:
 	void SetSymbolMaster(VtSymbolMaster* symMaster);
 	void InitSymMaster(VtSymbol* sym);
 private:
+	void UpdateSymbol(VtSymbol* sym);
 	VtSymbol* _Symbol = nullptr;
 	VtSymbolMaster* _SymbolMaster = nullptr;
 public:

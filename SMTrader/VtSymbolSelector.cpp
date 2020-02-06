@@ -156,6 +156,13 @@ void VtSymbolSelector::SetOrderCenterWindow(CVtOrderCenterWnd* centerWnd)
 }
 
 
+void VtSymbolSelector::SetOrderCenterWindow(SmOrderPanelOut* centerWnd)
+{
+	for (size_t i = 0; i < _PageVector.size(); ++i) {
+		_PageVector[i]->SetOrderCenterWindow(centerWnd);
+	}
+}
+
 void VtSymbolSelector::OnClose()
 {
 	// TODO: Add your message handler code here and/or call default

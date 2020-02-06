@@ -101,6 +101,8 @@ private:
 	void RemoveLastWindow();
 	VtOrderConfigManager* _OrderConfigMgr = nullptr;
 public:
+	// 중앙창이 바뀔 때 함께 바뀌는 그리드들의 정보를 설정해 준다.
+	void SetSymbolInfo(SmOrderPanelOut* centerWnd);
 	void BlockEvent();
 	void SetDefaultCenterWnd();
 	void ResetByCenterRow();

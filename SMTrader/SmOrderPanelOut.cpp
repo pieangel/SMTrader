@@ -42,6 +42,8 @@
 #include "VtSymbolSelector.h"
 #include "Market/SmMarketManager.h"
 #include "VtHdClient.h"
+#include "AbOrderGridConfigDlg.h"
+#include "SmPLConfigDlg.h"
 
 using Poco::NumberParser;
 
@@ -86,6 +88,7 @@ SmOrderPanelOut::SmOrderPanelOut(CWnd* pParent /*=NULL*/)
 	_OrderGridColOption.push_back(true);
 	_OrderGridColOption.push_back(true);
 	_OrderGridColOption.push_back(true);
+	_ShowRemainConfig = true;
 }
 
 SmOrderPanelOut::~SmOrderPanelOut()
@@ -191,10 +194,10 @@ void SmOrderPanelOut::OnBnClickedButtonSetting()
 		_ParentDlg->SetActiveCenterWnd(this);
 	}
 	ClearConfigDlg();
-	VtOrderGridConfig* grid = new VtOrderGridConfig();
-	grid->CenterWndOut(this);
-	_ConfigDlgVector.push_back(grid);
-	grid->Create(IDD_ORDERGRID_CONFIG, this);
+	AbOrderGridConfigDlg* grid = new AbOrderGridConfigDlg();
+	grid->CenterWnd(this);
+	_AbConfigDlgVector.push_back(grid);
+	grid->Create(IDD_ORDERGRID_CONFIG_AB, this);
 	grid->ShowWindow(SW_SHOW);
 }
 
@@ -233,6 +236,10 @@ void SmOrderPanelOut::OnCbnSelchangeComboProductHd()
 			return;
 		ChangeSymbol(sym);
 		sym->GetSymbolMaster();
+		if (_OrderConfigMgr) {
+			// 우측창에 심볼 정보를 설정한다. - 선택된 창의 심볼을 보여준다.
+			_OrderConfigMgr->rightWnd->SetSymbol(sym);
+		}
 	}
 }
 
@@ -361,6 +368,7 @@ void SmOrderPanelOut::OnBnClickedBtnSelSymbol()
 {
 	VtSymbolSelector* symbol_selector = new VtSymbolSelector;
 	symbol_selector->Create(IDD_SYMBOL_SELECTOR, this);
+	symbol_selector->SetOrderCenterWindow(this);
 	symbol_selector->ShowWindow(SW_SHOW);
 }
 
@@ -525,7 +533,14 @@ void SmOrderPanelOut::OnLButtonDown(UINT nFlags, CPoint point)
 	CDialogEx::OnLButtonDown(nFlags, point);
 }
 
-void SmOrderPanelOut::CreateChildWindow(VtOrderConfigDlg* centerWnd, UINT id, CWnd* parent)
+void SmOrderPanelOut::SetRealtickSymbol(VtSymbol* symbol)
+{
+	if (!symbol)
+		return;
+	_TickGrid.Symbol(symbol);
+}
+
+void SmOrderPanelOut::CreateChildWindow(SmPLConfigDlg* centerWnd, UINT id, CWnd* parent)
 {
 	if (!centerWnd || !parent)
 		return;
@@ -593,6 +608,17 @@ void SmOrderPanelOut::ClearConfigDlg()
 	}
 
 	_ConfigDlgVector.clear();
+}
+
+void SmOrderPanelOut::ClearAbConfigDlg()
+{
+	for (auto it = _AbConfigDlgVector.begin(); it != _AbConfigDlgVector.end(); ++it) {
+		AbOrderGridConfigDlg* dlg = *it;
+		dlg->DestroyWindow();
+		delete dlg;
+	}
+
+	_AbConfigDlgVector.clear();
 }
 
 void SmOrderPanelOut::SaveControlPos()
@@ -844,6 +870,9 @@ void SmOrderPanelOut::SetSymbol(VtSymbol* sym)
 	SetProductName(_Symbol);
 	_ProductRemainGrid.SetSymbol(sym);
 
+	// 좌우측 창의 심볼 정보를 설정해 준다.
+	_OrderConfigMgr->orderWnd->SetSymbolInfo(this);
+
 	if (_OrderConfigMgr->OrderMgr())
 	{
 		_OrderConfigMgr->OrderMgr()->CalcTotalProfitLoss(sym);
@@ -981,12 +1010,14 @@ BOOL SmOrderPanelOut::OnInitDialog()
 	::EnumChildWindows(m_hWnd, ::SetChildFont, (LPARAM)g_Font.GetFont());
 
 	// 하단에 익절, 손절 창을 생성한다.
-	_ConfigDlg = new VtOrderConfigDlg();
-	_ConfigDlg->CenterWndOut(this);
+	_ConfigDlg = new SmPLConfigDlg();
+	_ConfigDlg->CenterWnd(this);
 	_ConfigDlg->Create(IDD_CENTER_CONFIG, this);
 
 	// 설정 그리드에 중앙창 설정
 	_ConfigGrid.CenterWndOut(this);
+	// 해외 선물을 위한 모드로 바꾼다.
+	_ProductRemainGrid.Mode(1);
 	_ProductRemainGrid.AttachGrid(this, IDC_STATIC_PRODUCT_REMAIN);
 	//_TickGrid.AttachGrid(this, IDC_STATIC_REAL_TICK);
 	_ConfigGrid.AttachGrid(this, IDC_STATIC_SET);
@@ -1067,7 +1098,7 @@ BOOL SmOrderPanelOut::OnInitDialog()
 	// 제품 그리드 위치 재설정
 	RepositionProductGrid();
 
-	SetTimer(1, 10, NULL);
+	SetTimer(1, 100, NULL);
 	// 심볼 마스터 콜백 등록
 	SmCallbackManager::GetInstance()->SubscribeMasterCallback((long)this, std::bind(&SmOrderPanelOut::OnSymbolMaster, this, _1));
 	return TRUE;  // return TRUE unless you set the focus to a control
@@ -1085,8 +1116,11 @@ void SmOrderPanelOut::OnClose()
 void SmOrderPanelOut::OnTimer(UINT_PTR nIDEvent)
 {
 	// TODO: Add your message handler code here and/or call default
-	//for(int i = 0; i < 100; ++i)
-	//	m_Grid.RefreshAllValues();
+	for(int i = 0; i < 5; ++i)
+		m_Grid.RefreshAllValues();
+	CString msg;
+	msg.Format("%d\n", nIDEvent);
+	TRACE(msg);
 	CDialogEx::OnTimer(nIDEvent);
 }
 

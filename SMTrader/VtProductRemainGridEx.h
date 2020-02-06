@@ -2,14 +2,23 @@
 #pragma once
 #include "Skel/VtGrid.h"
 #include <list>
+#include <map>
 class VtOrderConfigManager;
 class CVtOrderLeftWnd;
 struct VtPosition;
+class VtSymbol;
 class VtProductRemainGridEx : public VtGrid
 {
 public:
 	VtProductRemainGridEx();
 	~VtProductRemainGridEx();
+
+	// 콜백 함수 취소
+	void UnregisterAllCallback();
+
+	void RegisterQuoteCallback();
+	void UnregisterQuoteCallback();
+	void OnQuoteEvent(VtSymbol* symbol);
 
 	virtual void OnSetup();
 	virtual void OnDClicked(int col, long row, RECT *rect, POINT *point, BOOL processed);
@@ -34,6 +43,8 @@ public:
 	void LiqSelectedPos();
 	void LiqAll();
 private:
+	void PutOrder(VtPosition* posi, int price, bool liqud = false);
+	std::map<int, VtPosition*> _RowToPositionMap;
 	std::list<VtPosition*> _SelectedPosList;
 	void LiqList();
 	VtOrderConfigManager* _OrderConfigMgr = nullptr;

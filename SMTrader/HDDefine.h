@@ -54,8 +54,16 @@ const CString DefIndustryMaster = "s10001";
 const CString DefServerTime = "o44011";
 
 // 해외
-// 잔고
-const CString DEF_HW_JANGO = "g11004.AQ0605%";
+// 계좌별 자산
+const CString DEF_Ab_Asset = "g11004.AQ0605%";
+// 계좌별 손익
+const CString DEF_Ab_AccountProfitLoss = "g11004.AQ0607%";
+// 종목별 손익
+const CString DEF_Ab_SymbolProfitLoss = "g11004.AQ0404%";
+// 미결제
+const CString DEF_Ab_Outstanding = "g11004.AQ0403%";
+// 미체결
+const CString DEF_Ab_Accepted = "g11004.AQ0401%";
 // 
 const CString DEF_HW_FID_CODE = "o51000";
 // 해외 신규 주문

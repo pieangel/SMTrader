@@ -21,19 +21,68 @@
 #include "VtPosition.h"
 #include "VtHoga.h"
 #include "VtGlobal.h"
+#include <algorithm> 
+#include <functional>
+#include "SmCallbackManager.h"
+#include "Log/loguru.hpp"
+#include "VtSubAccountManager.h"
+#include "VtFund.h"
+#include "Format/format.h"
+
+using namespace std;
+using namespace std::placeholders;
 
 using Poco::NumberFormatter;
 using Poco::trim;
 
 VtProductRemainGridEx::VtProductRemainGridEx()
 {
+	RegisterQuoteCallback();
 }
 
 
 VtProductRemainGridEx::~VtProductRemainGridEx()
 {
+	UnregisterAllCallback();
 }
 
+
+void VtProductRemainGridEx::UnregisterAllCallback()
+{
+	UnregisterQuoteCallback();
+}
+
+void VtProductRemainGridEx::RegisterQuoteCallback()
+{
+	SmCallbackManager::GetInstance()->SubscribeQuoteCallback((long)this, std::bind(&VtProductRemainGridEx::OnQuoteEvent, this, _1));
+}
+
+void VtProductRemainGridEx::UnregisterQuoteCallback()
+{
+	SmCallbackManager::GetInstance()->UnsubscribeQuoteCallback((long)this);
+}
+
+void VtProductRemainGridEx::OnQuoteEvent(VtSymbol* symbol)
+{
+	if (!symbol)
+		return;
+
+	// 여기서 평가 손익을 업데이트 한다.
+	for (auto it = _RowToPositionMap.begin(); it != _RowToPositionMap.end(); ++it) {
+		VtPosition* posi = it->second;
+		int row = it->first;
+		if (posi->OpenQty != 0 && posi->ShortCode.compare(symbol->ShortCode) == 0) {
+			std::string strVal = fmt::format("{:.{}f}", posi->OpenProfitLoss, symbol->Decimal);
+			if (posi->OpenProfitLoss > 0)
+				QuickSetTextColor(3, row, RGB(255, 0, 0));
+			else
+				QuickSetTextColor(3, row, RGB(0, 0, 255));
+			
+			QuickSetText(3, row, strVal.c_str());
+			RedrawCell(3, row);
+		}
+	}
+}
 
 void VtProductRemainGridEx::OnSetup()
 {
@@ -124,7 +173,7 @@ void VtProductRemainGridEx::SetColTitle()
 	const int ColCount = _ColCount;
 	CUGCell cell;
 	LPCTSTR title[4] = { "청산", "종목", "구분", "평가손익" };
-	int colWidth[4] = { 24, 35, 35, 63 };
+	int colWidth[4] = { 21, 46, 32, 58 };
 
 	QuickSetCellType(0, -1, UGCT_CHECKBOX);
 	QuickSetCellTypeEx(0, -1, UGCT_CHECKBOXCHECKMARK);
@@ -183,6 +232,7 @@ void VtProductRemainGridEx::SetRemainList()
 		return;
 
 	ResetCellText();
+	_RowToPositionMap.clear();
 
 	NUMBERFMT numberformat2 = { 0 };
 	TCHAR bufILZero[3] = { 0 };
@@ -256,7 +306,7 @@ void VtProductRemainGridEx::SetRemainList()
 		cell.Tag((void*)posi);
 		SetCell(0, row, &cell);
 
-
+		_RowToPositionMap[row] = posi;
 
 		QuickRedrawCell(1, row);
 		QuickRedrawCell(2, row);
@@ -319,6 +369,93 @@ void VtProductRemainGridEx::LiqAll()
 	LiqList();
 }
 
+void VtProductRemainGridEx::PutOrder(VtPosition* posi, int price, bool liqud /*= false*/)
+{
+	if (!posi || !_OrderConfigMgr)
+		return;
+	if (posi->OpenQty == 0)
+		return;
+
+	VtAccount* acnt = nullptr;
+	VtAccountManager* acntMgr = VtAccountManager::GetInstance();
+	acnt = acntMgr->FindAccount(posi->AccountNo);
+	if (!acnt) { // 본계좌에 없을 경우 서브 계좌를 찾아 본다.
+		VtSubAccountManager* subAcntMgr = VtSubAccountManager::GetInstance();
+		acnt = subAcntMgr->FindAccount(posi->AccountNo);
+	}
+
+	if (!acnt) // 계좌가 없는 경우 아무일도 하지 않음.
+		return;
+
+	HdOrderRequest request;
+	request.Market = 1; // 해외 선물 시장 설정
+	request.Amount = std::abs(posi->OpenQty);
+	if (_OrderConfigMgr->Type() == 0) { // 본계좌나 서브 계좌일때
+		if (acnt->AccountLevel() == 0) { // 본계좌 일 때
+			request.AccountNo = acnt->AccountNo;
+			request.Password = acnt->Password;
+			request.Type = 0;
+		}
+		else { // 서브 계좌 일 때
+			VtAccount* parentAcnt = acnt->ParentAccount();
+			if (parentAcnt) { // 부모 계좌가 있는지 확인 한다.
+				request.AccountNo = parentAcnt->AccountNo;
+				request.Password = parentAcnt->Password;
+			}
+			request.Type = 1;
+		}
+	}
+	else { // 펀드 주문일때
+		VtAccount* parentAcnt = acnt->ParentAccount();
+		if (parentAcnt) { // 부모 계좌가 있는지 확인 한다.
+			request.AccountNo = parentAcnt->AccountNo;
+			request.Password = parentAcnt->Password;
+		}
+		request.Type = 2;
+	}
+
+	request.SymbolCode = posi->ShortCode;
+	request.FillCondition = VtFilledCondition::Day;
+
+	if (liqud) { // 시장가 청산인 경우
+		request.Price = 0;
+		request.PriceType = VtPriceType::Market;
+	}
+	else { // 지정가 청산인 경우
+		request.PriceType = VtPriceType::Price;
+		request.Price = price;
+	}
+
+	if (posi->Position == VtPositionType::Buy) { // 매수 청산인 경우
+		request.Position = VtPositionType::Sell;
+	}
+	else if (posi->Position == VtPositionType::Sell) { // 매도 청산인 경우
+		request.Position = VtPositionType::Buy;
+	}
+
+	request.RequestId = _OrderConfigMgr->OrderMgr()->GetOrderRequestID();
+	request.SourceId = (long)this;
+
+	if (acnt->AccountLevel() == 0) { // 본계좌 인 경우
+		request.SubAccountNo = _T("");
+		request.FundName = _T("");
+	}
+	else { // 서브 계좌인 경우
+		request.SubAccountNo = acnt->AccountNo;
+		if (acnt->Fund())
+			request.FundName = acnt->Fund()->Name;
+		else
+			request.FundName = _T("");
+	}
+
+	request.orderType = VtOrderType::New;
+	// 정산 주문이냐 청산
+	// 0 : 일반 , 1 : 익절, 2 : 손절- 청산 주문일 때는 익절 손절이 활성화 되어 있어도 처리하지 않는다.
+	request.RequestType = 1;
+
+	_OrderConfigMgr->OrderMgr()->PutOrder(std::move(request));
+}
+
 void VtProductRemainGridEx::LiqList()
 {
 	if (_SelectedPosList.size() == 0)
@@ -337,30 +474,7 @@ void VtProductRemainGridEx::LiqudRemain(VtPosition* posi)
 {
 	if (!posi || !_OrderConfigMgr->Symbol())
 		return;
-	VtOrderRequest request;
-	VtSymbol* sym = _OrderConfigMgr->Symbol();
-	if (posi->Position == VtPositionType::Buy)
-	{
-		request.orderPosition = VtPositionType::Sell;
-		request.priceType = VtPriceType::Market;
-		request.tradeType = VtTradeType::Market;
-
-		request.orderPrice = _OrderConfigMgr->Hoga()->Ary[4].BuyPrice;
-	}
-	else if (posi->Position == VtPositionType::Sell)
-	{
-		request.orderPosition = VtPositionType::Buy;
-		request.priceType = VtPriceType::Price;
-		request.tradeType = VtTradeType::Price;
-		request.orderPrice = _OrderConfigMgr->Hoga()->Ary[4].SellPrice;
-	}
-	request.accountNo = _OrderConfigMgr->Account()->AccountNo;
-	request.shortCode = _OrderConfigMgr->Symbol()->ShortCode;
-	request.amount = posi->OpenQty;
-	request.orderType = VtOrderType::New;
-	request.password = _OrderConfigMgr->Account()->Password;
-	request.productDecimal = _OrderConfigMgr->Master()->decimal;
-	_OrderConfigMgr->OrderMgr()->PutOrder(std::move(request));
+	PutOrder(posi, 0, true);
 }
 
 void VtProductRemainGridEx::SetFilledOrderList()

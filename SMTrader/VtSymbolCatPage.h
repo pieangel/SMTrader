@@ -4,6 +4,7 @@
 // VtSymbolCatPage1 dialog
 class VtSymbolSelector;
 class CVtSymbolFavoriteDlg;
+class SmOrderPanelOut;
 class VtSymbolCatPage : public CDialogEx
 {
 	DECLARE_DYNAMIC(VtSymbolCatPage)
@@ -36,6 +37,7 @@ public:
 	void Resize(int width, int height);
 public:
 	void SetOrderCenterWindow(CVtOrderCenterWnd* centerWnd);
+	void SetOrderCenterWindow(SmOrderPanelOut* centerWnd);
 	void SetSymbolSelector(VtSymbolSelector* symSelector);
 	void SetSource(int src);
 	void SetFavoriteDlg(CVtSymbolFavoriteDlg* favoriteDlg);

@@ -175,6 +175,10 @@ void VtSaveManager::WriteSettings()
 	pugi::xml_node etc_window_list = application.append_child("etc_window_list");
 	HdWindowManager::GetInstance()->SaveToXml(etc_window_list);
 
+	application.remove_child("abroad_order_window_list");
+	pugi::xml_node abroad_window_list = application.append_child("abroad_order_window_list");
+	VtOrderDialogManager::GetInstance()->AbSaveToXml(abroad_window_list);
+
 	doc.save_file(appPath.c_str());
 }
 
@@ -374,6 +378,11 @@ void VtSaveManager::ReadWindows()
 	pugi::xml_node etc_window_list = application.child("etc_window_list");
 	if (etc_window_list) {
 		HdWindowManager::GetInstance()->LoadFromXml(etc_window_list);
+	}
+
+	pugi::xml_node abroad_order_window_list = application.child("abroad_order_window_list");
+	if (abroad_order_window_list) {
+		VtOrderDialogManager::GetInstance()->AbLoadFromXml(abroad_order_window_list);
 	}
 }
 
@@ -1182,6 +1191,56 @@ void VtSaveManager::GetWindowSymbolList(std::set<std::string>& symbol_list)
 	}
 
 	
+}
+
+void VtSaveManager::GetWindowAbSymbolList(std::set<std::string>& symbol_list)
+{
+	ZmConfigManager* configMgr = ZmConfigManager::GetInstance();
+	std::string id = VtLoginManager::GetInstance()->ID;
+	// 아이디가 없으면 그냥 반환한다.
+	if (id.length() == 0)
+		return;
+
+	std::string appPath;
+	appPath = configMgr->GetAppPath();
+	appPath.append(_T("\\"));
+	appPath.append(id);
+	appPath.append(_T("\\"));
+	std::string config_path = appPath;
+	appPath.append(_T("*.*"));
+	std::map<std::string, std::string> file_list;
+	ListContents(file_list, config_path, "*.xml", false);
+
+	if (file_list.size() == 0)
+		return;
+
+	std::string file_name = file_list.rbegin()->second;
+
+	pugi::xml_document doc;
+
+	pugi::xml_parse_result result = doc.load_file(file_name.c_str(),
+		pugi::parse_default | pugi::parse_declaration);
+	if (!result)
+	{
+		std::cout << "Parse error: " << result.description()
+			<< ", character pos= " << result.offset;
+	}
+
+	pugi::xml_node application = doc.child("application");
+
+	pugi::xml_node order_window_list_node = application.child("abroad_order_window_list");
+	if (!order_window_list_node)
+		return;
+
+	for (pugi::xml_node order_window_node = order_window_list_node.child("order_window"); order_window_node; order_window_node = order_window_node.next_sibling("order_window")) {
+		pugi::xml_node center_window_list_node = order_window_node.child("center_window_list");
+		if (center_window_list_node) {
+			for (pugi::xml_node center_window_node = center_window_list_node.child("center_window"); center_window_node; center_window_node = center_window_node.next_sibling("center_window")) {
+				std::string symbol_code = center_window_node.child_value("symbol_code");
+				symbol_list.insert(symbol_code);
+			}
+		}
+	}
 }
 
 void VtSaveManager::GetSymbolMasters()

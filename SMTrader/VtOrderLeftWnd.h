@@ -4,10 +4,14 @@
 #include "VtProductAcceptedGrid.h"
 #include "VtProductRemainGridEx.h"
 #include "VtTotalRemainGrid.h"
+#include "SmRealtickGrid.h"
+#include "ShadeButtonST.h"
+#include "afxwin.h"
 // CVtOrderLeftWnd dialog
 struct VtQuote;
 class CVtOrderWnd;
 class VtOrderConfigManager;
+class VtAccount;
 class CVtOrderLeftWnd : public CRHGenericChildDialog
 {
 	DECLARE_DYNAMIC(CVtOrderLeftWnd)
@@ -33,11 +37,14 @@ protected:
 public:
 	void OnReceiveRealtimeQuote(VtQuote* quote);
 private:
-	VtRealtimeTickQuoteGrid _TickQuoteGrid;
+	SmRealtickGrid _TickQuoteGrid;
 	VtProductAcceptedGrid  _AcceptGrid;
 	VtProductRemainGridEx _RemainGrid;
 	VtTotalRemainGrid _TotalGrid;
 public:
+	void SetRealtickSymbol(VtSymbol* symbol);
+	// 좌측창의 그리드들의 정보를 채운다.
+	void InitGridInfo();
 	VtOrderConfigManager* OrderConfigMgr() const { return _OrderConfigMgr; }
 	void OrderConfigMgr(VtOrderConfigManager* val);
 	int DefaultWidth() const { return _DefaultWidth; }
@@ -70,4 +77,10 @@ public:
 private:
 	int _DefaultWidth = 162;
 	int _DefaultHeight = 774;
+public:
+	afx_msg void OnStnClickedStaticAccepted();
+	CShadeButtonST _BtnCancellAll;
+	CShadeButtonST _BtnCancelSel;
+	CShadeButtonST _BtnLiqAll;
+	CShadeButtonST _BtnLiqSel;
 };

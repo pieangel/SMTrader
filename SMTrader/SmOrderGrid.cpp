@@ -311,11 +311,13 @@ void SmOrderGrid::Init()
 	
 	SetFont(&_defFont);
 	SetOrderAreaColor();
-	SetCenterValue();
+	
 
 	RegisterQuoteCallback();
 	RegisterHogaCallback();
 	RegisterOrderallback();
+
+	SetCenterValue();
 
 	_Init = true;
 }
@@ -846,6 +848,7 @@ void SmOrderGrid::SetHogaInfo(const VtSymbol* sym, std::set<std::pair<int, int>>
 			_CloseLineRow = pos;
 			for (int k = 0; k < m_nCols; ++k) {
 				CGridCellBase* pCell = GetCell(pos, k);
+				// 셀 스타일을 호가선으로 변경
 				if (pCell)
 					pCell->Style(1);
 			}

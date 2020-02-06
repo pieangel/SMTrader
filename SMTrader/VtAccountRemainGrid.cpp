@@ -5,16 +5,65 @@
 #include "VtAccount.h"
 #include "UGrid/UGStrOp.h"
 #include "VtGlobal.h"
+#include <functional>
+#include "SmCallbackManager.h"
+#include "VtOrderConfigManager.h"
+
+using namespace std;
+using namespace std::placeholders;
 
 using Poco::NumberFormatter;
 
 VtAccountRemainGrid::VtAccountRemainGrid()
 {
+	RegisterQuoteCallback();
+	RegisterOrderallback();
 }
 
 
 VtAccountRemainGrid::~VtAccountRemainGrid()
 {
+	UnregisterAllCallback();
+}
+
+void VtAccountRemainGrid::UnregisterAllCallback()
+{
+	UnregisterOrderCallback();
+	UnregisterQuoteCallback();
+}
+
+void VtAccountRemainGrid::RegisterQuoteCallback()
+{
+	SmCallbackManager::GetInstance()->SubscribeQuoteCallback((long)this, std::bind(&VtAccountRemainGrid::OnQuoteEvent, this, _1));
+}
+
+void VtAccountRemainGrid::UnregisterQuoteCallback()
+{
+	SmCallbackManager::GetInstance()->UnsubscribeQuoteCallback((long)this);
+}
+
+void VtAccountRemainGrid::OnQuoteEvent(VtSymbol* symbol)
+{
+	if (!symbol)
+		return;
+	UpdateAccount(symbol);
+}
+
+void VtAccountRemainGrid::RegisterOrderallback()
+{
+	SmCallbackManager::GetInstance()->SubscribeOrderCallback((long)this, std::bind(&VtAccountRemainGrid::OnOrderEvent, this, _1));
+}
+
+void VtAccountRemainGrid::UnregisterOrderCallback()
+{
+	SmCallbackManager::GetInstance()->UnsubscribeOrderCallback((long)this);
+}
+
+void VtAccountRemainGrid::OnOrderEvent(VtOrder* order)
+{
+	if (!order)
+		return;
+	UpdateAccount(order);
 }
 
 void VtAccountRemainGrid::OnSetup()
@@ -96,6 +145,11 @@ void VtAccountRemainGrid::QuickRedrawCell(int col, long row)
 
 void VtAccountRemainGrid::ShowAccountInfo(VtAccount* acnt)
 {
+	if (!_OrderConfigMgr || !acnt)
+		return;
+	if (_OrderConfigMgr->Account()->AccountNo.compare(acnt->AccountNo) != 0)
+		return;
+
 	NUMBERFMT numberformat2 = { 0 };
 	TCHAR bufILZero[3] = { 0 };
 	GetLocaleInfo(LOCALE_USER_DEFAULT, LOCALE_ILZERO, bufILZero, 3);
@@ -116,7 +170,7 @@ void VtAccountRemainGrid::ShowAccountInfo(VtAccount* acnt)
 
 	CUGCell cell;
 	CString msg;
-	tn = acnt->Deposit;
+	tn = acnt->OpenDeposit;
 	msg = tn.GetString();
 	QuickSetText(1, 0, msg);
 	QuickSetAlignment(1, 0, UG_ALIGNRIGHT | UG_ALIGNVCENTER);
@@ -154,7 +208,7 @@ void VtAccountRemainGrid::ShowAccountInfo(VtAccount* acnt)
 	QuickSetAlignment(1, 4, UG_ALIGNRIGHT | UG_ALIGNVCENTER);
 	QuickRedrawCell(1, 4);
 
-	QuickSetText(1, 5, acnt->Crc_cd.c_str());
+	QuickSetText(1, 5, acnt->CurrencyCode.c_str());
 	QuickRedrawCell(1, 5);
 }
 
@@ -171,5 +225,80 @@ void VtAccountRemainGrid::OnReceiveAccountDeposit(VtAccount* acnt)
 		return;
 
 	ShowAccountInfo(acnt);
+}
+
+void VtAccountRemainGrid::UpdateAccount(VtOrder* order)
+{
+	UpdateAccountInfo();
+}
+
+void VtAccountRemainGrid::UpdateAccount(VtSymbol* symbol)
+{
+	UpdateAccountInfo();
+}
+
+void VtAccountRemainGrid::UpdateAccountInfo()
+{
+	if (!_OrderConfigMgr)
+		return;
+	VtAccount* acnt = _OrderConfigMgr->Account();
+	if (!acnt)
+		return;
+
+	NUMBERFMT numberformat2 = { 0 };
+	TCHAR bufILZero[3] = { 0 };
+	GetLocaleInfo(LOCALE_USER_DEFAULT, LOCALE_ILZERO, bufILZero, 3);
+	numberformat2.LeadingZero = _ttoi(bufILZero);
+	TCHAR bufINegNum[3] = { 0 };
+	GetLocaleInfo(LOCALE_USER_DEFAULT, LOCALE_INEGNUMBER, bufINegNum, 3);
+	numberformat2.NegativeOrder = _ttoi(bufINegNum);
+	numberformat2.Grouping = 3;
+	TCHAR bufSThousands[5] = { 0 };
+	GetLocaleInfo(LOCALE_USER_DEFAULT, LOCALE_STHOUSAND, bufSThousands, 5);
+	numberformat2.lpThousandSep = bufSThousands;
+	TCHAR bufSDecimal[5] = { 0 };
+	GetLocaleInfo(LOCALE_USER_DEFAULT, LOCALE_SDECIMAL, bufSDecimal, 5);
+	numberformat2.lpDecimalSep = bufSDecimal;
+	numberformat2.NumDigits = 2;
+	CTextNumber::s_lpNumberFormat = &numberformat2;
+	CTextNumber tn;
+
+	CUGCell cell;
+	CString msg;
+
+	tn = acnt->OpenPL;
+	msg = tn.GetString();
+	QuickSetText(1, 1, msg);
+	if (acnt->OpenPL < 0)
+		QuickSetTextColor(1, 1, RGB(0, 0, 255));
+	else if (acnt->OpenPL > 0)
+		QuickSetTextColor(1, 1, RGB(255, 0, 0));
+	QuickSetAlignment(1, 1, UG_ALIGNRIGHT | UG_ALIGNVCENTER);
+	QuickRedrawCell(1, 1);
+
+	tn = acnt->TradePL;
+	msg = tn.GetString();
+	QuickSetText(1, 2, msg);
+	if (acnt->TradePL < 0)
+		QuickSetTextColor(1, 2, RGB(0, 0, 255));
+	else if (acnt->TradePL > 0)
+		QuickSetTextColor(1, 2, RGB(255, 0, 0));
+	QuickSetAlignment(1, 2, UG_ALIGNRIGHT | UG_ALIGNVCENTER);
+	QuickRedrawCell(1, 2);
+
+	tn = acnt->Fee;
+	msg = tn.GetString();
+	QuickSetText(1, 3, msg);
+	QuickSetAlignment(1, 3, UG_ALIGNRIGHT | UG_ALIGNVCENTER);
+	QuickRedrawCell(1, 3);
+
+	tn = acnt->OrdableAmt;
+	msg = tn.GetString();
+	QuickSetText(1, 4, msg);
+	QuickSetAlignment(1, 4, UG_ALIGNRIGHT | UG_ALIGNVCENTER);
+	QuickRedrawCell(1, 4);
+
+	QuickSetText(1, 5, acnt->CurrencyCode.c_str());
+	QuickRedrawCell(1, 5);
 }
 

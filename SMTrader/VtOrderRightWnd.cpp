@@ -46,6 +46,11 @@ END_MESSAGE_MAP()
 // CVtOrderRightWnd message handlers
 
 
+void CVtOrderRightWnd::ShowAccountInfo(VtAccount* acnt)
+{
+	_AccountRemainGrid.ShowAccountInfo(acnt);
+}
+
 BOOL CVtOrderRightWnd::OnInitDialog()
 {
 	CRHGenericChildDialog::OnInitDialog();
@@ -122,6 +127,7 @@ void CVtOrderRightWnd::InitAccountInfo()
 	if (!_OrderConfigMgr || !_OrderConfigMgr->Account())
 		return;
 	VtAccount* acnt = _OrderConfigMgr->Account();
+	_AccountRemainGrid.SetOrderConfigMgr(_OrderConfigMgr);
 	_AccountRemainGrid.OnReceiveAccountDeposit(acnt);
 }
 
@@ -129,6 +135,7 @@ void CVtOrderRightWnd::InitMasterInfo()
 {
 	if (!_OrderConfigMgr || !_OrderConfigMgr->Master())
 		return;
+	_SymMasterGrid.SetOrderConfigMgr(_OrderConfigMgr);
 	VtSymbolMaster* master = _OrderConfigMgr->Master();
 	_SymMasterGrid.OnReceivedSymbolMaster(master);
 }

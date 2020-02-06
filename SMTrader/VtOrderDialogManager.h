@@ -103,6 +103,8 @@ public:
 	std::map<std::string, VtOrderDistributer*> OrderMap;
 	void AddOrderWnd(VtOrderWndHd* wnd);
 	void RemoveOrderWnd(VtOrderWndHd* wnd);
+	void AddAbOrderWnd(VtOrderWnd* wnd);
+	void RemoveAbOrderWnd(VtOrderWnd* wnd);
 	void AddSymbolWnd(std::string symCode, VtOrderCenterWndHd* wnd);
 	void RemoveSymbolWnd(std::string symCode,  VtOrderCenterWndHd* wnd);
 	void AddAccountWnd(std::string accountNo, VtOrderCenterWndHd* wnd);
@@ -119,6 +121,7 @@ public:
 	void ReleaseAccountWnd();
 	void ReleaseOrderWnd();
 	void ReleaseMainOrderWnd();
+	void ReleaseAbOrderWnd();
 
 	void OnExpected(VtSymbol* sym);
 	void OnReceiveHoga(VtSymbol* sym);
@@ -156,11 +159,16 @@ public:
 	void SaveToXml(pugi::xml_node& node);
 	void LoadFromXml(pugi::xml_node& node);
 
+	void AbSaveToXml(pugi::xml_node& node);
+	void AbLoadFromXml(pugi::xml_node& node);
+
 private:
 	std::map<VtOrderWndHd*, VtOrderWndHd*> _OrderWndMap;
+	std::map<VtOrderWnd*, VtOrderWnd*> _AbOrderWndMap;
 	CMainFrame* _MainFrm;
 	std::map<std::string, HandleOrder> _HandleOrderMap;
 	void CreateOrderDialog(VtOrderWndHd* orderWnd);
+	void CreateAbOrderDialog(VtOrderWnd* orderWnd);
 	std::map<VtOrderWnd*, VtOrderWnd*> _OrderWindowMap;
 };
 

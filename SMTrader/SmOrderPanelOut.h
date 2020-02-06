@@ -20,6 +20,7 @@
 #include "SmTickGrid.h"
 #include "Xml/pugixml.hpp"
 #include "Global/VtDefine.h"
+#include "SmRealtickGrid.h"
 
 
 using same_endian_type = std::is_same<simple::LittleEndian, simple::LittleEndian>;
@@ -38,6 +39,8 @@ class VtCutManager;
 class VtLayoutManager;
 class VtRefreshManager;
 class VtSymbolSelector;
+class AbOrderGridConfigDlg;
+class SmPLConfigDlg;
 class SmOrderPanelOut : public CDialogEx
 {
 	DECLARE_DYNAMIC(SmOrderPanelOut)
@@ -200,13 +203,16 @@ public:
 	afx_msg void OnStnClickedStaticRealTick();
 	afx_msg void OnBnClickedBtnRemainFund();
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+	void SetRealtickSymbol(VtSymbol* symbol);
 private:
 	bool _BlockEvent = true;
 	VtOrderWnd* _ParentDlg = nullptr;
 	VtOrderConfigManager* _OrderConfigMgr = nullptr;
 	std::vector<VtOrderGridConfig*> _ConfigDlgVector;
+	std::vector<AbOrderGridConfigDlg*> _AbConfigDlgVector;
 	//VtRealtimeTickQuoteGrid _TickGrid;
-	SmTickGrid _TickGrid;
+	//SmTickGrid _TickGrid;
+	SmRealtickGrid _TickGrid;
 	VtProductRemainGrid _ProductRemainGrid;
 	VtConfigGrid _ConfigGrid;
 	bool _FixedCenter;
@@ -243,15 +249,16 @@ private:
 	int _DefaultWidth = 482;
 	int _DefaultHeight = 750;
 	VtSymbol* _DefaultSymbol = nullptr;
-	VtOrderConfigDlg* _ConfigDlg = nullptr;
+	SmPLConfigDlg* _ConfigDlg = nullptr;
 private:
-	void CreateChildWindow(VtOrderConfigDlg* centerWnd, UINT id, CWnd* parent);
+	void CreateChildWindow(SmPLConfigDlg* centerWnd, UINT id, CWnd* parent);
 	CRect GetClientArea(int resourceID);
 	VtSymbolSelector* symbol_selector = nullptr;
 public:
 	void SetRemain(int remain);
 	void RefreshOrderPositon();
 	void ClearConfigDlg();
+	void ClearAbConfigDlg();
 	void SaveControlPos();
 	void CalcLayout();
 	int GetParentHeight();

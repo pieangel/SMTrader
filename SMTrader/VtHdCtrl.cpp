@@ -62,6 +62,7 @@
 #include "Chart/SmChartDataManager.h"
 #include "SmTaskManager.h"
 #include "Market/SmMarketManager.h"
+#include "VtLoginManager.h"
 
 using namespace std;
 
@@ -772,6 +773,10 @@ void VtHdCtrl::OnNewOrderHd(CString& sTrCode, LONG& nRqID)
 		order->HtsOrderReqID = nRqID;
 		// 일반 주문인지 청산 주문인지 넣어 준다.
 		order_req != nullptr ? order->RequestType = order_req->RequestType : order->RequestType = -1;
+		if (order_req) {
+			// 여기서 시스템 정보를 넣어준다.
+			order->StrategyName = order_req->StratageName;
+		}
 		// 계좌 번호
 		order->AccountNo = (LPCTSTR)strAcctNo;
 		// 심볼 코드
@@ -815,6 +820,8 @@ void VtHdCtrl::OnNewOrderHd(CString& sTrCode, LONG& nRqID)
 		if (order->state == VtOrderState::Filled) { 
 			// 여기서 이미 체결된 주문에 대하여 혹시 접수확인 목록에 들어가 있다면 없애준다.
 			if (order_req) {
+				// 여기서 시스템 정보를 넣어준다.
+				order->StrategyName = order_req->StratageName;
 				LOG_F(INFO, _T("OnNewOrderHd 주문역전 :: 이미 체결된 주문입니다! 주문가격 = %s, 요청번호 = %d, 종목이름 = %s, 주문 번호 = %s, 계좌번호 = %s, 주문종류 = %s, 주문갯수 = %s, 요청 타입 = %d"), strPrice, nRqID, strSeries, strOrdNo, order_req->Type == 1 ? order_req->SubAccountNo.c_str() : order_req->FundName.c_str(), strPosition.Compare(_T("1")) == 0 ? _T("매수") : _T("매도"), strAmount, order->RequestType);
 
 				VtOrderManagerSelector* orderMgrSelecter = VtOrderManagerSelector::GetInstance();
@@ -826,6 +833,8 @@ void VtHdCtrl::OnNewOrderHd(CString& sTrCode, LONG& nRqID)
 
 					// 본주문을 복사한다.
 					subAcntOrder = subOrderMgr->CloneOrder(order);
+					// 여기서 시스템 정보를 넣어준다.
+					subAcntOrder->StrategyName = order_req->StratageName;
 					// 주문 종류를 복사해 준다. 0 : 계좌 주문, 1 : 서브계좌 주문, 2 : 펀드 주문
 					subAcntOrder->Type = order_req->Type;
 					// 서브계좌로  계좌번호를 바꿔준다.
@@ -841,6 +850,8 @@ void VtHdCtrl::OnNewOrderHd(CString& sTrCode, LONG& nRqID)
 					subOrderMgr = orderMgrSelecter->FindAddOrderManager(order_req->SubAccountNo);
 					// 본주문을 복사한다.
 					subAcntOrder = subOrderMgr->CloneOrder(order);
+					// 여기서 시스템 정보를 넣어준다.
+					subAcntOrder->StrategyName = order_req->StratageName;
 					// 주문 종류를 복사해 준다. 0 : 계좌 주문, 1 : 서브계좌 주문, 2 : 펀드 주문
 					subAcntOrder->Type = order_req->Type;
 					// 서브계좌로  계좌번호를 바꿔준다.
@@ -861,6 +872,8 @@ void VtHdCtrl::OnNewOrderHd(CString& sTrCode, LONG& nRqID)
 			// 메인주문과 서브계좌 주문은 계좌만 다를 뿐 완전히 동일하다.
 			// 주문요청이 있을 경우 - 주문 요청이 없는 경우는 외부 주문이다.
 			if (order_req) {
+				// 여기서 시스템 정보를 넣어준다.
+				order->StrategyName = order_req->StratageName;
 				LOG_F(INFO, _T("OnNewOrderHd 주문역전 :: 이미 거래소 접수된 주문입니다! 주문가격 = %s, 요청번호 = %d, 종목이름 = %s, 주문 번호 = %s, 계좌번호 = %s, 주문종류 = %s, 주문갯수 = %s, 요청 타입 = %d"), strPrice, nRqID, strSeries, strOrdNo, order_req->Type == 1 ? order_req->SubAccountNo.c_str() : order_req->FundName.c_str(), strPosition.Compare(_T("1")) == 0 ? _T("매수") : _T("매도"), strAmount, order->RequestType);
 
 				VtOrderManagerSelector* orderMgrSelecter = VtOrderManagerSelector::GetInstance();
@@ -872,6 +885,8 @@ void VtHdCtrl::OnNewOrderHd(CString& sTrCode, LONG& nRqID)
 					subOrderMgr = orderMgrSelecter->FindAddOrderManager(order_req->SubAccountNo);
 					// 본주문을 복사한다.
 					subAcntOrder = subOrderMgr->CloneOrder(order);
+					// 여기서 시스템 정보를 넣어준다.
+					subAcntOrder->StrategyName = order_req->StratageName;
 					// 주문 종류를 복사해 준다. 0 : 계좌 주문, 1 : 서브계좌 주문, 2 : 펀드 주문
 					subAcntOrder->Type = order_req->Type;
 					// 서브계좌로  계좌번호를 바꿔준다.
@@ -890,6 +905,8 @@ void VtHdCtrl::OnNewOrderHd(CString& sTrCode, LONG& nRqID)
 					subOrderMgr = orderMgrSelecter->FindAddOrderManager(order_req->SubAccountNo);
 					// 본주문을 복사한다.
 					subAcntOrder = subOrderMgr->CloneOrder(order);
+					// 여기서 시스템 정보를 넣어준다.
+					subAcntOrder->StrategyName = order_req->StratageName;
 					// 주문 종류를 복사해 준다. 0 : 계좌 주문, 1 : 서브계좌 주문, 2 : 펀드 주문
 					subAcntOrder->Type = order_req->Type;
 					// 서브계좌로  계좌번호를 바꿔준다.
@@ -914,6 +931,8 @@ void VtHdCtrl::OnNewOrderHd(CString& sTrCode, LONG& nRqID)
 	// 메인주문과 서브계좌 주문은 계좌만 다를 뿐 완전히 동일하다.
 	// 주문요청이 있을 경우 - 주문 요청이 없는 경우는 외부 주문이다.
 	if (order_req) {
+		// 여기서 시스템 정보를 넣어준다.
+		order->StrategyName = order_req->StratageName;
 		VtOrderManagerSelector* orderMgrSelecter = VtOrderManagerSelector::GetInstance();
 		VtOrderManager* subOrderMgr = nullptr;
 		VtOrder* subAcntOrder = nullptr;
@@ -923,6 +942,8 @@ void VtHdCtrl::OnNewOrderHd(CString& sTrCode, LONG& nRqID)
 			subOrderMgr = orderMgrSelecter->FindAddOrderManager(order_req->SubAccountNo);
 			// 본주문을 복사한다.
 			subAcntOrder = subOrderMgr->CloneOrder(order);
+			// 여기서 시스템 정보를 넣어준다.
+			subAcntOrder->StrategyName = order_req->StratageName;
 			// 주문 종류를 복사해 준다. 0 : 계좌 주문, 1 : 서브계좌 주문, 2 : 펀드 주문
 			subAcntOrder->Type = order_req->Type;
 			// 서브계좌로  계좌번호를 바꿔준다.
@@ -942,6 +963,8 @@ void VtHdCtrl::OnNewOrderHd(CString& sTrCode, LONG& nRqID)
 			subOrderMgr = orderMgrSelecter->FindAddOrderManager(order_req->SubAccountNo);
 			// 본주문을 복사한다.
 			subAcntOrder = subOrderMgr->CloneOrder(order);
+			// 여기서 시스템 정보를 넣어준다.
+			subAcntOrder->StrategyName = order_req->StratageName;
 			// 주문 종류를 복사해 준다. 0 : 계좌 주문, 1 : 서브계좌 주문, 2 : 펀드 주문
 			subAcntOrder->Type = order_req->Type;
 			// 서브계좌로  계좌번호를 바꿔준다.
@@ -2262,6 +2285,10 @@ void VtHdCtrl::OnOrderFilledHd(CString& strKey, LONG& nRealType)
 		}
 	}
 
+	// 전략 이름을 넣어 준다.
+	if (order_req) {
+		order->StrategyName = order_req->StratageName;
+	}
 	// 정수로 체결가격 설정
 	order->intFilledPrice = GetIntOrderPrice(strSeries, strFillPrice, strOriFill);
 
@@ -2304,6 +2331,8 @@ void VtHdCtrl::OnOrderFilledHd(CString& strKey, LONG& nRealType)
 			subAcntOrder = subOrderMgr->FindOrder((LPCTSTR)(strOrdNo));
 			if (!subAcntOrder) {
 				subAcntOrder = subOrderMgr->CloneOrder(order);
+				// 여기서 시스템 정보를 넣어준다.
+				subAcntOrder->StrategyName = order_req->StratageName;
 				// 주문 종류를 복사해 준다. 0 : 계좌 주문, 1 : 서브계좌 주문, 2 : 펀드 주문
 				subAcntOrder->Type = order_req->Type;
 				// 서브계좌로  계좌번호를 바꿔준다.
@@ -2327,7 +2356,7 @@ void VtHdCtrl::OnOrderFilledHd(CString& strKey, LONG& nRealType)
 			subOrderMgr->OnOrderFilledHd(subAcntOrder);
 			SmCallbackManager::GetInstance()->OnOrderEvent(subAcntOrder);
 
-			LOG_F(INFO, _T("서브계좌 체결 확인 : 체결가격 = %s, 요청번호 = %d, 종목이름 = %s, 주문 번호 = %s, 이전주문번호 = %d, 서브계좌번호 = %s, 주문종류 = %s, 체결갯수 = %s, 요청 타입 = %d"), strFillPrice, order->HtsOrderReqID, strSeries, strOrdNo, order_req->NewOrderNo, order_req->SubAccountNo.c_str(), strPosition.Compare(_T("1")) == 0 ? _T("매수") : _T("매도"), strFillAmount, order->RequestType);
+			LOG_F(INFO, _T("서브계좌 체결 확인 : 체결가격 = %s, 요청번호 = %d, 종목이름 = %s, 주문 번호 = %s, 이전주문번호 = %s, 서브계좌번호 = %s, 주문종류 = %s, 체결갯수 = %s, 요청 타입 = %d"), strFillPrice, order->HtsOrderReqID, strSeries, strOrdNo, order_req->NewOrderNo.c_str(), order_req->SubAccountNo.c_str(), strPosition.Compare(_T("1")) == 0 ? _T("매수") : _T("매도"), strFillAmount, order->RequestType);
 
 		}
 		else if (order_req->Type == 2) { // 펀드 주문인 경우
@@ -2335,6 +2364,8 @@ void VtHdCtrl::OnOrderFilledHd(CString& strKey, LONG& nRealType)
 			subAcntOrder = subOrderMgr->FindOrder((LPCTSTR)(strOrdNo));
 			if (!subAcntOrder) {
 				subAcntOrder = subOrderMgr->CloneOrder(order);
+				// 여기서 시스템 정보를 넣어준다.
+				subAcntOrder->StrategyName = order_req->StratageName;
 				// 주문 종류를 복사해 준다. 0 : 계좌 주문, 1 : 서브계좌 주문, 2 : 펀드 주문
 				subAcntOrder->Type = order_req->Type;
 				// 서브계좌로  계좌번호를 바꿔준다.
@@ -2360,7 +2391,7 @@ void VtHdCtrl::OnOrderFilledHd(CString& strKey, LONG& nRealType)
 			subOrderMgr->OnOrderFilledHd(subAcntOrder);
 			SmCallbackManager::GetInstance()->OnOrderEvent(subAcntOrder);
 
-			LOG_F(INFO, _T("펀드주문 체결 확인 : 체결가격 = %s, 요청번호 = %d, 종목이름 = %s, 주문 번호 = %s, 이전주문번호 = %d, 펀드이름 = %s, 주문종류 = %s, 체결갯수 = %s, 요청 타입 = %d"), strFillPrice, order->HtsOrderReqID, strSeries, strOrdNo, order_req->NewOrderNo, order_req->FundName.c_str(), strPosition.Compare(_T("1")) == 0 ? _T("매수") : _T("매도"), strFillAmount, order->RequestType);
+			LOG_F(INFO, _T("펀드주문 체결 확인 : 체결가격 = %s, 요청번호 = %d, 종목이름 = %s, 주문 번호 = %s, 이전주문번호 = %s, 펀드이름 = %s, 주문종류 = %s, 체결갯수 = %s, 요청 타입 = %d"), strFillPrice, order->HtsOrderReqID, strSeries, strOrdNo, order_req->NewOrderNo.c_str(), order_req->FundName.c_str(), strPosition.Compare(_T("1")) == 0 ? _T("매수") : _T("매도"), strFillAmount, order->RequestType);
 
 		}
 	}
@@ -2730,9 +2761,10 @@ void VtHdCtrl::OnAbQuote(CString& sTrCode, LONG& nRqID)
 	CString	strData052 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "시가");
 	CString	strData053 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "고가");
 	CString	strData054 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "저가");
+	CString	strData055 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "누적거래량");
 
 
-
+	sym->AccAmount = _ttoi(strData055.TrimRight());
 	sym->ComToPrev = _ttoi(strCom);
 	sym->UpdownRate = _ttoi(strUpRate);
 	sym->Quote.intClose = _ttoi(strData051);
@@ -2843,6 +2875,300 @@ void VtHdCtrl::OnAbHoga(CString& sTrCode, LONG& nRqID)
 	sym->Hoga.TotBuyNo = _ttoi(strData109);
 
 	SmCallbackManager::GetInstance()->OnHogaEvent(sym);
+}
+
+// const CString DEF_Ab_Asset = "g11004.AQ0605%"
+int VtHdCtrl::OnAbGetAsset(CString& sTrCode, LONG& nRqID)
+{
+	CString strMsg;
+	strMsg.Format("해외 예탁자산 및 증거금 응답[%s]", DEF_Ab_Asset);
+	//WriteLog(strMsg);
+
+	int nRepeatCnt = m_CommAgent.CommGetRepeatCnt(sTrCode, -1, "OutRec1");
+	for (int i = 0; i < nRepeatCnt; i++)
+	{
+		CString strData1 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "통화구분");
+		CString strData2 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "예탁금총액");
+		CString strData3 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "예탁금잔액");
+		CString strData4 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "미결제증거금");
+		CString strData5 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "주문증거금");
+		CString strData6 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "위탁증거금");
+		CString strData7 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "유지증거금");
+		CString strData8 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "청산손익");
+		CString strData9 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "선물옵션수수료");
+		CString strData10 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "평가손익");
+		CString strData11 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "평가예탁총액");
+		CString strData12 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "추가증거금");
+		CString strData13 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", 0, "주문가능금액");
+
+	}
+
+	
+
+	HdTaskEventArgs eventArg;
+	eventArg.TaskType = HdTaskType::HdAsset;
+	FireTaskCompleted(std::move(eventArg));
+
+	RemoveRequest(nRqID);
+
+	return nRqID;
+}
+
+int VtHdCtrl::OnAbGetDeposit(CString& sTrCode, LONG& nRqID)
+{
+	VtAccountManager* acntMgr = VtAccountManager::GetInstance();
+	int nRepeatCnt = m_CommAgent.CommGetRepeatCnt(sTrCode, -1, "OutRec1");
+	for (int i = 0; i < nRepeatCnt; i++)
+	{
+		CString strAccount = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "계좌번호");
+		CString strData2 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "계좌명");
+		CString strData3 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "통화코드");
+		CString strData4 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "예탁금총액");
+		CString strData5 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "예탁금잔액");
+		CString strData6 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "주문증거금");
+		CString strData7 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "위탁증거금");
+		CString strData8 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "유지증거금");
+		CString strData9 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "거래수수료");
+		CString strData10 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "평가손익");
+		CString strData11 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "청산손익");
+		CString strData12 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "추가증거금");
+		CString strData13 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "주문가능금");
+
+
+		VtAccount* acnt = acntMgr->FindAccount((LPCTSTR)strAccount.TrimRight());
+		if (acnt)
+		{
+			acnt->OpenDeposit = _ttof(strData4.TrimRight());
+			acnt->OrdableAmt = _ttof(strData13.TrimRight());
+			acnt->CurrencyCode = strData3.Trim();
+			acnt->OpenPL = _ttof(strData10.TrimRight());
+			acnt->TradePL = _ttof(strData11.TrimRight());
+			acnt->Fee = _ttof(strData9.TrimRight());
+			acnt->Ord_mgn = _ttof(strData6.TrimRight());
+			acnt->Trst_mgn = _ttof(strData7.TrimRight());
+			acnt->Mnt_mgn = _ttof(strData8.TrimRight());
+
+		}
+	}
+	Sleep(VtGlobal::ServerSleepTime);
+	HdTaskEventArgs eventArg;
+	eventArg.TaskType = HdTaskType::HdDeposit;
+	FireTaskCompleted(std::move(eventArg));
+	RemoveRequest(nRqID);
+	return 1;
+}
+
+int VtHdCtrl::OnAbGetAccountProfitLoss(CString& sTrCode, LONG& nRqID)
+{
+	VtSymbolManager* symMgr = VtSymbolManager::GetInstance();
+	VtAccountManager* acntMgr = VtAccountManager::GetInstance();
+	HdTaskArg arg = FindRequest(nRqID);
+	if (arg.Type == HdTaskType::HdApiCustomerProfitLoss)
+	{
+		double fee = 0.0;
+		double tradePL = 0.0;
+		double totalPL = 0.0;
+
+		int nRepeatCnt = m_CommAgent.CommGetRepeatCnt(sTrCode, -1, "OutRec2");
+		for (int i = 0; i < nRepeatCnt; i++) {
+			CString strAccount = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "계좌번호");
+			VtAccount* acnt = acntMgr->FindAccount((LPCTSTR)strAccount);
+
+			CString strData2 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "계좌명");
+			CString strData3 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "통화코드");
+			CString strData4 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "종목");
+			CString strData5 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "청산손익");
+			CString strData6 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "청산순손익");
+			CString strData7 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "청산수수료");
+			CString strData8 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "평가손익");
+			CString strData9 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "미결제수수료");
+			CString strData10 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "미결제순손익");
+			CString strData11 = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "평가손익");
+
+			VtSymbol* sym = symMgr->FindHdSymbol((LPCTSTR)strData4.TrimRight());
+			VtPosition* posi = acnt->FindAdd(sym->ShortCode);
+			posi->TradePL = atof(strData5);
+
+			acnt->TradePL = tradePL;
+			acnt->Fee = fee;
+			acnt->TotalPL = totalPL;
+		}
+
+		Sleep(VtGlobal::ServerSleepTime);
+		HdTaskEventArgs eventArg;
+		eventArg.TaskType = HdTaskType::HdApiCustomerProfitLoss;
+		FireTaskCompleted(std::move(eventArg));
+		RemoveRequest(nRqID);
+		return 1;
+	}
+
+	return 1;
+}
+
+int VtHdCtrl::OnAbGetOutStanding(CString& sTrCode, LONG& nRqID)
+{
+	VtRealtimeRegisterManager* realRegMgr = VtRealtimeRegisterManager::GetInstance();
+	VtAccountManager* acntMgr = VtAccountManager::GetInstance();
+	VtSymbolManager* symMgr = VtSymbolManager::GetInstance();
+	int nRepeatCnt = m_CommAgent.CommGetRepeatCnt(sTrCode, -1, "OutRec1");
+	for (int i = 0; i < nRepeatCnt; i++)
+	{
+		CString strAcnt = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "계좌번호");
+		CString strAcntName = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "계좌명");
+		CString strSymbol = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "종목");
+		CString strPosition = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "매매구분");
+		CString strPreOpenQty = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "전일미결제수량");
+		CString strOpenQty = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "당일순 미결제수량");
+		CString strAvgPrice = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "평균단가");
+		CString strUnitPrice = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "평균단가(소수점반영)");
+		CString strOpenPL = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "평가손익");
+
+		VtAccount* acnt = acntMgr->FindAccount((LPCTSTR)strAcnt.TrimRight());
+		if (acnt) {
+			VtPosition* posi = acnt->FindAdd((LPCTSTR)strSymbol.TrimRight());
+			realRegMgr->RegisterProduct(posi->ShortCode);
+			if (strPosition.Compare(_T("1")) == 0) {
+				posi->Position = VtPositionType::Buy;
+				posi->OpenQty = _ttoi(strOpenQty);
+				posi->PrevOpenQty = _ttoi(strPreOpenQty);
+			}
+			else if (strPosition.Compare(_T("2")) == 0) {
+				posi->Position = VtPositionType::Sell;
+				posi->OpenQty = -1 * _ttoi(strOpenQty);
+				posi->PrevOpenQty = -1 * _ttoi(strPreOpenQty);
+			}
+			posi->AvgPrice = _ttof(strUnitPrice);
+			VtSymbol* sym = symMgr->FindHdSymbol((LPCTSTR)strSymbol.TrimRight());
+			if (sym && sym->Quote.intClose > 0) {
+				posi->CurPrice = sym->Quote.intClose / std::pow(10, sym->Decimal);
+				double curClose = sym->Quote.intClose / std::pow(10, sym->Decimal);
+				posi->OpenProfitLoss = posi->OpenQty * (curClose - posi->AvgPrice)*sym->Seungsu;
+				acnt->TempOpenPL += posi->OpenProfitLoss;
+				if (i == nRepeatCnt - 1) {
+					//acnt->OpenPL = acnt->TempOpenPL;
+					acnt->TempOpenPL = 0.0;
+				}
+			}
+			else {
+				acnt->TempOpenPL += _ttoi(strOpenPL);
+				if (i == nRepeatCnt - 1) {
+					//acnt->OpenPL = acnt->TempOpenPL;
+					acnt->TempOpenPL = 0.0;
+				}
+			}
+
+			VtTotalOrderManager* totalOrderMgr = VtTotalOrderManager::GetInstance();
+			totalOrderMgr->AddPosition(0, acnt->AccountNo, posi->ShortCode, posi);
+
+			VtOrderManagerSelector* orderMgrSeledter = VtOrderManagerSelector::GetInstance();
+			VtOrderManager* orderMgr = orderMgrSeledter->FindAddOrderManager(acnt->AccountNo);
+			VtProductOrderManager* prdtOrderMgr = orderMgr->FindAddProductOrderManager((LPCTSTR)strSymbol.TrimRight());
+			if (prdtOrderMgr)
+				prdtOrderMgr->Init(true);
+		}
+	}
+
+
+	VtOrderDialogManager* orderDlgMgr = VtOrderDialogManager::GetInstance();
+	orderDlgMgr->OnOutstanding();
+	Sleep(VtGlobal::ServerSleepTime);
+	HdTaskEventArgs eventArg;
+	eventArg.TaskType = HdTaskType::HdOutstanding;
+	FireTaskCompleted(std::move(eventArg));
+
+	RemoveRequest(nRqID);
+
+	return nRqID;
+}
+
+int VtHdCtrl::OnAbGetAccepted(CString& sTrCode, LONG& nRqID)
+{
+	VtOrderManagerSelector* orderMgrSeledter = VtOrderManagerSelector::GetInstance();
+
+	VtOrder* order = nullptr;
+
+	int nRepeatCnt = m_CommAgent.CommGetRepeatCnt(sTrCode, -1, "OutRec1");
+	for (int i = 0; i < nRepeatCnt; i++)
+	{
+		CString strAcctNo = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "계좌번호");
+		CString strOrdNo = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "주문번호");
+		CString strSeries = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "종목코드");
+		CString strPrice = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "주문가격");
+		CString strAmount = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "주문수량");
+		CString strPosition = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "매매구분");
+		CString strPriceType = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "가격조건");
+		CString strOriOrderNo = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "원주문번호");
+		CString strFirstOrderNo = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "최초원주문번호");
+
+		strAcctNo.TrimRight();
+		strOrdNo.TrimLeft('0');
+		strOriOrderNo.TrimLeft('0');
+		strFirstOrderNo.TrimLeft('0');
+		strSeries.TrimRight();
+
+		VtOrderManager* orderMgr = orderMgrSeledter->FindAddOrderManager((LPCTSTR)strAcctNo);
+
+		order = orderMgr->FindOrder((LPCTSTR)(strOrdNo));
+		if (!order) {
+			order = new VtOrder();
+
+			std::string symCode = (LPCTSTR)strSeries;
+			VtSymbolManager* symMgr = VtSymbolManager::GetInstance();
+			VtSymbol* sym = symMgr->FindHdSymbol(symCode);
+
+			std::string temp;
+			strPrice.TrimLeft('0');
+			if (sym)
+				temp = NumberFormatter::format(_ttof(strPrice), 20, sym->Decimal);
+			else {
+				HdTaskEventArgs eventArg;
+				eventArg.TaskType = HdTaskType::HdAcceptedHistory;
+				FireTaskCompleted(std::move(eventArg));
+				return -1;
+			}
+
+			strPrice = temp.c_str();
+			strPrice.TrimLeft();
+			strPrice.Remove('.');
+
+			order->AccountNo = (LPCTSTR)strAcctNo;
+			order->shortCode = (LPCTSTR)strSeries;
+			order->orderNo = (LPCTSTR)(strOrdNo);
+			order->intOrderPrice = _ttoi(strPrice);
+			order->amount = _ttoi(strAmount);
+
+			if (strPosition.Compare(_T("1")) == 0) {
+				order->orderPosition = VtPositionType::Buy;
+			}
+			else if (strPosition.Compare(_T("2")) == 0) {
+				order->orderPosition = VtPositionType::Sell;
+			}
+
+			if (strPriceType.Compare(_T("1")) == 0) {
+				order->priceType = VtPriceType::Price;
+			}
+			else if (strPosition.Compare(_T("2")) == 0) {
+				order->priceType = VtPriceType::Market;
+			}
+
+			order->orderType = VtOrderType::New;
+
+			order->firstOrderNo = (LPCTSTR)(strFirstOrderNo);
+			order->oriOrderNo = (LPCTSTR)(strOriOrderNo);
+
+			orderMgr->OnOrderAcceptedHd(order);
+
+			OnOrderAcceptedHd(order);
+		}
+	}
+
+	HdTaskEventArgs eventArg;
+	eventArg.TaskType = HdTaskType::HdAcceptedHistory;
+	FireTaskCompleted(std::move(eventArg));
+
+	RemoveRequest(nRqID);
+
+	return nRqID;
 }
 
 void VtHdCtrl::OnAcceptedHistory(CString& sTrCode, LONG& nRqID)
@@ -4458,6 +4784,10 @@ void VtHdCtrl::UnregisterCurrent()
 
 int VtHdCtrl::GetAcceptedHistory(std::string accountNo, std::string pwd)
 {
+	// 해외 계좌일 경우 해외 함수를 호출 한다.
+	if (accountNo.length() == 6) {
+		return AbGetAccepted(accountNo, pwd);
+	}
 	Sleep(VtGlobal::ServerSleepTime);
 
 	std::string reqString;
@@ -4518,6 +4848,10 @@ int VtHdCtrl::GetOutstandingHistory(std::string accountNo, std::string pwd)
 
 int VtHdCtrl::GetOutstanding(std::string accountNo, std::string pwd)
 {
+	if (accountNo.length() == 6) {
+		return AbGetOutStanding(accountNo, pwd);
+	}
+
 	Sleep(VtGlobal::ServerSleepTime);
 	std::string reqString;
 	std::string temp;
@@ -4611,6 +4945,10 @@ void VtHdCtrl::GetCmeOutstanding(std::string accountNo, std::string pwd)
 
 int VtHdCtrl::GetAsset(std::string accountNo, std::string pwd)
 {
+	if (accountNo.length() == 6) {
+		return AbGetAsset(accountNo, pwd);
+	}
+
 	if (_Blocked)
 		return -1;
 
@@ -4633,6 +4971,10 @@ int VtHdCtrl::GetAsset(std::string accountNo, std::string pwd)
 
 int VtHdCtrl::GetDeposit(std::string accountNo, std::string pwd)
 {
+	if (accountNo.length() == 6) {
+		return AbGetDeposit(accountNo, pwd);
+	}
+
 	Sleep(VtGlobal::ServerSleepTime);
 	std::string reqString;
 	std::string temp;
@@ -4845,6 +5187,10 @@ int VtHdCtrl::GetAccountProfitLoss(std::string accountNo, std::string pwd)
 
 int VtHdCtrl::GetApiCustomerProfitLoss(std::string accountNo, std::string pwd)
 {
+	if (accountNo.length() == 6) {
+		return AbGetAccountProfitLoss(accountNo, pwd);
+	}
+
 	Sleep(VtGlobal::ServerSleepTime);
 	std::string reqString;
 	std::string temp;
@@ -5908,6 +6254,8 @@ void VtHdCtrl::AbChangeOrder(HdOrderRequest& request)
 	request.HtsOrderReqID = nRqID;
 	// 주문요청 번호와 함께 주문요청 맵에 넣어준다.
 	_ReqIdToRequestMap[nRqID] = request;
+
+	CString sInputEx = "1234561234    6AM16                           107155           1         16Ke0005641                         ";
 
 	//LOG_F(INFO,_T("PutOrder :: Req id = %d, order string = %s"), nRqID, orderString.c_str());
 	LOG_F(INFO, _T("신규주문요청 : 요청번호 = %d, 종목이름 = %s, 원주문 번호 = %s, 계좌번호 = %s, 서브계좌번호 = %s, 펀드 이름 = %s, 주문종류 = %s, 주문갯수 = %d, 요청 타입 = %d"),
@@ -7445,6 +7793,138 @@ void VtHdCtrl::AbOnOrderFilledHd(CString& strKey, LONG& nRealType)
 	}
 }
 
+int VtHdCtrl::AbGetAsset(std::string accountNo, std::string pwd)
+{
+	if (_Blocked)
+		return -1;
+
+	std::string reqString;
+	std::string temp;
+	// 계좌 번호
+	temp = PadRight(accountNo, ' ', 6);
+	reqString.append(temp);
+	// 비밀번호
+	temp = PadRight(pwd, ' ', 8);
+	reqString.append(temp);
+
+	CString sInput = reqString.c_str();
+	CString strNextKey = _T("");
+	int nRqID = m_CommAgent.CommRqData(DEF_Ab_Asset, sInput, sInput.GetLength(), strNextKey);
+	AddRequest(nRqID, HdTaskType::HdAsset);
+
+	return nRqID;
+}
+
+int VtHdCtrl::AbGetDeposit(std::string accountNo, std::string pwd)
+{
+	if (_Blocked)
+		return -1;
+
+	std::string reqString;
+	std::string temp;
+	reqString.append("1");
+	// 아이디 
+	reqString.append(VtLoginManager::GetInstance()->ID);
+
+	temp = PadRight(accountNo, ' ', 6);
+	reqString.append(temp);
+	temp = PadRight(pwd, ' ', 8);
+	reqString.append(temp);
+	// 그룹명 - 공백
+	reqString.append("                    ");
+	// 통화코드
+	reqString.append("USD");
+
+
+	CString sInput = reqString.c_str();
+	CString strNextKey = _T("");
+	int nRqID = m_CommAgent.CommRqData(DEF_Ab_AccountProfitLoss, sInput, sInput.GetLength(), strNextKey);
+	AddRequest(nRqID, HdTaskType::HdAsset);
+
+	return nRqID;
+}
+
+int VtHdCtrl::AbGetAccountProfitLoss(std::string accountNo, std::string pwd)
+{
+	if (_Blocked)
+		return -1;
+
+	std::string reqString;
+	std::string temp;
+	reqString.append("1");
+	// 아이디 
+	reqString.append(VtLoginManager::GetInstance()->ID);
+
+	temp = PadRight(accountNo, ' ', 6);
+	reqString.append(temp);
+	temp = PadRight(pwd, ' ', 8);
+	reqString.append(temp);
+	// 그룹명 - 공백
+	reqString.append("                    ");
+	// 통화코드
+	reqString.append("USD");
+
+
+	CString sInput = reqString.c_str();
+	CString strNextKey = _T("");
+	int nRqID = m_CommAgent.CommRqData(DEF_Ab_SymbolProfitLoss, sInput, sInput.GetLength(), strNextKey);
+	AddRequest(nRqID, HdTaskType::HdAsset);
+
+	return nRqID;
+}
+
+int VtHdCtrl::AbGetOutStanding(std::string accountNo, std::string pwd)
+{
+	if (_Blocked)
+		return -1;
+
+	std::string reqString;
+	std::string temp;
+	reqString.append("1");
+	// 아이디 
+	reqString.append(VtLoginManager::GetInstance()->ID);
+
+	temp = PadRight(accountNo, ' ', 6);
+	reqString.append(temp);
+	temp = PadRight(pwd, ' ', 8);
+	reqString.append(temp);
+	// 그룹명 - 공백
+	reqString.append("                    ");
+
+	CString sInput = reqString.c_str();
+	CString strNextKey = _T("");
+	int nRqID = m_CommAgent.CommRqData(DEF_Ab_Outstanding, sInput, sInput.GetLength(), strNextKey);
+	AddRequest(nRqID, HdTaskType::HdAsset);
+
+	return nRqID;
+}
+
+int VtHdCtrl::AbGetAccepted(std::string accountNo, std::string pwd)
+{
+	if (_Blocked)
+		return -1;
+
+	std::string reqString;
+	std::string temp;
+	reqString.append("1");
+	// 아이디 
+	reqString.append(VtLoginManager::GetInstance()->ID);
+
+	temp = PadRight(accountNo, ' ', 6);
+	reqString.append(temp);
+	temp = PadRight(pwd, ' ', 8);
+	reqString.append(temp);
+	// 그룹명 - 공백
+	reqString.append("                    ");
+
+	CString sInput = reqString.c_str();
+	CString strNextKey = _T("");
+	int nRqID = m_CommAgent.CommRqData(DEF_Ab_Accepted, sInput, sInput.GetLength(), strNextKey);
+	AddRequest(nRqID, HdTaskType::HdAsset);
+
+	return nRqID;
+}
+
 std::string VtHdCtrl::PadLeft(int input, char padding, int len)
 {
 	std::ostringstream out;
@@ -7587,23 +8067,9 @@ void VtHdCtrl::OnDataRecv(CString sTrCode, LONG nRqID)
 	///////////////////////////////////////////////////////////////////////////////////////////
 	// 해외
 	///////////////////////////////////////////////////////////////////////////////////////////
-	else if (sTrCode == DEF_HW_JANGO)
+	else if (sTrCode == DEF_Ab_Asset)
 	{
-		CString strMsg;
-		strMsg.Format("해외 예탁자산 및 증거금 응답[%s]", DEF_HW_JANGO);
-		//WriteLog(strMsg);
-
-		int nRepeatCnt = m_CommAgent.CommGetRepeatCnt(sTrCode, -1, "OutRec1");
-		for (int i = 0; i<nRepeatCnt; i++)
-		{
-			CString strAcctNm = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "통화구분");
-			CString strEntrTot = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "예탁금총액");
-			CString strEntrCh = m_CommAgent.CommGetData(sTrCode, -1, "OutRec1", i, "예탁금잔액");
-
-			strAcctNm.TrimRight();
-			strMsg.Format("통화구분[%s] 예탁금총액[%s] 예탁금잔액[%s]", strAcctNm, strEntrTot, strEntrCh);
-			//WriteLog(strMsg);
-		}
+		OnAbGetAsset(sTrCode, nRqID);
 	}
 	else if (sTrCode == DefAbQuote)
 	{
@@ -7624,6 +8090,18 @@ void VtHdCtrl::OnDataRecv(CString sTrCode, LONG nRqID)
 	else if (sTrCode == DEF_HW_ORD_CODE_CNL)
 	{
 		AbOnCancelOrderHd(sTrCode, nRqID);
+	}
+	else if (sTrCode == DEF_Ab_AccountProfitLoss) {
+		OnAbGetDeposit(sTrCode, nRqID);
+	}
+	else if (sTrCode == DEF_Ab_SymbolProfitLoss) {
+		OnAbGetAccountProfitLoss(sTrCode, nRqID);
+	}
+	else if (sTrCode == DEF_Ab_Outstanding) {
+		OnAbGetOutStanding(sTrCode, nRqID);
+	}
+	else if (sTrCode == DEF_Ab_Accepted) {
+		OnAbGetAccepted(sTrCode, nRqID);
 	}
 	else if (sTrCode == DEF_FX_ORD_CODE_MOD) {
 		int nRepeatCnt = m_CommAgent.CommGetRepeatCnt(sTrCode, -1, "OutRec1");
@@ -8216,150 +8694,6 @@ void VtHdCtrl::OnGetBroadData(CString strKey, LONG nRealType)
 		OnRealPosition(strKey, nRealType);
 	}
 	break;
-	/*
-	case 181:	// 주문접수
-	{
-	CString strAcctNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "계좌번호");
-	CString strOrdNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "주문번호");
-	CString strSeries = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "종목코드");
-	CString strPosition = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매매구분");
-	CString strPrice = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "주문가격");
-	CString strAmount = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "주문수량");
-	CString strPriceType = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "가격구분");
-
-	strOrdNo.TrimRight();
-	strSeries.TrimRight();
-	strPrice.TrimRight();
-	strAmount.TrimRight();
-
-	CString strMsg;
-	strMsg.Format("주문접수 번호[%s]종목[%s]매매[%s]가격[%s]수량[%s]", strOrdNo, strSeries, strPosition, strPrice, strAmount);
-	//WriteLog(strMsg);
-
-	m_strOrdNo = strOrdNo;
-
-	VtOrderManagerSelector* orderMgrSeledter = VtOrderManagerSelector::GetInstance();
-	VtOrderManager* orderMgr = orderMgrSeledter->FindAddOrderManager((LPCTSTR)strAcctNo);
-
-	VtOrder* order = nullptr;
-	order = orderMgr->FindOrder(_ttoi(strOrdNo));
-	if (!order)
-	order = new VtOrder();
-	order->accountNo = (LPCTSTR)strAcctNo;
-	order->shortCode = (LPCTSTR)strSeries;
-	order->orderNo = _ttoi(strOrdNo);
-	order->intOrderPrice = _ttoi(strPrice);
-	order->amount = _ttoi(strAmount);
-	if (strPosition.Compare(_T("1")) == 0)
-	{
-	order->orderPosition = VtPositionType::Buy;
-	}
-	else if (strPosition.Compare(_T("2")) == 0)
-	{
-	order->orderPosition = VtPositionType::Sell;
-	}
-
-	if (strPriceType.Compare(_T("1")) == 0)
-	{
-	order->priceType = VtPriceType::Price;
-	}
-	else if (strPosition.Compare(_T("2")) == 0)
-	{
-	order->priceType = VtPriceType::Market;
-	}
-
-	orderMgr->OnOrderAcceptedHd(order);
-	}
-	break;
-	case 182:	// 미체결
-	{
-	CString strAcctNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "주문번호");
-	CString strOrdNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "주문번호");
-	CString strSeries = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "종목코드");
-	CString strPosition = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매매구분");
-	CString strPrice = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "주문가격");
-	CString strAmount = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "주문수량");
-
-	strOrdNo.TrimRight();
-	strSeries.TrimRight();
-	strPrice.TrimRight();
-	strAmount.TrimRight();
-
-	CString strMsg;
-	strMsg.Format("주문접수 번호[%s]종목[%s]매매[%s]가격[%s]수량[%s]", strOrdNo, strSeries, strPosition, strPrice, strAmount);
-	//WriteLog(strMsg);
-
-	m_strOrdNo = strOrdNo;
-
-	VtOrderManagerSelector* orderMgrSeledter = VtOrderManagerSelector::GetInstance();
-	VtOrderManager* orderMgr = orderMgrSeledter->FindAddOrderManager((LPCTSTR)strAcctNo);
-
-	VtOrder* order = nullptr;
-	order = orderMgr->FindOrder(_ttoi(strOrdNo));
-	if (!order)
-	order = new VtOrder();
-	order->accountNo = (LPCTSTR)strAcctNo;
-	order->shortCode = (LPCTSTR)strSeries;
-	order->orderNo = _ttoi(strOrdNo);
-	order->intOrderPrice = _ttoi(strPrice);
-	order->amount = _ttoi(strAmount);
-	if (strPosition.Compare(_T("1")) == 0)
-	{
-	order->orderPosition = VtPositionType::Buy;
-	}
-	else if (strPosition.Compare(_T("2")) == 0)
-	{
-	order->orderPosition = VtPositionType::Sell;
-	}
-
-	orderMgr->OnOrderUnfilledHd(order);
-	}
-	break;
-	case 185:	// 체결
-	{
-	CString strAcctNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "주문번호");
-	CString strOrdNo = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "주문번호");
-	CString strSeries = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "종목코드");
-	CString strPosition = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "매매구분");
-	CString strPrice = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "주문가격");
-	CString strAmount = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "주문수량");
-
-	strOrdNo.TrimRight();
-	strSeries.TrimRight();
-	strPrice.TrimRight();
-	strAmount.TrimRight();
-
-	CString strMsg;
-	strMsg.Format("주문접수 번호[%s]종목[%s]매매[%s]가격[%s]수량[%s]", strOrdNo, strSeries, strPosition, strPrice, strAmount);
-	//WriteLog(strMsg);
-
-	m_strOrdNo = strOrdNo;
-
-	VtOrderManagerSelector* orderMgrSeledter = VtOrderManagerSelector::GetInstance();
-	VtOrderManager* orderMgr = orderMgrSeledter->FindAddOrderManager((LPCTSTR)strAcctNo);
-
-	VtOrder* order = nullptr;
-	order = orderMgr->FindOrder(_ttoi(strOrdNo));
-	if (!order)
-	order = new VtOrder();
-	order->accountNo = (LPCTSTR)strAcctNo;
-	order->shortCode = (LPCTSTR)strSeries;
-	order->orderNo = _ttoi(strOrdNo);
-	order->intOrderPrice = _ttoi(strPrice);
-	order->amount = _ttoi(strAmount);
-	if (strPosition.Compare(_T("1")) == 0)
-	{
-	order->orderPosition = VtPositionType::Buy;
-	}
-	else if (strPosition.Compare(_T("2")) == 0)
-	{
-	order->orderPosition = VtPositionType::Sell;
-	}
-
-	orderMgr->OnOrderFilledHd(order);
-	}
-	break;
-	*/
 	case 310: {
 		OnExpected(strKey, nRealType);
 		break;
@@ -8494,6 +8828,8 @@ void VtHdCtrl::OnGetBroadData(CString strKey, LONG nRealType)
 		CString strLow = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "저가");
 		CString strVolume = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "체결량");
 		CString strUpdown = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "체결구분");
+		CString strAccAmount = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "누적거래량");
+		CString strPreDayCmp = m_CommAgent.CommGetData(strKey, nRealType, "OutRec1", 0, "전일대비");
 
 		//m_edSeriesO.SetWindowText(strSeries);
 		//m_edTimeO.SetWindowText(strTime);
@@ -8528,6 +8864,8 @@ void VtHdCtrl::OnGetBroadData(CString strKey, LONG nRealType)
 		sym->Quote.intOpen = _ttoi(strOpen);
 		sym->Quote.intHigh = _ttoi(strHigh);
 		sym->Quote.intLow = _ttoi(strLow);
+		sym->AccAmount = _ttoi(strAccAmount);
+		sym->ComToPrev = _ttoi(strPreDayCmp);
 
 		VtQuoteItem quoteItem;
 
@@ -8552,10 +8890,19 @@ void VtHdCtrl::OnGetBroadData(CString strKey, LONG nRealType)
 
 		sym->Quote.QuoteItemQ.push_front(quoteItem);
 
-		SmCallbackManager::GetInstance()->OnQuoteEvent(sym);
+		// 여기서 종목의 포지션을 업데이트 해 준다. 
+		VtOrderManagerSelector* orderMgrSelector = VtOrderManagerSelector::GetInstance();
+		for (auto it = orderMgrSelector->_OrderManagerMap.begin(); it != orderMgrSelector->_OrderManagerMap.end(); ++it)
+		{
+			VtOrderManager* orderMgr = it->second;
+			orderMgr->OnReceiveQuoteHd(sym);
+		}
 
+		// 차트 데이터를 업데이트 해준다.
 		VtChartDataManager* chartDataMgr = VtChartDataManager::GetInstance();
 		chartDataMgr->OnReceiveQuoteHd(sym);
+
+		SmCallbackManager::GetInstance()->OnQuoteEvent(sym);
 	}
 	break;
 	case 196: //해외주문접수

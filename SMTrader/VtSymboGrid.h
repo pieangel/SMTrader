@@ -7,6 +7,7 @@
 class CVtOrderCenterWnd;
 class VtSymbolSelector;
 class CVtSymbolFavoriteDlg;
+class SmOrderPanelOut;
 class VtSymboGrid :
 	public VtGrid
 {
@@ -26,6 +27,9 @@ public:
 	DECLARE_MESSAGE_MAP()
 	afx_msg void OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
 public:
+	SmOrderPanelOut* OrderPanelOut() const { return _OrderPanelOut; }
+	void OrderPanelOut(SmOrderPanelOut* val);
+
 	int Section() const { return _Section; }
 	void Section(int val) { _Section = val; }
 public:
@@ -39,6 +43,7 @@ public:
 	void OrderCenterWnd(CVtOrderCenterWnd* val) { _OrderCenterWnd = val; }
 private:
 	CVtOrderCenterWnd* _OrderCenterWnd = nullptr;
+	SmOrderPanelOut* _OrderPanelOut = nullptr;
 	VtSymbolSelector* _SymSelector = nullptr;
 	CVtSymbolFavoriteDlg* _FavoriteDlg = nullptr;
 	int _Source = 0;

@@ -19,7 +19,10 @@ public:
 	std::string ProductCode;
 	std::string MarketName;
 	double CtrUnit;
+	// 최종 거래일
 	std::string LastDate;
+	// 만기일
+	std::string ExpDate;
 	// 풀코드
 	std::string FullCode;
 	// 짧은 코드
@@ -49,6 +52,8 @@ public:
 	int ExpireMonth;
 	int ComToPrev;
 	int UpdownRate;
+	// 누적 거래량
+	int AccAmount;
 
 
 	VtHoga Hoga;

@@ -1603,6 +1603,9 @@
     <ClInclude Include="SmOrderManager.h">
       <Filter>Order</Filter>
     </ClInclude>
+    <ClInclude Include="SmRealtickGrid.h" />
+    <ClInclude Include="AbOrderGridConfigDlg.h" />
+    <ClInclude Include="SmPLConfigDlg.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ChildFrm.cpp">
@@ -2871,6 +2874,9 @@
     <ClCompile Include="SmOrderManager.cpp">
       <Filter>Order</Filter>
     </ClCompile>
+    <ClCompile Include="SmRealtickGrid.cpp" />
+    <ClCompile Include="AbOrderGridConfigDlg.cpp" />
+    <ClCompile Include="SmPLConfigDlg.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="SMTrader.rc">

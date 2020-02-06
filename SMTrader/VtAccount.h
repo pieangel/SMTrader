@@ -42,6 +42,8 @@ public:
 	void Enable(bool val) { _Enable = val; }
 	int Gubun() const { return _Gubun; }
 	void Gubun(int val) { _Gubun = val; }
+	bool Updating() const { return _Updating; }
+	void Updating(bool val) { _Updating = val; }
 public:
 	bool hasValidPassword();
 	VtPosition* FindAdd(std::string symbolCode);
@@ -54,6 +56,7 @@ public:
 	void SaveToXml(pugi::xml_node& node);
 	void LoadFromXml(pugi::xml_node& node);
 public:
+	std::string CurrencyCode; // 통화 코드
 	double InAmt = 0; //	15	double	입금금액
 	double OutAmt = 0; //	15	double	출금금액
 	double Deposit = 0; //	15	double	예탁총액
@@ -78,7 +81,6 @@ public:
 	double  TempTradePL = 0; // 임시 순손익
 	double  TempOpenPL = 0;
 	double  TempPurePL = 0;
-	std::string	Crc_cd;
 	int Type = 0;
 
 	void SumOpenPL();
@@ -117,6 +119,8 @@ public:
 	std::pair<bool, int> GetRemainCount(std::string symCode);
 
 private:
+	// 실시간 평가손익 업데이트
+	bool _Updating = false;
 	// 계좌 구분 : 9 : 국내, 해외 : 1, FX : 2
 	int _Gubun = 0; 
 	bool _Enable = true;

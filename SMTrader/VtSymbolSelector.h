@@ -6,6 +6,7 @@
 
 // VtSymbolSelector dialog
 class CVtOrderCenterWnd;
+class SmOrderPanelOut;
 class VtSymbolSelector : public CDialogEx
 {
 	DECLARE_DYNAMIC(VtSymbolSelector)
@@ -48,6 +49,7 @@ public:
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 public:
 	void SetOrderCenterWindow(CVtOrderCenterWnd* centerWnd);
+	void SetOrderCenterWindow(SmOrderPanelOut* centerWnd);
 	afx_msg void OnClose();
 	virtual void PostNcDestroy();
 };

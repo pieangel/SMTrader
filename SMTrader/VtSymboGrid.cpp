@@ -18,6 +18,8 @@
 #include "Market/SmMarketManager.h"
 #include "Market/SmMarket.h"
 #include "Market/SmProduct.h"
+#include "VtHdClient.h"
+#include "VtSymbolSelector.h"
 
 #include <vector>
 VtSymboGrid::VtSymboGrid()
@@ -74,31 +76,24 @@ void VtSymboGrid::OnDClicked(int col, long row, RECT *rect, POINT *point, BOOL p
 		GetCell(col, row, &cell);
 		//std::string value = QuickGetText(col, row);
 		VtSymbol* sym = (VtSymbol*)cell.Tag();
-
-		VtKrClient* client = VtKrClient::GetInstance();
-		VtChartDataRequest req;
-		req.chartType = VtChartType::MIN;
-		req.msgid = "0000000000";
-		req.productCode = sym->ShortCode;
-		req.cycle = 10;
-		req.count = 1500;
+		
+		if (sym) {
+			VtHdClient::GetInstance()->GetAbroadQuote(sym->ShortCode.c_str());
+			VtHdClient::GetInstance()->GetAbroadHoga(sym->ShortCode.c_str());
+		}
 
 		VtRealtimeRegisterManager* realtimeManager = VtRealtimeRegisterManager::GetInstance();
-		realtimeManager->RegisterProduct(sym->FullCode);
+		realtimeManager->RegisterProduct(sym->ShortCode);
 
-		CMainFrame *pMainWnd = (CMainFrame *)AfxGetMainWnd();
-		//pMainWnd->OnSymbolClicked(sym->ShortCode);
 
-		VtChartDataManager* dataMgr = VtChartDataManager::GetInstance();
-		std::string dataID;
-		VtChartData* chartData = dataMgr->Find(dataID);
-		if (chartData)
-			chartData->Reset();
-		client->GetChartData(std::move(req));
+		if (_OrderPanelOut) {
+			_OrderPanelOut->ChangeSymbol(sym);
+			if (_SymSelector) {
+				_SymSelector->SendMessage(WM_CLOSE);
+			}
+		}
 
-		VtSymbolManager* symMgr = VtSymbolManager::GetInstance();
-		symMgr->ActiveSymbol(sym);
-		symMgr->RequestSymbolBundleInfo(sym->FullCode);
+		
 	}
 	else if (_Source == 1)
 	{
@@ -205,6 +200,11 @@ void VtSymboGrid::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 	// TODO: Add your message handler code here and/or call default
 
 	VtGrid::OnVScroll(nSBCode, nPos, pScrollBar);
+}
+
+void VtSymboGrid::OrderPanelOut(SmOrderPanelOut* val)
+{
+	_OrderPanelOut = val;
 }
 
 void VtSymboGrid::SetProduct()

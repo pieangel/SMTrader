@@ -196,11 +196,11 @@ void SmProduct::AddToYearMonth(std::string symbol_code, std::string name, VtSymb
 
 		std::string year = "20";
 		year.append(yeay_month_week.substr(0, 2));
-		
+
 		std::string month = yeay_month_week.substr(2, 2);
 
 		std::string week = yeay_month_week.substr(4, 2);
-		
+
 		std::string local_date_time = VtStringUtil::getCurentDate();
 		std::string local_year_month = local_date_time.substr(0, 6);
 		std::string week_info = yeay_month_week.substr(5, 1);
@@ -216,20 +216,23 @@ void SmProduct::AddToYearMonth(std::string symbol_code, std::string name, VtSymb
 		// 그것을 7로 나누면 몫이 몇번째 주이고 나머지가 0보다 크면 한주를 더 더해준다.
 		// 그러면 몇 번째 주인지 알수 있다. 그리고 매주 목요일이 만기일이므로  3을 더하면 주차가 나온다.
 		int day_week = dow(date_time_vec[0], date_time_vec[1], 1);
-
 		int whole_days = day_week + date_time_vec[2];
 		// 목요일이 만기일인걸 감안해서 2를 더해 준다.
 		whole_days += 2;
 		// 몇째 주가 나온다.
 		int q = (int)(whole_days / 7);
+		// 토요일이 1일이면 한주를 빼준다.
+		if (day_week == 6) {
+			q--;
+		}
 		// 나머지가 0보다 크면 1주를 더 더해준다.
 		int rem = whole_days % 7;
 		if (rem > 0)
 			q++;
 
-		if (q > 4)
-			q = 4;
-		
+		if (q > 5)
+			q = 5;
+
 		// 현재 주보다 작으면 추가하지 않는다.
 		if (std::stoi(week_info) < q)
 			return;

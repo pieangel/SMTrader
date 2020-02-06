@@ -171,7 +171,6 @@
 #define IDD_DIALOG_CHART1               385
 #define IDD_TIME_TOOLBAR                386
 #define IDD_SYSTEM_PROPERTY             388
-#define IDD_DIALOG1                     389
 #define IDD_ORDER_LOG                   389
 #define IDD_PROGRESS                    391
 #define IDI_SEARCH                      393
@@ -206,6 +205,9 @@
 #define IDD_LOGIN_MAIN                  427
 #define IDI_CLASS_VIEW1                 427
 #define IDD_ORDER_PANEL_OUT             428
+#define IDD_ORDERGRID_CONFIG_AB         429
+#define IDD_CENTER_CONFIG1              430
+#define IDD_CENTER_CONFIG_AB            430
 #define ID_SPLIT1                       500
 #define ID_SPLIT2                       501
 #define ID_SPLIT3                       502
@@ -537,6 +539,7 @@
 #define IDC_STATIC_OPT_GRID             1045
 #define IDC_CUSTOM1                     1045
 #define IDC_CUSTOM_OPTION               1045
+#define IDC_CUSTOM_ACCOUNT              1045
 #define IDC_STATIC_PRODUCT_NAME         1046
 #define IDC_COMBO_FUT_MARKET            1046
 #define IDC_CUSTOM_FUTURE               1046
@@ -584,6 +587,7 @@
 #define IDC_SPIN_TS                     1060
 #define IDC_EDIT_STOPVAL                1060
 #define IDC_STATIC_RUN_LIST             1060
+#define IDC_CUSTOM_TICK                 1060
 #define IDC_RADIO_BY_MOUSE_SELECT       1061
 #define IDC_SPIN_STOPVAL                1061
 #define IDC_RADIO_BY_MOUSE_POS          1062
@@ -725,7 +729,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        391
 #define _APS_NEXT_COMMAND_VALUE         32816
-#define _APS_NEXT_CONTROL_VALUE         1060
+#define _APS_NEXT_CONTROL_VALUE         1061
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif

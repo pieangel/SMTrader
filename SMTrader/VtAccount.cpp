@@ -269,16 +269,19 @@ VtPosition* VtAccount::FindPosition(std::string symbolCode)
 
 void VtAccount::SumOpenPL()
 {
-	TradePL = 0;
-	OpenPL = 0;
-	VtSymbolManager* symMgr = VtSymbolManager::GetInstance();
-	for (auto it = PositionMap.begin(); it != PositionMap.end(); ++it) {
-		VtPosition* posi = it->second;
-		OpenPL += posi->OpenProfitLoss;
-		TradePL += posi->TradePL;
-	}
+	// 업데이트가 가능할때만 사용한다.
+	if (_Updating) {
+		TradePL = 0;
+		OpenPL = 0;
+		VtSymbolManager* symMgr = VtSymbolManager::GetInstance();
+		for (auto it = PositionMap.begin(); it != PositionMap.end(); ++it) {
+			VtPosition* posi = it->second;
+			OpenPL += posi->OpenProfitLoss;
+			TradePL += posi->TradePL;
+		}
 
-	TotalPL = OpenPL + TradePL + Fee;
+		TotalPL = OpenPL + TradePL + Fee;
+	}
 }
 
 void VtAccount::CalcOpenPL(VtSymbol* sym)

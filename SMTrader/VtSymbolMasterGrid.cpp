@@ -6,6 +6,18 @@
 #include "Util/VtTime.h"
 #include "Poco/NumberFormatter.h"
 #include "VtGlobal.h"
+#include <functional>
+#include "SmCallbackManager.h"
+#include "VtSymbol.h"
+#include "VtFundOrderManager.h"
+#include "Log/loguru.hpp"
+#include "SmOrderPanelOut.h"
+#include "VtOrderWnd.h"
+#include "XFormatNumber.h"
+#include "Format/format.h"
+
+using namespace std;
+using namespace std::placeholders;
 using Poco::NumberFormatter;
 
 VtSymbolMasterGrid::VtSymbolMasterGrid()
@@ -19,8 +31,33 @@ VtSymbolMasterGrid::~VtSymbolMasterGrid()
 {
 	_SymbolMaster = nullptr;
 	_Symbol = nullptr;
+	UnregisterAllCallback();
 }
 
+
+void VtSymbolMasterGrid::UnregisterAllCallback()
+{
+	UnregisterQuoteCallback();
+}
+
+void VtSymbolMasterGrid::RegisterQuoteCallback()
+{
+	SmCallbackManager::GetInstance()->SubscribeQuoteCallback((long)this, std::bind(&VtSymbolMasterGrid::OnQuoteEvent, this, _1));
+}
+
+void VtSymbolMasterGrid::UnregisterQuoteCallback()
+{
+	SmCallbackManager::GetInstance()->UnsubscribeQuoteCallback((long)this);
+}
+
+void VtSymbolMasterGrid::OnQuoteEvent(VtSymbol* symbol)
+{
+	if (!_Symbol || !symbol)
+		return;
+	if (_Symbol->ShortCode.compare(symbol->ShortCode) != 0)
+		return;
+	UpdateSymbol(symbol);
+}
 
 void VtSymbolMasterGrid::OnSetup()
 {
@@ -56,6 +93,7 @@ void VtSymbolMasterGrid::OnSetup()
 
 	RedrawAll();
 
+	RegisterQuoteCallback();
 }
 
 
@@ -130,9 +168,96 @@ void VtSymbolMasterGrid::InitSymMaster(VtSymbol* sym)
 		return;
 
 	_Symbol = sym;
-	VtSymbolManager* symMgr = VtSymbolManager::GetInstance();
-	_SymbolMaster = symMgr->FindSymbolMasterByShortCode(sym->ShortCode);
-	SetSymbolMaster(_SymbolMaster);
+
+	try
+	{
+		QuickSetText(0, 0, sym->Name.c_str());
+		CString thVal;
+		std::string temp = NumberFormatter::format(sym->Quote.intOpen / std::pow(10, sym->Decimal), sym->Decimal);
+		thVal = XFormatNumber(temp.c_str(), sym->Decimal);
+		QuickSetText(1, 1, thVal);
+		temp = NumberFormatter::format(sym->Quote.intHigh / std::pow(10, sym->Decimal), sym->Decimal);
+		thVal = XFormatNumber(temp.c_str(), sym->Decimal);
+		QuickSetText(1, 2, thVal);
+		temp = NumberFormatter::format(sym->Quote.intLow / std::pow(10, sym->Decimal), sym->Decimal);
+		thVal = XFormatNumber(temp.c_str(), sym->Decimal);
+		QuickSetText(1, 3, thVal);
+		temp = NumberFormatter::format(sym->Quote.intClose / std::pow(10, sym->Decimal), sym->Decimal);
+		thVal = XFormatNumber(temp.c_str(), sym->Decimal);
+		QuickSetText(1, 4, thVal);
+		temp = fmt::format("{:.{}f}", sym->ComToPrev / std::pow(10, sym->Decimal), sym->Decimal);
+		QuickSetText(1, 5, temp.c_str());
+
+		// 누적 거래량
+		
+		QuickSetNumber(1, 6, sym->AccAmount);
+		// 틱가치
+		temp = fmt::format("{:.{}f}", sym->TickValue, sym->Decimal);
+		QuickSetText(1, 7, temp.c_str());
+		// 틱크기
+		temp = NumberFormatter::format(sym->intTickSize / std::pow(10, sym->Decimal), sym->Decimal);
+		QuickSetText(1, 8, temp.c_str());
+		// 거래소
+		QuickSetText(1, 9, sym->Exchange.c_str());
+		// 만기일
+		std::string ex_date;
+		if (sym->ExpDate.length() >= 8) {
+			ex_date.append(sym->ExpDate.substr(0, 4));
+			ex_date.append("년");
+			ex_date.append(sym->ExpDate.substr(4, 2));
+			ex_date.append("월");
+			ex_date.append(sym->ExpDate.substr(6, 2));
+			ex_date.append("일");
+			QuickSetText(1, 10, ex_date.c_str());
+		}
+		for (int i = 0; i < 11; i++)
+			QuickRedrawCell(1, i);
+	}
+	catch (const std::exception& e)
+	{
+		std::string msg = e.what();
+		AfxMessageBox(msg.c_str());
+	}
+}
+
+void VtSymbolMasterGrid::UpdateSymbol(VtSymbol* sym)
+{
+	if (!sym)
+		return;
+
+	_Symbol = sym;
+
+	try
+	{
+		QuickSetText(0, 0, sym->Name.c_str());
+		CString thVal;
+		std::string temp = NumberFormatter::format(sym->Quote.intOpen / std::pow(10, sym->Decimal), sym->Decimal);
+		thVal = XFormatNumber(temp.c_str(), sym->Decimal);
+		QuickSetText(1, 1, thVal);
+		temp = NumberFormatter::format(sym->Quote.intHigh / std::pow(10, sym->Decimal), sym->Decimal);
+		thVal = XFormatNumber(temp.c_str(), sym->Decimal);
+		QuickSetText(1, 2, thVal);
+		temp = NumberFormatter::format(sym->Quote.intLow / std::pow(10, sym->Decimal), sym->Decimal);
+		thVal = XFormatNumber(temp.c_str(), sym->Decimal);
+		QuickSetText(1, 3, thVal);
+		temp = NumberFormatter::format(sym->Quote.intClose / std::pow(10, sym->Decimal), sym->Decimal);
+		thVal = XFormatNumber(temp.c_str(), sym->Decimal);
+		QuickSetText(1, 4, thVal);
+		temp = fmt::format("{:.{}f}", sym->ComToPrev / std::pow(10, sym->Decimal), sym->Decimal);
+		QuickSetText(1, 5, temp.c_str());
+
+		// 누적 거래량
+
+		QuickSetNumber(1, 6, sym->AccAmount);
+		
+		for (int i = 1; i < 7; i++)
+			QuickRedrawCell(1, i);
+	}
+	catch (const std::exception& e)
+	{
+		std::string msg = e.what();
+		AfxMessageBox(msg.c_str());
+	}
 }
 
 void VtSymbolMasterGrid::OnReceivedSymbolMaster(VtSymbolMaster* symMaster)

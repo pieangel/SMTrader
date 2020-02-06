@@ -137,6 +137,11 @@ void VtSymbolCatPage::SetOrderCenterWindow(CVtOrderCenterWnd* centerWnd)
 	_GridCtrl.OrderCenterWnd(centerWnd);
 }
 
+void VtSymbolCatPage::SetOrderCenterWindow(SmOrderPanelOut* centerWnd)
+{
+	_GridCtrl.OrderPanelOut(centerWnd);
+}
+
 void VtSymbolCatPage::SetSymbolSelector(VtSymbolSelector* symSelector)
 {
 	_GridCtrl.SymSelector(symSelector);

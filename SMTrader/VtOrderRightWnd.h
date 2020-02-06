@@ -40,6 +40,7 @@ private:
 	VtSymbolMasterGrid _SymMasterGrid;
 	CVtOrderWnd* _ParentOrderWnd = nullptr;
 public:
+	void ShowAccountInfo(VtAccount* acnt);
 	virtual BOOL OnInitDialog();
 	void OnReceivedSymbolMaster(VtSymbolMaster* symMaster);
 	void OnReceivedSymbolMaster(VtRealtimeSymbolMaster* symMaster);

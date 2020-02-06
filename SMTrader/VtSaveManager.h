@@ -55,6 +55,7 @@ public:
 	int LoadLoginInfoFromXml();
 	void LoadRunInfoFromXml();
 	void GetWindowSymbolList(std::set<std::string>& symbol_list);
+	void GetWindowAbSymbolList(std::set<std::string>& symbol_list);
 private:
 	bool ListContents(std::map<std::string, std::string>& dest, std::string dir, std::string filter, bool recursively);
 	std::vector<VtSymbol*> _SymbolVector;

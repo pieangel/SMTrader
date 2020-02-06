@@ -157,19 +157,6 @@ BEGIN_MESSAGE_MAP(VtOrderWnd, CDialog)
 END_MESSAGE_MAP()
 
 
-// VtOrderWnd message handlers
-
-/*
-CShadeButtonST _BtnAddWnd;
-CShadeButtonST _BtnDelWnd;
-CShadeButtonST _BtnGetAcntInfo;
-CShadeButtonST _BtnShowLeft;
-CShadeButtonST _BtnShowRight;
-CTTComboBox _ComboAcnt;
-CStatic _StaticAcnt;
-CStatic _StaticAcntName;
-// Edit the funds.
-CShadeButtonST _BtnFundEditor;*/
 
 BOOL VtOrderWnd::OnInitDialog()
 {
@@ -224,13 +211,6 @@ BOOL VtOrderWnd::OnInitDialog()
 	RepositionControl();
 	ShowHideCtrl();
 
-	//VtOrderDialogManager* orderDlgMgr = VtOrderDialogManager::GetInstance();
-	//_OrderWindowEvent += delegate(orderDlgMgr, &VtOrderDialogManager::OnOrderWndEventReceived);
-
-// 	VtOrderWndEventArgs arg;
-// 	arg.pOrderWnd = this;
-// 	arg.type = VtOrderWindowEventType::Created;
-// 	FireOrderWindowEvent(std::move(arg));
 
 	SetWindows();
 
@@ -258,11 +238,24 @@ BOOL VtOrderWnd::OnInitDialog()
 	centerWnd->Activated(false);
 	_OrderConfigMgr->centerWnd = centerWnd;
 
+
+
 	_EnableOnSizeEvent = true;
 	_XPos = 0;
 	_YPos = 0;
 
 	//_LeftWnd.OnResizeWnd();
+	// 우측 창에 계좌 정보를 설정한다.
+	_RightWnd.ShowAccountInfo(_OrderConfigMgr->Account());
+	// 우측창에 심볼 정보를 설정한다. - 선택된 창의 심볼을 보여준다.
+	_RightWnd.SetSymbol(_OrderConfigMgr->centerWnd->Symbol());
+	// 여기서 좌측창의 틱 그리드 심볼을 설정해 준다.
+	_LeftWnd.SetRealtickSymbol(_OrderConfigMgr->centerWnd->Symbol());
+	// 좌측창의 그리들을 설정한다.
+	_LeftWnd.InitGridInfo();
+
+	// 주문창 목록에 더해준다.
+	VtOrderDialogManager::GetInstance()->AddAbOrderWnd(this);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 }
@@ -292,6 +285,19 @@ void VtOrderWnd::RemoveRealTickWnd(VtRealTickWnd* realWnd)
 		delete realWnd;
 		_RealTickWndVector.erase(it);
 	}
+}
+
+void VtOrderWnd::SetSymbolInfo(SmOrderPanelOut* centerWnd)
+{
+	if (!_OrderConfigMgr)
+		return;
+
+	// 여기서 중앙창에 대한 틱을 선택해 준다.
+	_OrderConfigMgr->leftWnd->SetRealtickSymbol(centerWnd->Symbol());
+	// 여기서 우측창의 심볼 정보를 변경해 준다.
+	_OrderConfigMgr->rightWnd->SetSymbol(centerWnd->Symbol());
+	// 여기서 중앙창의 틱을 선택해 준다.
+	_OrderConfigMgr->centerWnd->SetRealtickSymbol(centerWnd->Symbol());
 }
 
 void VtOrderWnd::BlockEvent()
@@ -471,6 +477,8 @@ void VtOrderWnd::AddWindow()
 	SetActiveCenterWnd(centerWnd);
 	_OrderConfigMgr->centerWnd = centerWnd;
 	centerWnd->InitAll();
+	// 여기서 좌우의 심볼 정보를 설정해 준다.
+	SetSymbolInfo(centerWnd);
 	_CenterWndVector.push_back(centerWnd);
 	RefreshLayout(true, false);
 	_EnableOnSizeEvent = true;
@@ -522,6 +530,7 @@ void VtOrderWnd::RemoveWindow()
 			centerWnd->Activated(false);
 		_OrderConfigMgr->centerWnd = centerWnd;
 		SetActiveCenterWnd(centerWnd);
+		SetSymbolInfo(centerWnd);
 	}
 
 	RefreshLayout(true, false);
@@ -856,6 +865,12 @@ void VtOrderWnd::SetActiveCenterWnd(SmOrderPanelOut* centerWnd)
 	_OrderConfigMgr->centerWnd->Activated(false);
 	centerWnd->Activated(true);
 	_OrderConfigMgr->centerWnd = centerWnd;
+	// 여기서 중앙창에 대한 틱을 선택해 준다.
+	_OrderConfigMgr->leftWnd->SetRealtickSymbol(centerWnd->Symbol());
+	// 여기서 우측창의 심볼 정보를 변경해 준다.
+	_OrderConfigMgr->rightWnd->SetSymbol(centerWnd->Symbol());
+	// 여기서 중앙창의 틱을 선택해 준다.
+	_OrderConfigMgr->centerWnd->SetRealtickSymbol(centerWnd->Symbol());
 }
 
 void VtOrderWnd::RemoveLastWindow()
@@ -879,10 +894,7 @@ void VtOrderWnd::OnClose()
 {
 	BlockEvent();
 	CDialog::OnClose();
-	VtOrderWndEventArgs arg;
-	arg.pOrderWnd = this;
-	arg.type = VtOrderWindowEventType::Closed;
-	FireOrderWindowEvent(std::move(arg));
+	VtOrderDialogManager::GetInstance()->RemoveAbOrderWnd(this);
 }
 
 void VtOrderWnd::OnFundAdded()
@@ -1440,6 +1452,9 @@ void VtOrderWnd::OnCbnSelchangeComboAccountHd()
 				RegisterRealtimeAccount(acnt);
 				acnt->GetAccountInfoNFee(1);
 			}
+			_Account = acnt;
+			// 오른쪽에 계좌 정보를 보여준다.
+			_RightWnd.ShowAccountInfo(acnt);
 		}
 	}
 	else {

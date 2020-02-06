@@ -222,6 +222,17 @@ public:
 	// 해외 주문 체결
 	void AbOnOrderFilledHd(CString& sTrCode, LONG& nRqID);
 
+	// 해외 자산
+	int AbGetAsset(std::string accountNo, std::string pwd);
+	// 해외 계좌별 손익
+	int AbGetDeposit(std::string accountNo, std::string pwd);
+	// 해외 종목별 손익
+	int AbGetAccountProfitLoss(std::string accountNo, std::string pwd);
+	// 해외 미결제
+	int AbGetOutStanding(std::string accountNo, std::string pwd);
+	// 해외 미체결
+	int AbGetAccepted(std::string accountNo, std::string pwd);
+
 	static std::string PadLeft(double input, char padding, int len, int decimal);
 	static std::string PadRight(double input, char padding, int len, int decimal);
 	static std::string PadLeft(int input, char padding, int len);
@@ -252,6 +263,18 @@ public:
 	void OnAbQuote(CString& sTrCode, LONG& nRqID);
 	// 해외 현재 호가 수신
 	void OnAbHoga(CString& sTrCode, LONG& nRqID);
+
+	// 해외 자산
+	int OnAbGetAsset(CString& sTrCode, LONG& nRqID);
+	// 해외 계좌별 손익
+	int OnAbGetDeposit(CString& sTrCode, LONG& nRqID);
+	// 해외 종목별 손익
+	int OnAbGetAccountProfitLoss(CString& sTrCode, LONG& nRqID);
+	// 해외 미결제
+	int OnAbGetOutStanding(CString& sTrCode, LONG& nRqID);
+	// 해외 미체결
+	int OnAbGetAccepted(CString& sTrCode, LONG& nRqID);
+	
 private:
 	int _RqID = 0;
 	std::map<int, std::shared_ptr<HdTaskArg>> _TaskReqMap;

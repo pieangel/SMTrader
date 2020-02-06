@@ -11,6 +11,9 @@
 #include "VtOrderConfigManager.h"
 #include "VtOrderWnd.h"
 #include "VtGlobal.h"
+#include "VtAccount.h"
+#include "VtSubAccountManager.h"
+#include "VtFund.h"
 
 using Poco::NumberFormatter;
 using Poco::trim;
@@ -129,8 +132,8 @@ void VtProductAcceptedGrid::SetColTitle()
 {
 	const int ColCount = _ColCount;
 	CUGCell cell;
-	LPCTSTR title[4] = { "취소", "종목", "구분" , "미체결" }; //, "주문가격", "주문량", "주문시간", "주문번호", "원주문번호" };
-	int colWidth[4] = { 24, 35, 35, 63 }; //, 60, 60, 60, 60, 60 };
+	LPCTSTR title[4] = { "취소", "종목", "구분" , "미체결" }; 
+	int colWidth[4] = { 21, 46, 32, 58 };
 
 
 	for (int i = 0; i < _ColCount; i++)
@@ -192,7 +195,7 @@ void VtProductAcceptedGrid::SetAcptOrderList()
 		}
 		QuickSetText(2, row, position.c_str());
 
-		std::string remainQty = NumberFormatter::format(order->unacceptedQty, 5);
+		std::string remainQty = NumberFormatter::format(order->amount, 5);
 		remainQty = trim(remainQty);
 		QuickSetText(3, row, remainQty.c_str());
 		QuickSetAlignment(3, row, UG_ALIGNRIGHT | UG_ALIGNVCENTER);
@@ -275,7 +278,98 @@ void VtProductAcceptedGrid::CancelOrder(VtOrder* order)
 {
 	if (!order)
 		return;
-	_OrderConfigMgr->OrderMgr()->DirectCancelOrder(order);
+	//_OrderConfigMgr->OrderMgr()->DirectCancelOrder(order);
+
+	if (!order || !_OrderConfigMgr || !_OrderConfigMgr->OrderMgr())
+		return;
+	try
+	{
+
+		if (_OrderConfigMgr->Type() == 0)
+		{
+			if (!_OrderConfigMgr->Account())
+				return;
+			VtAccount* acnt = _OrderConfigMgr->Account();
+
+			HdOrderRequest request;
+			request.Market = 1; // 해외 선물 시장 설정
+			request.Price = order->intOrderPrice;
+			request.Position = order->orderPosition;
+			request.Amount = order->amount;
+			request.RequestType = order->RequestType;
+
+			if (acnt->AccountLevel() == 0)
+			{
+				request.Type = 0;
+				request.AccountNo = acnt->AccountNo;
+				request.Password = acnt->Password;
+			}
+			else
+			{
+				VtAccount* parentAcnt = acnt->ParentAccount();
+				if (parentAcnt)
+				{
+					request.AccountNo = parentAcnt->AccountNo;
+					request.Password = parentAcnt->Password;
+				}
+				request.Type = 1;
+			}
+			request.SymbolCode = order->shortCode;
+			request.FillCondition = VtFilledCondition::Fas;
+			request.PriceType = VtPriceType::Price;
+			request.OrderNo = order->orderNo;
+			request.RequestId = _OrderConfigMgr->OrderMgr()->GetOrderRequestID();
+			request.SourceId = (long)this;
+			if (acnt->AccountLevel() == 0)
+			{
+				request.SubAccountNo = order->SubAccountNo;
+				request.FundName = order->FundName;
+			}
+			else
+				request.SubAccountNo = acnt->AccountNo;
+
+			request.orderType = VtOrderType::Cancel;
+
+			_OrderConfigMgr->OrderMgr()->CancelOrder(std::move(request));
+		}
+		else
+		{
+			if (_OrderConfigMgr->Fund())
+			{
+				VtSubAccountManager* subAcntMgr = VtSubAccountManager::GetInstance();
+				VtAccount* subAcnt = subAcntMgr->FindAccount(order->SubAccountNo);
+				if (!subAcnt)
+					return;
+				VtAccount* parentAcnt = subAcnt->ParentAccount();
+				if (!parentAcnt)
+					return;
+
+				HdOrderRequest request;
+				request.Market = 1; // 해외 선물 시장 설정
+				request.Type = 2;
+				request.RequestType = order->RequestType;
+				request.Price = order->intOrderPrice;
+				request.Position = order->orderPosition;
+				request.Amount = order->amount;
+				request.AccountNo = parentAcnt->AccountNo;
+				request.Password = parentAcnt->Password;
+				request.SymbolCode = order->shortCode;
+				request.FillCondition = VtFilledCondition::Fas;
+				request.PriceType = VtPriceType::Price;
+				request.OrderNo = order->orderNo;
+				request.RequestId = _OrderConfigMgr->OrderMgr()->GetOrderRequestID();
+				request.SourceId = (long)this;
+				request.SubAccountNo = subAcnt->AccountNo;
+				request.FundName = _OrderConfigMgr->Fund()->Name;
+				request.orderType = VtOrderType::Cancel;
+
+				_OrderConfigMgr->OrderMgr()->CancelOrder(std::move(request));
+			}
+		}
+	}
+	catch (std::exception& e) {
+		std::string error = e.what();
+	}
 }
 
 void VtProductAcceptedGrid::CancelOrderList()

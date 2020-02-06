@@ -36,13 +36,22 @@ void VtProductRemainGrid::RegisterQuoteCallback()
 
 void VtProductRemainGrid::OnQuoteEvent(const VtSymbol* symbol)
 {
-	if (!_CenterWnd || !_CenterWnd->Symbol() || !_OrderConfigMgr) {
+	if (!_OrderConfigMgr)
 		return;
+
+	if (_Mode == 0) {
+		if (!_CenterWnd || !_CenterWnd->Symbol())
+			return;
+		if (_CenterWnd->Symbol()->ShortCode.compare(symbol->ShortCode) != 0)
+			return;
 	}
-
-	if (_CenterWnd->Symbol()->ShortCode.compare(symbol->ShortCode) != 0)
-		return;
-
+	else {
+		if (!_CenterWndOut || !_CenterWndOut->Symbol())
+			return;
+		if (_CenterWndOut->Symbol()->ShortCode.compare(symbol->ShortCode) != 0)
+			return;
+	}
+	
 	if (_OrderConfigMgr->Type() == 0)
 		ShowSinglePosition();
 	else
@@ -56,42 +65,76 @@ void VtProductRemainGrid::RegisterOrderallback()
 
 void VtProductRemainGrid::OnOrderEvent(const VtOrder* order)
 {
-	if (!order || !_OrderConfigMgr || !_CenterWnd || !_CenterWnd->Symbol())
+	if (!order)
 		return;
-
-	if (order->Type == -1 || order->Type == 0) {
-		if (!_OrderConfigMgr->Account())
-			return;
-		// 심볼과 계좌가 같지 않으면 진행하지 않는다.
-		if (_CenterWnd->Symbol()->ShortCode.compare(order->shortCode) != 0 ||
-			_OrderConfigMgr->Account()->AccountNo.compare(order->AccountNo) != 0)
-			return;
-	}
-	else if (order->Type == 1) {
-		if (!_OrderConfigMgr->Account())
-			return;
-		// 심볼과 계좌가 같지 않으면 진행하지 않는다.
-		if (_CenterWnd->Symbol()->ShortCode.compare(order->shortCode) != 0 ||
-			_OrderConfigMgr->Account()->AccountNo.compare(order->SubAccountNo) != 0)
-			return;
-	}
-	else if (order->Type == 2) {
-		if (!_OrderConfigMgr->Fund())
-			return;
-		// 심볼과 계좌가 같지 않으면 진행하지 않는다.
-		if (_CenterWnd->Symbol()->ShortCode.compare(order->shortCode) != 0 ||
-			_OrderConfigMgr->Fund()->Name.compare(order->FundName) != 0)
-			return;
-	}
-	else
+	if (!_OrderConfigMgr)
 		return;
+	
+	if (_Mode == 0) {
+		if (!_CenterWnd || !_CenterWnd->Symbol())
+			return;
+		if (order->Type == -1 || order->Type == 0) {
+			if (!_OrderConfigMgr->Account())
+				return;
+			// 심볼과 계좌가 같지 않으면 진행하지 않는다.
+			if (_CenterWnd->Symbol()->ShortCode.compare(order->shortCode) != 0 ||
+				_OrderConfigMgr->Account()->AccountNo.compare(order->AccountNo) != 0)
+				return;
+		}
+		else if (order->Type == 1) {
+			if (!_OrderConfigMgr->Account())
+				return;
+			// 심볼과 계좌가 같지 않으면 진행하지 않는다.
+			if (_CenterWnd->Symbol()->ShortCode.compare(order->shortCode) != 0 ||
+				_OrderConfigMgr->Account()->AccountNo.compare(order->SubAccountNo) != 0)
+				return;
+		}
+		else if (order->Type == 2) {
+			if (!_OrderConfigMgr->Fund())
+				return;
+			// 심볼과 계좌가 같지 않으면 진행하지 않는다.
+			if (_CenterWnd->Symbol()->ShortCode.compare(order->shortCode) != 0 ||
+				_OrderConfigMgr->Fund()->Name.compare(order->FundName) != 0)
+				return;
+		}
+	}
+	else {
+		if (!_CenterWndOut || !_CenterWndOut->Symbol())
+			return;
 
+		if (order->Type == -1 || order->Type == 0) {
+			if (!_OrderConfigMgr->Account())
+				return;
+			// 심볼과 계좌가 같지 않으면 진행하지 않는다.
+			if (_CenterWndOut->Symbol()->ShortCode.compare(order->shortCode) != 0 ||
+				_OrderConfigMgr->Account()->AccountNo.compare(order->AccountNo) != 0)
+				return;
+		}
+		else if (order->Type == 1) {
+			if (!_OrderConfigMgr->Account())
+				return;
+			// 심볼과 계좌가 같지 않으면 진행하지 않는다.
+			if (_CenterWndOut->Symbol()->ShortCode.compare(order->shortCode) != 0 ||
+				_OrderConfigMgr->Account()->AccountNo.compare(order->SubAccountNo) != 0)
+				return;
+		}
+		else if (order->Type == 2) {
+			if (!_OrderConfigMgr->Fund())
+				return;
+			// 심볼과 계좌가 같지 않으면 진행하지 않는다.
+			if (_CenterWndOut->Symbol()->ShortCode.compare(order->shortCode) != 0 ||
+				_OrderConfigMgr->Fund()->Name.compare(order->FundName) != 0)
+				return;
+		}
+	}
+	
 	ShowPosition();
 }
 
 VtProductRemainGrid::VtProductRemainGrid()
 {
 	_CenterWnd = nullptr;
+	_CenterWndOut = nullptr;
 	_OrderConfigMgr = nullptr;
 }
 
@@ -207,7 +250,15 @@ void VtProductRemainGrid::ShowPosition(VtPosition* posi)
 
 void VtProductRemainGrid::ShowPosition()
 {
-	if (!_CenterWnd || !_CenterWnd->Symbol() || !_OrderConfigMgr)
+	if (_Mode == 0) {
+		if (!_CenterWnd || !_CenterWnd->Symbol())
+			return;
+	}
+	else {
+		if (!_CenterWndOut || !_CenterWndOut->Symbol())
+			return;
+	}
+	if (!_OrderConfigMgr)
 		return;
 
 	if (_OrderConfigMgr->Type() == 0)
@@ -235,7 +286,10 @@ void VtProductRemainGrid::ShowPosition(VtPosition* posi, VtSymbol* sym)
 		QuickRedrawCell(3, 0);
 		QuickRedrawCell(4, 0);
 		QuickRedrawCell(5, 0);
-		_CenterWnd->SetRemain(0);
+		if (_CenterWnd)
+			_CenterWnd->SetRemain(0);
+		if (_CenterWndOut)
+			_CenterWndOut->SetRemain(0);
 		return;
 	}
 
@@ -257,7 +311,10 @@ void VtProductRemainGrid::ShowPosition(VtPosition* posi, VtSymbol* sym)
 		QuickRedrawCell(3, 0);
 		QuickRedrawCell(4, 0);
 		QuickRedrawCell(5, 0);
-		_CenterWnd->SetRemain(posi->OpenQty);
+		if (_CenterWnd)
+			_CenterWnd->SetRemain(posi->OpenQty);
+		if (_CenterWndOut)
+			_CenterWndOut->SetRemain(posi->OpenQty);
 		return;
 	}
 	if (posi->Position == VtPositionType::Buy) {
@@ -307,14 +364,31 @@ void VtProductRemainGrid::ShowPosition(VtPosition* posi, VtSymbol* sym)
 	}
 	QuickRedrawCell(5, 0);
 
-	_CenterWnd->SetRemain(posi->OpenQty);
-	_CenterWnd->RefreshOrderPositon();
+	if (_CenterWnd) {
+		_CenterWnd->SetRemain(posi->OpenQty);
+		_CenterWnd->RefreshOrderPositon();
+	}
+	if (_CenterWndOut) {
+		_CenterWndOut->SetRemain(posi->OpenQty);
+		_CenterWndOut->RefreshOrderPositon();
+	}
 	//LOG_F(INFO, _T("잔고그리드 갱신"));
 }
 
 void VtProductRemainGrid::SetSymbol(VtSymbol* sym)
 {
-	if (!sym || !_CenterWnd || !_OrderConfigMgr)
+	if (!sym)
+		return;
+
+	if (_Mode == 0) {
+		if (!_CenterWnd )
+			return;
+	}
+	else {
+		if (!_CenterWndOut)
+			return;
+	}
+	if (!_OrderConfigMgr)
 		return;
 
 
@@ -333,11 +407,18 @@ void VtProductRemainGrid::ShowSinglePosition()
 {
 	if (!_OrderConfigMgr->Account())
 		return;
-
-	VtSymbol* sym = _CenterWnd->Symbol();
-	VtAccount* acnt = _OrderConfigMgr->Account();
-	VtPosition* posi = acnt->FindPosition(sym->ShortCode);
-	ShowPosition(posi, sym);
+	if (_Mode == 0) {
+		VtSymbol* sym = _CenterWnd->Symbol();
+		VtAccount* acnt = _OrderConfigMgr->Account();
+		VtPosition* posi = acnt->FindPosition(sym->ShortCode);
+		ShowPosition(posi, sym);
+	}
+	else {
+		VtSymbol* sym = _CenterWndOut->Symbol();
+		VtAccount* acnt = _OrderConfigMgr->Account();
+		VtPosition* posi = acnt->FindPosition(sym->ShortCode);
+		ShowPosition(posi, sym);
+	}
 }
 
 void VtProductRemainGrid::ShowFundPosition()
@@ -346,6 +427,8 @@ void VtProductRemainGrid::ShowFundPosition()
 		return;
 
 	VtSymbol* sym = _CenterWnd->Symbol();
+	if (_Mode == 1)
+		sym = _CenterWndOut->Symbol();
 	int count = 0;
 	VtPosition posi = _OrderConfigMgr->Fund()->GetPosition(sym->ShortCode, count);
 	if (count == 0) {

@@ -318,13 +318,13 @@ void VtUsdStrategyConfigDlg::OnOrderEvent(VtOrder* order)
 
 			if (order->state == VtOrderState::Accepted) {
 				log_content.append(_T(" 접수 "));
-				msg.Format(_T(" 시스템 이름 = %s, 주문가격 = %.2f, 종목이름 = %s, 주문 번호 = %d, 이전주문번호 = %d, 계좌번호 = %s, 주문종류 = %s, 주문갯수 = %d"), order->StrategyName.c_str(), order->orderPrice, order->shortCode.c_str(), order->orderNo, order->oriOrderNo, order->AccountNo.c_str(), order->orderPosition == VtPositionType::Buy ? _T("매수") : _T("매도"), order->amount);
+				msg.Format(_T(" 시스템 이름 = %s, 주문가격 = %.2f, 종목이름 = %s, 주문 번호 = %s, 계좌번호 = %s, 주문종류 = %s, 주문갯수 = %d"), order->StrategyName.c_str(), order->orderPrice, order->shortCode.c_str(), order->orderNo.c_str(), order->AccountNo.c_str(), order->orderPosition == VtPositionType::Buy ? _T("매수") : _T("매도"), order->amount);
 				log_content.append((LPCSTR)msg);
 				_System->LogVector.push_back(std::make_pair(log_time, log_content));
 			}
 			else if (order->state == VtOrderState::Filled || order->state == VtOrderState::Settled) {
 				log_content.append(_T(" 체결 "));
-				msg.Format(_T(" 시스템 이름 = %s, 체결가격 = %.2f, 종목이름 = %s, 주문 번호 = %d, 이전주문번호 = %d, 계좌번호 = %s, 주문종류 = %s, 체결갯수 = %d"), order->StrategyName.c_str(), order->filledPrice, order->shortCode.c_str(), order->orderNo, order->oriOrderNo, order->AccountNo.c_str(), order->orderPosition == VtPositionType::Buy ? _T("매수") : _T("매도"), order->filledQty);
+				msg.Format(_T(" 시스템 이름 = %s, 체결가격 = %.2f, 종목이름 = %s, 주문 번호 = %s, 계좌번호 = %s, 주문종류 = %s, 체결갯수 = %d"), order->StrategyName.c_str(), order->filledPrice, order->shortCode.c_str(), order->orderNo.c_str(), order->AccountNo.c_str(), order->orderPosition == VtPositionType::Buy ? _T("매수") : _T("매도"), order->filledQty);
 				log_content.append((LPCSTR)msg);
 				_System->LogVector.push_back(std::make_pair(log_time, log_content));
 			}
@@ -363,13 +363,13 @@ void VtUsdStrategyConfigDlg::OnOrderEvent(VtOrder* order)
 
 			if (order->state == VtOrderState::Accepted) {
 				log_content.append(_T(" 접수 "));
-				msg.Format(_T(" 시스템 이름 = %s, 주문가격 = %.2f, 종목이름 = %s, 주문 번호 = %d, 이전주문번호 = %d, 계좌번호 = %s, 주문종류 = %s, 주문갯수 = %d"), order->StrategyName.c_str(), order->orderPrice, order->shortCode.c_str(), order->orderNo, order->oriOrderNo, order->AccountNo.c_str(), order->orderPosition == VtPositionType::Buy ? _T("매수") : _T("매도"), order->amount);
+				msg.Format(_T(" 시스템 이름 = %s, 주문가격 = %.2f, 종목이름 = %s, 주문 번호 = %s, 계좌번호 = %s, 주문종류 = %s, 주문갯수 = %d"), order->StrategyName.c_str(), order->orderPrice, order->shortCode.c_str(), order->orderNo.c_str(), order->AccountNo.c_str(), order->orderPosition == VtPositionType::Buy ? _T("매수") : _T("매도"), order->amount);
 				log_content.append((LPCSTR)msg);
 				_System->LogVector.push_back(std::make_pair(log_time, log_content));
 			}
 			else if (order->state == VtOrderState::Filled || order->state == VtOrderState::Settled) {
 				log_content.append(_T(" 체결 "));
-				msg.Format(_T(" 시스템 이름 = %s, 체결가격 = %.2f, 종목이름 = %s, 주문 번호 = %d, 이전주문번호 = %d, 계좌번호 = %s, 주문종류 = %s, 체결갯수 = %d"), order->StrategyName.c_str(), order->filledPrice, order->shortCode.c_str(), order->orderNo, order->oriOrderNo, order->AccountNo.c_str(), order->orderPosition == VtPositionType::Buy ? _T("매수") : _T("매도"), order->filledQty);
+				msg.Format(_T(" 시스템 이름 = %s, 체결가격 = %.2f, 종목이름 = %s, 주문 번호 = %s, 계좌번호 = %s, 주문종류 = %s, 체결갯수 = %d"), order->StrategyName.c_str(), order->filledPrice, order->shortCode.c_str(), order->orderNo.c_str(), order->AccountNo.c_str(), order->orderPosition == VtPositionType::Buy ? _T("매수") : _T("매도"), order->filledQty);
 				log_content.append((LPCSTR)msg);
 				_System->LogVector.push_back(std::make_pair(log_time, log_content));
 			}

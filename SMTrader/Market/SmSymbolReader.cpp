@@ -509,11 +509,19 @@ void SmSymbolReader::ReadJmFile(std::string fullPath)
 		if (cat) {
 			VtSymbol* sym = cat->AddSymbol(Series);
 			sym->Index = std::stoi(IndexCode);
-			sym->NearMonth = std::stoi(IndexCode);
+			// 근월물 여부 0 이면 근월물, 그보다 크면 차월물 부터
+			sym->NearMonth = std::stoi(NearSeq);
+			// 심볼 한국어 이름
 			sym->Name = SeriesNmKor;
+			// 심볼 영문 이름
 			sym->EngName = SeriesNm;
-			//symMgr->AddHdSymbol(sym);
+			// 거래소
+			sym->Exchange = ExchCd;
+			// 만기일
+			sym->ExpDate = ExprDt;
+			// 제품 이름
 			sym->ProductCode = cat->Code();
+			// 시장이름
 			sym->MarketName = cat->MarketName();
 			// 소수점
 			sym->Decimal = std::stoi(Pdesz);
@@ -527,6 +535,7 @@ void SmSymbolReader::ReadJmFile(std::string fullPath)
 			sym->TickSize = std::stod(TickSize);
 			// 정수 틱 크기를 계산하여 넣어 준다.
 			sym->intTickSize = sym->TickSize * std::pow(10, sym->Decimal);
+			// 최종 거래일
 			sym->LastDate = last_date;
 		}
 	}
